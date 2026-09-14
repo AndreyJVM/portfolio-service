@@ -16,7 +16,7 @@
     letter-spacing: -0.5px;
 }
 
-.nav-link {
+.navbar .nav-link {
     color: var(--text-muted) !important;
     font-weight: 500;
     padding: 0.5rem 1rem !important;
@@ -24,12 +24,12 @@
     transition: color 0.2s ease, background-color 0.2s ease;
 }
 
-.nav-link:hover {
+.navbar .nav-link:hover {
     color: var(--text-color) !important;
     background-color: rgba(99, 102, 241, 0.08);
 }
 
-.nav-link.active {
+.navbar .nav-link.active {
     color: var(--accent-color) !important;
     font-weight: 600;
 }
