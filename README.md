@@ -10,7 +10,6 @@ Production-ready web application combining a personal portfolio and an interacti
 
 **Live demo:** [vorobevaqa.ru](https://vorobevaqa.ru) · **Docker Hub:** [`andreyvorobevaqa/portfolio-service`](https://hub.docker.com/r/andreyvorobevaqa/portfolio-service)
 
----
 
 ## Table of Contents
 
@@ -23,7 +22,6 @@ Production-ready web application combining a personal portfolio and an interacti
 - [Author](#author)
 - [License](#license)
 
----
 
 ## Tech Stack
 
