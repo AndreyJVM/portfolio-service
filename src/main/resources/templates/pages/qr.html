@@ -15,60 +15,61 @@
 <div th:replace="~{fragments/navbar :: navbar('qr')}"></div>
 
 <main class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-8 col-xl-7">
-            <div class="text-center mb-4">
-                <h1 class="fw-bold mb-2">Генератор QR-кодов</h1>
-                <p class="text-muted">Введите ссылку, чтобы мгновенно сгенерировать QR-код</p>
+    <div class="text-center mb-5 mx-auto" style="max-width: 560px;">
+        <h1 class="fw-bold mb-2">Генератор QR-кодов</h1>
+        <p class="text-muted">Введите ссылку — код появится в рамке справа и будет готов к скачиванию</p>
+    </div>
+
+    <div class="qr-tool mx-auto">
+        <!-- Панель ввода -->
+        <div class="qr-tool__panel">
+            <form id="qr-form" onsubmit="event.preventDefault(); generateQR();">
+                <label for="url-input" class="form-label fw-semibold">Ссылка для кодирования</label>
+                <div class="input-group mb-2">
+                    <span class="input-group-text"><i class="fas fa-link"></i></span>
+                    <input type="text" id="url-input" class="form-control"
+                           placeholder="https://example.com" value="https://vorobevaqa.ru" required>
+                </div>
+                <div class="form-text text-muted mb-3">Ссылка должна начинаться с http:// или https://</div>
+                <button type="submit" class="btn btn-primary w-100" id="generate-btn">
+                    <i class="fas fa-bolt me-1"></i> Создать QR-код
+                </button>
+            </form>
+
+            <div id="error" class="qr-error" style="display: none;">
+                <i class="fas fa-circle-exclamation"></i>
+                <span id="error-text"></span>
+            </div>
+        </div>
+
+        <!-- Постоянная рамка результата -->
+        <div class="qr-tool__frame">
+            <span class="qr-frame-corner qr-frame-corner--tl"></span>
+            <span class="qr-frame-corner qr-frame-corner--tr"></span>
+            <span class="qr-frame-corner qr-frame-corner--bl"></span>
+
+            <div id="qr-placeholder" class="qr-frame-state">
+                <i class="fas fa-qrcode fa-2x text-muted opacity-50"></i>
+                <p class="text-muted small mb-0">Здесь появится QR-код</p>
             </div>
 
-            <div class="card p-4 shadow-sm mb-4">
-                <form id="qr-form" onsubmit="event.preventDefault(); generateQR();">
-                    <div class="mb-3">
-                        <label for="url-input" class="form-label fw-semibold">Ссылка для кодирования</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="fas fa-link"></i></span>
-                            <input type="text" id="url-input" class="form-control"
-                                   placeholder="https://example.com" value="https://vorobevaqa.ru" required>
-                            <button type="submit" class="btn btn-primary" id="generate-btn">
-                                <i class="fas fa-bolt me-1"></i> Создать
-                            </button>
-                        </div>
-                        <div class="form-text text-muted">Ссылка должна начинаться с http:// или https://</div>
-                    </div>
-                </form>
-
-                <!-- Блок ошибки -->
-                <div id="error" class="alert alert-danger py-2 px-3 small my-3" style="display: none;">
-                    <i class="fas fa-circle-exclamation me-1"></i>
-                    <span id="error-text"></span>
+            <div id="spinner" class="qr-frame-state" style="display: none;">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Генерация...</span>
                 </div>
+                <p class="text-muted small mb-0">Формируем QR-код...</p>
+            </div>
 
-                <!-- Спиннер -->
-                <div id="spinner" class="text-center py-4 border-top" style="display: none;">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Генерация...</span>
-                    </div>
-                    <p class="text-muted small mt-2 mb-0">Формируем QR-код...</p>
-                </div>
-
-                <!-- Результат генерации -->
-                <div id="result" class="text-center py-4 border-top" style="display: none;">
-                    <div class="mb-3">
-                        <img id="qr-code-image" src="" alt="QR Code"
-                             class="img-fluid rounded border p-2 bg-white shadow-sm" style="max-width: 260px;">
-                    </div>
-                    <div class="mb-3">
-                        <span id="qr-url-text" class="text-muted small text-break"></span>
-                    </div>
-                    <div class="d-flex justify-content-center gap-2">
-                        <button onclick="downloadQR()" class="btn btn-success">
-                            <i class="fas fa-download me-1"></i> Скачать PNG
-                        </button>
-                        <button onclick="shareQR()" class="btn btn-outline-secondary">
-                            <i class="fas fa-share-nodes me-1"></i> Поделиться
-                        </button>
-                    </div>
+            <div id="result" class="qr-frame-state" style="display: none;">
+                <img id="qr-code-image" src="" alt="QR Code" class="img-fluid rounded">
+                <span id="qr-url-text" class="text-muted small text-break"></span>
+                <div class="d-flex justify-content-center gap-2 mt-2">
+                    <button onclick="downloadQR()" class="btn btn-success btn-sm">
+                        <i class="fas fa-download me-1"></i> PNG
+                    </button>
+                    <button onclick="shareQR()" class="btn btn-outline-secondary btn-sm">
+                        <i class="fas fa-share-nodes me-1"></i> Поделиться
+                    </button>
                 </div>
             </div>
         </div>
