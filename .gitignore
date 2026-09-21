@@ -55,6 +55,8 @@ deploy.log
 *.pid
 .env
 
-# === LLM ===
+# === LLM & AI Agents ===
 dump.sh
 data.txt
+.gemini/
+.agents/
