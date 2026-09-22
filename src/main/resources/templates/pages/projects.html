@@ -4,9 +4,9 @@
   <th:block th:replace="~{fragments/head :: head(
       title='Проекты',
       description='Проекты Андрея Воробьева: портфолио, Samba Web UI, генератор QR-кодов, CI/CD автоматизация.',
-      keywords='проекты, Samba Web UI, Java, Spring Boot, GitHub, QR code generator, Docker',
+      keywords='проекты, Samba Web UI, Java, Spring Boot, GitHub, QR code generator, Docker, архитектура',
       ogTitle='Проекты | Андрей Воробьев',
-      ogDescription='Список проектов с открытым исходным кодом и рабочими сервисами.',
+      ogDescription='Список проектов с открытым исходным кодом, архитектурой и рабочими сервисами.',
       ogImage='/images/og-projects.png',
       ogUrl='https://vorobevaqa.ru/projects'
   )}"></th:block>
@@ -18,10 +18,11 @@
 <main class="container py-5">
   <div class="text-center mb-5 reveal">
     <h1 class="fw-bold mb-2">Мои Проекты</h1>
-    <p class="text-muted">Реализованные сервисы, микросервисы и инфраструктурные решения</p>
+    <p class="text-muted">Реализованные сервисы, микросервисы и инфраструктурные решения с интерактивными схемами архитектуры</p>
   </div>
 
   <div class="row g-4">
+    <!-- Samba Web UI Manager -->
     <div class="col-md-6 col-lg-6 reveal reveal-delay-100">
       <div class="card h-100 shadow-sm d-flex flex-column">
         <div class="card-body d-flex flex-column">
@@ -43,7 +44,10 @@
             <span class="badge tech-pill">Shell / Bash</span>
           </div>
           <div class="pt-2 border-top d-flex gap-2">
-            <a href="https://github.com/AndreyAQA" target="_blank" rel="noopener noreferrer" class="btn btn-outline-secondary btn-sm w-100">
+            <button type="button" class="btn btn-outline-primary btn-sm flex-grow-1" onclick="openArchModal('samba')">
+              <i class="fas fa-sitemap me-1"></i> Архитектура
+            </button>
+            <a href="https://github.com/AndreyAQA" target="_blank" rel="noopener noreferrer" class="btn btn-outline-secondary btn-sm flex-grow-1">
               <i class="fab fa-github me-1"></i> Репозиторий
             </a>
           </div>
@@ -51,6 +55,7 @@
       </div>
     </div>
 
+    <!-- QR Code Generator Service -->
     <div class="col-md-6 col-lg-6 reveal reveal-delay-200">
       <div class="card h-100 shadow-sm d-flex flex-column">
         <div class="card-body d-flex flex-column">
@@ -71,14 +76,18 @@
             <span class="badge tech-pill">REST API</span>
           </div>
           <div class="pt-2 border-top d-flex gap-2">
-            <a th:href="@{/qr}" class="btn btn-primary btn-sm w-100">
-              <i class="fas fa-play me-1"></i> Попробовать
+            <button type="button" class="btn btn-outline-primary btn-sm flex-grow-1" onclick="openArchModal('qr')">
+              <i class="fas fa-sitemap me-1"></i> Архитектура
+            </button>
+            <a th:href="@{/qr}" class="btn btn-primary btn-sm flex-grow-1">
+              <i class="fas fa-play me-1"></i> Playground
             </a>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- Portfolio & Production Stack -->
     <div class="col-md-6 col-lg-6 reveal reveal-delay-100">
       <div class="card h-100 shadow-sm d-flex flex-column">
         <div class="card-body d-flex flex-column">
@@ -99,7 +108,10 @@
             <span class="badge tech-pill">GitHub Actions</span>
           </div>
           <div class="pt-2 border-top d-flex gap-2">
-            <a href="https://github.com/AndreyJVM" target="_blank" rel="noopener noreferrer" class="btn btn-outline-secondary btn-sm w-100">
+            <button type="button" class="btn btn-outline-primary btn-sm flex-grow-1" onclick="openArchModal('portfolio')">
+              <i class="fas fa-sitemap me-1"></i> Архитектура
+            </button>
+            <a href="https://github.com/AndreyJVM" target="_blank" rel="noopener noreferrer" class="btn btn-outline-secondary btn-sm flex-grow-1">
               <i class="fab fa-github me-1"></i> Репозиторий
             </a>
           </div>
@@ -107,6 +119,7 @@
       </div>
     </div>
 
+    <!-- Tech Blog & Articles -->
     <div class="col-md-6 col-lg-6 reveal reveal-delay-200">
       <div class="card h-100 shadow-sm d-flex flex-column border-dashed">
         <div class="card-body d-flex flex-column">
@@ -191,8 +204,57 @@
   </section>
 </main>
 
+<!-- ========================================== -->
+<!-- МОДАЛЬНОЕ ОКНО АРХИТЕКТУРЫ ПРОЕКТА          -->
+<!-- ========================================== -->
+<div class="modal fade" id="projectArchModal" tabindex="-1" aria-labelledby="archModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content bg-body border-0 shadow-lg rounded-4">
+      <div class="modal-header border-bottom px-4 pt-4 pb-3">
+        <div class="d-flex align-items-center gap-2">
+          <div class="p-2 rounded-3 bg-primary-subtle text-primary">
+            <i class="fas fa-diagram-project fa-lg"></i>
+          </div>
+          <div>
+            <h5 class="modal-title fw-bold mb-0" id="archModalTitle">Архитектура проекта</h5>
+            <span class="badge" id="archModalBadge">Production Active</span>
+          </div>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+      </div>
+
+      <div class="modal-body p-4">
+        <p class="lead text-body-secondary small mb-4" id="archModalSummary"></p>
+
+        <!-- Схема архитектуры -->
+        <h6 class="fw-bold mb-2 text-primary"><i class="fas fa-network-wired me-2"></i>Топология и схема взаимодействия</h6>
+        <div class="bg-dark rounded-3 p-3 mb-4 overflow-auto border border-secondary border-opacity-25" style="max-height: 280px;">
+          <pre class="text-light mb-0 font-monospace" style="font-size: 0.75rem; line-height: 1.35;" id="archModalDiagram"></pre>
+        </div>
+
+        <!-- Ключевые инженерные решения -->
+        <h6 class="fw-bold mb-3 text-primary"><i class="fas fa-microchip me-2"></i>Инженерные аспекты</h6>
+        <div class="row g-3 mb-4" id="archModalHighlights">
+          <!-- Заполняется динамически -->
+        </div>
+
+        <!-- Стек технологий -->
+        <h6 class="fw-bold mb-2 text-primary"><i class="fas fa-layer-group me-2"></i>Стек технологий</h6>
+        <div class="d-flex flex-wrap gap-2" id="archModalStack">
+          <!-- Заполняется динамически -->
+        </div>
+      </div>
+
+      <div class="modal-footer border-top px-4 py-3">
+        <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Закрыть</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div th:replace="~{fragments/footer :: footer}"></div>
 
 <div th:replace="~{fragments/scripts :: scripts}"></div>
+<script th:src="@{/js/pages/projects.js}" defer></script>
 </body>
 </html>
