@@ -1,57 +1,123 @@
 .navbar {
-    background-color: var(--navbar-bg);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--navbar-border);
-    padding: 0.75rem 0;
-    transition: background-color 0.25s ease, border-color 0.25s ease;
+  background-color: var(--navbar-bg);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--navbar-border);
+  padding: 0.75rem 0;
+  transition: background-color 0.25s ease, border-color 0.25s ease;
 }
 
 .navbar-brand .brand-text {
-    font-weight: 700;
-    font-size: 1.35rem;
-    background: var(--accent-gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    letter-spacing: -0.5px;
+  font-weight: 700;
+  font-size: 1.35rem;
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.5px;
 }
 
 .navbar .nav-link {
-    color: var(--text-muted) !important;
-    font-weight: 500;
-    padding: 0.5rem 1rem !important;
-    border-radius: 8px;
-    transition: color 0.2s ease, background-color 0.2s ease;
+  color: var(--text-muted) !important;
+  font-weight: 500;
+  padding: 0.5rem 1rem !important;
+  border-radius: 8px;
+  transition: color 0.2s ease, background-color 0.2s ease;
 }
 
 .navbar .nav-link:hover {
-    color: var(--text-color) !important;
-    background-color: rgba(99, 102, 241, 0.08);
+  color: var(--text-color) !important;
+  background-color: rgba(99, 102, 241, 0.08);
 }
 
 .navbar .nav-link.active {
-    color: var(--accent-color) !important;
-    font-weight: 600;
+  color: var(--accent-color) !important;
+  font-weight: 600;
 }
 
 /* Кнопка переключения темы */
 .theme-toggle {
-    background: transparent;
-    border: 1px solid var(--card-border);
-    color: var(--text-color);
-    border-radius: 50%;
-    width: 38px;
-    height: 38px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
+  background: transparent;
+  border: 1px solid var(--card-border);
+  color: var(--text-color);
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .theme-toggle:hover {
-    background-color: rgba(99, 102, 241, 0.1);
-    border-color: var(--accent-color);
-    color: var(--accent-color);
-    transform: rotate(15deg);
+  background-color: rgba(99, 102, 241, 0.1);
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+  transform: rotate(15deg);
+}
+
+/* ===== ЖИВОЙ СТАТУС СИСТЕМЫ (SYSTEM HEALTH BADGE) ===== */
+.system-status-indicator {
+  padding: 0.35rem 0.75rem;
+  border: 1px solid var(--card-border);
+  background-color: var(--card-bg);
+  border-radius: 20px;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s ease;
+}
+
+.system-status-indicator:hover {
+  border-color: var(--accent-color);
+  transform: translateY(-1px);
+}
+
+.status-ping {
+  position: relative;
+  display: inline-flex;
+  width: 8px;
+  height: 8px;
+}
+
+.status-ping-circle {
+  position: relative;
+  display: inline-flex;
+  border-radius: 50%;
+  width: 8px;
+  height: 8px;
+  background-color: #10b981;
+}
+
+.status-ping-ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: #10b981;
+  opacity: 0.75;
+  animation: status-ping-anim 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes status-ping-anim {
+  75%, 100% {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}
+
+.status-ping--down .status-ping-circle,
+.status-ping--down .status-ping-ring {
+  background-color: #ef4444;
+}
+
+.status-ping--degraded .status-ping-circle,
+.status-ping--degraded .status-ping-ring {
+  background-color: #f59e0b;
+}
+
+.system-status-indicator .status-text {
+  font-size: 0.75rem;
+  letter-spacing: 0.2px;
 }

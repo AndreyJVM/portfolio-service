@@ -8,6 +8,24 @@
         </a>
 
         <div class="d-flex align-items-center order-lg-3">
+            <!-- Индикатор доступности сервисов (Actuator Health) -->
+            <div class="system-status-indicator me-3 d-none d-sm-flex align-items-center"
+                 id="systemStatusBadge"
+                 tabindex="0"
+                 role="button"
+                 data-bs-toggle="popover"
+                 data-bs-trigger="hover focus"
+                 data-bs-placement="bottom"
+                 data-bs-html="true"
+                 title="<i class='fas fa-server me-1'></i> Статус системы"
+                 data-bs-content="Проверка соединения...">
+                <span class="status-ping me-2" id="statusPing">
+                    <span class="status-ping-circle"></span>
+                    <span class="status-ping-ring"></span>
+                </span>
+                <span class="status-text fw-medium text-body-secondary" id="systemStatusText">Systems Online</span>
+            </div>
+
             <button class="theme-toggle" id="themeToggle" aria-label="Переключить тему">
                 <i class="fas fa-moon" id="themeIcon"></i>
             </button>
