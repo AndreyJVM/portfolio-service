@@ -3,10 +3,10 @@
 <head>
   <th:block th:replace="~{fragments/head :: head(
       title='Проекты',
-      description='Проекты Андрея Воробьева: портфолио, Samba Web UI, генератор QR-кодов, CI/CD автоматизация.',
-      keywords='проекты, Samba Web UI, Java, Spring Boot, GitHub, QR code generator, Docker, архитектура',
+      description='Инженерные проекты Андрея Воробьева: портфолио, генератор QR-кодов, тестовые фреймворки, Samba Web UI и CI/CD.',
+      keywords='проекты, Samba Web UI, Java, Spring Boot, GitHub, QR code generator, Docker, AQA framework, архитектура',
       ogTitle='Проекты | Андрей Воробьев',
-      ogDescription='Список проектов с открытым исходным кодом, архитектурой и рабочими сервисами.',
+      ogDescription='Список проектов с открытым исходным кодом, архитектурными схемами и рабочими сервисами.',
       ogImage='/images/og-projects.png',
       ogUrl='https://vorobevaqa.ru/projects'
   )}"></th:block>
@@ -16,102 +16,53 @@
 <div th:replace="~{fragments/navbar :: navbar('projects')}"></div>
 
 <main class="container py-5">
+  <!-- Заголовок страницы -->
   <div class="text-center mb-5 reveal">
-    <h1 class="fw-bold mb-2">Мои Проекты</h1>
-    <p class="text-muted">Реализованные сервисы, микросервисы и инфраструктурные решения с интерактивными схемами архитектуры</p>
+    <div class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill mb-3">
+      <i class="fas fa-cubes me-1"></i> Портфолио проектов
+    </div>
+    <h1 class="fw-bold mb-2">Инженерные проекты</h1>
+    <p class="text-body-secondary mx-auto" style="max-width: 700px;">
+      Реализованные сервисы, инструменты автоматизации обеспечения качества и облачная инфраструктура с интерактивными схемами архитектуры.
+    </p>
   </div>
 
-  <div class="row g-4">
-    <!-- Samba Web UI Manager -->
-    <div class="col-md-6 col-lg-6 reveal reveal-delay-100">
-      <div class="card h-100 shadow-sm d-flex flex-column">
-        <div class="card-body d-flex flex-column">
-          <div class="d-flex align-items-center justify-content-between mb-3">
-            <div class="p-2 rounded bg-primary-subtle text-primary">
-              <i class="fas fa-folder-network fa-lg"></i>
-              <i class="fas fa-share-nodes fa-lg"></i>
-            </div>
-            <span class="badge bg-success-subtle text-success border border-success-subtle">Completed</span>
-          </div>
-          <h5 class="card-title fw-bold mb-2">Samba Web UI Manager</h5>
-          <p class="card-text text-muted small flex-grow-1">
-            Веб-интерфейс для администрирования и мониторинга Samba-шар на Linux-сервере. Управление пользователями, правами доступа к сетевым папкам и конфигурацией через удобный GUI без необходимости постоянной ручной правки smb.conf.
-          </p>
-          <div class="mb-3 d-flex flex-wrap gap-1">
-            <span class="badge tech-pill">Linux</span>
-            <span class="badge tech-pill">Samba</span>
-            <span class="badge tech-pill">Docker</span>
-            <span class="badge tech-pill">Shell / Bash</span>
-          </div>
-          <div class="pt-2 border-top d-flex gap-2">
-            <button type="button" class="btn btn-outline-primary btn-sm flex-grow-1" onclick="openArchModal('samba')">
-              <i class="fas fa-sitemap me-1"></i> Архитектура
-            </button>
-            <a href="https://github.com/AndreyAQA" target="_blank" rel="noopener noreferrer" class="btn btn-outline-secondary btn-sm flex-grow-1">
-              <i class="fab fa-github me-1"></i> Репозиторий
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
+  <!-- ========================================== -->
+  <!-- СЕТКА ПРОЕКТОВ (ЕДИНАЯ ВИТРИНА БЕЗ ВКЛАДОК) -->
+  <!-- ========================================== -->
+  <div class="row g-4 mb-5">
 
-    <!-- QR Code Generator Service -->
-    <div class="col-md-6 col-lg-6 reveal reveal-delay-200">
-      <div class="card h-100 shadow-sm d-flex flex-column">
-        <div class="card-body d-flex flex-column">
+    <!-- 1. Portfolio & Production Stack -->
+    <div class="col-md-6 reveal reveal-delay-100">
+      <div class="card h-100 shadow-sm border-0 rounded-4 d-flex flex-column">
+        <div class="card-body p-4 d-flex flex-column">
           <div class="d-flex align-items-center justify-content-between mb-3">
-            <div class="p-2 rounded bg-primary-subtle text-primary">
-              <i class="fas fa-qrcode fa-lg"></i>
-            </div>
-            <span class="badge bg-success-subtle text-success border border-success-subtle">Online</span>
-          </div>
-          <h5 class="card-title fw-bold mb-2">QR Code Generator Service</h5>
-          <p class="card-text text-muted small flex-grow-1">
-            Микросервис на Spring Boot для генерации и отдачи QR-кодов по REST API. Поддерживает динамическое изменение разрешений, буферизацию изображений и скачивание в PNG.
-          </p>
-          <div class="mb-3 d-flex flex-wrap gap-1">
-            <span class="badge tech-pill">Java</span>
-            <span class="badge tech-pill">ZXing</span>
-            <span class="badge tech-pill">Spring Web</span>
-            <span class="badge tech-pill">REST API</span>
-          </div>
-          <div class="pt-2 border-top d-flex gap-2">
-            <button type="button" class="btn btn-outline-primary btn-sm flex-grow-1" onclick="openArchModal('qr')">
-              <i class="fas fa-sitemap me-1"></i> Архитектура
-            </button>
-            <a th:href="@{/qr}" class="btn btn-primary btn-sm flex-grow-1">
-              <i class="fas fa-play me-1"></i> Playground
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Portfolio & Production Stack -->
-    <div class="col-md-6 col-lg-6 reveal reveal-delay-100">
-      <div class="card h-100 shadow-sm d-flex flex-column">
-        <div class="card-body d-flex flex-column">
-          <div class="d-flex align-items-center justify-content-between mb-3">
-            <div class="p-2 rounded bg-primary-subtle text-primary">
+            <div class="p-2 rounded-3 bg-primary-subtle text-primary">
               <i class="fas fa-globe fa-lg"></i>
             </div>
-            <span class="badge bg-success-subtle text-success border border-success-subtle">Online</span>
+            <span class="badge bg-success-subtle text-success border border-success-subtle">
+              <i class="fas fa-circle me-1 small" style="font-size: 0.5rem;"></i>Production Live
+            </span>
           </div>
-          <h5 class="card-title fw-bold mb-2">Portfolio & Production Stack</h5>
-          <p class="card-text text-muted small flex-grow-1">
-            Сайт-визитка с полностью автоматизированным CI/CD пайплайном: тесты, многоэтапная сборка Docker-образов, деплой на удалённый VDS через GitHub Actions и проксирование через Nginx с Let's Encrypt SSL.
+
+          <h4 class="card-title fw-bold mb-2">Portfolio & Cloud Infrastructure</h4>
+          <p class="card-text text-body-secondary small flex-grow-1">
+            Отказоустойчивый стек сайта-портфолио: микросервисная архитектура на Spring Boot 3, автоматизированный CI/CD пайплайн в GitHub Actions, сборка образов, автодеплой на Linux VDS, обратный прокси Nginx с SSL Let's Encrypt и мониторинг метрик через Actuator.
           </p>
-          <div class="mb-3 d-flex flex-wrap gap-1">
+
+          <div class="mb-4 d-flex flex-wrap gap-1">
+            <span class="badge tech-pill">Java 21</span>
             <span class="badge tech-pill">Spring Boot 3</span>
             <span class="badge tech-pill">Docker Compose</span>
             <span class="badge tech-pill">Nginx SSL</span>
             <span class="badge tech-pill">GitHub Actions</span>
           </div>
-          <div class="pt-2 border-top d-flex gap-2">
-            <button type="button" class="btn btn-outline-primary btn-sm flex-grow-1" onclick="openArchModal('portfolio')">
+
+          <div class="pt-3 border-top d-flex gap-2">
+            <button type="button" class="btn btn-outline-primary btn-sm flex-grow-1 rounded-pill" onclick="openArchModal('portfolio')">
               <i class="fas fa-sitemap me-1"></i> Архитектура
             </button>
-            <a href="https://github.com/AndreyJVM" target="_blank" rel="noopener noreferrer" class="btn btn-outline-secondary btn-sm flex-grow-1">
+            <a href="https://github.com/AndreyJVM/portfolio-service" target="_blank" rel="noopener noreferrer" class="btn btn-outline-secondary btn-sm flex-grow-1 rounded-pill">
               <i class="fab fa-github me-1"></i> Репозиторий
             </a>
           </div>
@@ -119,29 +70,116 @@
       </div>
     </div>
 
-    <!-- Tech Blog & Articles -->
-    <div class="col-md-6 col-lg-6 reveal reveal-delay-200">
-      <div class="card h-100 shadow-sm d-flex flex-column border-dashed">
-        <div class="card-body d-flex flex-column">
+    <!-- 2. QR Code Generator Service -->
+    <div class="col-md-6 reveal reveal-delay-200">
+      <div class="card h-100 shadow-sm border-0 rounded-4 d-flex flex-column">
+        <div class="card-body p-4 d-flex flex-column">
           <div class="d-flex align-items-center justify-content-between mb-3">
-            <div class="p-2 rounded bg-secondary-subtle text-secondary">
-              <i class="fas fa-newspaper fa-lg"></i>
+            <div class="p-2 rounded-3 bg-primary-subtle text-primary">
+              <i class="fas fa-qrcode fa-lg"></i>
             </div>
-            <span class="badge bg-warning-subtle text-warning border border-warning-subtle">В разработке</span>
+            <span class="badge bg-primary-subtle text-primary border border-primary-subtle">
+              <i class="fas fa-bolt me-1 small" style="font-size: 0.5rem;"></i>Online Tool
+            </span>
           </div>
-          <h5 class="card-title fw-bold mb-2">Tech Blog & Articles</h5>
-          <p class="card-text text-muted small flex-grow-1">
-            Платформа для публикации инженерных заметок по автоматизации тестирования, настройке Linux-серверов и паттернам проектирования микросервисов.
+
+          <h4 class="card-title fw-bold mb-2">QR Code Generator Microservice</h4>
+          <p class="card-text text-body-secondary small flex-grow-1">
+            Высокопроизводительный сервис генерации и буферизации динамических QR-кодов на Spring Boot и Google ZXing. REST API, строгая валидация входящих параметров, интерактивный веб-Playground с кастомизацией палитры на Canvas и мгновенным экспортом в PNG.
           </p>
-          <div class="mb-3 d-flex flex-wrap gap-1">
-            <span class="badge tech-pill">PostgreSQL</span>
-            <span class="badge tech-pill">Spring Data JPA</span>
-            <span class="badge tech-pill">Markdown</span>
+
+          <div class="mb-4 d-flex flex-wrap gap-1">
+            <span class="badge tech-pill">Spring Boot 3</span>
+            <span class="badge tech-pill">Google ZXing</span>
+            <span class="badge tech-pill">REST API</span>
+            <span class="badge tech-pill">HTML5 Canvas</span>
+            <span class="badge tech-pill">Docker</span>
           </div>
-          <div class="pt-2 border-top d-flex gap-2">
-            <button class="btn btn-outline-secondary btn-sm w-100" disabled>
-              В процессе разработки
+
+          <div class="pt-3 border-top d-flex gap-2">
+            <button type="button" class="btn btn-outline-primary btn-sm flex-grow-1 rounded-pill" onclick="openArchModal('qr')">
+              <i class="fas fa-sitemap me-1"></i> Архитектура
             </button>
+            <a th:href="@{/qr}" class="btn btn-primary btn-sm flex-grow-1 rounded-pill">
+              <i class="fas fa-play me-1"></i> Открыть Playground
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. AQA Enterprise Test Automation Framework -->
+    <div class="col-md-6 reveal reveal-delay-100">
+      <div class="card h-100 shadow-sm border-0 rounded-4 d-flex flex-column">
+        <div class="card-body p-4 d-flex flex-column">
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <div class="p-2 rounded-3 bg-primary-subtle text-primary">
+              <i class="fas fa-vial-circle-check fa-lg"></i>
+            </div>
+            <span class="badge bg-info-subtle text-info border border-info-subtle">
+              <i class="fas fa-code-branch me-1 small" style="font-size: 0.5rem;"></i>QA Framework
+            </span>
+          </div>
+
+          <h4 class="card-title fw-bold mb-2">AQA Test Automation Framework</h4>
+          <p class="card-text text-body-secondary small flex-grow-1">
+            Модульный фреймворк сквозного тестирования API и Web UI. Параллельный запуск на JUnit 5 / TestNG, интеграция с REST Assured и Selenide, валидация JSON-схем, автоматические вложения в отчёты Allure Report и запуск в Docker-контейнерах в пайплайнах CI/CD.
+          </p>
+
+          <div class="mb-4 d-flex flex-wrap gap-1">
+            <span class="badge tech-pill">Java 17/21</span>
+            <span class="badge tech-pill">REST Assured</span>
+            <span class="badge tech-pill">Selenide</span>
+            <span class="badge tech-pill">JUnit 5</span>
+            <span class="badge tech-pill">Allure Report</span>
+            <span class="badge tech-pill">Docker</span>
+          </div>
+
+          <div class="pt-3 border-top d-flex gap-2">
+            <button type="button" class="btn btn-outline-primary btn-sm flex-grow-1 rounded-pill" onclick="openArchModal('aqa')">
+              <i class="fas fa-sitemap me-1"></i> Архитектура
+            </button>
+            <a href="https://github.com/AndreyJVM" target="_blank" rel="noopener noreferrer" class="btn btn-outline-secondary btn-sm flex-grow-1 rounded-pill">
+              <i class="fab fa-github me-1"></i> Репозиторий
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Samba Web UI Manager -->
+    <div class="col-md-6 reveal reveal-delay-200">
+      <div class="card h-100 shadow-sm border-0 rounded-4 d-flex flex-column">
+        <div class="card-body p-4 d-flex flex-column">
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <div class="p-2 rounded-3 bg-primary-subtle text-primary">
+              <i class="fas fa-share-nodes fa-lg"></i>
+            </div>
+            <span class="badge bg-secondary-subtle text-secondary border">
+              <i class="fas fa-server me-1 small" style="font-size: 0.5rem;"></i>Infrastructure Tool
+            </span>
+          </div>
+
+          <h4 class="card-title fw-bold mb-2">Samba Web UI Manager</h4>
+          <p class="card-text text-body-secondary small flex-grow-1">
+            Веб-панель для администрирования файловых ресурсов и сетевых шар Samba на Linux-сервере. Управление пользователями, правами доступа (POSIX ACL), безопасная валидация smb.conf и мониторинг активных сессий без необходимости ручной работы через консоль.
+          </p>
+
+          <div class="mb-4 d-flex flex-wrap gap-1">
+            <span class="badge tech-pill">Linux</span>
+            <span class="badge tech-pill">Samba</span>
+            <span class="badge tech-pill">Docker</span>
+            <span class="badge tech-pill">Bash</span>
+            <span class="badge tech-pill">Systemd</span>
+          </div>
+
+          <div class="pt-3 border-top d-flex gap-2">
+            <button type="button" class="btn btn-outline-primary btn-sm flex-grow-1 rounded-pill" onclick="openArchModal('samba')">
+              <i class="fas fa-sitemap me-1"></i> Архитектура
+            </button>
+            <a href="https://github.com/AndreyJVM" target="_blank" rel="noopener noreferrer" class="btn btn-outline-secondary btn-sm flex-grow-1 rounded-pill">
+              <i class="fab fa-github me-1"></i> Репозиторий
+            </a>
           </div>
         </div>
       </div>
@@ -158,7 +196,7 @@
           <span class="badge bg-dark-subtle text-body border px-3 py-2 rounded-pill fw-semibold mb-2">
             <i class="fab fa-github me-1"></i>Open Source & Code
           </span>
-          <h2 class="fw-bold mb-0">Последняя активность на GitHub</h2>
+          <h2 class="fw-bold mb-0">Публичные репозитории на GitHub</h2>
         </div>
         <a th:href="'https://github.com/' + ${@environment.getProperty('github.username', 'AndreyJVM')}"
            target="_blank"
@@ -170,7 +208,7 @@
 
       <div class="row g-4">
         <div th:each="repo : ${repos}" class="col-md-6 col-lg-4 reveal">
-          <div class="card h-100 shadow-sm rounded-4 p-3">
+          <div class="card h-100 shadow-sm border-0 rounded-4 p-3">
             <div class="card-body d-flex flex-column">
               <div class="d-flex justify-content-between align-items-start mb-2">
                 <h5 class="card-title fw-bold mb-0">
@@ -183,14 +221,14 @@
                 </span>
               </div>
 
-              <p class="card-text text-body-secondary small flex-grow-1" th:text="${repo.description != null ? repo.description : 'Нет описания'}">
-                Краткое описание репозитория.
+              <p class="card-text text-body-secondary small flex-grow-1" th:text="${repo.description != null ? repo.description : 'Репозиторий исходного кода'}">
+                Описание репозитория.
               </p>
 
               <div class="d-flex justify-content-between align-items-center pt-2 mt-2 border-top small text-body-secondary">
                 <span>
                   <i class="fas fa-circle text-primary me-1" style="font-size: 0.6rem;"></i>
-                  <span th:text="${repo.language != null ? repo.language : 'Docs / Other'}">Java</span>
+                  <span th:text="${repo.language != null ? repo.language : 'Java'}">Java</span>
                 </span>
                 <span>
                   <i class="fas fa-code-branch me-1"></i><span th:text="${repo.forks}">0</span>
@@ -223,30 +261,35 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
       </div>
 
-      <div class="modal-body p-4">
-        <p class="lead text-body-secondary small mb-4" id="archModalSummary"></p>
+      <div class="modal-body px-4 py-4">
+        <p class="text-body-secondary mb-4" id="archModalSummary">Описание архитектуры...</p>
 
-        <!-- Схема архитектуры -->
-        <h6 class="fw-bold mb-2 text-primary"><i class="fas fa-network-wired me-2"></i>Топология и схема взаимодействия</h6>
-        <div class="bg-dark rounded-3 p-3 mb-4 overflow-auto border border-secondary border-opacity-25" style="max-height: 280px;">
-          <pre class="text-light mb-0 font-monospace" style="font-size: 0.75rem; line-height: 1.35;" id="archModalDiagram"></pre>
+        <h6 class="fw-bold text-uppercase small text-body-secondary mb-2">
+          <i class="fas fa-network-wired me-1"></i> Топология и потоки данных
+        </h6>
+        <div class="bg-dark rounded-3 p-3 mb-4 overflow-auto border">
+          <pre class="text-light font-monospace small mb-0" id="archModalDiagram" style="line-height: 1.4; user-select: text;">
+Схема загружается...
+          </pre>
         </div>
 
-        <!-- Ключевые инженерные решения -->
-        <h6 class="fw-bold mb-3 text-primary"><i class="fas fa-microchip me-2"></i>Инженерные аспекты</h6>
+        <h6 class="fw-bold text-uppercase small text-body-secondary mb-3">
+          <i class="fas fa-microchip me-1"></i> Ключевые инженерные решения
+        </h6>
         <div class="row g-3 mb-4" id="archModalHighlights">
-          <!-- Заполняется динамически -->
+          <!-- Заполняется динамически через JS -->
         </div>
 
-        <!-- Стек технологий -->
-        <h6 class="fw-bold mb-2 text-primary"><i class="fas fa-layer-group me-2"></i>Стек технологий</h6>
+        <h6 class="fw-bold text-uppercase small text-body-secondary mb-2">
+          <i class="fas fa-layer-group me-1"></i> Стек компонентов
+        </h6>
         <div class="d-flex flex-wrap gap-2" id="archModalStack">
-          <!-- Заполняется динамически -->
+          <!-- Заполняется динамически через JS -->
         </div>
       </div>
 
       <div class="modal-footer border-top px-4 py-3">
-        <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Закрыть</button>
+        <button type="button" class="btn btn-secondary btn-sm px-4 rounded-pill" data-bs-dismiss="modal">Закрыть</button>
       </div>
     </div>
   </div>

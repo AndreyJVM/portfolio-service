@@ -88,7 +88,7 @@ const PROJECT_ARCH_DATA = {
     title: 'Samba Web UI Manager',
     badge: 'Infrastructure Tool',
     badgeClass: 'bg-info-subtle text-info border border-info-subtle',
-    summary: 'Панель администрирования файловых шар Linux/Samba с управлением учетными записями, ACL-правами и мониторингом подключений.',
+    summary: 'Панель администрирования файловых шар Linux/Samba с управлением учётными записями, ACL-правами и мониторингом подключений.',
     diagram: `
 +--------------------------------------------------------------+
 |                      ADMINISTRATOR GUI                       |
@@ -117,6 +117,48 @@ const PROJECT_ARCH_DATA = {
       { icon: 'fa-box', title: 'Контейнерное развёртывание', text: 'Запуск сервиса в Docker-контейнере с доступом к хостовому сокету Samba.' }
     ],
     stack: ['Linux', 'Samba (SMB/CIFS)', 'Docker', 'Shell / Bash', 'REST / Web UI', 'POSIX ACL']
+  },
+
+  'aqa': {
+    title: 'AQA Test Automation Framework',
+    badge: 'QA & Testing Framework',
+    badgeClass: 'bg-primary-subtle text-primary border border-primary-subtle',
+    summary: 'Модульный фреймворк для сквозной автоматизации тестирования REST API и Web UI с параллельным выполнением, генерацией отчётов Allure и запуском в CI/CD контейнерах.',
+    diagram: `
++--------------------------------------------------------------+
+|                     TEST SUITE EXECUTION                     |
+|          [JUnit 5 Engine]  /  [TestNG DataProvider]          |
+|    - Parallel Execution (Concurrent Thread Pools)            |
+|    - RetryAnalyzer & Flaky Test Management                   |
++------------------------------+-------------------------------+
+                               |
+            +------------------+------------------+
+            |                                     |
+            v                                     v
++-----------------------------+ +------------------------------+
+|       API TESTING LAYER     | |        WEB UI LAYER          |
+|  - REST Assured Client      | |  - Selenide / WebDriver      |
+|  - JSON Schema Validation   | |  - Page Object Model (POM)   |
+|  - DTO Jackson Serializer   | |  - Explicit Smart Waits      |
+|  - Custom Auth Filters      | |  - Automatic Screenshotting  |
++-----------------------------+ +------------------------------+
+            |                                     |
+            +------------------+------------------+
+                               |
+                               v
++--------------------------------------------------------------+
+|                   REPORTING & CI/CD PIPELINE                 |
+|  - Allure Report (Lifecycle Listeners, Step Attachments)     |
+|  - Docker Containerized Runners (GitLab CI / GitHub Actions) |
++--------------------------------------------------------------+
+    `.trim(),
+    highlights: [
+      { icon: 'fa-arrows-split-up-and-left', title: 'Параллелизация тестов', text: 'Многопоточный запуск тестовых наборов сокращает время выполнения регресса в разы.' },
+      { icon: 'fa-chart-pie', title: 'Allure Report интеграция', text: 'Автоматическое прикрепление шагов, логов HTTP-запросов и скриншотов при падениях.' },
+      { icon: 'fa-code', title: 'Паттерны проектирования', text: 'Page Object, Builder, Factory и строгая валидация контрактов API по JSON Schema.' },
+      { icon: 'fa-docker', title: 'CI/CD Готовность', text: 'Изолированный запуск в Docker headless режиме с интеграцией в GitHub Actions и GitLab CI.' }
+    ],
+    stack: ['Java 17/21', 'REST Assured', 'Selenide', 'JUnit 5', 'TestNG', 'Allure Report', 'Docker']
   }
 };
 
