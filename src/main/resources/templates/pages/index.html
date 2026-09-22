@@ -20,26 +20,23 @@
   <!-- ========================================== -->
   <!-- HERO SECTION                               -->
   <!-- ========================================== -->
-  <div class="row align-items-center py-4 mb-5 reveal">
+  <div class="row align-items-center py-5 mb-5 reveal">
     <div class="col-lg-8 text-center text-lg-start">
       <div class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill mb-3">
-        <i class="fas fa-code me-1"></i> Java &bull; QA Automation &bull; DevOps
+        <i class="fas fa-code-branch me-1"></i> Java &bull; QA Automation &bull; DevOps
       </div>
       <h1 class="display-4 fw-bold mb-3">
         Привет, я <span class="text-gradient">Андрей Воробьев</span>
       </h1>
-      <p class="lead text-body-secondary mb-4">
-        Специализируюсь на разработке надёжных backend-сервисов на Java / Spring Boot, комплексной автоматизации тестирования Web & API и построении отказоустойчивых CI/CD пайплайнов.
+      <p class="lead text-body-secondary mb-4" style="max-width: 650px;">
+        Инженер с сильной экспертизой в разработке backend-сервисов, проектировании процессов автоматизации тестирования и построении отказоустойчивых CI/CD систем.
       </p>
       <div class="d-flex flex-wrap gap-3 justify-content-center justify-content-lg-start">
         <a th:href="@{/projects}" class="btn btn-primary btn-lg px-4 shadow-sm rounded-pill">
-          <i class="fas fa-laptop-code me-2"></i>Смотреть проекты
+          <i class="fas fa-cubes me-2"></i>Мои проекты
         </a>
-        <a th:href="@{/education}" class="btn btn-outline-secondary btn-lg px-4 rounded-pill">
-          <i class="fas fa-graduation-cap me-2"></i>Образование
-        </a>
-        <a href="https://t.me/AndreyAQA" target="_blank" rel="noopener noreferrer" class="btn btn-outline-primary btn-lg px-4 rounded-pill">
-          <i class="fab fa-telegram me-2"></i>Telegram
+        <a href="https://t.me/AndreyAQA" target="_blank" rel="noopener noreferrer" class="btn btn-outline-secondary btn-lg px-4 rounded-pill">
+          <i class="fab fa-telegram me-2"></i>Связаться
         </a>
       </div>
     </div>
@@ -51,134 +48,105 @@
   </div>
 
   <!-- ========================================== -->
-  <!-- СЕКЦИЯ: ОБО МНЕ И ТЕХНОЛОГИЧЕСКИЙ СТЕК     -->
+  <!-- FOCUS BANNER (ЧТО Я ДЕЛАЮ СЕЙЧАС)           -->
   <!-- ========================================== -->
-  <div class="row g-4 align-items-stretch mb-5">
-    <div class="col-lg-7 reveal reveal-delay-100">
-      <div class="card p-4 h-100 shadow-sm border-0 rounded-4 d-flex flex-column justify-content-between">
-        <div>
-          <div class="d-flex align-items-center gap-2 mb-3">
-            <div class="p-2 rounded-3 bg-primary-subtle text-primary">
-              <i class="fas fa-user-gear fa-lg"></i>
-            </div>
-            <h3 class="fw-bold mb-0">Инженерный профиль</h3>
-          </div>
-          <p class="text-body-secondary lead mb-4">
-            Объединяю опыт разработки backend-логики и автоматизации обеспечения качества для создания надёжных, масштабируемых и протестированных программных продуктов.
-          </p>
+  <div class="focus-banner rounded-4 p-4 p-md-5 mb-5 reveal reveal-delay-100">
+    <div class="row align-items-center">
+      <div class="col-md-8">
+        <h4 class="fw-bold mb-2">Актуальный технологический фокус</h4>
+        <p class="text-body-secondary mb-0">
+          Прямо сейчас я углубляюсь в архитектуру микросервисов, профилирование производительности JVM и оркестрацию современных облачных инфраструктур. Любая функциональность должна быть покрыта тестами и разворачиваться в один клик.
+        </p>
+      </div>
+      <div class="col-md-4 text-start text-md-end mt-4 mt-md-0">
+        <a th:href="@{/education}" class="btn btn-outline-primary rounded-pill">
+          <i class="fas fa-certificate me-2"></i>Смотреть сертификаты
+        </a>
+      </div>
+    </div>
+  </div>
 
-          <div class="p-3 bg-body-tertiary rounded-3 mb-3 border">
-            <h6 class="fw-bold mb-2 text-primary"><i class="fas fa-bullseye me-2"></i>Мой подход к разработке</h6>
-            <p class="text-body-secondary small mb-0">
-              Любая функциональность строится на понятной кодовой базе, сопровождается стабильными автотестами и разворачивается в изолированных контейнерах без ручных манипуляций.
-            </p>
-          </div>
+  <!-- ========================================== -->
+  <!-- КОМПЕТЕНЦИИ И ТЕХНОЛОГИИ (BENTO GRID)       -->
+  <!-- ========================================== -->
+  <div class="d-flex align-items-center gap-2 mb-4 reveal">
+    <div class="p-2 rounded-3 bg-primary-subtle text-primary">
+      <i class="fas fa-layer-group fa-lg"></i>
+    </div>
+    <h3 class="fw-bold mb-0">Ключевые компетенции</h3>
+  </div>
 
-          <div class="p-3 bg-body-tertiary rounded-3 border">
-            <h6 class="fw-bold mb-2 text-primary"><i class="fas fa-compass me-2"></i>Текущий фокус</h6>
-            <p class="text-body-secondary small mb-0">
-              Архитектура распределённых микросервисов, оптимизация и профилирование JVM, автоматизация инфраструктуры и мониторинг доступности систем.
-            </p>
-          </div>
+  <div class="row g-4 mb-5">
+    <!-- Backend Card -->
+    <div class="col-lg-4 col-md-6 reveal reveal-delay-100">
+      <div class="bento-card h-100 p-4 rounded-4">
+        <div class="feature-icon-wrapper bg-primary-subtle text-primary mb-3">
+          <i class="fas fa-server fa-2x"></i>
         </div>
-
-        <div class="pt-4 mt-4 border-top d-flex flex-wrap gap-2">
-          <a th:href="@{/projects}" class="btn btn-primary px-4 rounded-pill">
-            <i class="fas fa-layer-group me-2"></i>Мои проекты
-          </a>
-          <a th:href="@{/education}" class="btn btn-outline-secondary px-4 rounded-pill">
-            <i class="fas fa-certificate me-2"></i>Дипломы и сертификаты
-          </a>
+        <h5 class="fw-bold mb-2">Backend Development</h5>
+        <p class="text-body-secondary small mb-4 flex-grow-1">
+          Разработка высокопроизводительных REST API, проектирование реляционных баз данных с помощью миграций, чистая архитектура и строгая валидация контрактов.
+        </p>
+        <div>
+          <span class="text-uppercase text-body-secondary small fw-bold d-block mb-2">Используемый стек:</span>
+          <div class="d-flex flex-wrap gap-2">
+            <span class="badge tech-badge"><i class="fab fa-java text-primary me-1"></i>Java 21</span>
+            <span class="badge tech-badge"><i class="fas fa-leaf text-success me-1"></i>Spring Boot 3</span>
+            <span class="badge tech-badge"><i class="fas fa-database text-info me-1"></i>PostgreSQL</span>
+            <span class="badge tech-badge">Hibernate</span>
+            <span class="badge tech-badge">JUnit 5</span>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="col-lg-5 reveal reveal-delay-200">
-      <div class="card p-4 h-100 shadow-sm border-0 rounded-4">
-        <div class="d-flex align-items-center gap-2 mb-4">
-          <div class="p-2 rounded-3 bg-primary-subtle text-primary">
-            <i class="fas fa-layer-group fa-lg"></i>
-          </div>
-          <h4 class="fw-bold mb-0">Технологический стек</h4>
+    <!-- QA Automation Card -->
+    <div class="col-lg-4 col-md-6 reveal reveal-delay-200">
+      <div class="bento-card h-100 p-4 rounded-4">
+        <div class="feature-icon-wrapper bg-primary-subtle text-primary mb-3">
+          <i class="fas fa-vial-circle-check fa-2x"></i>
         </div>
-
-        <div class="mb-4">
-          <span class="text-uppercase text-body-secondary small fw-bold d-block mb-2">Backend & Базы данных</span>
-          <div class="d-flex flex-wrap gap-2">
-            <span class="badge tech-badge">Java 17 / 21</span>
-            <span class="badge tech-badge">Spring Boot 3</span>
-            <span class="badge tech-badge">Spring Data JPA</span>
-            <span class="badge tech-badge">PostgreSQL</span>
-            <span class="badge tech-badge">Hibernate</span>
-            <span class="badge tech-badge">H2</span>
-          </div>
-        </div>
-
-        <div class="mb-4">
-          <span class="text-uppercase text-body-secondary small fw-bold d-block mb-2">DevOps & Системное администрирование</span>
-          <div class="d-flex flex-wrap gap-2">
-            <span class="badge tech-badge">Docker & Compose</span>
-            <span class="badge tech-badge">GitHub Actions</span>
-            <span class="badge tech-badge">Nginx SSL</span>
-            <span class="badge tech-badge">Linux (Ubuntu/Debian)</span>
-            <span class="badge tech-badge">Bash</span>
-            <span class="badge tech-badge">CI/CD</span>
-          </div>
-        </div>
-
+        <h5 class="fw-bold mb-2">QA Automation</h5>
+        <p class="text-body-secondary small mb-4 flex-grow-1">
+          Создание масштабируемых многопоточных E2E и API фреймворков. Автоматическая генерация Allure-отчётов и интеграция плагинов статического анализа кода в пайплайны.
+        </p>
         <div>
-          <span class="text-uppercase text-body-secondary small fw-bold d-block mb-2">Автоматизация & Тестирование</span>
+          <span class="text-uppercase text-body-secondary small fw-bold d-block mb-2">Используемый стек:</span>
           <div class="d-flex flex-wrap gap-2">
-            <span class="badge tech-badge">REST Assured</span>
-            <span class="badge tech-badge">JUnit 5</span>
+            <span class="badge tech-badge"><i class="fas fa-code text-secondary me-1"></i>REST Assured</span>
+            <span class="badge tech-badge"><i class="fas fa-globe text-primary me-1"></i>Selenide</span>
             <span class="badge tech-badge">TestNG</span>
-            <span class="badge tech-badge">Selenide / Selenium</span>
             <span class="badge tech-badge">Allure</span>
             <span class="badge tech-badge">Postman</span>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- ========================================== -->
-  <!-- КЛЮЧЕВЫЕ НАПРАВЛЕНИЯ ЭКСПЕРТИЗЫ             -->
-  <!-- ========================================== -->
-  <div class="row g-4">
-    <div class="col-md-4 reveal reveal-delay-100">
-      <div class="card h-100 p-4 shadow-sm border-0 rounded-4">
+    <!-- DevOps Card -->
+    <div class="col-lg-4 col-md-12 reveal reveal-delay-300">
+      <div class="bento-card h-100 p-4 rounded-4">
         <div class="feature-icon-wrapper bg-primary-subtle text-primary mb-3">
-          <i class="fab fa-java fa-2x"></i>
-        </div>
-        <h5 class="fw-bold mb-2">Backend Development</h5>
-        <p class="text-body-secondary small mb-0">
-          Разработка REST API на Spring Boot, проектирование схем реляционных баз данных, чистая архитектура, обработка исключений и валидация данных.
-        </p>
-      </div>
-    </div>
-    <div class="col-md-4 reveal reveal-delay-200">
-      <div class="card h-100 p-4 shadow-sm border-0 rounded-4">
-        <div class="feature-icon-wrapper bg-primary-subtle text-primary mb-3">
-          <i class="fas fa-vial-circle-check fa-2x"></i>
-        </div>
-        <h5 class="fw-bold mb-2">QA Automation</h5>
-        <p class="text-body-secondary small mb-0">
-          Разработка масштабируемых тестовых фреймворков для интеграционного и E2E тестирования API и Web, валидация JSON-схем, отчёты в Allure.
-        </p>
-      </div>
-    </div>
-    <div class="col-md-4 reveal reveal-delay-300">
-      <div class="card h-100 p-4 shadow-sm border-0 rounded-4">
-        <div class="feature-icon-wrapper bg-primary-subtle text-primary mb-3">
-          <i class="fas fa-server fa-2x"></i>
+          <i class="fas fa-network-wired fa-2x"></i>
         </div>
         <h5 class="fw-bold mb-2">DevOps & CI/CD</h5>
-        <p class="text-body-secondary small mb-0">
-          Контейнеризация сервисов в Docker, оркестрация через Compose, автоматический деплой через GitHub Actions на VDS и проксирование через Nginx SSL.
+        <p class="text-body-secondary small mb-4 flex-grow-1">
+          Контейнеризация распределённых приложений, настройка оркестрации, автоматический Zero-downtime деплой на VDS и управление безопасностью через Nginx.
         </p>
+        <div>
+          <span class="text-uppercase text-body-secondary small fw-bold d-block mb-2">Используемый стек:</span>
+          <div class="d-flex flex-wrap gap-2">
+            <span class="badge tech-badge"><i class="fab fa-docker text-primary me-1"></i>Docker</span>
+            <span class="badge tech-badge"><i class="fab fa-github text-body me-1"></i>GitHub Actions</span>
+            <span class="badge tech-badge"><i class="fab fa-linux text-warning me-1"></i>Linux</span>
+            <span class="badge tech-badge">Nginx</span>
+            <span class="badge tech-badge">Bash</span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
+
 </main>
 
 <div th:replace="~{fragments/footer :: footer}"></div>

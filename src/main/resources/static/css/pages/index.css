@@ -18,6 +18,33 @@
   object-fit: cover;
 }
 
+/* Баннер фокуса (Featured) */
+.focus-banner {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), var(--bg-color));
+  border: 1px solid var(--card-border);
+  border-left: 4px solid var(--accent-color);
+  transition: all 0.3s ease;
+}
+
+.focus-banner:hover {
+  box-shadow: 0 10px 25px rgba(99, 102, 241, 0.1);
+}
+
+/* Карточки компетенций (Bento Grid) */
+.bento-card {
+  transition: all 0.3s ease;
+  border: 1px solid var(--card-border);
+  background-color: var(--card-bg);
+  display: flex;
+  flex-direction: column;
+}
+
+.bento-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--accent-color);
+  box-shadow: 0 12px 30px rgba(99, 102, 241, 0.15);
+}
+
 .feature-icon-wrapper {
   width: 48px;
   height: 48px;
