@@ -25,6 +25,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -65,11 +67,27 @@ class QrRestControllerTest {
         .andExpect(jsonPath("$.qrCode").value(fakeBase64));
   }
 
-  @Test
-  @DisplayName("POST /api/qr - ошибка валидации (невалидный URL) возвращает 400 Bad Request")
-  void shouldReturnBadRequestWhenUrlIsInvalid() throws Exception {
+  @ParameterizedTest
+  @ValueSource(strings = {"invalid-url", "ftp://example.com", "javascript:alert(1)", "   "})
+  @DisplayName("POST /api/qr - ошибка валидации (невалидный формат URL) возвращает 400 Bad Request")
+  void shouldReturnBadRequestWhenUrlIsInvalid(String invalidUrl) throws Exception {
     QrRequest request = new QrRequest();
-    request.setUrl("invalid-url");
+    request.setUrl(invalidUrl);
+
+    mockMvc
+        .perform(
+            post("/api/qr")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.error").exists());
+  }
+
+  @Test
+  @DisplayName("POST /api/qr - пустой или null URL возвращает 400 Bad Request")
+  void shouldReturnBadRequestWhenUrlIsNull() throws Exception {
+    QrRequest request = new QrRequest();
+    request.setUrl(null);
 
     mockMvc
         .perform(

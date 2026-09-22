@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.vorobevaqa.dto.GitHubRepoDto;
 import ru.vorobevaqa.service.GitHubService;
 
 @WebMvcTest(PageController.class)
@@ -38,12 +39,11 @@ class PageControllerTest {
   @MockBean private GitHubService gitHubService;
 
   @Test
-  @DisplayName("GET /about - should return education view")
-  void shouldReturnAboutPage() throws Exception {
-    mockMvc
-        .perform(get("/about"))
+  @DisplayName("GET / - should return index view")
+  void shouldReturnIndexPage() throws Exception {
+    mockMvc.perform(get("/"))
         .andExpect(status().isOk())
-        .andExpect(view().name("pages/education"));
+        .andExpect(view().name("pages/index"));
   }
 
   @Test
@@ -56,20 +56,54 @@ class PageControllerTest {
   }
 
   @Test
-  @DisplayName("GET / - should return index view")
-  void shouldReturnIndexPage() throws Exception {
-    mockMvc.perform(get("/")).andExpect(status().isOk()).andExpect(view().name("pages/index"));
+  @DisplayName("GET /about - should return education view as legacy alias")
+  void shouldReturnAboutPage() throws Exception {
+    mockMvc
+        .perform(get("/about"))
+        .andExpect(status().isOk())
+        .andExpect(view().name("pages/education"));
   }
 
   @Test
   @DisplayName("GET /projects - should return projects view with repos in model")
   void shouldReturnProjectsPageWithRepos() throws Exception {
+    GitHubRepoDto mockRepo = new GitHubRepoDto();
+    mockRepo.setName("portfolio-service");
+    mockRepo.setDescription("Portfolio service with Spring Boot");
+    mockRepo.setHtmlUrl("https://github.com/AndreyJVM/portfolio-service");
+    mockRepo.setLanguage("Java");
+    mockRepo.setStars(5);
+    mockRepo.setForks(2);
+
+    when(gitHubService.getRecentRepositories()).thenReturn(List.of(mockRepo));
+
+    mockMvc
+        .perform(get("/projects"))
+        .andExpect(status().isOk())
+        .andExpect(view().name("pages/projects"))
+        .andExpect(model().attributeExists("repos"))
+        .andExpect(model().attribute("repos", List.of(mockRepo)));
+  }
+
+  @Test
+  @DisplayName("GET /projects - should return projects view when repos list is empty")
+  void shouldReturnProjectsPageWithEmptyRepos() throws Exception {
     when(gitHubService.getRecentRepositories()).thenReturn(List.of());
 
     mockMvc
         .perform(get("/projects"))
         .andExpect(status().isOk())
         .andExpect(view().name("pages/projects"))
-        .andExpect(model().attributeExists("repos"));
+        .andExpect(model().attributeExists("repos"))
+        .andExpect(model().attribute("repos", List.of()));
+  }
+
+  @Test
+  @DisplayName("GET /qr - should return qr playground view")
+  void shouldReturnQrPage() throws Exception {
+    mockMvc
+        .perform(get("/qr"))
+        .andExpect(status().isOk())
+        .andExpect(view().name("pages/qr"));
   }
 }
