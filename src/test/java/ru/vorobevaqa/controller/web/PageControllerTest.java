@@ -38,21 +38,21 @@ class PageControllerTest {
   @MockBean private GitHubService gitHubService;
 
   @Test
-  @DisplayName("GET /about - should return about view")
+  @DisplayName("GET /about - should return education view")
   void shouldReturnAboutPage() throws Exception {
     mockMvc
         .perform(get("/about"))
         .andExpect(status().isOk())
-        .andExpect(view().name("pages/about"));
+        .andExpect(view().name("pages/education"));
   }
 
   @Test
-  @DisplayName("GET /education - should return about view")
+  @DisplayName("GET /education - should return education view")
   void shouldReturnEducationPage() throws Exception {
     mockMvc
         .perform(get("/education"))
         .andExpect(status().isOk())
-        .andExpect(view().name("pages/about"));
+        .andExpect(view().name("pages/education"));
   }
 
   @Test

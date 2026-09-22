@@ -44,7 +44,7 @@
                     <a class="nav-link" th:classappend="${active == 'home'} ? 'active' : ''" th:href="@{/}">Главная</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" th:classappend="${active == 'about'} ? 'active' : ''" th:href="@{/about}">Обо мне</a>
+                    <a class="nav-link" th:classappend="${active == 'education' or active == 'about'} ? 'active' : ''" th:href="@{/education}">Образование</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" th:classappend="${active == 'projects'} ? 'active' : ''" th:href="@{/projects}">Проекты</a>

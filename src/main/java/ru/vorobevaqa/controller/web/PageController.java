@@ -35,8 +35,8 @@ public class PageController {
   }
 
   @GetMapping({"/about", "/education"})
-  public String about() {
-    return "pages/about";
+  public String education() {
+    return "pages/education";
   }
 
   @GetMapping("/projects")
