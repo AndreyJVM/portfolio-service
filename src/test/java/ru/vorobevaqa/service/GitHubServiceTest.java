@@ -35,7 +35,9 @@ class GitHubServiceTest {
   }
 
   @Test
-  @DisplayName("getRecentRepositories - при сбое или отсутствии сети возвращает пустой список без исключений")
+  @DisplayName(
+      "getRecentRepositories - при сбое или отсутствии сети возвращает пустой список без"
+          + " исключений")
   void shouldReturnEmptyListOnNetworkOrApiFailure() {
     List<GitHubRepoDto> repos = gitHubService.getRecentRepositories();
     assertNotNull(repos);

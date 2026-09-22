@@ -41,9 +41,7 @@ class PageControllerTest {
   @Test
   @DisplayName("GET / - should return index view")
   void shouldReturnIndexPage() throws Exception {
-    mockMvc.perform(get("/"))
-        .andExpect(status().isOk())
-        .andExpect(view().name("pages/index"));
+    mockMvc.perform(get("/")).andExpect(status().isOk()).andExpect(view().name("pages/index"));
   }
 
   @Test
@@ -101,9 +99,6 @@ class PageControllerTest {
   @Test
   @DisplayName("GET /qr - should return qr playground view")
   void shouldReturnQrPage() throws Exception {
-    mockMvc
-        .perform(get("/qr"))
-        .andExpect(status().isOk())
-        .andExpect(view().name("pages/qr"));
+    mockMvc.perform(get("/qr")).andExpect(status().isOk()).andExpect(view().name("pages/qr"));
   }
 }
