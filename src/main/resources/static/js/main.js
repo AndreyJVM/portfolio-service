@@ -2,6 +2,7 @@
  * Основной скрипт глобальной инициализации приложения:
  * - Инициализация компонентов Bootstrap (тултипы, поповеры)
  * - Опрос Spring Boot Actuator (/actuator/health) для живого статуса системы
+ * - Глобальная система Toast-уведомлений (window.showToast)
  */
 document.addEventListener('DOMContentLoaded', () => {
   // 1. Инициализация тултипов Bootstrap
@@ -10,11 +11,41 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 2. Инициализация поповеров Bootstrap
   const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
-  const popovers = popoverTriggerList.map((el) => new bootstrap.Popover(el, { html: true }));
+  popoverTriggerList.forEach((el) => new bootstrap.Popover(el, { html: true }));
 
   // 3. Мониторинг доступности и здоровья системы (Actuator Health)
   initSystemHealthBadge();
 });
+
+/**
+ * Глобальная функция показа стильных всплывающих Toast-уведомлений Bootstrap.
+ * @param {string} message - Текст уведомления
+ * @param {'success'|'danger'|'error'|'warning'|'info'} [type='success'] - Тип уведомления
+ */
+window.showToast = function (message, type = 'success') {
+  const toastEl = document.getElementById('liveToast');
+  const toastMsg = document.getElementById('toastMessage');
+  const toastIcon = document.getElementById('toastIcon');
+
+  if (!toastEl || !toastMsg || !toastIcon) {
+    return;
+  }
+
+  toastMsg.textContent = message;
+
+  if (type === 'danger' || type === 'error') {
+    toastIcon.className = 'fas fa-circle-exclamation text-danger me-2 fa-lg';
+  } else if (type === 'warning') {
+    toastIcon.className = 'fas fa-triangle-exclamation text-warning me-2 fa-lg';
+  } else if (type === 'info') {
+    toastIcon.className = 'fas fa-circle-info text-primary me-2 fa-lg';
+  } else {
+    toastIcon.className = 'fas fa-circle-check text-success me-2 fa-lg';
+  }
+
+  const toast = bootstrap.Toast.getOrCreateInstance(toastEl, { delay: 3500 });
+  toast.show();
+};
 
 function initSystemHealthBadge() {
   const badge = document.getElementById('systemStatusBadge');

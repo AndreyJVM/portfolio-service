@@ -162,6 +162,9 @@ document.addEventListener('DOMContentLoaded', () => {
       if (text) {
         navigator.clipboard.writeText(text).then(() => {
           terminalCopyBtn.innerHTML = '<i class="fas fa-check text-success"></i>';
+          if (window.showToast) {
+            window.showToast('Вывод терминала скопирован в буфер обмена', 'success');
+          }
           setTimeout(() => {
             terminalCopyBtn.innerHTML = '<i class="fas fa-copy"></i>';
           }, 1500);
