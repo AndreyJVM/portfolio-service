@@ -18,7 +18,7 @@
 
 <main class="container py-5">
   <!-- Заголовок страницы -->
-  <div class="text-center mb-5">
+  <div class="text-center mb-5 reveal">
     <h1 class="fw-bold mb-2">Профессиональный профиль</h1>
     <p class="text-body-secondary mx-auto" style="max-width: 650px;">
       Инженерная экспертиза, подтверждённая квалификация и практический опыт разработки и тестирования.
@@ -26,7 +26,7 @@
   </div>
 
   <!-- Навигация по 3 вкладкам -->
-  <ul class="nav nav-pills justify-content-center gap-2 mb-5" id="aboutTabs" role="tablist">
+  <ul class="nav nav-pills justify-content-center gap-2 mb-5 reveal" id="aboutTabs" role="tablist">
     <li class="nav-item" role="presentation">
       <button class="nav-link active px-4 py-2 rounded-pill fw-semibold"
               id="profile-tab"
@@ -71,7 +71,7 @@
     <!-- ВКЛАДКА 1: Обо мне -->
     <div class="tab-pane fade show active" id="profile-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
       <div class="row g-4 align-items-stretch">
-        <div class="col-lg-7">
+        <div class="col-lg-7 reveal">
           <div class="card p-4 h-100 shadow-sm border-0 rounded-4 d-flex flex-column justify-content-between">
             <div>
               <h3 class="fw-bold mb-3">Привет! Я Андрей</h3>
@@ -105,7 +105,7 @@
           </div>
         </div>
 
-        <div class="col-lg-5">
+        <div class="col-lg-5 reveal reveal-delay-100">
           <div class="card p-4 h-100 shadow-sm border-0 rounded-4">
             <h4 class="fw-bold mb-4"><i class="fas fa-layer-group text-primary me-2"></i>Технологический стек</h4>
 
@@ -243,10 +243,10 @@
       <h5 class="fw-bold mb-3"><i class="fas fa-university text-primary me-2"></i>Высшее образование и переподготовка</h5>
       <div class="row g-4 mb-5">
         <!-- Диплом бакалавра (Синергия) -->
-        <div class="col-md-6">
+        <div class="col-md-6 reveal">
           <div class="card h-100 shadow-sm rounded-4 overflow-hidden border-0">
             <div class="ratio ratio-16x9 bg-dark-subtle cursor-pointer" onclick="openCertModal('/images/certificates/diploma-synergy.jpg', 'Диплом бакалавра: Информационные системы и технологии')">
-              <img th:src="@{/images/certificates/diploma-synergy.jpg}" alt="Диплом бакалавра Синергия" class="img-fluid object-fit-cover">
+              <img th:src="@{/images/certificates/diploma-synergy.jpg}" alt="Диплом бакалавра Синергия" class="img-fluid object-fit-cover" loading="lazy">
             </div>
             <div class="card-body p-4 d-flex flex-column">
               <div class="d-flex justify-content-between align-items-center mb-2">
@@ -266,10 +266,10 @@
         </div>
 
         <!-- Диплом Яндекс Практикум -->
-        <div class="col-md-6">
+        <div class="col-md-6 reveal reveal-delay-100">
           <div class="card h-100 shadow-sm rounded-4 overflow-hidden border-0">
             <div class="ratio ratio-16x9 bg-dark-subtle cursor-pointer" onclick="openCertModal('/images/certificates/diploma-yandex-practicum.jpg', 'Диплом о профессиональной переподготовке: Автоматизатор тестирования на Java')">
-              <img th:src="@{/images/certificates/diploma-yandex-practicum.jpg}" alt="Диплом Яндекс Практикум AQA Java" class="img-fluid object-fit-cover">
+              <img th:src="@{/images/certificates/diploma-yandex-practicum.jpg}" alt="Диплом Яндекс Практикум AQA Java" class="img-fluid object-fit-cover" loading="lazy">
             </div>
             <div class="card-body p-4 d-flex flex-column">
               <div class="d-flex justify-content-between align-items-center mb-2">
@@ -293,10 +293,10 @@
       <h5 class="fw-bold mb-3"><i class="fas fa-certificate text-primary me-2"></i>Сертификации и курсы</h5>
       <div class="row g-4">
         <!-- Слёрм: Linux -->
-        <div class="col-md-6 col-lg-4">
+        <div class="col-md-6 col-lg-4 reveal">
           <div class="card h-100 shadow-sm rounded-4 overflow-hidden border-0">
             <div class="ratio ratio-16x9 bg-dark-subtle cursor-pointer" onclick="openCertModal('/images/certificates/slurm-linux.jpg', 'Слёрм: Администрирование Linux, Сертификация')">
-              <img th:src="@{/images/certificates/slurm-linux.jpg}" alt="Сертификат Слёрм Администрирование Linux" class="img-fluid object-fit-cover">
+              <img th:src="@{/images/certificates/slurm-linux.jpg}" alt="Сертификат Слёрм Администрирование Linux" class="img-fluid object-fit-cover" loading="lazy">
             </div>
             <div class="card-body p-3 d-flex flex-column">
               <div class="d-flex justify-content-between align-items-center mb-2">
@@ -313,10 +313,10 @@
         </div>
 
         <!-- PurpleSchool: Docker + Ansible Swarm -->
-        <div class="col-md-6 col-lg-4">
+        <div class="col-md-6 col-lg-4 reveal reveal-delay-100">
           <div class="card h-100 shadow-sm rounded-4 overflow-hidden border-0">
             <div class="ratio ratio-16x9 bg-dark-subtle cursor-pointer" onclick="openCertModal('/images/certificates/stepik-docker-ansible.jpg', 'PurpleSchool: Docker + Ansible — с нуля, деплой и Swarm')">
-              <img th:src="@{/images/certificates/stepik-docker-ansible.jpg}" alt="Сертификат Docker Ansible" class="img-fluid object-fit-cover">
+              <img th:src="@{/images/certificates/stepik-docker-ansible.jpg}" alt="Сертификат Docker Ansible" class="img-fluid object-fit-cover" loading="lazy">
             </div>
             <div class="card-body p-3 d-flex flex-column">
               <div class="d-flex justify-content-between align-items-center mb-2">
@@ -333,10 +333,10 @@
         </div>
 
         <!-- Stepik: Gitlab в работе -->
-        <div class="col-md-6 col-lg-4">
+        <div class="col-md-6 col-lg-4 reveal reveal-delay-200">
           <div class="card h-100 shadow-sm rounded-4 overflow-hidden border-0">
             <div class="ratio ratio-16x9 bg-dark-subtle cursor-pointer" onclick="openCertModal('/images/certificates/stepik-gitlab.jpg', 'Gitlab в работе (100% результат)')">
-              <img th:src="@{/images/certificates/stepik-gitlab.jpg}" alt="Сертификат Gitlab в работе" class="img-fluid object-fit-cover">
+              <img th:src="@{/images/certificates/stepik-gitlab.jpg}" alt="Сертификат Gitlab в работе" class="img-fluid object-fit-cover" loading="lazy">
             </div>
             <div class="card-body p-3 d-flex flex-column">
               <div class="d-flex justify-content-between align-items-center mb-2">
@@ -353,10 +353,10 @@
         </div>
 
         <!-- Merion Academy: Автотесты на Java -->
-        <div class="col-md-6 col-lg-4">
+        <div class="col-md-6 col-lg-4 reveal">
           <div class="card h-100 shadow-sm rounded-4 overflow-hidden border-0">
             <div class="ratio ratio-16x9 bg-dark-subtle cursor-pointer" onclick="openCertModal('/images/certificates/merion-java-aqa.jpg', 'Merion Academy: Автотесты на Java')">
-              <img th:src="@{/images/certificates/merion-java-aqa.jpg}" alt="Сертификат Merion Academy Java AQA" class="img-fluid object-fit-cover">
+              <img th:src="@{/images/certificates/merion-java-aqa.jpg}" alt="Сертификат Merion Academy Java AQA" class="img-fluid object-fit-cover" loading="lazy">
             </div>
             <div class="card-body p-3 d-flex flex-column">
               <div class="d-flex justify-content-between align-items-center mb-2">
@@ -373,10 +373,10 @@
         </div>
 
         <!-- Stepik: Автотесты для API с Java & REST Assured -->
-        <div class="col-md-6 col-lg-4">
+        <div class="col-md-6 col-lg-4 reveal reveal-delay-100">
           <div class="card h-100 shadow-sm rounded-4 overflow-hidden border-0">
             <div class="ratio ratio-16x9 bg-dark-subtle cursor-pointer" onclick="openCertModal('/images/certificates/stepik-api-rest-assured.jpg', 'Автотесты для API с Java, REST Assured и TestNG')">
-              <img th:src="@{/images/certificates/stepik-api-rest-assured.jpg}" alt="Сертификат REST Assured API" class="img-fluid object-fit-cover">
+              <img th:src="@{/images/certificates/stepik-api-rest-assured.jpg}" alt="Сертификат REST Assured API" class="img-fluid object-fit-cover" loading="lazy">
             </div>
             <div class="card-body p-3 d-flex flex-column">
               <div class="d-flex justify-content-between align-items-center mb-2">
@@ -393,10 +393,10 @@
         </div>
 
         <!-- Stepik: Автоматизация тестирования с Java и TestNG -->
-        <div class="col-md-6 col-lg-4">
+        <div class="col-md-6 col-lg-4 reveal reveal-delay-200">
           <div class="card h-100 shadow-sm rounded-4 overflow-hidden border-0">
             <div class="ratio ratio-16x9 bg-dark-subtle cursor-pointer" onclick="openCertModal('/images/certificates/stepik-java-testng.jpg', 'Автоматизация тестирования с Java и TestNG')">
-              <img th:src="@{/images/certificates/stepik-java-testng.jpg}" alt="Сертификат Java TestNG" class="img-fluid object-fit-cover">
+              <img th:src="@{/images/certificates/stepik-java-testng.jpg}" alt="Сертификат Java TestNG" class="img-fluid object-fit-cover" loading="lazy">
             </div>
             <div class="card-body p-3 d-flex flex-column">
               <div class="d-flex justify-content-between align-items-center mb-2">
@@ -416,16 +416,36 @@
   </div>
 </main>
 
-<!-- Модальное окно полноразмерного просмотра -->
+<!-- Модальное окно полноразмерного просмотра с галереей -->
 <div class="modal fade" id="certModal" tabindex="-1" aria-labelledby="certModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl modal-dialog-centered">
-    <div class="modal-content bg-body border-0 shadow-lg">
-      <div class="modal-header border-0 pb-0">
-        <h5 class="modal-title fw-bold" id="certModalLabel">Просмотр документа</h5>
+    <div class="modal-content bg-body border-0 shadow-lg rounded-4 overflow-hidden position-relative">
+      <div class="modal-header border-0 pb-0 px-4 pt-3 d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center gap-2">
+          <h5 class="modal-title fw-bold mb-0" id="certModalLabel">Просмотр документа</h5>
+          <span class="badge bg-primary-subtle text-primary border" id="certModalCounter">1 / 8</span>
+        </div>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
       </div>
-      <div class="modal-body text-center p-3">
+
+      <div class="modal-body text-center p-3 position-relative d-flex align-items-center justify-content-center" style="min-height: 400px;">
+        <!-- Кнопки навигации галереи -->
+        <button type="button" class="btn rounded-circle cert-nav-btn cert-nav-btn--prev" id="certPrevBtn" title="Предыдущий (стрелка влево)">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+
         <img id="certModalImage" src="" alt="Сертификат" class="img-fluid rounded-3 shadow">
+
+        <button type="button" class="btn rounded-circle cert-nav-btn cert-nav-btn--next" id="certNextBtn" title="Следующий (стрелка вправо)">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+
+      <div class="modal-footer border-0 pt-0 px-4 pb-3 d-flex justify-content-between">
+        <a id="certModalDownload" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-outline-primary btn-sm rounded-pill">
+          <i class="fas fa-arrow-up-right-from-square me-1"></i> Открыть оригинал
+        </a>
+        <button type="button" class="btn btn-secondary btn-sm rounded-pill px-3" data-bs-dismiss="modal">Закрыть</button>
       </div>
     </div>
   </div>
