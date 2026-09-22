@@ -28,44 +28,31 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.vorobevaqa.dto.SkillDto;
 import ru.vorobevaqa.service.GitHubService;
-import ru.vorobevaqa.service.SkillService;
 
 @WebMvcTest(PageController.class)
 class PageControllerTest {
 
   @Autowired private MockMvc mockMvc;
 
-  @MockBean private SkillService skillService;
-
   @MockBean private GitHubService gitHubService;
 
   @Test
-  @DisplayName("GET /about - should return about view with skills and categories in model")
-  void shouldReturnAboutPageWithSkills() throws Exception {
-    // Подготавливаем тестовые данные
-    SkillDto mockSkill =
-        SkillDto.builder()
-            .id(1L)
-            .name("CI/CD пайплайны")
-            .categoryKey("DEVOPS_CICD")
-            .categoryDisplayName("DevOps & CI/CD")
-            .levelTitle("Уверенный")
-            .levelPercentage(75)
-            .badgeColor("bg-primary")
-            .description("Тестовое описание")
-            .tools(List.of("Docker", "GitHub Actions"))
-            .build();
-
-    when(skillService.getAllSkills()).thenReturn(List.of(mockSkill));
-
+  @DisplayName("GET /about - should return about view")
+  void shouldReturnAboutPage() throws Exception {
     mockMvc
         .perform(get("/about"))
         .andExpect(status().isOk())
-        .andExpect(view().name("pages/about"))
-        .andExpect(model().attributeExists("skills"))
-        .andExpect(model().attributeExists("categories"));
+        .andExpect(view().name("pages/about"));
+  }
+
+  @Test
+  @DisplayName("GET /education - should return about view")
+  void shouldReturnEducationPage() throws Exception {
+    mockMvc
+        .perform(get("/education"))
+        .andExpect(status().isOk())
+        .andExpect(view().name("pages/about"));
   }
 
   @Test

@@ -21,15 +21,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import ru.vorobevaqa.entity.SkillCategory;
 import ru.vorobevaqa.service.GitHubService;
-import ru.vorobevaqa.service.SkillService;
 
 @Controller
 @RequiredArgsConstructor
 public class PageController {
 
-  private final SkillService skillService;
   private final GitHubService gitHubService;
 
   @GetMapping("/")
@@ -37,10 +34,8 @@ public class PageController {
     return "pages/index";
   }
 
-  @GetMapping("/about")
-  public String about(Model model) {
-    model.addAttribute("skills", skillService.getAllSkills());
-    model.addAttribute("categories", SkillCategory.values());
+  @GetMapping({"/about", "/education"})
+  public String about() {
     return "pages/about";
   }
 
