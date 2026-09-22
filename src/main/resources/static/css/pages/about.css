@@ -49,3 +49,45 @@
   object-fit: contain;
   transition: opacity 0.2s ease-in-out;
 }
+
+/* ===== ПЕЧАТЬ И ЭКСПОРТ РЕЗЮМЕ В PDF ===== */
+@media print {
+  /* Разворачиваем все три вкладки в один последовательный документ */
+  #aboutTabs {
+    display: none !important;
+  }
+
+  .tab-content > .tab-pane {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    margin-bottom: 2.5rem !important;
+  }
+
+  .print-resume-header {
+    display: block !important;
+    margin-bottom: 1.5rem !important;
+    padding-bottom: 1rem !important;
+    border-bottom: 2px solid #374151 !important;
+  }
+
+  .skill-card-item {
+    display: block !important;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* Скрыть заглушку поиска в печати */
+  #noSkillsFound {
+    display: none !important;
+  }
+
+  .ratio {
+    height: 180px !important;
+  }
+
+  .ratio img {
+    max-height: 180px !important;
+    object-fit: contain !important;
+  }
+}

@@ -171,3 +171,44 @@ footer {
   transform: translateY(-3px);
   box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4) !important;
 }
+
+/* ===== STYLES FOR PRINTING & PDF EXPORT ===== */
+@media print {
+  nav, footer, .navbar, .theme-toggle, .back-to-top, .scroll-progress-bar,
+  .btn, .input-group, #skillsSearchInput, #skillsCounter, #skillFilters,
+  .toast-container, .modal, #certModal, .terminal-actions, .terminal-quick-bar {
+    display: none !important;
+  }
+
+  body {
+    background: #ffffff !important;
+    color: #111827 !important;
+    padding-top: 0 !important;
+    font-size: 10.5pt !important;
+    line-height: 1.4 !important;
+  }
+
+  main {
+    padding-top: 0 !important;
+  }
+
+  .card {
+    background: #ffffff !important;
+    border: 1px solid #d1d5db !important;
+    color: #111827 !important;
+    box-shadow: none !important;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  a {
+    color: #111827 !important;
+    text-decoration: none !important;
+  }
+}
