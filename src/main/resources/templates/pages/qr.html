@@ -1,85 +1,87 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ru">
-<head th:replace="~{fragments/head :: head(
-    title='QR-генератор',
-    description='Бесплатный онлайн генератор QR-кодов. Создание и мгновенное скачивание QR-кода.',
-    keywords='QR code, генератор QR, создать QR код онлайн, Java QR',
-    ogTitle='Генератор QR-кодов | Андрей Воробьев',
-    ogDescription='Генерация QR-кода онлайн с возможностью скачивания.',
-    ogImage='/images/og-qr.png',
-    ogUrl='https://vorobevaqa.ru/qr'
-)}">
+<head>
+  <th:block th:replace="~{fragments/head :: head(
+      title='QR-генератор',
+      description='Бесплатный онлайн генератор QR-кодов. Создание и мгновенное скачивание QR-кода.',
+      keywords='QR code, генератор QR, создать QR код онлайн, Java QR',
+      ogTitle='Генератор QR-кодов | Андрей Воробьев',
+      ogDescription='Генерация QR-кода онлайн с возможностью скачивания.',
+      ogImage='/images/og-qr.png',
+      ogUrl='https://vorobevaqa.ru/qr'
+  )}"></th:block>
+  <link rel="stylesheet" th:href="@{/css/pages/qr.css}">
 </head>
 <body>
 
 <div th:replace="~{fragments/navbar :: navbar('qr')}"></div>
 
 <main class="container py-5">
-    <div class="text-center mb-5 mx-auto" style="max-width: 560px;">
-        <h1 class="fw-bold mb-2">Генератор QR-кодов</h1>
-        <p class="text-muted">Введите ссылку — код появится в рамке справа и будет готов к скачиванию</p>
+  <div class="text-center mb-5 mx-auto" style="max-width: 560px;">
+    <h1 class="fw-bold mb-2">Генератор QR-кодов</h1>
+    <p class="text-muted">Введите ссылку — код появится в рамке справа и будет готов к скачиванию</p>
+  </div>
+
+  <div class="qr-tool mx-auto">
+    <!-- Панель ввода -->
+    <div class="qr-tool__panel">
+      <form id="qr-form" onsubmit="event.preventDefault(); generateQR();">
+        <label for="url-input" class="form-label fw-semibold">Ссылка для кодирования</label>
+        <div class="input-group mb-2">
+          <span class="input-group-text"><i class="fas fa-link"></i></span>
+          <input type="text" id="url-input" class="form-control"
+                 placeholder="https://example.com" value="https://vorobevaqa.ru" required>
+        </div>
+        <div class="form-text text-muted mb-3">Ссылка должна начинаться с http:// или https://</div>
+        <button type="submit" class="btn btn-primary w-100" id="generate-btn">
+          <i class="fas fa-bolt me-1"></i> Создать QR-код
+        </button>
+      </form>
+
+      <div id="error" class="qr-error" style="display: none;">
+        <i class="fas fa-circle-exclamation"></i>
+        <span id="error-text"></span>
+      </div>
     </div>
 
-    <div class="qr-tool mx-auto">
-        <!-- Панель ввода -->
-        <div class="qr-tool__panel">
-            <form id="qr-form" onsubmit="event.preventDefault(); generateQR();">
-                <label for="url-input" class="form-label fw-semibold">Ссылка для кодирования</label>
-                <div class="input-group mb-2">
-                    <span class="input-group-text"><i class="fas fa-link"></i></span>
-                    <input type="text" id="url-input" class="form-control"
-                           placeholder="https://example.com" value="https://vorobevaqa.ru" required>
-                </div>
-                <div class="form-text text-muted mb-3">Ссылка должна начинаться с http:// или https://</div>
-                <button type="submit" class="btn btn-primary w-100" id="generate-btn">
-                    <i class="fas fa-bolt me-1"></i> Создать QR-код
-                </button>
-            </form>
+    <!-- Постоянная рамка результата -->
+    <div class="qr-tool__frame">
+      <span class="qr-frame-corner qr-frame-corner--tl"></span>
+      <span class="qr-frame-corner qr-frame-corner--tr"></span>
+      <span class="qr-frame-corner qr-frame-corner--bl"></span>
 
-            <div id="error" class="qr-error" style="display: none;">
-                <i class="fas fa-circle-exclamation"></i>
-                <span id="error-text"></span>
-            </div>
+      <div id="qr-placeholder" class="qr-frame-state">
+        <i class="fas fa-qrcode fa-2x text-muted opacity-50"></i>
+        <p class="text-muted small mb-0">Здесь появится QR-код</p>
+      </div>
+
+      <div id="spinner" class="qr-frame-state" style="display: none;">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Генерация...</span>
         </div>
+        <p class="text-muted small mb-0">Формируем QR-код...</p>
+      </div>
 
-        <!-- Постоянная рамка результата -->
-        <div class="qr-tool__frame">
-            <span class="qr-frame-corner qr-frame-corner--tl"></span>
-            <span class="qr-frame-corner qr-frame-corner--tr"></span>
-            <span class="qr-frame-corner qr-frame-corner--bl"></span>
-
-            <div id="qr-placeholder" class="qr-frame-state">
-                <i class="fas fa-qrcode fa-2x text-muted opacity-50"></i>
-                <p class="text-muted small mb-0">Здесь появится QR-код</p>
-            </div>
-
-            <div id="spinner" class="qr-frame-state" style="display: none;">
-                <div class="spinner-border text-primary" role="status">
-                    <span class="visually-hidden">Генерация...</span>
-                </div>
-                <p class="text-muted small mb-0">Формируем QR-код...</p>
-            </div>
-
-            <div id="result" class="qr-frame-state" style="display: none;">
-                <img id="qr-code-image" src="" alt="QR Code" class="img-fluid rounded">
-                <span id="qr-url-text" class="text-muted small text-break"></span>
-                <div class="d-flex justify-content-center gap-2 mt-2">
-                    <button onclick="downloadQR()" class="btn btn-success btn-sm">
-                        <i class="fas fa-download me-1"></i> PNG
-                    </button>
-                    <button onclick="shareQR()" class="btn btn-outline-secondary btn-sm">
-                        <i class="fas fa-share-nodes me-1"></i> Поделиться
-                    </button>
-                </div>
-            </div>
+      <div id="result" class="qr-frame-state" style="display: none;">
+        <img id="qr-code-image" src="" alt="QR Code" class="img-fluid rounded">
+        <span id="qr-url-text" class="text-muted small text-break"></span>
+        <div class="d-flex justify-content-center gap-2 mt-2">
+          <button onclick="downloadQR()" class="btn btn-success btn-sm">
+            <i class="fas fa-download me-1"></i> PNG
+          </button>
+          <button onclick="shareQR()" class="btn btn-outline-secondary btn-sm">
+            <i class="fas fa-share-nodes me-1"></i> Поделиться
+          </button>
         </div>
+      </div>
     </div>
+  </div>
 </main>
 
 <div th:replace="~{fragments/footer :: footer}"></div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<!-- Логика генератора лежит строго в отдельном JS-файле -->
-<script th:src="@{/js/qr.js}"></script>
+<div th:replace="~{fragments/scripts :: scripts}"></div>
+<!-- Логика генератора изолирована в pages/qr.js -->
+<script th:src="@{/js/pages/qr.js}" defer></script>
 </body>
 </html>

@@ -2,11 +2,11 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="ru">
 <head>
   <th:block th:replace="~{fragments/head :: head(
-      title='Что-то пошло не так',
-      description='Ошибка при обработке запроса',
-      keywords='error',
-      ogTitle='Ошибка',
-      ogDescription='Что-то пошло не так',
+      title='Страница не найдена (404)',
+      description='Запрашиваемая страница не существует.',
+      keywords='404, not found',
+      ogTitle='404 | Страница не найдена',
+      ogDescription='Запрашиваемая страница не найдена.',
       ogImage='',
       ogUrl=''
   )}"></th:block>
@@ -20,18 +20,18 @@
     <div class="col-md-6">
       <div class="p-4">
         <div class="display-1 fw-bold text-primary mb-3">
-          <i class="fas fa-triangle-exclamation"></i>
+          <i class="fas fa-compass-drafting"></i>
         </div>
-        <h1 class="h2 fw-bold mb-3">Что-то пошло не так</h1>
+        <h1 class="h2 fw-bold mb-3">404 — Страница не найдена</h1>
         <p class="text-muted mb-4">
-          Мы не смогли найти запрашиваемую страницу или возникла непредвиденная ошибка. Уже разбираемся!
+          Запрашиваемая страница перемещена или никогда не существовала.
         </p>
         <div class="d-flex justify-content-center gap-3">
           <a th:href="@{/}" class="btn btn-primary px-4">
             <i class="fas fa-house me-2"></i>На главную
           </a>
-          <a th:href="@{/qr}" class="btn btn-outline-secondary px-4">
-            <i class="fas fa-qrcode me-2"></i>QR-генератор
+          <a th:href="@{/projects}" class="btn btn-outline-secondary px-4">
+            <i class="fas fa-laptop-code me-2"></i>Проекты
           </a>
         </div>
       </div>

@@ -1,0 +1,13 @@
+/* ===== СТИЛИ СТРАНИЦЫ ГЛАВНАЯ (INDEX) ===== */
+.avatar-placeholder {
+  width: 140px;
+  height: 140px;
+  background: var(--card-bg);
+  border: 2px solid var(--card-border);
+}
+
+.avatar-image {
+  width: 130px;
+  height: 130px;
+  object-fit: cover;
+}

@@ -9,42 +9,44 @@
     ogImage,
     ogUrl
 )">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="icon" type="image/svg+xml" th:href="@{/favicon.svg}">
+  <link rel="icon" type="image/svg+xml" th:href="@{/favicon.svg}">
+  <link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}">
 
-    <script th:src="@{/js/theme.js}"></script>
+  <!-- critical inline script / early theme execution to prevent flash of unstyled content (FOUC) -->
+  <script th:src="@{/js/theme-toggle.js}"></script>
 
-    <title th:text="${title} + ' | Андрей Воробьев'">Андрей Воробьев | Java & DevOps</title>
+  <title th:text="${title} + ' | Андрей Воробьев'">Андрей Воробьев | Java & DevOps</title>
 
-    <meta name="description" th:content="${description}">
-    <meta name="keywords" th:content="${keywords}">
-    <meta name="robots" content="index, follow">
-    <meta name="author" content="Андрей Воробьев">
-    <link rel="canonical" th:href="${ogUrl}">
+  <meta name="description" th:content="${description}">
+  <meta name="keywords" th:content="${keywords}">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="Андрей Воробьев">
+  <link rel="canonical" th:href="${ogUrl}">
 
-    <meta property="og:title" th:content="${ogTitle}">
-    <meta property="og:description" th:content="${ogDescription}">
-    <meta property="og:image" th:content="${ogImage}">
-    <meta property="og:url" th:content="${ogUrl}">
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Андрей Воробьев">
+  <meta property="og:title" th:content="${ogTitle}">
+  <meta property="og:description" th:content="${ogDescription}">
+  <meta property="og:image" th:content="${ogImage}">
+  <meta property="og:url" th:content="${ogUrl}">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Андрей Воробьев">
 
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" th:content="${ogTitle}">
-    <meta name="twitter:description" th:content="${ogDescription}">
-    <meta name="twitter:image" th:content="${ogImage}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" th:content="${ogTitle}">
+  <meta name="twitter:description" th:content="${ogDescription}">
+  <meta name="twitter:image" th:content="${ogImage}">
 
-    <link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}">
+  <!-- Vendor CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-    <link rel="stylesheet" th:href="@{/css/base.css}">
-    <link rel="stylesheet" th:href="@{/css/navbar.css}">
-    <link rel="stylesheet" th:href="@{/css/qr.css}">
+  <!-- Core Theme & Layout Styles -->
+  <link rel="stylesheet" th:href="@{/css/themes.css}">
+  <link rel="stylesheet" th:href="@{/css/main.css}">
+  <link rel="stylesheet" th:href="@{/css/navbar.css}">
 </head>
 <body>
 </body>

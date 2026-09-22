@@ -1,196 +1,197 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ru">
-<head th:replace="~{fragments/head :: head(
-    title='Проекты',
-    description='Проекты Андрея Воробьева: портфолио, Samba Web UI, генератор QR-кодов, CI/CD автоматизация.',
-    keywords='проекты, Samba Web UI, Java, Spring Boot, GitHub, QR code generator, Docker',
-    ogTitle='Проекты | Андрей Воробьев',
-    ogDescription='Список проектов с открытым исходным кодом и рабочими сервисами.',
-    ogImage='/images/og-projects.png',
-    ogUrl='https://vorobevaqa.ru/projects'
-)}">
+<head>
+  <th:block th:replace="~{fragments/head :: head(
+      title='Проекты',
+      description='Проекты Андрея Воробьева: портфолио, Samba Web UI, генератор QR-кодов, CI/CD автоматизация.',
+      keywords='проекты, Samba Web UI, Java, Spring Boot, GitHub, QR code generator, Docker',
+      ogTitle='Проекты | Андрей Воробьев',
+      ogDescription='Список проектов с открытым исходным кодом и рабочими сервисами.',
+      ogImage='/images/og-projects.png',
+      ogUrl='https://vorobevaqa.ru/projects'
+  )}"></th:block>
 </head>
 <body>
 
 <div th:replace="~{fragments/navbar :: navbar('projects')}"></div>
 
 <main class="container py-5">
-    <div class="text-center mb-5">
-        <h1 class="fw-bold mb-2">Мои Проекты</h1>
-        <p class="text-muted">Реализованные сервисы, микросервисы и инфраструктурные решения</p>
+  <div class="text-center mb-5">
+    <h1 class="fw-bold mb-2">Мои Проекты</h1>
+    <p class="text-muted">Реализованные сервисы, микросервисы и инфраструктурные решения</p>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-md-6 col-lg-6">
+      <div class="card h-100 shadow-sm d-flex flex-column">
+        <div class="card-body d-flex flex-column">
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <div class="p-2 rounded bg-primary-subtle text-primary">
+              <i class="fas fa-folder-network fa-lg"></i>
+              <i class="fas fa-share-nodes fa-lg"></i>
+            </div>
+            <span class="badge bg-success-subtle text-success border border-success-subtle">Completed</span>
+          </div>
+          <h5 class="card-title fw-bold mb-2">Samba Web UI Manager</h5>
+          <p class="card-text text-muted small flex-grow-1">
+            Веб-интерфейс для администрирования и мониторинга Samba-шар на Linux-сервере. Управление пользователями, правами доступа к сетевым папкам и конфигурацией через удобный GUI без необходимости постоянной ручной правки smb.conf.
+          </p>
+          <div class="mb-3 d-flex flex-wrap gap-1">
+            <span class="badge tech-pill">Linux</span>
+            <span class="badge tech-pill">Samba</span>
+            <span class="badge tech-pill">Docker</span>
+            <span class="badge tech-pill">Shell / Bash</span>
+          </div>
+          <div class="pt-2 border-top d-flex gap-2">
+            <a href="https://github.com/AndreyAQA" target="_blank" rel="noopener noreferrer" class="btn btn-outline-secondary btn-sm w-100">
+              <i class="fab fa-github me-1"></i> Репозиторий
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="row g-4">
-        <div class="col-md-6 col-lg-6">
-            <div class="card h-100 shadow-sm d-flex flex-column">
-                <div class="card-body d-flex flex-column">
-                    <div class="d-flex align-items-center justify-content-between mb-3">
-                        <div class="p-2 rounded bg-primary-subtle text-primary">
-                            <i class="fas fa-folder-network fa-lg"></i>
-                            <i class="fas fa-share-nodes fa-lg"></i>
-                        </div>
-                        <span class="badge bg-success-subtle text-success border border-success-subtle">Completed</span>
-                    </div>
-                    <h5 class="card-title fw-bold mb-2">Samba Web UI Manager</h5>
-                    <p class="card-text text-muted small flex-grow-1">
-                        Веб-интерфейс для администрирования и мониторинга Samba-шар на Linux-сервере. Управление пользователями, правами доступа к сетевым папкам и конфигурацией через удобный GUI без необходимости постоянной ручной правки smb.conf.
-                    </p>
-                    <div class="mb-3 d-flex flex-wrap gap-1">
-                        <span class="badge tech-pill">Linux</span>
-                        <span class="badge tech-pill">Samba</span>
-                        <span class="badge tech-pill">Docker</span>
-                        <span class="badge tech-pill">Shell / Bash</span>
-                    </div>
-                    <div class="pt-2 border-top d-flex gap-2">
-                        <a href="https://github.com/AndreyAQA" target="_blank" rel="noopener noreferrer" class="btn btn-outline-secondary btn-sm w-100">
-                            <i class="fab fa-github me-1"></i> Репозиторий
-                        </a>
-                    </div>
-                </div>
+    <div class="col-md-6 col-lg-6">
+      <div class="card h-100 shadow-sm d-flex flex-column">
+        <div class="card-body d-flex flex-column">
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <div class="p-2 rounded bg-primary-subtle text-primary">
+              <i class="fas fa-qrcode fa-lg"></i>
             </div>
+            <span class="badge bg-success-subtle text-success border border-success-subtle">Online</span>
+          </div>
+          <h5 class="card-title fw-bold mb-2">QR Code Generator Service</h5>
+          <p class="card-text text-muted small flex-grow-1">
+            Микросервис на Spring Boot для генерации и отдачи QR-кодов по REST API. Поддерживает динамическое изменение разрешений, буферизацию изображений и скачивание в PNG.
+          </p>
+          <div class="mb-3 d-flex flex-wrap gap-1">
+            <span class="badge tech-pill">Java</span>
+            <span class="badge tech-pill">ZXing</span>
+            <span class="badge tech-pill">Spring Web</span>
+            <span class="badge tech-pill">REST API</span>
+          </div>
+          <div class="pt-2 border-top d-flex gap-2">
+            <a th:href="@{/qr}" class="btn btn-primary btn-sm w-100">
+              <i class="fas fa-play me-1"></i> Попробовать
+            </a>
+          </div>
         </div>
-
-        <div class="col-md-6 col-lg-6">
-            <div class="card h-100 shadow-sm d-flex flex-column">
-                <div class="card-body d-flex flex-column">
-                    <div class="d-flex align-items-center justify-content-between mb-3">
-                        <div class="p-2 rounded bg-primary-subtle text-primary">
-                            <i class="fas fa-qrcode fa-lg"></i>
-                        </div>
-                        <span class="badge bg-success-subtle text-success border border-success-subtle">Online</span>
-                    </div>
-                    <h5 class="card-title fw-bold mb-2">QR Code Generator Service</h5>
-                    <p class="card-text text-muted small flex-grow-1">
-                        Микросервис на Spring Boot для генерации и отдачи QR-кодов по REST API. Поддерживает динамическое изменение разрешений, буферизацию изображений и скачивание в PNG.
-                    </p>
-                    <div class="mb-3 d-flex flex-wrap gap-1">
-                        <span class="badge tech-pill">Java</span>
-                        <span class="badge tech-pill">ZXing</span>
-                        <span class="badge tech-pill">Spring Web</span>
-                        <span class="badge tech-pill">REST API</span>
-                    </div>
-                    <div class="pt-2 border-top d-flex gap-2">
-                        <a th:href="@{/qr}" class="btn btn-primary btn-sm w-100">
-                            <i class="fas fa-play me-1"></i> Попробовать
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-6 col-lg-6">
-            <div class="card h-100 shadow-sm d-flex flex-column">
-                <div class="card-body d-flex flex-column">
-                    <div class="d-flex align-items-center justify-content-between mb-3">
-                        <div class="p-2 rounded bg-primary-subtle text-primary">
-                            <i class="fas fa-globe fa-lg"></i>
-                        </div>
-                        <span class="badge bg-success-subtle text-success border border-success-subtle">Online</span>
-                    </div>
-                    <h5 class="card-title fw-bold mb-2">Portfolio & Production Stack</h5>
-                    <p class="card-text text-muted small flex-grow-1">
-                        Сайт-визитка с полностью автоматизированным CI/CD пайплайном: тесты, многоэтапная сборка Docker-образов, деплой на удалённый VDS через GitHub Actions и проксирование через Nginx с Let's Encrypt SSL.
-                    </p>
-                    <div class="mb-3 d-flex flex-wrap gap-1">
-                        <span class="badge tech-pill">Spring Boot 3</span>
-                        <span class="badge tech-pill">Docker Compose</span>
-                        <span class="badge tech-pill">Nginx SSL</span>
-                        <span class="badge tech-pill">GitHub Actions</span>
-                    </div>
-                    <div class="pt-2 border-top d-flex gap-2">
-                        <a href="https://github.com/AndreyJVM" target="_blank" rel="noopener noreferrer" class="btn btn-outline-secondary btn-sm w-100">
-                            <i class="fab fa-github me-1"></i> Репозиторий
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-6 col-lg-6">
-            <div class="card h-100 shadow-sm d-flex flex-column border-dashed">
-                <div class="card-body d-flex flex-column">
-                    <div class="d-flex align-items-center justify-content-between mb-3">
-                        <div class="p-2 rounded bg-secondary-subtle text-secondary">
-                            <i class="fas fa-newspaper fa-lg"></i>
-                        </div>
-                        <span class="badge bg-warning-subtle text-warning border border-warning-subtle">В разработке</span>
-                    </div>
-                    <h5 class="card-title fw-bold mb-2">Tech Blog & Articles</h5>
-                    <p class="card-text text-muted small flex-grow-1">
-                        Платформа для публикации инженерных заметок по автоматизации тестирования, настройке Linux-серверов и паттернам проектирования микросервисов.
-                    </p>
-                    <div class="mb-3 d-flex flex-wrap gap-1">
-                        <span class="badge tech-pill">PostgreSQL</span>
-                        <span class="badge tech-pill">Spring Data JPA</span>
-                        <span class="badge tech-pill">Markdown</span>
-                    </div>
-                    <div class="pt-2 border-top d-flex gap-2">
-                        <button class="btn btn-outline-secondary btn-sm w-100" disabled>
-                            В процессе разработки
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
-    <!-- ========================================== -->
-    <!-- СЕКЦИЯ: Активность на GitHub               -->
-    <!-- ========================================== -->
-    <section class="py-5 bg-body-tertiary" id="github-activity" th:if="${repos != null and !repos.isEmpty()}">
-        <div class="container">
-            <div class="d-flex flex-wrap justify-content-between align-items-end mb-4">
-                <div>
-                <span class="badge bg-dark-subtle text-body border px-3 py-2 rounded-pill fw-semibold mb-2">
-                    <i class="fab fa-github me-1"></i>Open Source & Code
+
+    <div class="col-md-6 col-lg-6">
+      <div class="card h-100 shadow-sm d-flex flex-column">
+        <div class="card-body d-flex flex-column">
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <div class="p-2 rounded bg-primary-subtle text-primary">
+              <i class="fas fa-globe fa-lg"></i>
+            </div>
+            <span class="badge bg-success-subtle text-success border border-success-subtle">Online</span>
+          </div>
+          <h5 class="card-title fw-bold mb-2">Portfolio & Production Stack</h5>
+          <p class="card-text text-muted small flex-grow-1">
+            Сайт-визитка с полностью автоматизированным CI/CD пайплайном: тесты, многоэтапная сборка Docker-образов, деплой на удалённый VDS через GitHub Actions и проксирование через Nginx с Let's Encrypt SSL.
+          </p>
+          <div class="mb-3 d-flex flex-wrap gap-1">
+            <span class="badge tech-pill">Spring Boot 3</span>
+            <span class="badge tech-pill">Docker Compose</span>
+            <span class="badge tech-pill">Nginx SSL</span>
+            <span class="badge tech-pill">GitHub Actions</span>
+          </div>
+          <div class="pt-2 border-top d-flex gap-2">
+            <a href="https://github.com/AndreyJVM" target="_blank" rel="noopener noreferrer" class="btn btn-outline-secondary btn-sm w-100">
+              <i class="fab fa-github me-1"></i> Репозиторий
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-lg-6">
+      <div class="card h-100 shadow-sm d-flex flex-column border-dashed">
+        <div class="card-body d-flex flex-column">
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <div class="p-2 rounded bg-secondary-subtle text-secondary">
+              <i class="fas fa-newspaper fa-lg"></i>
+            </div>
+            <span class="badge bg-warning-subtle text-warning border border-warning-subtle">В разработке</span>
+          </div>
+          <h5 class="card-title fw-bold mb-2">Tech Blog & Articles</h5>
+          <p class="card-text text-muted small flex-grow-1">
+            Платформа для публикации инженерных заметок по автоматизации тестирования, настройке Linux-серверов и паттернам проектирования микросервисов.
+          </p>
+          <div class="mb-3 d-flex flex-wrap gap-1">
+            <span class="badge tech-pill">PostgreSQL</span>
+            <span class="badge tech-pill">Spring Data JPA</span>
+            <span class="badge tech-pill">Markdown</span>
+          </div>
+          <div class="pt-2 border-top d-flex gap-2">
+            <button class="btn btn-outline-secondary btn-sm w-100" disabled>
+              В процессе разработки
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- ========================================== -->
+  <!-- СЕКЦИЯ: Активность на GitHub               -->
+  <!-- ========================================== -->
+  <section class="py-5 bg-body-tertiary" id="github-activity" th:if="${repos != null and !repos.isEmpty()}">
+    <div class="container">
+      <div class="d-flex flex-wrap justify-content-between align-items-end mb-4">
+        <div>
+          <span class="badge bg-dark-subtle text-body border px-3 py-2 rounded-pill fw-semibold mb-2">
+            <i class="fab fa-github me-1"></i>Open Source & Code
+          </span>
+          <h2 class="fw-bold mb-0">Последняя активность на GitHub</h2>
+        </div>
+        <a th:href="'https://github.com/' + ${@environment.getProperty('github.username', 'AndreyJVM')}"
+           target="_blank"
+           rel="noopener noreferrer"
+           class="btn btn-outline-secondary btn-sm rounded-pill px-3 mt-3 mt-sm-0">
+          Все репозитории <i class="fas fa-external-link-alt ms-1"></i>
+        </a>
+      </div>
+
+      <div class="row g-4">
+        <div th:each="repo : ${repos}" class="col-md-6 col-lg-4">
+          <div class="card h-100 shadow-sm rounded-4 p-3">
+            <div class="card-body d-flex flex-column">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <h5 class="card-title fw-bold mb-0">
+                  <a th:href="${repo.htmlUrl}" target="_blank" rel="noopener noreferrer" class="text-decoration-none text-reset stretched-link">
+                    <i class="fas fa-book-bookmark text-primary me-2"></i><span th:text="${repo.name}">Repo Name</span>
+                  </a>
+                </h5>
+                <span class="badge bg-body-secondary text-body-secondary border small">
+                  <i class="fas fa-star text-warning me-1"></i><span th:text="${repo.stars}">0</span>
                 </span>
-                    <h2 class="fw-bold mb-0">Последняя активность на GitHub</h2>
-                </div>
-                <a th:href="'https://github.com/' + ${@environment.getProperty('github.username', 'AndreyJVM')}"
-                   target="_blank"
-                   rel="noopener noreferrer"
-                   class="btn btn-outline-secondary btn-sm rounded-pill px-3 mt-3 mt-sm-0">
-                    Все репозитории <i class="fas fa-external-link-alt ms-1"></i>
-                </a>
+              </div>
+
+              <p class="card-text text-body-secondary small flex-grow-1" th:text="${repo.description != null ? repo.description : 'Нет описания'}">
+                Краткое описание репозитория.
+              </p>
+
+              <div class="d-flex justify-content-between align-items-center pt-2 mt-2 border-top small text-body-secondary">
+                <span>
+                  <i class="fas fa-circle text-primary me-1" style="font-size: 0.6rem;"></i>
+                  <span th:text="${repo.language != null ? repo.language : 'Docs / Other'}">Java</span>
+                </span>
+                <span>
+                  <i class="fas fa-code-branch me-1"></i><span th:text="${repo.forks}">0</span>
+                </span>
+              </div>
             </div>
-
-            <div class="row g-4">
-                <div th:each="repo : ${repos}" class="col-md-6 col-lg-4">
-                    <div class="card h-100 shadow-sm rounded-4 p-3">
-                        <div class="card-body d-flex flex-column">
-                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                <h5 class="card-title fw-bold mb-0">
-                                    <a th:href="${repo.htmlUrl}" target="_blank" rel="noopener noreferrer" class="text-decoration-none text-reset stretched-link">
-                                        <i class="fas fa-book-bookmark text-primary me-2"></i><span th:text="${repo.name}">Repo Name</span>
-                                    </a>
-                                </h5>
-                                <span class="badge bg-body-secondary text-body-secondary border small">
-                                <i class="fas fa-star text-warning me-1"></i><span th:text="${repo.stars}">0</span>
-                            </span>
-                            </div>
-
-                            <p class="card-text text-body-secondary small flex-grow-1" th:text="${repo.description != null ? repo.description : 'Нет описания'}">
-                                Краткое описание репозитория.
-                            </p>
-
-                            <div class="d-flex justify-content-between align-items-center pt-2 mt-2 border-top small text-body-secondary">
-                            <span>
-                                <i class="fas fa-circle text-primary me-1" style="font-size: 0.6rem;"></i>
-                                <span th:text="${repo.language != null ? repo.language : 'Docs / Other'}">Java</span>
-                            </span>
-                                <span>
-                                <i class="fas fa-code-branch me-1"></i><span th:text="${repo.forks}">0</span>
-                            </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+          </div>
         </div>
-    </section>
+      </div>
+    </div>
+  </section>
 </main>
 
 <div th:replace="~{fragments/footer :: footer}"></div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<div th:replace="~{fragments/scripts :: scripts}"></div>
 </body>
 </html>

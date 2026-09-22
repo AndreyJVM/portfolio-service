@@ -1,0 +1,38 @@
+/* ===== CSS-ПЕРЕМЕННЫЕ И ТЕМЫ (LIGHT / DARK) ===== */
+:root {
+  --bg-color: #f8fafc;
+  --text-color: #0f172a;
+  --text-muted: #64748b;
+  --card-bg: #ffffff;
+  --card-border: #e2e8f0;
+  --navbar-bg: rgba(255, 255, 255, 0.85);
+  --navbar-border: #e2e8f0;
+  --accent-color: #6366f1;
+  --accent-hover: #4f46e5;
+  --accent-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+}
+
+[data-bs-theme="dark"],
+[data-theme="dark"] {
+  --bg-color: #0b0f19;          /* Глубокий благородный фон */
+  --text-color: #f8fafc;        /* Белый читаемый основной текст */
+  --text-muted: #94a3b8;        /* Контрастный приглушённый текст */
+  --card-bg: #131c2e;          /* Контрастный фон карточек */
+  --card-border: #1e293b;       /* Четкие границы блоков */
+  --navbar-bg: rgba(11, 15, 25, 0.85);
+  --navbar-border: #1e293b;
+  --accent-color: #818cf8;
+  --accent-hover: #a5b4fc;
+  --accent-gradient: linear-gradient(135deg, #818cf8 0%, #a855f7 100%);
+}
+
+/* Принудительное наследование правильного цвета текста в тёмной теме */
+[data-bs-theme="dark"] .text-muted,
+[data-theme="dark"] .text-muted {
+  color: var(--text-muted) !important;
+}
+
+[data-bs-theme="dark"] .text-body-secondary,
+[data-theme="dark"] .text-body-secondary {
+  color: var(--text-muted) !important;
+}

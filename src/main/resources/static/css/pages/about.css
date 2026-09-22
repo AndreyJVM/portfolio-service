@@ -1,0 +1,12 @@
+/* ===== СТИЛИ СТРАНИЦЫ ОБО МНЕ (ABOUT) ===== */
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.cursor-pointer img {
+  transition: transform 0.25s ease;
+}
+
+.cursor-pointer:hover img {
+  transform: scale(1.03);
+}
