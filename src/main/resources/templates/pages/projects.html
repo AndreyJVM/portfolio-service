@@ -16,13 +16,13 @@
 <div th:replace="~{fragments/navbar :: navbar('projects')}"></div>
 
 <main class="container py-5">
-  <div class="text-center mb-5">
+  <div class="text-center mb-5 reveal">
     <h1 class="fw-bold mb-2">Мои Проекты</h1>
     <p class="text-muted">Реализованные сервисы, микросервисы и инфраструктурные решения</p>
   </div>
 
   <div class="row g-4">
-    <div class="col-md-6 col-lg-6">
+    <div class="col-md-6 col-lg-6 reveal reveal-delay-100">
       <div class="card h-100 shadow-sm d-flex flex-column">
         <div class="card-body d-flex flex-column">
           <div class="d-flex align-items-center justify-content-between mb-3">
@@ -51,7 +51,7 @@
       </div>
     </div>
 
-    <div class="col-md-6 col-lg-6">
+    <div class="col-md-6 col-lg-6 reveal reveal-delay-200">
       <div class="card h-100 shadow-sm d-flex flex-column">
         <div class="card-body d-flex flex-column">
           <div class="d-flex align-items-center justify-content-between mb-3">
@@ -79,7 +79,7 @@
       </div>
     </div>
 
-    <div class="col-md-6 col-lg-6">
+    <div class="col-md-6 col-lg-6 reveal reveal-delay-100">
       <div class="card h-100 shadow-sm d-flex flex-column">
         <div class="card-body d-flex flex-column">
           <div class="d-flex align-items-center justify-content-between mb-3">
@@ -107,7 +107,7 @@
       </div>
     </div>
 
-    <div class="col-md-6 col-lg-6">
+    <div class="col-md-6 col-lg-6 reveal reveal-delay-200">
       <div class="card h-100 shadow-sm d-flex flex-column border-dashed">
         <div class="card-body d-flex flex-column">
           <div class="d-flex align-items-center justify-content-between mb-3">
@@ -134,10 +134,11 @@
       </div>
     </div>
   </div>
+
   <!-- ========================================== -->
   <!-- СЕКЦИЯ: Активность на GitHub               -->
   <!-- ========================================== -->
-  <section class="py-5 bg-body-tertiary" id="github-activity" th:if="${repos != null and !repos.isEmpty()}">
+  <section class="py-5 bg-body-tertiary reveal mt-5 rounded-4 px-3" id="github-activity" th:if="${repos != null and !repos.isEmpty()}">
     <div class="container">
       <div class="d-flex flex-wrap justify-content-between align-items-end mb-4">
         <div>
@@ -155,7 +156,7 @@
       </div>
 
       <div class="row g-4">
-        <div th:each="repo : ${repos}" class="col-md-6 col-lg-4">
+        <div th:each="repo : ${repos}" class="col-md-6 col-lg-4 reveal">
           <div class="card h-100 shadow-sm rounded-4 p-3">
             <div class="card-body d-flex flex-column">
               <div class="d-flex justify-content-between align-items-start mb-2">

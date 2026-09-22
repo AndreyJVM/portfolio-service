@@ -3,6 +3,7 @@
  * - Инициализация компонентов Bootstrap (тултипы, поповеры)
  * - Опрос Spring Boot Actuator (/actuator/health) для живого статуса системы
  * - Глобальная система Toast-уведомлений (window.showToast)
+ * - Микро-анимации появления элементов при скролле (Scroll Reveal / IntersectionObserver)
  */
 document.addEventListener('DOMContentLoaded', () => {
   // 1. Инициализация тултипов Bootstrap
@@ -15,6 +16,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 3. Мониторинг доступности и здоровья системы (Actuator Health)
   initSystemHealthBadge();
+
+  // 4. Плавное появление контента при прокрутке
+  initScrollReveal();
 });
 
 /**
@@ -58,7 +62,7 @@ function initSystemHealthBadge() {
 
   const startTime = performance.now();
 
-  fetch('/actuator/health', { cache: 'no-store' })
+  fetch('/actuator/health', { cache: 'no-store' } || {})
     .then(async (response) => {
       const latency = Math.round(performance.now() - startTime);
       if (!response.ok) {
@@ -130,4 +134,32 @@ function updateBadgePopover(element, content) {
       '.popover-body': content
     });
   }
+}
+
+/**
+ * Инициализирует IntersectionObserver для элементов с классом .reveal.
+ * Элементы плавно всплывают при попадании в зону видимости окна.
+ */
+function initScrollReveal() {
+  const revealElements = document.querySelectorAll('.reveal');
+  if (!revealElements.length) return;
+
+  if (!('IntersectionObserver' in window)) {
+    revealElements.forEach((el) => el.classList.add('revealed'));
+    return;
+  }
+
+  const observer = new IntersectionObserver((entries, obs) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('revealed');
+        obs.unobserve(entry.target);
+      }
+    });
+  }, {
+    threshold: 0.08,
+    rootMargin: '0px 0px -25px 0px'
+  });
+
+  revealElements.forEach((el) => observer.observe(el));
 }
