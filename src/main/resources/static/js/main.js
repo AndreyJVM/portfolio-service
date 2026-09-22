@@ -4,6 +4,7 @@
  * - Опрос Spring Boot Actuator (/actuator/health) для живого статуса системы
  * - Глобальная система Toast-уведомлений (window.showToast)
  * - Микро-анимации появления элементов при скролле (Scroll Reveal / IntersectionObserver)
+ * - Индикатор прогресса чтения страницы и плавающая кнопка "Наверх"
  */
 document.addEventListener('DOMContentLoaded', () => {
   // 1. Инициализация тултипов Bootstrap
@@ -19,6 +20,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 4. Плавное появление контента при прокрутке
   initScrollReveal();
+
+  // 5. Индикатор прогресса чтения и кнопка "Наверх"
+  initScrollControls();
 });
 
 /**
@@ -162,4 +166,55 @@ function initScrollReveal() {
   });
 
   revealElements.forEach((el) => observer.observe(el));
+}
+
+/**
+ * Инициализирует полосу прогресса прокрутки страницы и плавающую кнопку "Наверх".
+ */
+function initScrollControls() {
+  const progressBar = document.getElementById('scrollProgressBar');
+  const backToTopBtn = document.getElementById('backToTopBtn');
+
+  if (!progressBar && !backToTopBtn) return;
+
+  let ticking = false;
+
+  function onScroll() {
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+
+    if (progressBar && docHeight > 0) {
+      const progressPercent = Math.min(100, Math.max(0, (scrollTop / docHeight) * 100));
+      progressBar.style.width = `${progressPercent}%`;
+    }
+
+    if (backToTopBtn) {
+      if (scrollTop > 260) {
+        backToTopBtn.classList.add('show');
+      } else {
+        backToTopBtn.classList.remove('show');
+      }
+    }
+
+    ticking = false;
+  }
+
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      window.requestAnimationFrame(onScroll);
+      ticking = true;
+    }
+  }, { passive: true });
+
+  if (backToTopBtn) {
+    backToTopBtn.addEventListener('click', () => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+  }
+
+  // Первоначальный расчёт при загрузке
+  onScroll();
 }

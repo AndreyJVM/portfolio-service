@@ -2,6 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 <nav th:fragment="navbar(active)" class="navbar navbar-expand-lg fixed-top">
+    <!-- Полоса прогресса прокрутки страницы -->
+    <div id="scrollProgressBar" class="scroll-progress-bar"></div>
+
     <div class="container">
         <a class="navbar-brand d-flex align-items-center" th:href="@{/}">
             <span class="brand-text">AV</span>
