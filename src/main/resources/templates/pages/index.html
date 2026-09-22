@@ -17,7 +17,7 @@
 <div th:replace="~{fragments/navbar :: navbar('home')}"></div>
 
 <main class="container py-5">
-  <div class="row align-items-center py-4 mb-5">
+  <div class="row align-items-center py-4 mb-4">
     <div class="col-lg-8 text-center text-lg-start">
       <div class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill mb-3">
         <i class="fas fa-code me-1"></i> Java &bull; QA Automation &bull; DevOps
@@ -41,6 +41,59 @@
       <div class="hero-avatar-box d-inline-block p-2 rounded-circle shadow">
         <div class="avatar-placeholder rounded-circle d-flex align-items-center justify-content-center">
           <img th:src="@{/images/avatar.jpg}" alt="Андрей Воробьев" class="rounded-circle img-fluid avatar-image">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- ИНТЕРАКТИВНЫЙ ТЕРМИНАЛ (CLI WIDGET)        -->
+  <!-- ========================================== -->
+  <div class="row justify-content-center mb-5">
+    <div class="col-12">
+      <div class="terminal-window shadow-lg">
+        <div class="terminal-header d-flex align-items-center justify-content-between px-3 py-2">
+          <div class="d-flex align-items-center gap-2">
+            <span class="terminal-dot terminal-dot--red"></span>
+            <span class="terminal-dot terminal-dot--yellow"></span>
+            <span class="terminal-dot terminal-dot--green"></span>
+            <span class="terminal-title ms-2 text-muted small"><i class="fas fa-terminal me-1"></i>bash — guest@vorobevaqa:~</span>
+          </div>
+          <div class="terminal-actions d-flex gap-1">
+            <button type="button" class="terminal-action-btn" id="terminalCopyBtn" title="Скопировать вывод">
+              <i class="fas fa-copy"></i>
+            </button>
+            <button type="button" class="terminal-action-btn" id="terminalClearBtn" title="Очистить терминал">
+              <i class="fas fa-trash-can"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="terminal-body p-3 font-monospace" id="terminalBody">
+          <div class="terminal-line text-muted mb-2">
+            <span class="text-secondary"># Интерактивное CLI-окружение портфолио</span><br>
+            <span class="text-secondary"># Нажмите на команду быстрого запуска или введите вручную:</span>
+          </div>
+
+          <div id="terminalHistory">
+            <!-- Команды и выводы добавляются динамически -->
+          </div>
+
+          <div class="terminal-input-row d-flex align-items-center mt-2">
+            <span class="terminal-prompt text-success fw-bold me-2">guest@vorobevaqa:~$</span>
+            <input type="text" id="terminalInput" class="terminal-input flex-grow-1" autocomplete="off" spellcheck="false" placeholder="whoami, docker ps, curl health, mvn test, help...">
+          </div>
+        </div>
+
+        <div class="terminal-quick-bar d-flex flex-wrap align-items-center gap-2 px-3 py-2 border-top">
+          <span class="small text-muted me-1"><i class="fas fa-bolt text-warning me-1"></i>Быстрый запуск:</span>
+          <button class="btn btn-sm terminal-quick-btn" data-cmd="whoami">whoami</button>
+          <button class="btn btn-sm terminal-quick-btn" data-cmd="docker ps">docker ps</button>
+          <button class="btn btn-sm terminal-quick-btn" data-cmd="curl health">curl health</button>
+          <button class="btn btn-sm terminal-quick-btn" data-cmd="mvn test">mvn test</button>
+          <button class="btn btn-sm terminal-quick-btn" data-cmd="skills">skills</button>
+          <button class="btn btn-sm terminal-quick-btn" data-cmd="contact">contact</button>
+          <button class="btn btn-sm terminal-quick-btn" data-cmd="help">help</button>
         </div>
       </div>
     </div>
@@ -86,5 +139,6 @@
 <div th:replace="~{fragments/footer :: footer}"></div>
 
 <div th:replace="~{fragments/scripts :: scripts}"></div>
+<script th:src="@{/js/pages/index.js}" defer></script>
 </body>
 </html>
