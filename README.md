@@ -1,13 +1,13 @@
 # Portfolio & QR Code Generator Service
 
-[![Java](https://img.shields.io/badge/Java-17-orange?logo=openjdk)](https://openjdk.org/projects/jdk/17/)
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3-brightgreen?logo=springboot)](https://spring.io/projects/spring-boot)
+[![Java](https://img.shields.io/badge/Java-21-orange?logo=openjdk)](https://openjdk.org/projects/jdk/21/)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.4-brightgreen?logo=springboot)](https://spring.io/projects/spring-boot)
 [![Code Style: Google](https://img.shields.io/badge/code%20style-google-blueviolet.svg)](https://google.github.io/styleguide/javaguide.html)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![Docker](https://img.shields.io/badge/Docker-ready-blue?logo=docker)](https://hub.docker.com/r/andreyvorobevaqa/portfolio-service)
 [![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-2088FF?logo=githubactions&logoColor=white)](https://github.com/AndreyJVM)
 
-Production-ready web application combining a personal portfolio and an interactive QR code generator microservice. Built with Java 17 and Spring Boot 3, containerized with Docker, and deployed via a fully automated CI/CD pipeline.
+Production-ready web application combining a personal portfolio and an interactive QR code generator microservice. Built with Java 21 and Spring Boot 3.4, containerized with Docker, and deployed via a fully automated CI/CD pipeline.
 
 **Live demo:** [vorobevaqa.ru](https://vorobevaqa.ru) · **Docker Hub:** [`andreyvorobevaqa/portfolio-service`](https://hub.docker.com/r/andreyvorobevaqa/portfolio-service)
 
@@ -29,11 +29,10 @@ Production-ready web application combining a personal portfolio and an interacti
 
 | Layer | Technologies |
 |---|---|
-| **Backend** | Java 17, Spring Boot 3, Spring Data JPA, Spring MVC, Thymeleaf, Caffeine Cache |
+| **Backend** | Java 21 (Virtual Threads), Spring Boot 3.4, Spring MVC, Thymeleaf, Caffeine Cache |
 | **QR Engine** | Google ZXing (Core & JavaSE 3.5.3) |
 | **Frontend** | Bootstrap 5.3, Font Awesome 6, Vanilla JS (ES6 modules, theme management) |
 | **Build & Tools** | Maven, Lombok, Spotless (Google Java Format), Checkstyle |
-| **Databases** | PostgreSQL 17 (Production), H2 (Local / Tests) |
 | **Infrastructure** | Docker, Docker Compose, Nginx (reverse proxy, SSL, Gzip), Ubuntu VDS |
 | **CI/CD** | GitHub Actions (build, test, Docker Hub push, zero-downtime SSH deploy) |
 
@@ -48,7 +47,7 @@ Production-ready web application combining a personal portfolio and an interacti
 ## Quick Start
 
 ### Prerequisites
-- JDK 17+
+- JDK 21+
 - Maven 3.9+
 - Docker & Docker Compose (optional for containerized run)
 
@@ -59,7 +58,7 @@ Production-ready web application combining a personal portfolio and an interacti
 git clone https://github.com/AndreyJVM/portfolio-service.git
 cd portfolio-service
 
-# Run with Maven (uses local H2 in-memory DB by default)
+# Run with Maven
 mvn spring-boot:run
 ```
 
@@ -68,7 +67,6 @@ The application will be accessible at `http://localhost:8080`.
 ### Run via Docker Compose
 
 ```bash
-cp .env.example .env
 docker compose up -d --build
 ```
 
@@ -133,7 +131,7 @@ mvn checkstyle:check
 
 ## CI/CD Pipeline
 
-1. **Build & Test** — runs `mvn clean verify` on Temurin JDK 17 on every push/PR.
+1. **Build & Test** — runs `mvn clean verify` on Temurin JDK 21 on every push/PR.
 2. **Containerization** — builds an optimized Docker image and pushes tagged versions (`latest`, `${{ github.sha }}`) to Docker Hub.
 3. **Automated Deployment** — deploys the target image to the remote VDS over SSH with configuration sync and zero-downtime container recreation.
 
