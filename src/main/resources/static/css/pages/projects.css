@@ -1,13 +1,6 @@
 ﻿/* ===== Стили страницы Проекты (PROJECTS) ===== */
 
-/* Баннер страницы */
-.page-header-banner {
-  background: linear-gradient(135deg, rgba(var(--bs-primary-rgb), 0.05), var(--bg-color));
-  border-bottom: 1px solid var(--card-border);
-  padding: 3rem 0;
-  margin-bottom: 3rem;
-  border-radius: 0 0 2rem 2rem;
-}
+
 
 /* Современные карточки проектов */
 .project-card {
@@ -87,3 +80,4 @@
   background-color: #111827 !important;
   border-color: #374151 !important;
 }
+

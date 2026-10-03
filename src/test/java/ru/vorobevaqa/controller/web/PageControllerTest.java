@@ -30,6 +30,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.vorobevaqa.dto.GitHubRepoDto;
 import ru.vorobevaqa.service.GitHubService;
+import ru.vorobevaqa.service.DockerHubService;
+import ru.vorobevaqa.dto.DockerHubRepoDto;
 
 @WebMvcTest(PageController.class)
 class PageControllerTest {
@@ -37,6 +39,7 @@ class PageControllerTest {
   @Autowired private MockMvc mockMvc;
 
   @MockBean private GitHubService gitHubService;
+  @MockBean private DockerHubService dockerHubService;
 
   @Test
   @DisplayName("GET / - should return index view")
@@ -79,8 +82,8 @@ class PageControllerTest {
         .perform(get("/projects"))
         .andExpect(status().isOk())
         .andExpect(view().name("pages/projects"))
-        .andExpect(model().attributeExists("repos"))
-        .andExpect(model().attribute("repos", List.of(mockRepo)));
+        .andExpect(model().attributeExists("githubRepos"))
+        .andExpect(model().attribute("githubRepos", List.of(mockRepo)));
   }
 
   @Test
@@ -92,8 +95,8 @@ class PageControllerTest {
         .perform(get("/projects"))
         .andExpect(status().isOk())
         .andExpect(view().name("pages/projects"))
-        .andExpect(model().attributeExists("repos"))
-        .andExpect(model().attribute("repos", List.of()));
+        .andExpect(model().attributeExists("githubRepos"))
+        .andExpect(model().attribute("githubRepos", List.of()));
   }
 
   @Test
@@ -102,3 +105,4 @@ class PageControllerTest {
     mockMvc.perform(get("/qr")).andExpect(status().isOk()).andExpect(view().name("pages/qr"));
   }
 }
+
