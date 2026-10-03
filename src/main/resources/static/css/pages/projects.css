@@ -1,0 +1,89 @@
+﻿/* ===== Стили страницы Проекты (PROJECTS) ===== */
+
+/* Баннер страницы */
+.page-header-banner {
+  background: linear-gradient(135deg, rgba(var(--bs-primary-rgb), 0.05), var(--bg-color));
+  border-bottom: 1px solid var(--card-border);
+  padding: 3rem 0;
+  margin-bottom: 3rem;
+  border-radius: 0 0 2rem 2rem;
+}
+
+/* Современные карточки проектов */
+.project-card {
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  border: 1px solid var(--card-border);
+  background-color: var(--card-bg);
+  border-radius: 1.25rem;
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+}
+
+.project-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, rgba(var(--bs-primary-rgb), 0.03) 0%, rgba(var(--bs-primary-rgb), 0) 100%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  z-index: -1;
+}
+
+.project-card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(var(--bs-primary-rgb), 0.5);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="dark"] .project-card:hover,
+[data-bs-theme="dark"] .project-card:hover {
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.project-card:hover::before {
+  opacity: 1;
+}
+
+/* Иконки в карточках */
+.project-icon-box {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1rem;
+  background: rgba(var(--bs-primary-rgb), 0.1);
+  color: var(--accent-color);
+  margin-bottom: 1.5rem;
+  transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.project-card:hover .project-icon-box {
+  transform: scale(1.1) rotate(5deg);
+  background: var(--accent-color);
+  color: #fff;
+}
+
+/* GitHub карточки */
+#github-activity .card {
+  transition: all 0.3s ease;
+}
+#github-activity .card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(var(--bs-primary-rgb), 0.4) !important;
+  box-shadow: 0 10px 20px rgba(var(--bs-primary-rgb), 0.1) !important;
+}
+
+/* Модальное окно */
+#projectArchModal .modal-content {
+  background: var(--card-bg) !important;
+  border: 1px solid var(--card-border) !important;
+}
+#projectArchModal .bg-dark {
+  background-color: #111827 !important;
+  border-color: #374151 !important;
+}

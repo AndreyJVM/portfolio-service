@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ru">
 <head>
   <th:block th:replace="~{fragments/head :: head(
@@ -10,34 +10,32 @@
       ogImage='/images/og-projects.png',
       ogUrl='https://vorobevaqa.ru/projects'
   )}"></th:block>
+  <link rel="stylesheet" th:href="@{/css/pages/projects.css}">
 </head>
 <body>
 
 <div th:replace="~{fragments/navbar :: navbar('projects')}"></div>
 
-<main class="container py-5">
-  <!-- Заголовок страницы -->
-  <div class="text-center mb-5 reveal">
-    <div class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill mb-3">
-      <i class="fas fa-cubes me-1"></i> Портфолио проектов
+<main>
+  <div class="page-header-banner">
+    <div class="container text-center">
+      <h1 class="display-4 fw-bold mb-3">Мои <span class="text-gradient">Проекты</span></h1>
+      <p class="lead text-body-secondary mx-auto" style="max-width: 600px;">
+        Здесь собраны ключевые проекты, демонстрирующие мой опыт в разработке backend-сервисов, автоматизации тестирования и настройке инфраструктуры.
+      </p>
     </div>
-    <h1 class="fw-bold mb-2">Инженерные проекты</h1>
-    <p class="text-body-secondary mx-auto" style="max-width: 700px;">
-      Реализованные сервисы, инструменты автоматизации обеспечения качества и облачная инфраструктура с интерактивными схемами архитектуры.
-    </p>
   </div>
-
-  <!-- ========================================== -->
+  <div class="container py-4"><!-- ========================================== -->
   <!-- СЕТКА ПРОЕКТОВ (ЕДИНАЯ ВИТРИНА БЕЗ ВКЛАДОК) -->
   <!-- ========================================== -->
   <div class="row g-4 mb-5">
 
     <!-- 1. Portfolio & Production Stack -->
     <div class="col-md-6 reveal reveal-delay-100">
-      <div class="card h-100 shadow-sm border-0 rounded-4 d-flex flex-column">
-        <div class="card-body p-4 d-flex flex-column">
+      <div class="project-card h-100 p-4">
+        <div class="card-body p-0 d-flex flex-column">
           <div class="d-flex align-items-center justify-content-between mb-3">
-            <div class="p-2 rounded-3 bg-primary-subtle text-primary">
+            <div class="project-icon-box">
               <i class="fas fa-globe fa-lg"></i>
             </div>
             <span class="badge bg-success-subtle text-success border border-success-subtle">
@@ -52,7 +50,7 @@
 
           <div class="mb-4 d-flex flex-wrap gap-1">
             <span class="badge tech-pill">Java 21</span>
-            <span class="badge tech-pill">Spring Boot 3</span>
+            <span class="badge tech-pill">Spring Boot 3.4</span>
             <span class="badge tech-pill">Docker Compose</span>
             <span class="badge tech-pill">Nginx SSL</span>
             <span class="badge tech-pill">GitHub Actions</span>
@@ -72,11 +70,11 @@
 
     <!-- 2. QR Code Generator Service -->
     <div class="col-md-6 reveal reveal-delay-200">
-      <div class="card h-100 shadow-sm border-0 rounded-4 d-flex flex-column">
-        <div class="card-body p-4 d-flex flex-column">
+      <div class="project-card h-100 p-4">
+        <div class="card-body p-0 d-flex flex-column">
           <div class="d-flex align-items-center justify-content-between mb-3">
-            <div class="p-2 rounded-3 bg-primary-subtle text-primary">
-              <i class="fas fa-qrcode fa-lg"></i>
+            <div class="project-icon-box">
+              <i class="fas fa-qrcode fa-2x"></i>
             </div>
             <span class="badge bg-primary-subtle text-primary border border-primary-subtle">
               <i class="fas fa-bolt me-1 small" style="font-size: 0.5rem;"></i>Online Tool
@@ -89,7 +87,7 @@
           </p>
 
           <div class="mb-4 d-flex flex-wrap gap-1">
-            <span class="badge tech-pill">Spring Boot 3</span>
+            <span class="badge tech-pill">Spring Boot 3.4</span>
             <span class="badge tech-pill">Google ZXing</span>
             <span class="badge tech-pill">REST API</span>
             <span class="badge tech-pill">HTML5 Canvas</span>
@@ -110,11 +108,11 @@
 
     <!-- 3. AQA Enterprise Test Automation Framework -->
     <div class="col-md-6 reveal reveal-delay-100">
-      <div class="card h-100 shadow-sm border-0 rounded-4 d-flex flex-column">
-        <div class="card-body p-4 d-flex flex-column">
+      <div class="project-card h-100 p-4">
+        <div class="card-body p-0 d-flex flex-column">
           <div class="d-flex align-items-center justify-content-between mb-3">
-            <div class="p-2 rounded-3 bg-primary-subtle text-primary">
-              <i class="fas fa-vial-circle-check fa-lg"></i>
+            <div class="project-icon-box">
+              <i class="fas fa-vial-circle-check fa-2x"></i>
             </div>
             <span class="badge bg-info-subtle text-info border border-info-subtle">
               <i class="fas fa-code-branch me-1 small" style="font-size: 0.5rem;"></i>QA Framework
@@ -127,7 +125,7 @@
           </p>
 
           <div class="mb-4 d-flex flex-wrap gap-1">
-            <span class="badge tech-pill">Java 17/21</span>
+            <span class="badge tech-pill">Java 21</span>
             <span class="badge tech-pill">REST Assured</span>
             <span class="badge tech-pill">Selenide</span>
             <span class="badge tech-pill">JUnit 5</span>
@@ -149,11 +147,11 @@
 
     <!-- 4. Samba Web UI Manager -->
     <div class="col-md-6 reveal reveal-delay-200">
-      <div class="card h-100 shadow-sm border-0 rounded-4 d-flex flex-column">
-        <div class="card-body p-4 d-flex flex-column">
+      <div class="project-card h-100 p-4">
+        <div class="card-body p-0 d-flex flex-column">
           <div class="d-flex align-items-center justify-content-between mb-3">
-            <div class="p-2 rounded-3 bg-primary-subtle text-primary">
-              <i class="fas fa-share-nodes fa-lg"></i>
+            <div class="project-icon-box">
+              <i class="fas fa-share-nodes fa-2x"></i>
             </div>
             <span class="badge bg-secondary-subtle text-secondary border">
               <i class="fas fa-server me-1 small" style="font-size: 0.5rem;"></i>Infrastructure Tool
@@ -240,6 +238,7 @@
       </div>
     </div>
   </section>
+  </div>
 </main>
 
 <!-- ========================================== -->
@@ -250,7 +249,7 @@
     <div class="modal-content bg-body border-0 shadow-lg rounded-4">
       <div class="modal-header border-bottom px-4 pt-4 pb-3">
         <div class="d-flex align-items-center gap-2">
-          <div class="p-2 rounded-3 bg-primary-subtle text-primary">
+          <div class="project-icon-box">
             <i class="fas fa-diagram-project fa-lg"></i>
           </div>
           <div>
@@ -301,3 +300,6 @@
 <script th:src="@{/js/pages/projects.js}" defer></script>
 </body>
 </html>
+
+
+

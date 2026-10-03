@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Модуль интерактивного просмотра архитектуры проектов.
  * Динамически заполняет модальное окно схемой, компонентами и техническими деталями.
  */
@@ -81,7 +81,7 @@ const PROJECT_ARCH_DATA = {
       { icon: 'fa-check-double', title: 'Строгая валидация', text: 'Контроль протоколов http/https, защита от XSS и инъекций на уровне контроллера.' },
       { icon: 'fa-cubes', title: 'Масштабируемость', text: 'Stateless-сервис без состояния сессий, легко масштабируемый горизонтально.' }
     ],
-    stack: ['Java 21', 'Spring Boot 3', 'Google ZXing', 'REST API', 'Jakarta Validation', 'HTML5 Canvas API']
+    stack: ['Java 21', 'Spring Boot 3.4', 'Google ZXing', 'REST API', 'Jakarta Validation', 'HTML5 Canvas API']
   },
 
   'samba': {
@@ -158,7 +158,7 @@ const PROJECT_ARCH_DATA = {
       { icon: 'fa-code', title: 'Паттерны проектирования', text: 'Page Object, Builder, Factory и строгая валидация контрактов API по JSON Schema.' },
       { icon: 'fa-docker', title: 'CI/CD Готовность', text: 'Изолированный запуск в Docker headless режиме с интеграцией в GitHub Actions и GitLab CI.' }
     ],
-    stack: ['Java 17/21', 'REST Assured', 'Selenide', 'JUnit 5', 'TestNG', 'Allure Report', 'Docker']
+    stack: ['Java 21', 'REST Assured', 'Selenide', 'JUnit 5', 'TestNG', 'Allure Report', 'Docker']
   }
 };
 
@@ -207,3 +207,4 @@ window.openArchModal = function(projectKey) {
     modal.show();
   }
 };
+
