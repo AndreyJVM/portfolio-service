@@ -1,4 +1,4 @@
-/* ===== БАЗОВЫЕ ПРАВИЛА И ГЛОБАЛЬНЫЕ СТИЛИ ===== */
+﻿/* ===== БАЗОВЫЕ ПРАВИЛА И ГЛОБАЛЬНЫЕ СТИЛИ ===== */
 *, *::before, *::after {
   box-sizing: border-box;
 }
@@ -42,7 +42,7 @@ main {
   background-color: var(--card-bg);
   border-color: var(--accent-color);
   color: var(--text-color);
-  box-shadow: 0 0 0 0.25rem rgba(99, 102, 241, 0.25);
+  box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.25);
 }
 
 /* ===== ФУТЕР ===== */
@@ -66,7 +66,7 @@ footer {
 }
 
 .tech-pill {
-  background-color: rgba(99, 102, 241, 0.1);
+  background-color: rgba(var(--bs-primary-rgb), 0.1);
   color: var(--accent-color);
   font-weight: 500;
   font-size: 0.75rem;
@@ -169,7 +169,7 @@ footer {
 
 .back-to-top:hover {
   transform: translateY(-3px);
-  box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4) !important;
+  box-shadow: 0 6px 16px rgba(var(--bs-primary-rgb), 0.4) !important;
 }
 
 /* ===== STYLES FOR PRINTING & PDF EXPORT ===== */
@@ -211,4 +211,38 @@ footer {
     color: #111827 !important;
     text-decoration: none !important;
   }
+}
+
+/* ===== BOOTSTRAP COMPONENT OVERRIDES ===== */
+.btn-primary {
+  background-color: var(--accent-color) !important;
+  border-color: var(--accent-color) !important;
+  color: #fff !important;
+}
+
+.btn-primary:hover {
+  background-color: var(--accent-hover) !important;
+  border-color: var(--accent-hover) !important;
+}
+
+.btn-outline-primary {
+  color: var(--accent-color) !important;
+  border-color: var(--accent-color) !important;
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--accent-color) !important;
+  color: #fff !important;
+}
+
+.bg-primary-subtle {
+  background-color: rgba(var(--bs-primary-rgb), 0.15) !important;
+}
+
+.text-primary {
+  color: var(--accent-color) !important;
+}
+
+.border-primary-subtle {
+  border-color: rgba(var(--bs-primary-rgb), 0.3) !important;
 }

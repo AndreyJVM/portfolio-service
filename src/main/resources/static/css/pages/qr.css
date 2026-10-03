@@ -1,4 +1,4 @@
-/* ===== QR-ГЕНЕРАТОР PLAYGROUND ===== */
+﻿/* ===== QR-ГЕНЕРАТОР PLAYGROUND ===== */
 .qr-tool {
   display: grid;
   grid-template-columns: minmax(320px, 420px) minmax(280px, 340px);
@@ -86,7 +86,7 @@
 }
 
 .qr-preset-pill:hover {
-  background-color: rgba(99, 102, 241, 0.1);
+  background-color: rgba(var(--bs-primary-rgb), 0.1);
   border-color: var(--accent-color);
   color: var(--accent-color);
 }
@@ -115,7 +115,7 @@
 
 .qr-meta-badge {
   font-size: 0.75rem;
-  background-color: rgba(99, 102, 241, 0.08);
+  background-color: rgba(var(--bs-primary-rgb), 0.08);
   color: var(--accent-color);
   border-radius: 12px;
   padding: 2px 8px;
