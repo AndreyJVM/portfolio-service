@@ -1,4 +1,4 @@
-﻿package ru.vorobevaqa.service;
+package ru.vorobevaqa.service;
 
 import java.time.Duration;
 import java.util.Collections;
