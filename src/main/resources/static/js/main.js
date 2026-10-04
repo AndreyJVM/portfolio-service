@@ -79,7 +79,7 @@ function initSystemHealthBadge() {
         statusText.textContent = 'Systems Online';
         statusPing.className = 'status-ping me-2';
 
-        const dbStatus = data.components?.db?.status || 'UP';
+        
         const diskStatus = data.components?.diskSpace?.status || 'UP';
 
         const popoverContent = `
@@ -88,10 +88,7 @@ function initSystemHealthBadge() {
               <span class="text-body-secondary small"><i class="fas fa-server text-primary me-1"></i>Backend:</span>
               <span class="badge bg-success-subtle text-success border border-success-subtle">UP</span>
             </div>
-            <div class="d-flex justify-content-between align-items-center mb-1">
-              <span class="text-body-secondary small"><i class="fas fa-database text-primary me-1"></i>Database:</span>
-              <span class="badge bg-success-subtle text-success border border-success-subtle">${dbStatus}</span>
-            </div>
+            
             <div class="d-flex justify-content-between align-items-center mb-1">
               <span class="text-body-secondary small"><i class="fas fa-hard-drive text-primary me-1"></i>Disk:</span>
               <span class="badge bg-success-subtle text-success border border-success-subtle">${diskStatus}</span>
@@ -218,3 +215,4 @@ function initScrollControls() {
   // Первоначальный расчёт при загрузке
   onScroll();
 }
+
