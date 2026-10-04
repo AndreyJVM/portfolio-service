@@ -29,9 +29,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.vorobevaqa.dto.GitHubRepoDto;
-import ru.vorobevaqa.service.GitHubService;
 import ru.vorobevaqa.service.DockerHubService;
-import ru.vorobevaqa.dto.DockerHubRepoDto;
+import ru.vorobevaqa.service.GitHubService;
 
 @WebMvcTest(PageController.class)
 class PageControllerTest {
@@ -105,4 +104,3 @@ class PageControllerTest {
     mockMvc.perform(get("/qr")).andExpect(status().isOk()).andExpect(view().name("pages/qr"));
   }
 }
-

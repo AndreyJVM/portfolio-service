@@ -1,3 +1,22 @@
+﻿/* Современные карточки сертификатов */
+.cert-card {
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  border: 1px solid var(--card-border);
+  background-color: var(--card-bg);
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.cert-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(var(--bs-primary-rgb), 0.4);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="dark"] .cert-card:hover,
+[data-bs-theme="dark"] .cert-card:hover {
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+}
 /* ===== СТИЛИ СТРАНИЦЫ ОБО МНЕ (ABOUT) ===== */
 .cursor-pointer {
   cursor: pointer;
@@ -91,3 +110,4 @@
     object-fit: contain !important;
   }
 }
+

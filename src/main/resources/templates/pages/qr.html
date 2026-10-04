@@ -16,16 +16,28 @@
 
 <div th:replace="~{fragments/navbar :: navbar('qr')}"></div>
 
-<main class="container py-5">
-  <div class="text-center mb-5 mx-auto" style="max-width: 600px;">
-    <div class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill mb-3">
-      <i class="fas fa-qrcode me-1"></i> Spring Boot &bull; ZXing Engine &bull; REST API
+<main>
+  <div class="container pt-5 pb-4 mb-4 border-bottom">
+    <div class="row align-items-center reveal">
+      <div class="col-lg-8">
+        <div class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill mb-3">
+          <i class="fas fa-qrcode me-1"></i> Spring Boot &bull; ZXing Engine &bull; REST API
+        </div>
+        <h1 class="display-4 fw-bold mb-3">QR Code <span class="text-gradient">Playground</span></h1>
+        <p class="lead text-body-secondary mb-0" style="max-width: 700px;">
+          Интерактивный микросервис генерации динамических QR-кодов. Настраивайте палитру, тестируйте REST API и сохраняйте в PNG мгновенно.
+        </p>
+      </div>
+      <div class="col-lg-4 text-start text-lg-end mt-4 mt-lg-0">
+        <a href="https://github.com/AndreyJVM/portfolio-service" target="_blank" class="btn btn-outline-secondary rounded-pill">
+          <i class="fab fa-github me-2"></i>Код проекта
+        </a>
+      </div>
     </div>
-    <h1 class="fw-bold mb-2">QR Code Playground</h1>
-    <p class="text-muted">Введите ссылку или выберите пресет — генерация происходит в реальном времени с поддержкой кастомизации</p>
   </div>
 
-  <div class="qr-tool mx-auto">
+  <div class="container py-4">
+    <div class="qr-tool mx-auto">
     <!-- Панель ввода и настроек -->
     <div class="qr-tool__panel">
       <!-- Быстрые пресеты -->
@@ -122,6 +134,7 @@
       </div>
     </div>
   </div>
+  </div>
 </main>
 
 <div th:replace="~{fragments/footer :: footer}"></div>
@@ -130,3 +143,4 @@
 <script th:src="@{/js/pages/qr.js}" defer></script>
 </body>
 </html>
+
