@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ru">
 <head>
   <th:block th:replace="~{fragments/head :: head(
@@ -24,7 +24,7 @@
     <!-- Декоративные элементы -->
     <div class="hero-blob hero-blob-1"></div>
     <div class="hero-blob hero-blob-2"></div>
-    
+
     <div class="col-lg-8 text-center text-lg-start position-relative z-1">
       <div class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill mb-3">
         <i class="fas fa-terminal me-1"></i> Hello World
@@ -114,7 +114,7 @@
         </div>
         <h5 class="fw-bold mb-2">QA Automation</h5>
         <p class="text-body-secondary small mb-4 flex-grow-1">
-          Проектирование масштабируемых E2E и API тест-фреймворков. Интеграция с системами отчетности (Allure) и внедрение непрерывного тестирования в пайплайны CI/CD.
+          Разработка автоматизированных E2E и API тест-фреймворков. Интеграция с системами отчетности (Allure) и внедрение непрерывного тестирования в пайплайны CI/CD.
         </p>
         <div>
           <span class="text-uppercase text-body-secondary small fw-bold d-block mb-2">Технологии:</span>
@@ -153,53 +153,6 @@
     </div>
   </div>
 
-    <!-- QA Automation Card -->
-    <div class="col-lg-4 col-md-6 reveal reveal-delay-200">
-      <div class="bento-card h-100 p-4 rounded-4">
-        <div class="feature-icon-wrapper bg-primary-subtle text-primary mb-3">
-          <i class="fas fa-vial-circle-check fa-2x"></i>
-        </div>
-        <h5 class="fw-bold mb-2">QA Automation</h5>
-        <p class="text-body-secondary small mb-4 flex-grow-1">
-          Создание масштабируемых многопоточных E2E и API фреймворков. Автоматическая генерация Allure-отчётов и интеграция плагинов статического анализа кода в пайплайны.
-        </p>
-        <div>
-          <span class="text-uppercase text-body-secondary small fw-bold d-block mb-2">Используемый стек:</span>
-          <div class="d-flex flex-wrap gap-2">
-            <span class="badge tech-badge"><i class="fas fa-code text-secondary me-1"></i>REST Assured</span>
-            <span class="badge tech-badge"><i class="fas fa-globe text-primary me-1"></i>Selenide</span>
-            <span class="badge tech-badge">TestNG</span>
-            <span class="badge tech-badge">Allure</span>
-            <span class="badge tech-badge">Postman</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- DevOps Card -->
-    <div class="col-lg-4 col-md-12 reveal reveal-delay-300">
-      <div class="bento-card h-100 p-4 rounded-4">
-        <div class="feature-icon-wrapper bg-primary-subtle text-primary mb-3">
-          <i class="fas fa-network-wired fa-2x"></i>
-        </div>
-        <h5 class="fw-bold mb-2">DevOps & CI/CD</h5>
-        <p class="text-body-secondary small mb-4 flex-grow-1">
-          Контейнеризация распределённых приложений, настройка оркестрации, автоматический Zero-downtime деплой на VDS и управление безопасностью через Nginx.
-        </p>
-        <div>
-          <span class="text-uppercase text-body-secondary small fw-bold d-block mb-2">Используемый стек:</span>
-          <div class="d-flex flex-wrap gap-2">
-            <span class="badge tech-badge"><i class="fab fa-docker text-primary me-1"></i>Docker</span>
-            <span class="badge tech-badge"><i class="fab fa-github text-body me-1"></i>GitHub Actions</span>
-            <span class="badge tech-badge"><i class="fab fa-linux text-warning me-1"></i>Linux</span>
-            <span class="badge tech-badge">Nginx</span>
-            <span class="badge tech-badge">Bash</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
 </main>
 
 <div th:replace="~{fragments/footer :: footer}"></div>
@@ -207,8 +160,3 @@
 <div th:replace="~{fragments/scripts :: scripts}"></div>
 </body>
 </html>
-
-
-
-
-
