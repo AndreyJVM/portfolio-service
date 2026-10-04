@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Основной скрипт глобальной инициализации приложения:
  * - Инициализация компонентов Bootstrap (тултипы, поповеры)
  * - Опрос Spring Boot Actuator (/actuator/health) для живого статуса системы
@@ -73,7 +73,7 @@ function initSystemHealthBadge() {
   ])
     .then(async ([healthRes, uptimeRes, memRes]) => {
       const latency = Math.round(performance.now() - startTime);
-      if (!healthRes.ok) throw new Error(HTTP  + healthRes.status);
+      if (!healthRes.ok) throw new Error('HTTP ' + healthRes.status);
       
       const healthData = await healthRes.json();
       const isUp = healthData && healthData.status === 'UP';
@@ -99,26 +99,24 @@ function initSystemHealthBadge() {
         memText = mb + ' MB';
       }
 
-      const popoverContent = 
-        <div class="p-1" style="min-width: 200px;">
-          <div class="d-flex justify-content-between align-items-center mb-1">
-            <span class="text-body-secondary small"><i class="fas fa-server text-primary me-1"></i>Status:</span>
-            <span class="badge bg-success-subtle text-success border border-success-subtle">UP</span>
-          </div>
-          <div class="d-flex justify-content-between align-items-center mb-1">
-            <span class="text-body-secondary small"><i class="fas fa-clock text-info me-1"></i>Uptime:</span>
-            <span class="fw-medium small"> + uptimeText + </span>
-          </div>
-          <div class="d-flex justify-content-between align-items-center mb-1">
-            <span class="text-body-secondary small"><i class="fas fa-memory text-secondary me-1"></i>RAM:</span>
-            <span class="fw-medium small"> + memText + </span>
-          </div>
-          <div class="d-flex justify-content-between align-items-center border-top pt-2 mt-2">
-            <span class="text-body-secondary small"><i class="fas fa-bolt text-warning me-1"></i>Ping:</span>
-            <span class="fw-medium small"> + latency +  ms</span>
-          </div>
-        </div>
-      ;
+      const popoverContent = '<div class="p-1" style="min-width: 200px;">' +
+          '<div class="d-flex justify-content-between align-items-center mb-1">' +
+            '<span class="text-body-secondary small"><i class="fas fa-server text-primary me-1"></i>Status:</span>' +
+            '<span class="badge bg-success-subtle text-success border border-success-subtle">UP</span>' +
+          '</div>' +
+          '<div class="d-flex justify-content-between align-items-center mb-1">' +
+            '<span class="text-body-secondary small"><i class="fas fa-clock text-info me-1"></i>Uptime:</span>' +
+            '<span class="fw-medium small">' + uptimeText + '</span>' +
+          '</div>' +
+          '<div class="d-flex justify-content-between align-items-center mb-1">' +
+            '<span class="text-body-secondary small"><i class="fas fa-memory text-secondary me-1"></i>RAM:</span>' +
+            '<span class="fw-medium small">' + memText + '</span>' +
+          '</div>' +
+          '<div class="d-flex justify-content-between align-items-center border-top pt-2 mt-2">' +
+            '<span class="text-body-secondary small"><i class="fas fa-bolt text-warning me-1"></i>Ping:</span>' +
+            '<span class="fw-medium small">' + latency + ' ms</span>' +
+          '</div>' +
+        '</div>';
       
       badge.setAttribute('data-bs-content', popoverContent);
       const popover = bootstrap.Popover.getInstance(badge);
@@ -235,6 +233,7 @@ function initScrollControls() {
   // Первоначальный расчёт при загрузке
   onScroll();
 }
+
 
 
 
