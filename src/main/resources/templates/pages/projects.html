@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ru">
 <head>
   <th:block th:replace="~{fragments/head :: head(
@@ -16,7 +16,7 @@
 
 <div th:replace="~{fragments/navbar :: navbar('projects')}"></div>
 
-<main>
+<main class="flex-shrink-0">
   <div class="container pt-5 pb-4 mb-4 border-bottom">
     <div class="row align-items-center reveal">
       <div class="col-lg-8">
@@ -200,5 +200,6 @@
 <div th:replace="~{fragments/scripts :: scripts}"></div>
 </body>
 </html>
+
 
 

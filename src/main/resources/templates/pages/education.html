@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ru">
 <head>
   <th:block th:replace="~{fragments/head :: head(
@@ -16,7 +16,7 @@
 
 <div th:replace="~{fragments/navbar :: navbar('education')}"></div>
 
-<main>
+<main class="flex-shrink-0">
   <!-- Заголовок для вывода на печать (виден только при печати) -->
   <div class="print-resume-header d-none">
     <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
@@ -289,6 +289,7 @@
 <script th:src="@{/js/pages/about.js}" defer></script>
 </body>
 </html>
+
 
 
 
