@@ -22,6 +22,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import ru.vorobevaqa.service.DockerHubService;
+import ru.vorobevaqa.service.AnsibleGalaxyService;
 import ru.vorobevaqa.service.GitHubService;
 
 @Controller
@@ -30,6 +31,7 @@ public class PageController {
 
   private final GitHubService gitHubService;
   private final DockerHubService dockerHubService;
+  private final AnsibleGalaxyService ansibleGalaxyService;
 
   @GetMapping("/")
   public String index() {
@@ -45,6 +47,7 @@ public class PageController {
   public String projects(Model model) {
     model.addAttribute("githubRepos", gitHubService.getRecentRepositories());
     model.addAttribute("dockerRepos", dockerHubService.getRecentRepositories());
+    model.addAttribute("ansibleRoles", ansibleGalaxyService.getRecentRoles());
     return "pages/projects";
   }
 
@@ -53,3 +56,4 @@ public class PageController {
     return "pages/qr";
   }
 }
+

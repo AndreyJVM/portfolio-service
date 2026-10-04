@@ -30,11 +30,12 @@ public class CacheConfig {
 
   public static final String GITHUB_REPOS_CACHE = "githubRepos";
   public static final String DOCKER_REPOS_CACHE = "dockerRepos";
+  public static final String ANSIBLE_REPOS_CACHE = "ansibleRepos";
 
   @Bean
   public CacheManager cacheManager() {
     CaffeineCacheManager cacheManager = new CaffeineCacheManager();
-    cacheManager.setCacheNames(List.of(GITHUB_REPOS_CACHE, DOCKER_REPOS_CACHE));
+    cacheManager.setCacheNames(List.of(GITHUB_REPOS_CACHE, DOCKER_REPOS_CACHE, ANSIBLE_REPOS_CACHE));
     cacheManager.setCaffeine(caffeineCacheBuilder());
     return cacheManager;
   }
@@ -47,3 +48,4 @@ public class CacheConfig {
         .recordStats();
   }
 }
+

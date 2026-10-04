@@ -29,6 +29,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.vorobevaqa.dto.GitHubRepoDto;
+import ru.vorobevaqa.service.AnsibleGalaxyService;
 import ru.vorobevaqa.service.DockerHubService;
 import ru.vorobevaqa.service.GitHubService;
 
@@ -39,6 +40,7 @@ class PageControllerTest {
 
   @MockBean private GitHubService gitHubService;
   @MockBean private DockerHubService dockerHubService;
+  @MockBean private AnsibleGalaxyService ansibleGalaxyService;
 
   @Test
   @DisplayName("GET / - should return index view")
@@ -104,3 +106,4 @@ class PageControllerTest {
     mockMvc.perform(get("/qr")).andExpect(status().isOk()).andExpect(view().name("pages/qr"));
   }
 }
+

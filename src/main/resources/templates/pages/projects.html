@@ -98,6 +98,53 @@
       </div>
     </section>
 
+        <!-- ========================================== -->
+    <!-- Ansible Galaxy Roles Section               -->
+    <!-- ========================================== -->
+    <section class="py-5 reveal mt-5" id="ansible-activity" th:if="${ansibleRoles != null and !ansibleRoles.isEmpty()}">
+      <div class="d-flex align-items-center mb-4">
+        <div class="p-2 rounded-3 bg-secondary-subtle text-secondary me-3">
+          <i class="fas fa-network-wired fa-xl"></i>
+        </div>
+        <h2 class="fw-bold mb-0">Ansible Roles</h2>
+      </div>
+
+      <div class="row g-4">
+        <div th:each="role : ${ansibleRoles}" class="col-md-6 reveal">
+          <div class="card h-100 shadow-sm border-0 rounded-4 p-4 project-card">
+            <div class="card-body p-0 d-flex flex-column h-100">
+              <div class="d-flex justify-content-between align-items-start mb-3">
+                <h5 class="card-title fw-bold mb-0">
+                  <a th:href="${role.url}" target="_blank" rel="noopener noreferrer" class="text-decoration-none text-reset stretched-link">
+                    <i class="fas fa-terminal text-secondary me-2"></i><span th:text="${role.name}">role_name</span>
+                  </a>
+                </h5>
+              </div>
+
+              <p class="card-text text-body-secondary small flex-grow-1" th:text="${role.description != null ? role.description : 'Ansible role for automated provisioning.'}">
+                Ansible role description.
+              </p>
+
+              <div class="d-flex justify-content-between align-items-center pt-3 border-top small text-body-secondary">
+                <span class="badge bg-body-secondary text-body-secondary border">
+                  <i class="fas fa-download text-success me-1"></i><span th:text="${role.downloadCount}">0</span> downloads
+                </span>
+                <span th:if="${role.githubRepo != null}">
+                  <i class="fab fa-github me-1"></i><span th:text="${role.githubRepo}">repo</span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="text-center mt-4">
+        <a href="https://galaxy.ansible.com/ui/standalone/namespaces/24255/" target="_blank" rel="noopener noreferrer" class="btn btn-outline-secondary rounded-pill px-4">
+          <i class="fas fa-network-wired me-2"></i>Перейти в Ansible Galaxy
+        </a>
+      </div>
+    </section>
+
     <!-- ========================================== -->
     <!-- DockerHub Images Section                   -->
     <!-- ========================================== -->
@@ -153,3 +200,5 @@
 <div th:replace="~{fragments/scripts :: scripts}"></div>
 </body>
 </html>
+
+
