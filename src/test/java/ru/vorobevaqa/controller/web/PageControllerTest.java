@@ -106,4 +106,3 @@ class PageControllerTest {
     mockMvc.perform(get("/qr")).andExpect(status().isOk()).andExpect(view().name("pages/qr"));
   }
 }
-

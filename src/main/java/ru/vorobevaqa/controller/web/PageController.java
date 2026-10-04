@@ -21,8 +21,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import ru.vorobevaqa.service.DockerHubService;
 import ru.vorobevaqa.service.AnsibleGalaxyService;
+import ru.vorobevaqa.service.DockerHubService;
 import ru.vorobevaqa.service.GitHubService;
 
 @Controller
@@ -56,4 +56,3 @@ public class PageController {
     return "pages/qr";
   }
 }
-
