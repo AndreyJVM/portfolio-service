@@ -1,12 +1,12 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ru">
 <head>
   <th:block th:replace="~{fragments/head :: head(
-      title='QR-генератор Playground',
-      description='Бесплатный интерактивный онлайн генератор QR-кодов. Кастомизация цвета, копирование и мгновенное скачивание QR-кода.',
-      keywords='QR code, генератор QR, создать QR код онлайн, Java QR, QR playground',
-      ogTitle='Генератор QR-кодов Playground | Андрей Воробьев',
-      ogDescription='Генерация QR-кода онлайн с кастомизацией и скачиванием.',
+      title='QR-код Playground',
+      description='Моя практика работы с QR-кодами. Автоматическая генерация, предпросмотр и скачивание QR-кодов.',
+      keywords='QR code, код QR, создать QR в джаве, Java QR, QR playground',
+      ogTitle='Генератор QR-кодов | Андрей Воробьев',
+      ogDescription='Генерация QR-кодов с кастомными цветами и автоматическим скачиванием.',
       ogImage='/images/og-qr.png',
       ogUrl='https://vorobevaqa.ru/qr'
   )}"></th:block>
@@ -17,19 +17,19 @@
 <div th:replace="~{fragments/navbar :: navbar('qr')}"></div>
 
 <main class="flex-shrink-0">
-  <div class="container pt-5 pb-4 mb-4 border-bottom">
-    <div class="row align-items-center reveal">
+  <div class="container pt-5 pb-4 mb-4 border-bottom position-relative">
+    <div class="row align-items-center reveal z-1">
       <div class="col-lg-8">
         <div class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill mb-3">
-          <i class="fas fa-qrcode me-1"></i> Spring Boot &bull; ZXing Engine &bull; REST API
+          <i class="fas fa-qrcode me-1"></i> Spring Boot &bull; ZXing &bull; REST API
         </div>
         <h1 class="display-4 fw-bold mb-3">QR Code <span class="text-gradient">Playground</span></h1>
         <p class="lead text-body-secondary mb-0" style="max-width: 700px;">
-          Интерактивный микросервис генерации динамических QR-кодов. Настраивайте палитру, тестируйте REST API и сохраняйте в PNG мгновенно.
+          Интерактивный генератор QR-кодов. Напишите текст или URL, выберите цвет и получите готовый результат мгновенно.
         </p>
       </div>
       <div class="col-lg-4 text-start text-lg-end mt-4 mt-lg-0">
-        <a href="https://github.com/AndreyJVM/portfolio-service" target="_blank" class="btn btn-outline-secondary rounded-pill">
+        <a href="https://github.com/AndreyJVM/portfolio-service" target="_blank" class="btn btn-outline-secondary rounded-pill shadow-sm">
           <i class="fab fa-github me-2"></i>Код проекта
         </a>
       </div>
@@ -37,103 +37,111 @@
   </div>
 
   <div class="container py-4">
-    <div class="qr-tool mx-auto">
-    <!-- Панель ввода и настроек -->
-    <div class="qr-tool__panel">
-      <!-- Быстрые пресеты -->
-      <div class="mb-3">
-        <label class="form-label small fw-semibold text-body-secondary mb-2">Быстрые шаблоны:</label>
-        <div class="d-flex flex-wrap gap-2">
-          <button type="button" class="btn btn-sm qr-preset-pill" data-preset="https://vorobevaqa.ru">
-            <i class="fas fa-globe me-1"></i>Портфолио
-          </button>
-          <button type="button" class="btn btn-sm qr-preset-pill" data-preset="https://github.com/AndreyJVM">
-            <i class="fab fa-github me-1"></i>GitHub
-          </button>
-          <button type="button" class="btn btn-sm qr-preset-pill" data-preset="https://t.me/AndreyAQA">
-            <i class="fab fa-telegram me-1"></i>Telegram
-          </button>
-        </div>
-      </div>
-
-      <form id="qr-form" onsubmit="event.preventDefault(); generateQR();">
-        <label for="url-input" class="form-label fw-semibold">Ссылка для кодирования</label>
-        <div class="input-group mb-2">
-          <span class="input-group-text"><i class="fas fa-link"></i></span>
-          <input type="text" id="url-input" class="form-control"
-                 placeholder="https://example.com" value="https://vorobevaqa.ru" required>
-        </div>
-        <div class="form-text text-muted mb-3">Поддерживаются протоколы http:// и https://</div>
-
-        <!-- Настройки кастомизации цвета -->
-        <div class="mb-4 pt-3 border-top">
-          <label class="form-label small fw-semibold text-body-secondary mb-2 d-flex justify-content-between">
-            <span>Цвет кода:</span>
-            <span class="small text-muted" id="selectedColorLabel">По умолчанию</span>
-          </label>
-          <div class="color-swatch-group">
-            <span class="color-swatch active" data-color="#000000" style="background-color: #000000;" title="Классический черный"></span>
-            <span class="color-swatch" data-color="#4f46e5" style="background-color: #4f46e5;" title="Индиго"></span>
-            <span class="color-swatch" data-color="#0284c7" style="background-color: #0284c7;" title="Голубой океан"></span>
-            <span class="color-swatch" data-color="#059669" style="background-color: #059669;" title="Изумрудный"></span>
-            <span class="color-swatch" data-color="#7c3aed" style="background-color: #7c3aed;" title="Фиолетовый"></span>
-            <span class="color-swatch" data-color="#dc2626" style="background-color: #dc2626;" title="Рубиновый"></span>
+    <div class="qr-tool mx-auto reveal reveal-delay-100">
+      
+      <!-- Форма генерации -->
+      <div class="qr-tool__panel">
+        <div class="mb-4">
+          <label class="form-label small fw-semibold text-body-secondary mb-2">Быстрые шаблоны:</label>
+          <div class="d-flex flex-wrap gap-2">
+            <button type="button" class="btn btn-sm qr-preset-pill" data-preset="https://vorobevaqa.ru">
+              <i class="fas fa-globe me-1"></i>Портфолио
+            </button>
+            <button type="button" class="btn btn-sm qr-preset-pill" data-preset="https://github.com/AndreyJVM">
+              <i class="fab fa-github me-1"></i>GitHub
+            </button>
+            <button type="button" class="btn btn-sm qr-preset-pill" data-preset="https://t.me/AndreyAQA">
+              <i class="fab fa-telegram me-1"></i>Telegram
+            </button>
           </div>
         </div>
 
-        <button type="submit" class="btn btn-primary w-100" id="generate-btn">
-          <i class="fas fa-bolt me-1"></i> Обновить QR-код
-        </button>
-      </form>
+        <form id="qr-form" onsubmit="event.preventDefault(); generateQR();">
+          <label for="url-input" class="form-label fw-semibold">Данные для кодирования</label>
+          <div class="input-group mb-2 shadow-sm rounded-3">
+            <span class="input-group-text bg-body-tertiary border-end-0"><i class="fas fa-link text-primary"></i></span>
+            <input type="text" id="url-input" class="form-control border-start-0 ps-0"
+                   placeholder="https://example.com" value="https://vorobevaqa.ru" required>
+          </div>
+          <div class="form-text text-muted mb-4"><i class="fas fa-info-circle me-1"></i> Поддерживаются URL, текст, Wi-Fi данные</div>
 
-      <div id="error" class="qr-error" style="display: none;">
-        <i class="fas fa-circle-exclamation"></i>
-        <span id="error-text"></span>
+          <!-- Выбор цвета -->
+          <div class="mb-4 pt-3 border-top">
+            <label class="form-label small fw-semibold text-body-secondary mb-3 d-flex justify-content-between align-items-center">
+              <span>Стиль (Цвет):</span>
+              <span class="badge bg-secondary-subtle text-secondary" id="selectedColorLabel">Классический</span>
+            </label>
+            <div class="color-swatch-group">
+              <span class="color-swatch active" data-color="#000000" style="background-color: #000000;" title="Классический"></span>
+              <span class="color-swatch" data-color="#22c55e" style="background-color: #22c55e;" title="Неоновый зеленый"></span>
+              <span class="color-swatch" data-color="#0284c7" style="background-color: #0284c7;" title="Океанский синий"></span>
+              <span class="color-swatch" data-color="#7c3aed" style="background-color: #7c3aed;" title="Кибер фиолетовый"></span>
+              <span class="color-swatch" data-color="#ef4444" style="background-color: #ef4444;" title="Алый"></span>
+              <span class="color-swatch" data-color="#f59e0b" style="background-color: #f59e0b;" title="Янтарный"></span>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary w-100 btn-lg shadow text-uppercase fw-bold" id="generate-btn">
+            <i class="fas fa-bolt me-2"></i> Сгенерировать
+          </button>
+        </form>
+
+        <div id="error" class="qr-error" style="display: none;">
+          <i class="fas fa-circle-exclamation"></i>
+          <span id="error-text"></span>
+        </div>
       </div>
+
+      <!-- Экран с результатом -->
+      <div class="qr-tool__frame">
+        <!-- Анимация сканера -->
+        <div class="scanner-line"></div>
+
+        <span class="qr-frame-corner qr-frame-corner--tl"></span>
+        <span class="qr-frame-corner qr-frame-corner--tr"></span>
+        <span class="qr-frame-corner qr-frame-corner--bl"></span>
+        <span class="qr-frame-corner qr-frame-corner--br"></span>
+
+        <!-- Состояние ожидания -->
+        <div id="qr-placeholder" class="qr-frame-state">
+          <i class="fas fa-qrcode fa-4x mb-2"></i>
+          <p class="text-body-secondary small fw-medium mb-0">Ожидание данных</p>
+        </div>
+
+        <!-- Загрузка -->
+        <div id="spinner" class="qr-frame-state" style="display: none;">
+          <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="visually-hidden">Загрузка...</span>
+          </div>
+          <p class="text-primary small fw-bold mb-0 mt-3">Кодирование...</p>
+        </div>
+
+        <!-- Результат -->
+        <div id="result" class="qr-frame-state" style="display: none;">
+          <canvas id="qr-canvas" style="display: none;"></canvas>
+          <img id="qr-code-image" src="" alt="QR Code" class="img-fluid">
+          <span id="qr-url-text" class="text-muted small text-truncate px-3 w-100 mt-2" title=""></span>
+
+          <div class="d-flex align-items-center justify-content-center gap-2 my-2">
+            <span class="qr-meta-badge" id="qrMetaSize">300x300 px</span>
+            <span class="qr-meta-badge" id="qrMetaTime"><i class="fas fa-stopwatch me-1"></i><span id="qrMetaTimeVal">~12</span> ms</span>
+          </div>
+
+          <div class="d-flex justify-content-center gap-2 mt-2 w-100">
+            <button onclick="downloadQR()" class="btn btn-success flex-grow-1 shadow-sm">
+              <i class="fas fa-download"></i> PNG
+            </button>
+            <button onclick="copyQRImage()" class="btn btn-outline-primary shadow-sm" id="copyImgBtn" title="Копировать картинку">
+              <i class="fas fa-copy"></i>
+            </button>
+            <button onclick="shareQR()" class="btn btn-outline-secondary shadow-sm">
+              <i class="fas fa-share-nodes"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
     </div>
-
-    <!-- Постоянная рамка результата -->
-    <div class="qr-tool__frame">
-      <span class="qr-frame-corner qr-frame-corner--tl"></span>
-      <span class="qr-frame-corner qr-frame-corner--tr"></span>
-      <span class="qr-frame-corner qr-frame-corner--bl"></span>
-
-      <div id="qr-placeholder" class="qr-frame-state">
-        <i class="fas fa-qrcode fa-3x text-muted opacity-50"></i>
-        <p class="text-muted small mb-0">Здесь появится QR-код</p>
-      </div>
-
-      <div id="spinner" class="qr-frame-state" style="display: none;">
-        <div class="spinner-border text-primary" role="status">
-          <span class="visually-hidden">Генерация...</span>
-        </div>
-        <p class="text-muted small mb-0">Формируем QR-код...</p>
-      </div>
-
-      <div id="result" class="qr-frame-state" style="display: none;">
-        <canvas id="qr-canvas" style="display: none;"></canvas>
-        <img id="qr-code-image" src="" alt="QR Code" class="img-fluid rounded p-2 bg-white">
-        <span id="qr-url-text" class="text-muted small text-break px-2" style="max-width: 250px;"></span>
-
-        <div class="d-flex align-items-center gap-1 my-1">
-          <span class="qr-meta-badge" id="qrMetaSize">300×300 px</span>
-          <span class="qr-meta-badge" id="qrMetaTime">~12 ms</span>
-        </div>
-
-        <div class="d-flex justify-content-center flex-wrap gap-2 mt-2">
-          <button onclick="downloadQR()" class="btn btn-success btn-sm">
-            <i class="fas fa-download me-1"></i> PNG
-          </button>
-          <button onclick="copyQRImage()" class="btn btn-outline-primary btn-sm" id="copyImgBtn" title="Копировать картинку">
-            <i class="fas fa-copy me-1"></i> Копировать
-          </button>
-          <button onclick="shareQR()" class="btn btn-outline-secondary btn-sm">
-            <i class="fas fa-share-nodes me-1"></i> Поделиться
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
   </div>
 </main>
 
@@ -143,5 +151,3 @@
 <script th:src="@{/js/pages/qr.js}" defer></script>
 </body>
 </html>
-
-

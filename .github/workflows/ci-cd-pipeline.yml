@@ -1,25 +1,14 @@
 name: CI/CD Pipeline
 
 on:
-  push:
-    branches: [ master ]
-    paths:
-      - 'src/**'
-      - 'pom.xml'
-      - 'Dockerfile'
-      - 'docker-compose.yml'
-      - 'nginx/**'
-      - '.github/workflows/**'
-
-  pull_request:
-    branches: [ master ]
+  workflow_dispatch:
 
 env:
   DOCKER_IMAGE_NAME: andreyvorobevaqa/portfolio-service
 
 jobs:
   # ==========================================
-  # JOB 1: Сборка и тестирование (Maven)
+  # JOB 1: РЎР±РѕСЂРєР° Рё С‚РµСЃС‚РёСЂРѕРІР°РЅРёРµ (Maven)
   # ==========================================
   build-and-test:
     name: Build with Maven
@@ -46,7 +35,7 @@ jobs:
           retention-days: 1
 
   # ==========================================
-  # JOB 2: Сборка Docker и пуш в Docker Hub
+  # JOB 2: РЎР±РѕСЂРєР° Docker Рё РїСѓС€ РІ Docker Hub
   # ==========================================
   docker-build-and-push:
     name: Build and Push Docker Image
@@ -82,7 +71,7 @@ jobs:
             ${{ env.DOCKER_IMAGE_NAME }}:${{ github.sha }}
 
   # ==========================================
-  # JOB 3: Деплой на VDS через Docker Compose
+  # JOB 3: Р”РµРїР»РѕР№ РЅР° VDS С‡РµСЂРµР· Docker Compose
   # ==========================================
   deploy-to-vds:
     name: Deploy to VDS
@@ -113,4 +102,5 @@ jobs:
             docker compose pull app
             docker compose up -d --remove-orphans
             docker image prune -f
+
 
