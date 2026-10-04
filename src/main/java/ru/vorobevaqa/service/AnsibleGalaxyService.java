@@ -1,4 +1,4 @@
-package ru.vorobevaqa.service;
+﻿package ru.vorobevaqa.service;
 
 import java.time.Duration;
 import java.util.Collections;
@@ -25,8 +25,8 @@ public class AnsibleGalaxyService {
     this.githubUsername = githubUsername;
 
     SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
-    requestFactory.setConnectTimeout(Duration.ofSeconds(3));
-    requestFactory.setReadTimeout(Duration.ofSeconds(3));
+    requestFactory.setConnectTimeout(Duration.ofSeconds(5));
+    requestFactory.setReadTimeout(Duration.ofSeconds(10));
 
     this.restClient =
         RestClient.builder()
@@ -58,3 +58,4 @@ public class AnsibleGalaxyService {
     }
   }
 }
+
