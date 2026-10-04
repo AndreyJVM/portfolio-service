@@ -66,51 +66,71 @@ function initSystemHealthBadge() {
 
   const startTime = performance.now();
 
-  fetch('/actuator/health', { cache: 'no-store' } || {})
-    .then(async (response) => {
+    Promise.all([
+    fetch('/actuator/health', { cache: 'no-store' }),
+    fetch('/actuator/metrics/process.uptime', { cache: 'no-store' }).catch(() => null),
+    fetch('/actuator/metrics/jvm.memory.used', { cache: 'no-store' }).catch(() => null)
+  ])
+    .then(async ([healthRes, uptimeRes, memRes]) => {
       const latency = Math.round(performance.now() - startTime);
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`);
+      if (!healthRes.ok) throw new Error(HTTP  + healthRes.status);
+      
+      const healthData = await healthRes.json();
+      const isUp = healthData && healthData.status === 'UP';
+
+      if (!isUp) throw new Error('Status not UP');
+
+      statusText.textContent = 'Systems Online';
+      statusPing.className = 'status-ping me-2';
+
+      let uptimeText = 'N/A';
+      if (uptimeRes && uptimeRes.ok) {
+        const upData = await uptimeRes.json();
+        const seconds = upData.measurements[0].value;
+        const days = Math.floor(seconds / (3600 * 24));
+        const hrs = Math.floor((seconds % (3600 * 24)) / 3600);
+        uptimeText = days > 0 ? days + 'd ' + hrs + 'h' : hrs + 'h ' + Math.floor((seconds % 3600) / 60) + 'm';
       }
-      const data = await response.json();
-      const isUp = data && data.status === 'UP';
 
-      if (isUp) {
-        statusText.textContent = 'Systems Online';
-        statusPing.className = 'status-ping me-2';
+      let memText = 'N/A';
+      if (memRes && memRes.ok) {
+        const memData = await memRes.json();
+        const mb = (memData.measurements[0].value / (1024 * 1024)).toFixed(0);
+        memText = mb + ' MB';
+      }
 
-        
-        const diskStatus = data.components?.diskSpace?.status || 'UP';
-
-        const popoverContent = `
-          <div class="p-1" style="min-width: 200px;">
-            <div class="d-flex justify-content-between align-items-center mb-1">
-              <span class="text-body-secondary small"><i class="fas fa-server text-primary me-1"></i>Backend:</span>
-              <span class="badge bg-success-subtle text-success border border-success-subtle">UP</span>
-            </div>
-            
-            <div class="d-flex justify-content-between align-items-center mb-1">
-              <span class="text-body-secondary small"><i class="fas fa-hard-drive text-primary me-1"></i>Disk:</span>
-              <span class="badge bg-success-subtle text-success border border-success-subtle">${diskStatus}</span>
-            </div>
-            <div class="d-flex justify-content-between align-items-center mb-2">
-              <span class="text-body-secondary small"><i class="fas fa-bolt text-warning me-1"></i>Latency:</span>
-              <span class="text-primary fw-semibold small">${latency} ms</span>
-            </div>
-            <div class="border-top pt-1 text-center text-body-secondary" style="font-size: 0.7rem;">
-              Spring Boot Actuator &bull; Real-time
-            </div>
+      const popoverContent = 
+        <div class="p-1" style="min-width: 200px;">
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <span class="text-body-secondary small"><i class="fas fa-server text-primary me-1"></i>Status:</span>
+            <span class="badge bg-success-subtle text-success border border-success-subtle">UP</span>
           </div>
-        `;
-
-        updateBadgePopover(badge, popoverContent);
-      } else {
-        setDegradedStatus(badge, statusPing, statusText, 'Degraded', latency);
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <span class="text-body-secondary small"><i class="fas fa-clock text-info me-1"></i>Uptime:</span>
+            <span class="fw-medium small"> + uptimeText + </span>
+          </div>
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <span class="text-body-secondary small"><i class="fas fa-memory text-secondary me-1"></i>RAM:</span>
+            <span class="fw-medium small"> + memText + </span>
+          </div>
+          <div class="d-flex justify-content-between align-items-center border-top pt-2 mt-2">
+            <span class="text-body-secondary small"><i class="fas fa-bolt text-warning me-1"></i>Ping:</span>
+            <span class="fw-medium small"> + latency +  ms</span>
+          </div>
+        </div>
+      ;
+      
+      badge.setAttribute('data-bs-content', popoverContent);
+      const popover = bootstrap.Popover.getInstance(badge);
+      if (popover && badge.matches(':hover')) {
+          popover.setContent({ '.popover-body': popoverContent });
       }
     })
     .catch((err) => {
-      const latency = Math.round(performance.now() - startTime);
-      setDegradedStatus(badge, statusPing, statusText, 'Offline', latency);
+      console.warn('Health check failed:', err);
+      statusText.textContent = 'Degraded';
+      statusPing.className = 'status-ping degraded me-2';
+      badge.setAttribute('data-bs-content', '<div class="text-danger small"><i class="fas fa-triangle-exclamation me-1"></i>System is experiencing issues</div>');
     });
 }
 
@@ -215,4 +235,6 @@ function initScrollControls() {
   // Первоначальный расчёт при загрузке
   onScroll();
 }
+
+
 
