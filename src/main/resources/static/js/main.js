@@ -1,7 +1,6 @@
 ﻿/**
  * Основной скрипт глобальной инициализации приложения:
  * - Инициализация компонентов Bootstrap (тултипы, поповеры)
- * - Опрос Spring Boot Actuator (/actuator/health) для живого статуса системы
  * - Глобальная система Toast-уведомлений (window.showToast)
  * - Микро-анимации появления элементов при скролле (Scroll Reveal / IntersectionObserver)
  * - Индикатор прогресса чтения страницы и плавающая кнопка "Наверх"
@@ -15,13 +14,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
   popoverTriggerList.forEach((el) => new bootstrap.Popover(el, { html: true }));
 
-  // 3. Мониторинг доступности и здоровья системы (Actuator Health)
-  initSystemHealthBadge();
-
-  // 4. Плавное появление контента при прокрутке
+  // 3. Плавное появление контента при прокрутке
   initScrollReveal();
 
-  // 5. Индикатор прогресса чтения и кнопка "Наверх"
+  // 4. Индикатор прогресса чтения и кнопка "Наверх"
   initScrollControls();
 });
 
@@ -54,106 +50,6 @@ window.showToast = function (message, type = 'success') {
   const toast = bootstrap.Toast.getOrCreateInstance(toastEl, { delay: 3500 });
   toast.show();
 };
-
-function initSystemHealthBadge() {
-  const badge = document.getElementById('systemStatusBadge');
-  const statusPing = document.getElementById('statusPing');
-  const statusText = document.getElementById('systemStatusText');
-
-  if (!badge || !statusPing || !statusText) {
-    return;
-  }
-
-  const startTime = performance.now();
-
-    Promise.all([
-    fetch('/actuator/health', { cache: 'no-store' }),
-    fetch('/actuator/metrics/process.uptime', { cache: 'no-store' }).catch(() => null),
-    fetch('/actuator/metrics/jvm.memory.used', { cache: 'no-store' }).catch(() => null)
-  ])
-    .then(async ([healthRes, uptimeRes, memRes]) => {
-      const latency = Math.round(performance.now() - startTime);
-      if (!healthRes.ok) throw new Error('HTTP ' + healthRes.status);
-      
-      const healthData = await healthRes.json();
-      const isUp = healthData && healthData.status === 'UP';
-
-      if (!isUp) throw new Error('Status not UP');
-
-      statusText.textContent = 'Systems Online';
-      statusPing.className = 'status-ping me-2';
-
-      let uptimeText = 'N/A';
-      if (uptimeRes && uptimeRes.ok) {
-        const upData = await uptimeRes.json();
-        const seconds = upData.measurements[0].value;
-        const days = Math.floor(seconds / (3600 * 24));
-        const hrs = Math.floor((seconds % (3600 * 24)) / 3600);
-        uptimeText = days > 0 ? days + 'd ' + hrs + 'h' : hrs + 'h ' + Math.floor((seconds % 3600) / 60) + 'm';
-      }
-
-      let memText = 'N/A';
-      if (memRes && memRes.ok) {
-        const memData = await memRes.json();
-        const mb = (memData.measurements[0].value / (1024 * 1024)).toFixed(0);
-        memText = mb + ' MB';
-      }
-
-      const popoverContent = '<div class="p-1" style="min-width: 200px;">' +
-          '<div class="d-flex justify-content-between align-items-center mb-1">' +
-            '<span class="text-body-secondary small"><i class="fas fa-server text-primary me-1"></i>Status:</span>' +
-            '<span class="badge bg-success-subtle text-success border border-success-subtle">UP</span>' +
-          '</div>' +
-          '<div class="d-flex justify-content-between align-items-center mb-1">' +
-            '<span class="text-body-secondary small"><i class="fas fa-clock text-info me-1"></i>Uptime:</span>' +
-            '<span class="fw-medium small">' + uptimeText + '</span>' +
-          '</div>' +
-          '<div class="d-flex justify-content-between align-items-center mb-1">' +
-            '<span class="text-body-secondary small"><i class="fas fa-memory text-secondary me-1"></i>RAM:</span>' +
-            '<span class="fw-medium small">' + memText + '</span>' +
-          '</div>' +
-          '<div class="d-flex justify-content-between align-items-center border-top pt-2 mt-2">' +
-            '<span class="text-body-secondary small"><i class="fas fa-bolt text-warning me-1"></i>Ping:</span>' +
-            '<span class="fw-medium small">' + latency + ' ms</span>' +
-          '</div>' +
-        '</div>';
-      
-      badge.setAttribute('data-bs-content', popoverContent);
-      const popover = bootstrap.Popover.getInstance(badge);
-      if (popover && badge.matches(':hover')) {
-          popover.setContent({ '.popover-body': popoverContent });
-      }
-    })
-    .catch((err) => {
-      console.warn('Health check failed:', err);
-      statusText.textContent = 'Degraded';
-      statusPing.className = 'status-ping degraded me-2';
-      badge.setAttribute('data-bs-content', '<div class="text-danger small"><i class="fas fa-triangle-exclamation me-1"></i>System is experiencing issues</div>');
-    });
-}
-
-function setDegradedStatus(badge, statusPing, statusText, label, latency) {
-  statusText.textContent = label;
-  statusPing.className = 'status-ping status-ping--down me-2';
-
-  const popoverContent = `
-    <div class="p-1 text-danger small">
-      <div><strong>Внимание:</strong> Сервисы временно недоступны или работают с задержкой.</div>
-      <div class="text-muted mt-1" style="font-size: 0.75rem;">Задержка: ${latency} ms</div>
-    </div>
-  `;
-  updateBadgePopover(badge, popoverContent);
-}
-
-function updateBadgePopover(element, content) {
-  element.setAttribute('data-bs-content', content);
-  const existingPopover = bootstrap.Popover.getInstance(element);
-  if (existingPopover) {
-    existingPopover.setContent({
-      '.popover-body': content
-    });
-  }
-}
 
 /**
  * Инициализирует IntersectionObserver для элементов с классом .reveal.
@@ -199,12 +95,12 @@ function initScrollControls() {
     const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
 
     if (progressBar && docHeight > 0) {
-      const progressPercent = Math.min(100, Math.max(0, (scrollTop / docHeight) * 100));
-      progressBar.style.width = `${progressPercent}%`;
+      const scrollPercent = Math.min(100, Math.max(0, (scrollTop / docHeight) * 100));
+      progressBar.style.width = `${scrollPercent}%`;
     }
 
     if (backToTopBtn) {
-      if (scrollTop > 260) {
+      if (scrollTop > 300) {
         backToTopBtn.classList.add('show');
       } else {
         backToTopBtn.classList.remove('show');
@@ -230,10 +126,5 @@ function initScrollControls() {
     });
   }
 
-  // Первоначальный расчёт при загрузке
   onScroll();
 }
-
-
-
-
