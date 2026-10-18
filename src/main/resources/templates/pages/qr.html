@@ -3,10 +3,10 @@
 <head>
   <th:block th:replace="~{fragments/head :: head(
       title='QR-код Playground',
-      description='Моя практика работы с QR-кодами. Автоматическая генерация, предпросмотр и скачивание QR-кодов.',
-      keywords='QR code, код QR, создать QR в джаве, Java QR, QR playground',
+      description='Интерактивный генератор QR-кодов на легковесном Go-микросервисе. Мгновенная генерация, предпросмотр и скачивание.',
+      keywords='QR code, QR генератор, Golang микросервис, Go QR, QR playground, REST API',
       ogTitle='Генератор QR-кодов | Андрей Воробьев',
-      ogDescription='Генерация QR-кодов с кастомными цветами и автоматическим скачиванием.',
+      ogDescription='Генерация QR-кодов на Go-микросервисе с кастомными цветами и автоматическим скачиванием.',
       ogImage='/images/og-qr.png',
       ogUrl='https://vorobevaqa.ru/qr'
   )}"></th:block>
@@ -21,11 +21,11 @@
     <div class="row align-items-center reveal z-1">
       <div class="col-lg-8">
         <div class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill mb-3">
-          <i class="fas fa-qrcode me-1"></i> Spring Boot &bull; ZXing &bull; REST API
+          <i class="fas fa-bolt me-1"></i> Golang &bull; Microservice &bull; REST API
         </div>
         <h1 class="display-4 fw-bold mb-3">QR Code <span class="text-gradient">Playground</span></h1>
         <p class="lead text-body-secondary mb-0" style="max-width: 700px;">
-          Интерактивный генератор QR-кодов. Напишите текст или URL, выберите цвет и получите готовый результат мгновенно.
+          Интерактивный генератор QR-кодов на микросервисе Go. Напишите текст или URL, выберите цвет и получите готовый результат мгновенно.
         </p>
       </div>
       <div class="col-lg-4 text-start text-lg-end mt-4 mt-lg-0">
@@ -38,7 +38,7 @@
 
   <div class="container py-4">
     <div class="qr-tool mx-auto reveal reveal-delay-100">
-      
+
       <!-- Форма генерации -->
       <div class="qr-tool__panel">
         <div class="mb-4">
@@ -146,8 +146,8 @@
 </main>
 
 <div th:replace="~{fragments/footer :: footer}"></div>
-
 <div th:replace="~{fragments/scripts :: scripts}"></div>
 <script th:src="@{/js/pages/qr.js}" defer></script>
+
 </body>
 </html>
