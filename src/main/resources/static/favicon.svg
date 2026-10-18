@@ -1,5 +1,166 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="14" fill="#6366f1"/>
-  <path d="M18 22 L30 32 L18 42" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-  <line x1="34" y1="42" x2="46" y2="42" stroke="#38bdf8" stroke-width="4" stroke-linecap="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#111827"/>
+      <stop offset="100%" stop-color="#0d131f"/>
+    </linearGradient>
+
+    <!-- Infinity Main Loop Gradient -->
+    <linearGradient id="loopMain" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#34d399"/>
+      <stop offset="45%" stop-color="#22c55e"/>
+      <stop offset="100%" stop-color="#4ade80"/>
+    </linearGradient>
+
+    <!-- Infinity Underpass Left (Mint/Light) -->
+    <linearGradient id="underLeft" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#a7f3d0"/>
+      <stop offset="100%" stop-color="#6ee7b7"/>
+    </linearGradient>
+
+    <!-- Infinity Underpass Right (Aqua/Mint) -->
+    <linearGradient id="underRight" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#5eead4"/>
+      <stop offset="100%" stop-color="#34d399"/>
+    </linearGradient>
+
+    <!-- Pulse Wave Gradient -->
+    <linearGradient id="pulseGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#22c55e"/>
+      <stop offset="50%" stop-color="#4ade80"/>
+      <stop offset="100%" stop-color="#6ee7b7"/>
+    </linearGradient>
+
+    <!-- Clip Paths for clean 50/50 split on Shield and Inner Accents -->
+    <clipPath id="leftHalf">
+      <rect x="0" y="0" width="400" height="800"/>
+    </clipPath>
+    <clipPath id="rightHalf">
+      <rect x="400" y="0" width="400" height="800"/>
+    </clipPath>
+
+    <!-- Mask for Shield Top & Bottom Cutouts around Infinity Loop -->
+    <mask id="shieldCutout">
+      <rect x="0" y="0" width="800" height="800" fill="white"/>
+      <!-- Cutout band where infinity symbol sits -->
+      <path d="M 100 285 L 700 285 L 700 525 L 100 525 Z" fill="black"/>
+    </mask>
+  </defs>
+
+  <!-- 1. Background -->
+  <rect width="800" height="800" rx="140" fill="url(#bgGrad)"/>
+
+  <!-- 2. Outer Shield (Top & Bottom Segments with Split Lighting) -->
+  <g mask="url(#shieldCutout)">
+    <!-- Left Side of Shield -->
+    <g clip-path="url(#leftHalf)">
+      <!-- Top & Bottom Outer Shield Path -->
+      <path d="M 400 120 
+               L 215 198 
+               A 55 55 0 0 0 180 250 
+               L 180 420 
+               C 180 555 275 640 400 685 
+               C 525 640 620 555 620 420 
+               L 620 250 
+               A 55 55 0 0 0 585 198 
+               Z" 
+            fill="none" stroke="#34d399" stroke-width="32" stroke-linejoin="round"/>
+    </g>
+
+    <!-- Right Side of Shield -->
+    <g clip-path="url(#rightHalf)">
+      <path d="M 400 120 
+               L 215 198 
+               A 55 55 0 0 0 180 250 
+               L 180 420 
+               C 180 555 275 640 400 685 
+               C 525 640 620 555 620 420 
+               L 620 250 
+               A 55 55 0 0 0 585 198 
+               Z" 
+            fill="none" stroke="#bbf7d0" stroke-width="32" stroke-linejoin="round"/>
+    </g>
+  </g>
+
+  <!-- Bottom Shield Color Swap Accent (Matching the reference image split) -->
+  <g>
+    <clipPath id="bottomOnly">
+      <rect x="0" y="525" width="800" height="275"/>
+    </clipPath>
+    <g clip-path="url(#bottomOnly)" mask="url(#shieldCutout)">
+      <g clip-path="url(#leftHalf)">
+        <path d="M 180 420 C 180 555 275 640 400 685" 
+              fill="none" stroke="#5eead4" stroke-width="32" stroke-linecap="round"/>
+      </g>
+      <g clip-path="url(#rightHalf)">
+        <path d="M 620 420 C 620 555 525 640 400 685" 
+              fill="none" stroke="#4ade80" stroke-width="32" stroke-linecap="round"/>
+      </g>
+    </g>
+  </g>
+
+  <!-- 3. Inner Shield Chevron & Bottom Smile Accents -->
+  <!-- Top Inner Chevron (Left) -->
+  <g clip-path="url(#leftHalf)">
+    <path d="M 280 232 L 400 182 L 520 232" 
+          fill="none" stroke="#6ee7b7" stroke-width="26" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <!-- Top Inner Chevron (Right) -->
+  <g clip-path="url(#rightHalf)">
+    <path d="M 280 232 L 400 182 L 520 232" 
+          fill="none" stroke="#ecfdf5" stroke-width="26" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <!-- Bottom Inner Curve (Left) -->
+  <g clip-path="url(#leftHalf)">
+    <path d="M 295 570 Q 345 612 400 625 Q 455 612 505 570" 
+          fill="none" stroke="#6ee7b7" stroke-width="20" stroke-linecap="round"/>
+  </g>
+  <!-- Bottom Inner Curve (Right) -->
+  <g clip-path="url(#rightHalf)">
+    <path d="M 295 570 Q 345 612 400 625 Q 455 612 505 570" 
+          fill="none" stroke="#ecfdf5" stroke-width="20" stroke-linecap="round"/>
+  </g>
+
+  <!-- 4. Infinity Symbol (CI/CD Loop) -->
+  <!-- 4a. Upper-Left Underpass Arch -->
+  <path d="M 148 405 
+           A 112 112 0 0 1 352 330 
+           L 382 365" 
+        fill="none" stroke="url(#underLeft)" stroke-width="46" stroke-linecap="butt"/>
+
+  <!-- 4b. Lower-Right Underpass Arch -->
+  <path d="M 652 405 
+           A 112 112 0 0 1 448 480 
+           L 418 445" 
+        fill="none" stroke="url(#underRight)" stroke-width="46" stroke-linecap="butt"/>
+
+  <!-- 4c. Dark Separator Gap for Overpass Crossing -->
+  <path d="M 148 405 
+           A 112 112 0 0 0 352 480 
+           L 448 330 
+           A 112 112 0 0 1 652 405" 
+        fill="none" stroke="#0f1624" stroke-width="68" stroke-linecap="butt"/>
+
+  <!-- 4d. Continuous Overpass S-Curve (Bottom-Left to Top-Right) -->
+  <path d="M 148 405 
+           A 112 112 0 0 0 352 480 
+           C 385 445, 415 365, 448 330 
+           A 112 112 0 0 1 652 405" 
+        fill="none" stroke="url(#loopMain)" stroke-width="46" stroke-linecap="butt"/>
+
+  <!-- 5. Left Loop Icon: Bold Test-Pass Checkmark -->
+  <path d="M 222 408 L 252 438 L 306 376" 
+        fill="none" stroke="#ecfdf5" stroke-width="28" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- 6. Right Loop Icon: DevOps Pulse / Heartbeat Line -->
+  <path d="M 465 405 
+           L 498 405 
+           L 515 358 
+           L 538 450 
+           L 562 372 
+           L 578 405 
+           L 605 405" 
+        fill="none" stroke="url(#pulseGrad)" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
