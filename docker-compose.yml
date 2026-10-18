@@ -1,8 +1,7 @@
 services:
-  # ========== JAVA-APP ==========
+  # ========== JAVA PORTFOLIO APP ==========
   app:
     image: andreyvorobevaqa/portfolio-service:latest
-    container_name: my-java-app
     restart: unless-stopped
     environment:
       SPRING_PROFILES_ACTIVE: prod
@@ -16,12 +15,26 @@ services:
       - app-network
     healthcheck:
       test: [ "CMD-SHELL", "curl -f http://localhost:8080/actuator/health || exit 1" ]
-      interval: 15s
-      timeout: 5s
-      retries: 3
-      start_period: 25s
+      interval: 5s
+      timeout: 3s
+      retries: 6
+      start_period: 15s
 
-  # ========== NGINX ==========
+  # ========== GO QR-CODE MICROSERVICE ==========
+  qr-service:
+    image: andreyvorobevaqa/qr-service:latest
+    container_name: qr-microservice
+    restart: unless-stopped
+    environment:
+      PORT: "8081"
+    deploy:
+      resources:
+        limits:
+          memory: 64M
+    networks:
+      - app-network
+
+  # ========== NGINX (REVERSE PROXY / API GATEWAY) ==========
   nginx:
     image: nginx:alpine
     container_name: nginx-proxy
@@ -36,6 +49,8 @@ services:
     depends_on:
       app:
         condition: service_healthy
+      qr-service:
+        condition: service_started
     networks:
       - app-network
 

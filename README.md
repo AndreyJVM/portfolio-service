@@ -1,22 +1,25 @@
-# Portfolio & QR Code Generator Service
+# Portfolio & QR Code Generator Microservices
 
 [![Java](https://img.shields.io/badge/Java-21-orange?logo=openjdk)](https://openjdk.org/projects/jdk/21/)
+[![Go](https://img.shields.io/badge/Go-1.23-00ADD8?logo=go)](https://go.dev/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.4-brightgreen?logo=springboot)](https://spring.io/projects/spring-boot)
 [![Code Style: Google](https://img.shields.io/badge/code%20style-google-blueviolet.svg)](https://google.github.io/styleguide/javaguide.html)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![Docker](https://img.shields.io/badge/Docker-ready-blue?logo=docker)](https://hub.docker.com/r/andreyvorobevaqa/portfolio-service)
 [![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-2088FF?logo=githubactions&logoColor=white)](https://github.com/AndreyJVM)
+[![Allure](https://img.shields.io/badge/Allure-Report%202-FF69B4?logo=qameta)](https://qameta.io/)
 
-Production-ready web application combining a personal portfolio and an interactive QR code generator microservice. Built with Java 21 and Spring Boot 3.4, containerized with Docker, and deployed via a fully automated CI/CD pipeline.
+Production-ready microservices architecture combining a personal portfolio and an ultra-fast QR code generator microservice written in Go. Containerized with Docker and deployed via a fully automated CI/CD pipeline.
 
 **Live demo:** [vorobevaqa.ru](https://vorobevaqa.ru) · **Docker Hub:** [`andreyvorobevaqa/portfolio-service`](https://hub.docker.com/r/andreyvorobevaqa/portfolio-service)
 
 
 ## Table of Contents
 
-- [Tech Stack](#tech-stack)
+- [Architecture & Tech Stack](#architecture--tech-stack)
 - [Key Features](#key-features)
 - [Quick Start](#quick-start)
+- [QA Automation & Test Infrastructure](#qa-automation--test-infrastructure)
 - [Code Quality & Standards](#code-quality--standards)
 - [API Reference](#api-reference)
 - [CI/CD Pipeline](#cicd-pipeline)
@@ -25,23 +28,33 @@ Production-ready web application combining a personal portfolio and an interacti
 - [License](#license)
 
 
-## Tech Stack
+## Architecture & Tech Stack
+
+```mermaid
+flowchart TD
+    Client["Browser / API Client"] -->|HTTPS :443| Nginx["Nginx Reverse Proxy & API Gateway"]
+    Nginx -->|/api/qr| GoQR["Go QR Microservice (:8081)<br/>Ultra-lightweight ~10MB Scratch image"]
+    Nginx -->|/| JavaApp["Java Portfolio Service (:8080)<br/>Spring Boot 3.4 & Thymeleaf"]
+```
 
 | Layer | Technologies |
 |---|---|
-| **Backend** | Java 21 (Virtual Threads), Spring Boot 3.4, Spring MVC, Thymeleaf, Caffeine Cache |
-| **QR Engine** | Google ZXing (Core & JavaSE 3.5.3) |
+| **Backend (Web & Portfolio)** | Java 21 (Virtual Threads), Spring Boot 3.4, Spring MVC, Thymeleaf, Caffeine Cache |
+| **Microservice (QR Engine)** | Go 1.23, `skip2/go-qrcode`, Scratch base image (~10MB, <15ms latency) |
+| **QA Automation** | Selenide 7, REST Assured, JUnit 5, Allure Report 2 (Page Object Model) |
 | **Frontend** | Bootstrap 5.3, Font Awesome 6, Vanilla JS (ES6 modules, theme management) |
 | **Build & Tools** | Maven, Lombok, Spotless (Google Java Format), Checkstyle |
 | **Infrastructure** | Docker, Docker Compose, Nginx (reverse proxy, SSL, Gzip), Ubuntu VDS |
-| **CI/CD** | GitHub Actions (build, test, Docker Hub push, zero-downtime SSH deploy) |
+| **CI/CD** | GitHub Actions (multi-service build, test, Docker Hub push, zero-downtime SSH deploy) |
 
 ## Key Features
 
+- **Microservice Architecture** — QR-генератор вынесен в независимый легковесный сервис на Go, Nginx выступает API Gateway.
+- **Ultra-efficient Resources** — Go микросервис упакован в `scratch` (образ всего ~10 МБ, потребляет ~10 МБ RAM).
 - **Personal Portfolio** — responsive showcase with dedicated sections for completed engineering projects, skills matrix, and certifications.
 - **Dark / Light Theme** — native toggle synchronized with Bootstrap 5.3 color modes (`data-bs-theme`), no flicker on load.
-- **QR Code REST API** — high-performance QR code generation endpoint returning Base64-encoded images.
 - **Client Features** — one-click PNG download, Web Share API integration, instant clipboard copy.
+- **AQA Framework** — E2E UI тесты на Selenide (Page Object Model), REST Assured API тесты и Allure отчеты.
 - **Production-Tuned** — Nginx reverse proxy with HTTP/2, Let's Encrypt SSL, and Gzip compression; JVM container limits configured via `JAVA_OPTS`. Actuator metrics enabled.
 
 ## Quick Start
@@ -64,11 +77,49 @@ mvn spring-boot:run
 
 The application will be accessible at `http://localhost:8080`.
 
-### Run via Docker Compose
+### Run via Docker Compose (Multi-service stack)
 
 ```bash
 docker compose up -d --build
 ```
+
+---
+
+## QA Automation & Test Infrastructure
+
+В проект интегрирован фреймворк автоматизации тестирования на стеке **Java 21 + JUnit 5 + Selenide + REST Assured + Allure Report**.
+
+### Архитектура тестов:
+- **UI E2E тесты (Selenide):** реализованы с использованием паттерна Page Object Model (`BasePage`, `HomePage`, `ProjectsPage`, `QrPlaygroundPage`). Покрывают генерацию QR, выбор пресетов, смену цветовых палитр, переключение тем и сквозную навигацию.
+- **API тесты (REST Assured):** валидация контрактов `/api/qr`, позитивные и негативные сценарии, проверка структуры ошибок и граничных значений.
+- **Go Unit Tests:** модульные тесты хендлеров `/health` и `/api/qr` в директории `qr-service/`.
+- **Allure Reporting 2:** автоматическое логирование HTTP запросов/ответов через `AllureRestAssured`, скриншоты и Page Source при падениях через `AllureSelenide`, группировка по Epics/Features/Stories.
+
+### Переменные конфигурации тестов (`.env` или `-D` параметры):
+
+```properties
+SELENIUM_BROWSER=chrome                           # Браузер (chrome, firefox)
+SELENIUM_HEADLESS=true                            # Headless режим (true/false)
+TEST_BASE_URL=http://localhost:8080               # Тестируемый хост (локальный или прод)
+```
+
+### Команды запуска тестов и генерации отчетов:
+
+```bash
+# Запуск всех Java тестов (Unit + API + E2E UI)
+mvn clean test
+
+# Запуск тестов микросервиса на Go
+cd qr-service && go test -v ./... && cd ..
+
+# Генерация и локальный запуск интерактивного Allure Report в браузере
+mvn allure:serve
+
+# Генерация статического HTML отчета Allure (target/site/allure-maven-plugin)
+mvn allure:report
+```
+
+---
 
 ## Code Quality & Standards
 
@@ -100,14 +151,14 @@ mvn checkstyle:check
 | | |
 |---|---|
 | **Endpoint** | `POST /api/qr` |
+| **Service** | `qr-service` (Go) |
 | **Content-Type** | `application/json` |
 
 #### Request Body
 
 ```json
 {
-  "text": "https://vorobevaqa.ru",
-  "size": 300
+  "url": "https://vorobevaqa.ru"
 }
 ```
 
@@ -115,7 +166,8 @@ mvn checkstyle:check
 
 ```json
 {
-  "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA..."
+  "url": "https://vorobevaqa.ru",
+  "qrCode": "iVBORw0KGgoAAAANSUhEUgAA..."
 }
 ```
 
@@ -123,22 +175,20 @@ mvn checkstyle:check
 
 ```json
 {
-  "error": "Field 'text' must not be blank"
+  "error": "URL must start with http:// or https://"
 }
 ```
 
-> **Note:** confirm the exact field names, validation rules, and error format against your controller/DTO before publishing — the samples above are illustrative placeholders.
-
 ## CI/CD Pipeline
 
-1. **Build & Test** — runs `mvn clean verify` on Temurin JDK 21 on every push/PR.
-2. **Containerization** — builds an optimized Docker image and pushes tagged versions (`latest`, `${{ github.sha }}`) to Docker Hub.
-3. **Automated Deployment** — deploys the target image to the remote VDS over SSH with configuration sync and zero-downtime container recreation.
+1. **Build & Test** — параллельное тестирование Java приложения (Maven) и Go микросервиса (`go test`).
+2. **Containerization** — сборка и пуш в Docker Hub образов `andreyvorobevaqa/portfolio-service` и `andreyvorobevaqa/qr-service`.
+3. **Automated Deployment** — деплой обновленных образов на VDS через SSH с обновленной конфигурацией Nginx API Gateway и `docker compose up -d`.
 
 ```mermaid
 flowchart LR
-    A[Push / PR] --> B[Build & Test<br/>mvn clean verify]
-    B --> C[Build Docker Image]
+    A[Push / PR] --> B[Build & Test<br/>Java 21 & Go 1.23]
+    B --> C[Build Docker Images<br/>App + Go QR Service]
     C --> D[Push to Docker Hub]
     D --> E[SSH Deploy to VDS]
     E --> F[Zero-downtime Restart]
@@ -148,16 +198,29 @@ flowchart LR
 
 ```
 portfolio/
+├── qr-service/              # Go QR Microservice
+│   ├── main.go              # HTTP API Server (:8081)
+│   ├── main_test.go         # Go Unit Tests
+│   ├── go.mod & go.sum      # Go dependencies (skip2/go-qrcode)
+│   └── Dockerfile           # Minimal ~10MB Scratch image
 ├── src/
 │   ├── main/
-│   │   ├── java/            # Application source code (Google Java Style)
+│   │   ├── java/            # Portfolio Web source code (Spring Boot 3.4)
 │   │   └── resources/       # Templates, static assets, config
-│   └── test/                # Unit & integration tests
+│   └── test/
+│       ├── java/
+│       │   └── ru/vorobevaqa/
+│       │       ├── controller/  # Controller WebMvc tests
+│       │       ├── service/     # Service unit tests
+│       │       └── qa/          # AQA Framework: UI (Selenide), API (REST Assured), Pages
+│       └── resources/       # Test properties & Allure configuration
+├── nginx/
+│   └── nginx.conf           # API Gateway routing: /api/qr -> qr-service, / -> app
 ├── .editorconfig            # Universal editor configuration (2-space indent)
-├── Dockerfile               # Multi-stage Alpine container build
-├── docker-compose.yml       # Production stack configuration
+├── Dockerfile               # Java App multi-stage build
+├── docker-compose.yml       # Production stack (App + QR Microservice + Nginx)
 ├── LICENSE                  # Apache License 2.0
-├── pom.xml                  # Maven configuration with Spotless & Checkstyle
+├── pom.xml                  # Maven configuration with Spotless, Checkstyle & Allure
 └── .github/workflows/       # CI/CD pipeline definitions
 ```
 

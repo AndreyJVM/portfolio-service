@@ -1,10 +1,10 @@
 /**
- * РРЅС‚РµСЂР°РєС‚РёРІРЅС‹Р№ РјРѕРґСѓР»СЊ QR Playground:
- * - Р—Р°РїСЂРѕСЃС‹ Рє Spring Boot REST API (POST /api/qr)
- * - Р”РёРЅР°РјРёС‡РµСЃРєР°СЏ РєР°СЃС‚РѕРјРёР·Р°С†РёСЏ С†РІРµС‚Р° С‡РµСЂРµР· HTML5 Canvas
- * - Debounce РіРµРЅРµСЂР°С†РёСЏ РїСЂРё РІРІРѕРґРµ
- * - Р‘С‹СЃС‚СЂС‹Рµ РїСЂРµСЃРµС‚С‹
- * - Р­РєСЃРїРѕСЂС‚ PNG Рё РїСЂСЏРјРѕРµ РєРѕРїРёСЂРѕРІР°РЅРёРµ РєР°СЂС‚РёРЅРєРё РІ Р±СѓС„РµСЂ РѕР±РјРµРЅР°
+ * Интерактивный модуль QR Playground:
+ * - Запросы к Spring Boot REST API (POST /api/qr)
+ * - Динамическая кастомизация цвета через HTML5 Canvas
+ * - Debounce генерация при вводе
+ * - Быстрые пресеты
+ * - Экспорт PNG и прямое копирование картинки в буфер обмена
  */
 let currentQrData = null;
 let currentBase64Image = null;
@@ -24,12 +24,12 @@ async function generateQR() {
   errorDiv.style.display = 'none';
 
   if (!url) {
-    showError('РџРѕР¶Р°Р»СѓР№СЃС‚Р°, РІРІРµРґРёС‚Рµ СЃСЃС‹Р»РєСѓ');
+    showError('Пожалуйста, введите ссылку');
     return;
   }
 
   if (!url.startsWith('http://') && !url.startsWith('https://')) {
-    showError('РЎСЃС‹Р»РєР° РґРѕР»Р¶РЅР° РЅР°С‡РёРЅР°С‚СЊСЃСЏ СЃ http:// РёР»Рё https://');
+    showError('Ссылка должна начинаться с http:// или https://');
     return;
   }
 
@@ -52,7 +52,7 @@ async function generateQR() {
     document.querySelector('.qr-tool__frame').classList.remove('scanning');
 
     if (!response.ok) {
-      throw new Error('РћС€РёР±РєР° РїСЂРё РіРµРЅРµСЂР°С†РёРё РЅР° СЃРµСЂРІРµСЂРµ');
+      throw new Error('Ошибка при генерации на сервере');
     }
 
     const data = await response.json();
@@ -63,21 +63,21 @@ async function generateQR() {
     const timeBadge = document.getElementById('qrMetaTime');
     if (timeBadge) timeBadge.textContent = `${elapsed} ms`;
 
-    // РџСЂРёРјРµРЅСЏРµРј РІС‹Р±СЂР°РЅРЅС‹Р№ С†РІРµС‚ С‡РµСЂРµР· Canvas
+    // Применяем выбранный цвет через Canvas
     renderColoredQR(currentBase64Image, currentColor);
     resultDiv.style.display = 'block';
   } catch (err) {
     spinnerDiv.style.display = 'none';
     document.querySelector('.qr-tool__frame').classList.remove('scanning');
-    showError('РќРµ СѓРґР°Р»РѕСЃСЊ СЃРѕР·РґР°С‚СЊ QR-РєРѕРґ. РџСЂРѕРІРµСЂСЊС‚Рµ РїСЂР°РІРёР»СЊРЅРѕСЃС‚СЊ URL.');
+    showError('Не удалось создать QR-код. Проверьте правильность URL.');
     if (window.showToast) {
-      window.showToast('РћС€РёР±РєР° РіРµРЅРµСЂР°С†РёРё QR-РєРѕРґР°', 'danger');
+      window.showToast('Ошибка генерации QR-кода', 'danger');
     }
   }
 }
 
 /**
- * РџРµСЂРµРєСЂР°С€РёРІР°РµС‚ РјРѕРЅРѕС…СЂРѕРјРЅС‹Р№ QR-РєРѕРґ РІ С†РµР»РµРІРѕР№ HEX-С†РІРµС‚ СЃ СЃРѕС…СЂР°РЅРµРЅРёРµРј РїСЂРѕР·СЂР°С‡РЅРѕСЃС‚Рё/Р±РµР»РѕРіРѕ С„РѕРЅР°.
+ * Перекрашивает монохромный QR-код в целевой HEX-цвет с сохранением прозрачности/белого фона.
  */
 function renderColoredQR(base64Src, hexColor) {
   const imgElement = document.getElementById('qr-code-image');
@@ -100,13 +100,13 @@ function renderColoredQR(base64Src, hexColor) {
     const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     const data = imgData.data;
 
-    // РџР°СЂСЃРёРј hex-С†РІРµС‚
+    // Парсим hex-цвет
     const r = parseInt(hexColor.slice(1, 3), 16);
     const g = parseInt(hexColor.slice(3, 5), 16);
     const b = parseInt(hexColor.slice(5, 7), 16);
 
     for (let i = 0; i < data.length; i += 4) {
-      // Р•СЃР»Рё РїРёРєСЃРµР»СЊ С‚С‘РјРЅС‹Р№ (РјРѕРґСѓР»СЊ QR-РєРѕРґР°)
+      // Если пиксель тёмный (модуль QR-кода)
       if (data[i] < 128 && data[i + 1] < 128 && data[i + 2] < 128 && data[i + 3] > 0) {
         data[i] = r;
         data[i + 1] = g;
@@ -136,7 +136,7 @@ function downloadQR() {
   link.click();
 
   if (window.showToast) {
-    window.showToast('QR-РєРѕРґ СѓСЃРїРµС€РЅРѕ СЃРѕС…СЂР°РЅС‘РЅ РЅР° СѓСЃС‚СЂРѕР№СЃС‚РІРѕ', 'success');
+    window.showToast('QR-код успешно сохранен на устройство', 'success');
   }
 }
 
@@ -151,7 +151,7 @@ async function copyQRImage() {
       new ClipboardItem({ 'image/png': blob })
     ]);
     if (window.showToast) {
-      window.showToast('РљР°СЂС‚РёРЅРєР° QR-РєРѕРґР° СЃРєРѕРїРёСЂРѕРІР°РЅР° РІ Р±СѓС„РµСЂ!', 'success');
+      window.showToast('Картинка QR-кода скопирована в буфер!', 'success');
     }
   } catch (e) {
     shareQR();
@@ -163,16 +163,16 @@ function shareQR() {
 
   if (navigator.share) {
     navigator.share({
-      title: 'QR-РєРѕРґ',
-      text: 'QR-РєРѕРґ РґР»СЏ СЃСЃС‹Р»РєРё: ' + currentQrData.url,
+      title: 'QR-код',
+      text: 'QR-код для ссылки: ' + currentQrData.url,
       url: currentQrData.url
     }).catch(() => {});
   } else {
     navigator.clipboard.writeText(currentQrData.url).then(() => {
       if (window.showToast) {
-        window.showToast('РЎСЃС‹Р»РєР° СЃРєРѕРїРёСЂРѕРІР°РЅР° РІ Р±СѓС„РµСЂ РѕР±РјРµРЅР°!', 'success');
+        window.showToast('Ссылка скопирована в буфер обмена!', 'success');
       } else {
-        alert('РЎСЃС‹Р»РєР° СЃРєРѕРїРёСЂРѕРІР°РЅР° РІ Р±СѓС„РµСЂ РѕР±РјРµРЅР°!');
+        alert('Ссылка скопирована в буфер обмена!');
       }
     });
   }
@@ -184,7 +184,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const swatches = document.querySelectorAll('.color-swatch');
   const colorLabel = document.getElementById('selectedColorLabel');
 
-  // Р‘С‹СЃС‚СЂС‹Рµ РїСЂРµСЃРµС‚С‹
+  // Быстрые пресеты
   presets.forEach((btn) => {
     btn.addEventListener('click', () => {
       const presetUrl = btn.getAttribute('data-preset');
@@ -195,7 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // РџРµСЂРµРєР»СЋС‡РµРЅРёРµ С†РІРµС‚Р°
+  // Переключение цвета
   swatches.forEach((swatch) => {
     swatch.addEventListener('click', () => {
       swatches.forEach((s) => s.classList.remove('active'));
@@ -210,7 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Debounced Р¶РёРІР°СЏ РіРµРЅРµСЂР°С†РёСЏ РїСЂРё РІРІРѕРґРµ
+  // Debounced живая генерация при вводе
   if (input) {
     input.addEventListener('input', () => {
       clearTimeout(debounceTimer);
@@ -223,7 +223,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // РџРµСЂРІРѕРЅР°С‡Р°Р»СЊРЅР°СЏ РіРµРЅРµСЂР°С†РёСЏ РґРµС„РѕР»С‚РЅРѕРіРѕ Р·РЅР°С‡РµРЅРёСЏ
+  // Первоначальная генерация дефолтного значения
   generateQR();
 });
-

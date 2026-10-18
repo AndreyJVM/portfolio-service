@@ -5,13 +5,14 @@ on:
 
 env:
   DOCKER_IMAGE_NAME: andreyvorobevaqa/portfolio-service
+  QR_SERVICE_IMAGE_NAME: andreyvorobevaqa/qr-service
 
 jobs:
   # ==========================================
-  # JOB 1: Сборка и тестирование (Maven)
+  # JOB 1: Сборка и тестирование (Maven & Go)
   # ==========================================
   build-and-test:
-    name: Build with Maven
+    name: Build & Test (Java & Go)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -24,7 +25,18 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
-      - name: Build and run tests
+      - name: Set up Go 1.23
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.23'
+          cache-dependency-path: qr-service/go.sum
+
+      - name: Test Go QR Service
+        run: |
+          cd qr-service
+          go test -v ./...
+
+      - name: Build and run Java tests
         run: mvn clean verify
 
       - name: Upload JAR artifact
@@ -38,7 +50,7 @@ jobs:
   # JOB 2: Сборка Docker и пуш в Docker Hub
   # ==========================================
   docker-build-and-push:
-    name: Build and Push Docker Image
+    name: Build and Push Docker Images
     runs-on: ubuntu-latest
     needs: build-and-test
     if: github.event_name != 'pull_request'
@@ -61,7 +73,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build and push Docker image
+      - name: Build and push Java App Docker image
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -70,11 +82,20 @@ jobs:
             ${{ env.DOCKER_IMAGE_NAME }}:latest
             ${{ env.DOCKER_IMAGE_NAME }}:${{ github.sha }}
 
+      - name: Build and push Go QR Service Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./qr-service
+          push: true
+          tags: |
+            ${{ env.QR_SERVICE_IMAGE_NAME }}:latest
+            ${{ env.QR_SERVICE_IMAGE_NAME }}:${{ github.sha }}
+
   # ==========================================
-  # JOB 3: Деплой на VDS через Docker Compose
+  # JOB 3: Zero-Downtime деплой на VDS
   # ==========================================
   deploy-to-vds:
-    name: Deploy to VDS
+    name: Zero-Downtime Deploy to VDS
     runs-on: ubuntu-latest
     needs: docker-build-and-push
     if: github.event_name != 'pull_request'
@@ -91,7 +112,7 @@ jobs:
           source: "docker-compose.yml,nginx/"
           target: "/home/${{ secrets.VDS_USER }}/apps/my-app/"
 
-      - name: Deploy via SSH
+      - name: Zero-Downtime Blue-Green Deploy via SSH
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.VDS_HOST }}
@@ -99,6 +120,43 @@ jobs:
           key: ${{ secrets.VDS_SSH_KEY }}
           script: |
             cd /home/${{ secrets.VDS_USER }}/apps/my-app/
-            docker compose pull app
-            docker compose up -d --remove-orphans
+            echo "📥 1. Загрузка свежих образов..."
+            docker compose pull app qr-service
+
+            echo "⚡ 2. Быстрое обновление Go QR-микросервиса..."
+            docker compose up -d --no-deps qr-service
+
+            echo "🚀 3. Запуск нового экземпляра Java приложения рядом со старым (scale app=2)..."
+            # Запоминаем текущий работающий контейнер
+            OLD_CONTAINER_ID=$(docker compose ps -q app | head -n 1)
+
+            # Поднимаем 2 контейнера app
+            docker compose up -d --no-deps --scale app=2 --no-recreate app
+
+            echo "⏳ 4. Ожидание готовности нового экземпляра (healthcheck)..."
+            for i in $(seq 1 30); do
+              HEALTHY_COUNT=$(docker compose ps app --format '{{.Health}}' | grep -c "healthy" || true)
+              if [ "$HEALTHY_COUNT" -ge 2 ]; then
+                echo "✅ Новый контейнер прогрет и полностью здоров!"
+                break
+              fi
+              echo "   ждем готовности... ($i/30)"
+              sleep 2
+            done
+
+            echo "🔄 5. Перезагрузка Nginx..."
+            docker compose up -d --no-deps nginx
+            docker compose exec -T nginx nginx -s reload || true
+
+            echo "🧹 6. Остановка старого контейнера..."
+            if [ -n "$OLD_CONTAINER_ID" ]; then
+              docker stop "$OLD_CONTAINER_ID" || true
+              docker rm "$OLD_CONTAINER_ID" || true
+            fi
+
+            # Возвращаем scale в 1
+            docker compose up -d --no-deps --scale app=1 app
+
+            echo "🗑️ 7. Очистка неиспользуемых слоев Docker..."
             docker image prune -f
+            echo "🎉 Zero-downtime деплой успешно завершен!"

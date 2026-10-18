@@ -55,6 +55,11 @@ deploy.log
 *.pid
 .env
 
+# === Allure & QA Reports ===
+.allure/
+allure-results/
+allure-report/
+
 # === LLM & AI Agents ===
 dump.sh
 data.txt
