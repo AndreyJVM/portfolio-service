@@ -21,6 +21,7 @@ import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpHeaders;
@@ -38,19 +39,26 @@ public class AnsibleGalaxyService {
   private final RestClient restClient;
   private final String githubUsername;
 
+  @Autowired
   public AnsibleGalaxyService(@Value("${github.username:AndreyJVM}") String githubUsername) {
-    this.githubUsername = githubUsername;
+    this(defaultRestClient(), githubUsername);
+  }
 
+  public AnsibleGalaxyService(RestClient restClient, String githubUsername) {
+    this.restClient = restClient;
+    this.githubUsername = githubUsername;
+  }
+
+  private static RestClient defaultRestClient() {
     SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
     requestFactory.setConnectTimeout(Duration.ofSeconds(5));
     requestFactory.setReadTimeout(Duration.ofSeconds(10));
 
-    this.restClient =
-        RestClient.builder()
-            .requestFactory(requestFactory)
-            .baseUrl("https://galaxy.ansible.com/api/v1")
-            .defaultHeader(HttpHeaders.USER_AGENT, "Spring-Boot-Portfolio-App")
-            .build();
+    return RestClient.builder()
+        .requestFactory(requestFactory)
+        .baseUrl("https://galaxy.ansible.com/api/v1")
+        .defaultHeader(HttpHeaders.USER_AGENT, "Spring-Boot-Portfolio-App")
+        .build();
   }
 
   @Cacheable(value = CacheConfig.ANSIBLE_REPOS_CACHE, unless = "#result.isEmpty()")

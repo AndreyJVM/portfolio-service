@@ -19,10 +19,19 @@ package ru.vorobevaqa.controller.web;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+import io.qameta.allure.Description;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Severity;
+import io.qameta.allure.SeverityLevel;
+import io.qameta.allure.Story;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -33,6 +42,11 @@ import ru.vorobevaqa.service.AnsibleGalaxyService;
 import ru.vorobevaqa.service.DockerHubService;
 import ru.vorobevaqa.service.GitHubService;
 
+@Epic("Web Layer")
+@Feature("Page Navigation & Routing")
+@Story("PageController - Рендеринг HTML-страниц Thymeleaf")
+@Tag("unit")
+@Tag("controller")
 @WebMvcTest(PageController.class)
 class PageControllerTest {
 
@@ -43,13 +57,17 @@ class PageControllerTest {
   @MockBean private AnsibleGalaxyService ansibleGalaxyService;
 
   @Test
-  @DisplayName("GET / - should return index view")
+  @Severity(SeverityLevel.BLOCKER)
+  @DisplayName("WEB-01: GET / - Рендеринг главной страницы index")
+  @Description("Проверка возврата HTTP 200 и шаблона pages/index")
   void shouldReturnIndexPage() throws Exception {
     mockMvc.perform(get("/")).andExpect(status().isOk()).andExpect(view().name("pages/index"));
   }
 
   @Test
-  @DisplayName("GET /education - should return education view")
+  @Severity(SeverityLevel.CRITICAL)
+  @DisplayName("WEB-02: GET /education - Рендеринг страницы образования")
+  @Description("Проверка возврата HTTP 200 и шаблона pages/education")
   void shouldReturnEducationPage() throws Exception {
     mockMvc
         .perform(get("/education"))
@@ -58,7 +76,9 @@ class PageControllerTest {
   }
 
   @Test
-  @DisplayName("GET /about - should return education view as legacy alias")
+  @Severity(SeverityLevel.NORMAL)
+  @DisplayName("WEB-03: GET /about - Проверка легаси алиаса для страницы образования")
+  @Description("Проверка маппинга /about на шаблон pages/education")
   void shouldReturnAboutPage() throws Exception {
     mockMvc
         .perform(get("/about"))
@@ -67,7 +87,9 @@ class PageControllerTest {
   }
 
   @Test
-  @DisplayName("GET /projects - should return projects view with repos in model")
+  @Severity(SeverityLevel.CRITICAL)
+  @DisplayName("WEB-04: GET /projects - Рендеринг страницы проектов со списком репозиториев")
+  @Description("Проверка передачи модели githubRepos в представление pages/projects")
   void shouldReturnProjectsPageWithRepos() throws Exception {
     GitHubRepoDto mockRepo = new GitHubRepoDto();
     mockRepo.setName("portfolio-service");
@@ -88,7 +110,9 @@ class PageControllerTest {
   }
 
   @Test
-  @DisplayName("GET /projects - should return projects view when repos list is empty")
+  @Severity(SeverityLevel.NORMAL)
+  @DisplayName("WEB-05: GET /projects - Рендеринг страницы проектов при пустом списке репозиториев")
+  @Description("Проверка отображения страницы при отсутствии репозиториев")
   void shouldReturnProjectsPageWithEmptyRepos() throws Exception {
     when(gitHubService.getRecentRepositories()).thenReturn(List.of());
 
@@ -101,7 +125,9 @@ class PageControllerTest {
   }
 
   @Test
-  @DisplayName("GET /qr - should return qr playground view")
+  @Severity(SeverityLevel.BLOCKER)
+  @DisplayName("WEB-06: GET /qr - Рендеринг страницы QR Playground")
+  @Description("Проверка возврата HTTP 200 и шаблона pages/qr")
   void shouldReturnQrPage() throws Exception {
     mockMvc.perform(get("/qr")).andExpect(status().isOk()).andExpect(view().name("pages/qr"));
   }

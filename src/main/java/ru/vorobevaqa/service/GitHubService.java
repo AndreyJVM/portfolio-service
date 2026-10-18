@@ -21,6 +21,7 @@ import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.ParameterizedTypeReference;
@@ -38,20 +39,27 @@ public class GitHubService {
   private final RestClient restClient;
   private final String githubUsername;
 
+  @Autowired
   public GitHubService(@Value("${github.username:AndreyJVM}") String githubUsername) {
-    this.githubUsername = githubUsername;
+    this(defaultRestClient(), githubUsername);
+  }
 
+  public GitHubService(RestClient restClient, String githubUsername) {
+    this.restClient = restClient;
+    this.githubUsername = githubUsername;
+  }
+
+  private static RestClient defaultRestClient() {
     SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
     requestFactory.setConnectTimeout(Duration.ofSeconds(2));
     requestFactory.setReadTimeout(Duration.ofSeconds(3));
 
-    this.restClient =
-        RestClient.builder()
-            .requestFactory(requestFactory)
-            .baseUrl("https://api.github.com")
-            .defaultHeader(HttpHeaders.USER_AGENT, "Spring-Boot-Portfolio-App")
-            .defaultHeader(HttpHeaders.ACCEPT, "application/vnd.github.v3+json")
-            .build();
+    return RestClient.builder()
+        .requestFactory(requestFactory)
+        .baseUrl("https://api.github.com")
+        .defaultHeader(HttpHeaders.USER_AGENT, "Spring-Boot-Portfolio-App")
+        .defaultHeader(HttpHeaders.ACCEPT, "application/vnd.github.v3+json")
+        .build();
   }
 
   @Cacheable(value = CacheConfig.GITHUB_REPOS_CACHE, unless = "#result.isEmpty()")

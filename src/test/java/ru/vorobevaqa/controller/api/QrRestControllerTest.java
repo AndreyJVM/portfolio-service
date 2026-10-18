@@ -20,10 +20,19 @@ package ru.vorobevaqa.controller.api;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.qameta.allure.Description;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Severity;
+import io.qameta.allure.SeverityLevel;
+import io.qameta.allure.Story;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -37,6 +46,11 @@ import ru.vorobevaqa.dto.QrRequest;
 import ru.vorobevaqa.exception.GlobalExceptionHandler;
 import ru.vorobevaqa.service.QrCodeService;
 
+@Epic("REST API")
+@Feature("QR Code Generator")
+@Story("QrRestController - Spring MVC обработка запросов на генерацию QR")
+@Tag("unit")
+@Tag("controller")
 @WebMvcTest(QrRestController.class)
 @Import(GlobalExceptionHandler.class)
 class QrRestControllerTest {
@@ -48,7 +62,9 @@ class QrRestControllerTest {
   @MockBean private QrCodeService qrCodeService;
 
   @Test
-  @DisplayName("POST /api/qr - успешная генерация возвращает 200 и валидный JSON")
+  @Severity(SeverityLevel.BLOCKER)
+  @DisplayName("API-REST-01: POST /api/qr - успешная генерация возвращает 200 и валидный JSON")
+  @Description("Проверка возврата HTTP 200 OK, JSON-структуры с url и base64 qrCode")
   void shouldReturnQrCodeOnValidRequest() throws Exception {
     QrRequest request = new QrRequest();
     request.setUrl("https://vorobevaqa.ru");
@@ -69,7 +85,11 @@ class QrRestControllerTest {
 
   @ParameterizedTest
   @ValueSource(strings = {"invalid-url", "ftp://example.com", "javascript:alert(1)", "   "})
-  @DisplayName("POST /api/qr - ошибка валидации (невалидный формат URL) возвращает 400 Bad Request")
+  @Severity(SeverityLevel.CRITICAL)
+  @DisplayName("API-REST-02: POST /api/qr - ошибка валидации URL возвращает 400 Bad Request")
+  @Description(
+      "Проверка валидации протоколов http:// и https:// и возврата ошибки от"
+          + " GlobalExceptionHandler")
   void shouldReturnBadRequestWhenUrlIsInvalid(String invalidUrl) throws Exception {
     QrRequest request = new QrRequest();
     request.setUrl(invalidUrl);
@@ -84,7 +104,9 @@ class QrRestControllerTest {
   }
 
   @Test
-  @DisplayName("POST /api/qr - пустой или null URL возвращает 400 Bad Request")
+  @Severity(SeverityLevel.NORMAL)
+  @DisplayName("API-REST-03: POST /api/qr - пустой или null URL возвращает 400 Bad Request")
+  @Description("Проверка валидации @NotBlank для поля url в теле запроса")
   void shouldReturnBadRequestWhenUrlIsNull() throws Exception {
     QrRequest request = new QrRequest();
     request.setUrl(null);

@@ -17,13 +17,29 @@
  */
 package ru.vorobevaqa.service;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import io.qameta.allure.Description;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Severity;
+import io.qameta.allure.SeverityLevel;
+import io.qameta.allure.Story;
 import java.util.Base64;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+@Epic("Core Services")
+@Feature("QR Code Generator")
+@Story("QrCodeService - Локальная генерация QR-кодов через ZXing")
+@Tag("unit")
+@Tag("service")
 class QrCodeServiceTest {
 
   private QrCodeService qrCodeService;
@@ -34,7 +50,9 @@ class QrCodeServiceTest {
   }
 
   @Test
-  @DisplayName("Успешная генерация валидного Base64 PNG изображения")
+  @Severity(SeverityLevel.BLOCKER)
+  @DisplayName("SRV-QR-01: Успешная генерация валидного Base64 PNG изображения")
+  @Description("Проверка создания непустой строки Base64 и корректности сигнатуры PNG формата")
   void shouldGenerateValidBase64QrCode() {
     String testUrl = "https://vorobevaqa.ru";
     String base64Image = qrCodeService.generateQrCodeBase64(testUrl);
@@ -53,7 +71,9 @@ class QrCodeServiceTest {
   }
 
   @Test
-  @DisplayName("Выброс IllegalArgumentException при пустой строке или null")
+  @Severity(SeverityLevel.CRITICAL)
+  @DisplayName("SRV-QR-02: Выброс IllegalArgumentException при пустой строке или null")
+  @Description("Проверка валидации входных данных перед генерацией матрицы QR")
   void shouldThrowExceptionWhenTextIsBlankOrNull() {
     assertThrows(IllegalArgumentException.class, () -> qrCodeService.generateQrCodeBase64(null));
     assertThrows(IllegalArgumentException.class, () -> qrCodeService.generateQrCodeBase64("   "));

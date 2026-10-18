@@ -21,6 +21,7 @@ import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpHeaders;
@@ -38,20 +39,27 @@ public class DockerHubService {
   private final RestClient restClient;
   private final String dockerhubUsername;
 
+  @Autowired
   public DockerHubService(
       @Value("${dockerhub.username:andreyvorobevaqa}") String dockerhubUsername) {
-    this.dockerhubUsername = dockerhubUsername;
+    this(defaultRestClient(), dockerhubUsername);
+  }
 
+  public DockerHubService(RestClient restClient, String dockerhubUsername) {
+    this.restClient = restClient;
+    this.dockerhubUsername = dockerhubUsername;
+  }
+
+  private static RestClient defaultRestClient() {
     SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
     requestFactory.setConnectTimeout(Duration.ofSeconds(2));
     requestFactory.setReadTimeout(Duration.ofSeconds(3));
 
-    this.restClient =
-        RestClient.builder()
-            .requestFactory(requestFactory)
-            .baseUrl("https://hub.docker.com/v2")
-            .defaultHeader(HttpHeaders.USER_AGENT, "Spring-Boot-Portfolio-App")
-            .build();
+    return RestClient.builder()
+        .requestFactory(requestFactory)
+        .baseUrl("https://hub.docker.com/v2")
+        .defaultHeader(HttpHeaders.USER_AGENT, "Spring-Boot-Portfolio-App")
+        .build();
   }
 
   @Cacheable(value = CacheConfig.DOCKER_REPOS_CACHE, unless = "#result.isEmpty()")
