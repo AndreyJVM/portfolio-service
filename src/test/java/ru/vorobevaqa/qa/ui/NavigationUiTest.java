@@ -37,13 +37,16 @@ public class NavigationUiTest extends BaseUiTest {
   @Test
   @Severity(SeverityLevel.CRITICAL)
   @DisplayName("UI-NAV-01: Переход между разделами через главное меню")
-  @Description("Проверка перехода между страницами Home, Projects и QR Playground через Navbar")
+  @Description(
+      "Проверка перехода между страницами Home, Projects, Education и QR Playground через Navbar")
   void shouldNavigateThroughAllPages() {
     new HomePage()
         .openPage()
         .shouldSeeHeroSection()
         .goToProjects()
         .shouldSeeProjectsTitle()
+        .goToEducation()
+        .shouldSeeEducationHeader()
         .goToQrPlayground()
         .shouldHaveUrlInputValue("https://vorobevaqa.ru")
         .goToHome()

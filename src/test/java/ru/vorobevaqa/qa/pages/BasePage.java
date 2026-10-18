@@ -65,4 +65,10 @@ public abstract class BasePage<T extends BasePage<T>> {
     navProjects.shouldBe(visible).click();
     return new ProjectsPage();
   }
+
+  @Step("Перейти в Образование через навигацию")
+  public EducationPage goToEducation() {
+    navEducation.shouldBe(visible).click();
+    return new EducationPage();
+  }
 }
