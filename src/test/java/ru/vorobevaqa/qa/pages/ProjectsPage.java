@@ -20,8 +20,10 @@ package ru.vorobevaqa.qa.pages;
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.$$;
 import static com.codeborne.selenide.Selenide.open;
 
+import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
 
@@ -29,6 +31,9 @@ public class ProjectsPage extends BasePage<ProjectsPage> {
 
   private final SelenideElement pageTitle = $("h1");
   private final SelenideElement qrPlaygroundLink = $("a[href='/qr']");
+  private final SelenideElement githubSectionLink = $("a[href='#github-activity']");
+  private final ElementsCollection projectCards = $$(".project-card");
+  private final ElementsCollection repoLinks = $$(".project-card a.stretched-link");
 
   @Step("Открыть страницу Проектов")
   public ProjectsPage openPage() {
@@ -41,6 +46,24 @@ public class ProjectsPage extends BasePage<ProjectsPage> {
   public ProjectsPage shouldSeeProjectsTitle() {
     pageTitle.shouldBe(visible).shouldHave(text("Инженерные Решения"));
     qrPlaygroundLink.shouldBe(visible);
+    githubSectionLink.shouldBe(visible);
     return this;
+  }
+
+  @Step("Проверить отображение заголовка страницы проектов")
+  public ProjectsPage shouldSeeProjectsHeader() {
+    return shouldSeeProjectsTitle();
+  }
+
+  @Step("Проверить наличие карточек репозиториев/проектов")
+  public ProjectsPage shouldHaveProjectCards() {
+    projectCards.shouldHave(com.codeborne.selenide.CollectionCondition.sizeGreaterThan(0));
+    return this;
+  }
+
+  @Step("Перейти на страницу QR Playground по кнопке в заголовке")
+  public QrPlaygroundPage clickQrPlaygroundButton() {
+    qrPlaygroundLink.shouldBe(visible).click();
+    return new QrPlaygroundPage();
   }
 }

@@ -119,4 +119,36 @@ class QrRestControllerTest {
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.error").exists());
   }
+
+  @Test
+  @Severity(SeverityLevel.CRITICAL)
+  @DisplayName(
+      "API-REST-04: POST /api/qr - обработка ошибки сервиса возвращает 500 Internal Server Error")
+  @Description("Проверка обработки RuntimeException глобальным обработчиком GlobalExceptionHandler")
+  void shouldReturnInternalServerErrorWhenServiceFails() throws Exception {
+    QrRequest request = new QrRequest();
+    request.setUrl("https://vorobevaqa.ru");
+
+    when(qrCodeService.generateQrCodeBase64(anyString()))
+        .thenThrow(new RuntimeException("ZXing encoding error"));
+
+    mockMvc
+        .perform(
+            post("/api/qr")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+        .andExpect(status().isInternalServerError())
+        .andExpect(jsonPath("$.error").value("Internal server error: ZXing encoding error"));
+  }
+
+  @Test
+  @Severity(SeverityLevel.NORMAL)
+  @DisplayName("API-REST-05: POST /api/qr - пустой JSON объект {} возвращает 400 Bad Request")
+  @Description("Проверка валидации обязательности поля url при передаче пустого JSON")
+  void shouldReturnBadRequestWhenEmptyJsonProvided() throws Exception {
+    mockMvc
+        .perform(post("/api/qr").contentType(MediaType.APPLICATION_JSON).content("{}"))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.error").value("URL is required"));
+  }
 }

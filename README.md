@@ -1,13 +1,14 @@
 # Portfolio & QR Code Generator Microservices
 
 [![Java](https://img.shields.io/badge/Java-21-orange?logo=openjdk)](https://openjdk.org/projects/jdk/21/)
-[![Go](https://img.shields.io/badge/Go-1.23-00ADD8?logo=go)](https://go.dev/)
+[![Go](https://img.shields.io/badge/Go-1.23-00ADD8?logo=go)](https://go.dev/)\
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.4-brightgreen?logo=springboot)](https://spring.io/projects/spring-boot)
 [![Code Style: Google](https://img.shields.io/badge/code%20style-google-blueviolet.svg)](https://google.github.io/styleguide/javaguide.html)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![Docker](https://img.shields.io/badge/Docker-ready-blue?logo=docker)](https://hub.docker.com/r/andreyvorobevaqa/portfolio-service)
 [![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-2088FF?logo=githubactions&logoColor=white)](https://github.com/AndreyJVM)
 [![Allure](https://img.shields.io/badge/Allure-Report%202-FF69B4?logo=qameta)](https://qameta.io/)
+[![JMeter](https://img.shields.io/badge/JMeter-5.5-red?logo=apachejmeter)](https://jmeter.apache.org/)
 
 Production-ready microservices architecture combining a personal portfolio and an ultra-fast QR code generator microservice written in Go. Containerized with Docker and deployed via a fully automated CI/CD pipeline.
 
@@ -20,6 +21,7 @@ Production-ready microservices architecture combining a personal portfolio and a
 - [Key Features](#key-features)
 - [Quick Start](#quick-start)
 - [QA Automation & Test Infrastructure](#qa-automation--test-infrastructure)
+- [Performance & Load Testing (JMeter)](#performance--load-testing-jmeter)
 - [Code Quality & Standards](#code-quality--standards)
 - [API Reference](#api-reference)
 - [CI/CD Pipeline](#cicd-pipeline)
@@ -42,6 +44,7 @@ flowchart TD
 | **Backend (Web & Portfolio)** | Java 21 (Virtual Threads), Spring Boot 3.4, Spring MVC, Thymeleaf, Caffeine Cache |
 | **Microservice (QR Engine)** | Go 1.23, `skip2/go-qrcode`, Scratch base image (~10MB, <15ms latency) |
 | **QA Automation** | Selenide 7, REST Assured, JUnit 5, Allure Report 2 (Page Object Model) |
+| **Performance Testing** | Apache JMeter 5.5, `jmeter-maven-plugin`, HTML Dashboard Reports |
 | **Frontend** | Bootstrap 5.3, Font Awesome 6, Vanilla JS (ES6 modules, theme management) |
 | **Build & Tools** | Maven, Lombok, Spotless (Google Java Format), Checkstyle |
 | **Infrastructure** | Docker, Docker Compose, Nginx (reverse proxy, SSL, Gzip), Ubuntu VDS |
@@ -54,7 +57,8 @@ flowchart TD
 - **Personal Portfolio** — responsive showcase with dedicated sections for completed engineering projects, skills matrix, and certifications.
 - **Dark / Light Theme** — native toggle synchronized with Bootstrap 5.3 color modes (`data-bs-theme`), no flicker on load.
 - **Client Features** — one-click PNG download, Web Share API integration, instant clipboard copy.
-- **AQA Framework** — E2E UI тесты на Selenide (Page Object Model), REST Assured API тесты и Allure отчеты.
+- **AQA Framework** — E2E UI тесты на Selenide (Page Object Model), REST Assured API тесты и Allure отчеты (48 автоматизированных тестов).
+- **Performance Testing** — сценарии нагрузочного тестирования Apache JMeter с автоматической генерацией аналитических HTML-дашбордов.
 - **Production-Tuned** — Nginx reverse proxy with HTTP/2, Let's Encrypt SSL, and Gzip compression; JVM container limits configured via `JAVA_OPTS`. Actuator metrics enabled.
 
 ## Quick Start
@@ -87,11 +91,12 @@ docker compose up -d --build
 
 ## QA Automation & Test Infrastructure
 
-В проект интегрирован фреймворк автоматизации тестирования на стеке **Java 21 + JUnit 5 + Selenide + REST Assured + Allure Report**.
+В проект интегрирован фреймворк автоматизации тестирования на стеке **Java 21 + JUnit 5 + Selenide + REST Assured + Allure Report** (48 тестов).
 
 ### Архитектура тестов:
-- **UI E2E тесты (Selenide):** реализованы с использованием паттерна Page Object Model (`BasePage`, `HomePage`, `ProjectsPage`, `QrPlaygroundPage`). Покрывают генерацию QR, выбор пресетов, смену цветовых палитр, переключение тем и сквозную навигацию.
-- **API тесты (REST Assured):** валидация контрактов `/api/qr`, позитивные и негативные сценарии, проверка структуры ошибок и граничных значений.
+- **UI E2E тесты (Selenide):** реализованы с использованием паттерна Page Object Model (`BasePage`, `HomePage`, `ProjectsPage`, `EducationPage`, `QrPlaygroundPage`). Покрывают главную страницу, навигацию, каталог решений, дипломы и сертификаты, интерактивный QR Playground, переключение тем и кастомную 404 страницу.
+- **API тесты (REST Assured):** валидация контрактов `/api/qr`, позитивные и негативные сценарии, проверка структуры ошибок, граничных значений и HTTP статус-кодов (200, 400, 405, 415), мониторинг Spring Boot Actuator (`/actuator/health`, `/actuator/info`).
+- **WebMvc & Service Unit Tests:** изолированное модульное тестирование бизнес-логики интеграций с GitHub API, Docker Hub API, Ansible Galaxy API и контроллеров `PageController`, `QrRestController`.
 - **Go Unit Tests:** модульные тесты хендлеров `/health` и `/api/qr` в директории `qr-service/`.
 - **Allure Reporting 2:** автоматическое логирование HTTP запросов/ответов через `AllureRestAssured`, скриншоты и Page Source при падениях через `AllureSelenide`, группировка по Epics/Features/Stories.
 
@@ -118,6 +123,35 @@ mvn allure:serve
 # Генерация статического HTML отчета Allure (target/site/allure-maven-plugin)
 mvn allure:report
 ```
+
+---
+
+## Performance & Load Testing (JMeter)
+
+В проект встроен сценарий нагрузочного тестирования на базе **Apache JMeter 5.5** (`src/test/jmeter/qr-service-load-test.jmx`), изолированный в Maven-профиле `load-test` с помощью `jmeter-maven-plugin`.
+
+### Архитектура нагрузочного сценария:
+- **TG-01: Web Page Visitors (Browsing Navigation)** — эмуляция поведения пользователей при переходе по ключевым маршрутам приложения (`/`, `/projects`, `/education`, `/qr`), проверка HTTP 200 и валидация разметки.
+- **TG-02: High-Load QR Generator API** — высокоинтенсивный поток POST-запросов `/api/qr` с генерацией уникальных URL (`${__time()}`) и ассертами на JSON-структуру и Base64-строку.
+
+### Команды запуска нагрузочного тестирования:
+
+```bash
+# Запуск со стандартными параметрами (localhost:8080, 15 потоков)
+mvn verify -Pload-test
+
+# Запуск с переопределением целевого хоста, нагрузки и длительности
+mvn verify -Pload-test \
+  -Dloadtest.host=localhost \
+  -Dloadtest.port=8080 \
+  -Dloadtest.users.web=10 \
+  -Dloadtest.users.api=25 \
+  -Dloadtest.rampup=5 \
+  -Dloadtest.duration=30
+```
+
+После завершения прогона генерируется интерактивный HTML-дашборд с графиками Response Times (p90, p95, p99), Throughput (RPS) и Error Rate в каталоге:
+`target/jmeter/reports/index.html`.
 
 ---
 
@@ -158,7 +192,7 @@ mvn checkstyle:check
 
 ```json
 {
-  "url": "https://vorobevaqa.ru"
+  \"url\": \"https://vorobevaqa.ru\"
 }
 ```
 
@@ -166,8 +200,8 @@ mvn checkstyle:check
 
 ```json
 {
-  "url": "https://vorobevaqa.ru",
-  "qrCode": "iVBORw0KGgoAAAANSUhEUgAA..."
+  \"url\": \"https://vorobevaqa.ru\",
+  \"qrCode\": \"iVBORw0KGgoAAAANSUhEUgAA...\"
 }
 ```
 
@@ -175,7 +209,7 @@ mvn checkstyle:check
 
 ```json
 {
-  "error": "URL must start with http:// or https://"
+  \"error\": \"URL must start with http:// or https://\"
 }
 ```
 
@@ -213,6 +247,7 @@ portfolio/
 │       │       ├── controller/  # Controller WebMvc tests
 │       │       ├── service/     # Service unit tests
 │       │       └── qa/          # AQA Framework: UI (Selenide), API (REST Assured), Pages
+│       ├── jmeter/          # Apache JMeter load & performance test plans (.jmx)
 │       └── resources/       # Test properties & Allure configuration
 ├── nginx/
 │   └── nginx.conf           # API Gateway routing: /api/qr -> qr-service, / -> app

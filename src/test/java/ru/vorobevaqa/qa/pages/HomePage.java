@@ -17,11 +17,15 @@
  */
 package ru.vorobevaqa.qa.pages;
 
+import static com.codeborne.selenide.CollectionCondition.sizeGreaterThanOrEqual;
+import static com.codeborne.selenide.Condition.attribute;
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.$$;
 import static com.codeborne.selenide.Selenide.open;
 
+import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
 
@@ -30,7 +34,10 @@ public class HomePage extends BasePage<HomePage> {
   private final SelenideElement heroTitle = $("h1");
   private final SelenideElement heroDescription = $("p.lead");
   private final SelenideElement viewPortfolioBtn = $("a.btn-primary[href='/projects']");
+  private final SelenideElement contactMeBtn = $("a[href='https://t.me/AndreyAQA']");
   private final SelenideElement avatarImage = $("img.avatar-image");
+  private final SelenideElement focusBanner = $(".focus-banner");
+  private final ElementsCollection bentoCards = $$(".bento-card");
 
   @Step("Открыть Главную страницу")
   public HomePage openPage() {
@@ -45,6 +52,26 @@ public class HomePage extends BasePage<HomePage> {
     heroDescription.shouldBe(visible);
     avatarImage.shouldBe(visible);
     viewPortfolioBtn.shouldBe(visible);
+    contactMeBtn.shouldBe(visible);
+    return this;
+  }
+
+  @Step("Проверить наличие карточек ключевых компетенций (Bento Grid)")
+  public HomePage shouldHaveBentoCards() {
+    focusBanner.shouldBe(visible);
+    bentoCards.shouldHave(sizeGreaterThanOrEqual(3));
+    return this;
+  }
+
+  @Step("Нажать на кнопку 'Смотреть портфолио'")
+  public ProjectsPage clickViewPortfolio() {
+    viewPortfolioBtn.click();
+    return new ProjectsPage();
+  }
+
+  @Step("Проверить ссылку для связи в Telegram")
+  public HomePage shouldHaveValidContactLink() {
+    contactMeBtn.shouldHave(attribute("href", "https://t.me/AndreyAQA"));
     return this;
   }
 }

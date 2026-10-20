@@ -109,4 +109,43 @@ public class QrApiTest extends BaseApiTest {
         .contentType(ContentType.JSON)
         .body("error", equalTo("URL is required"));
   }
+
+  @Test
+  @Severity(SeverityLevel.NORMAL)
+  @DisplayName("API-QR-05: Ошибка 405 Method Not Allowed при вызове GET /api/qr")
+  @Description("Проверка возврата статуса 405 Method Not Allowed при неподдерживаемом HTTP методе")
+  void shouldReturnMethodNotAllowedOnGetRequest() {
+    given().when().get("/api/qr").then().statusCode(405);
+  }
+
+  @Test
+  @Severity(SeverityLevel.NORMAL)
+  @DisplayName("API-QR-06: Ошибка 415 Unsupported Media Type при неверном Content-Type")
+  @Description(
+      "Проверка возврата 415 при передаче тела с Content-Type text/plain вместо application/json")
+  void shouldReturnUnsupportedMediaTypeOnPlainText() {
+    given()
+        .contentType(ContentType.TEXT)
+        .body("https://vorobevaqa.ru")
+        .when()
+        .post("/api/qr")
+        .then()
+        .statusCode(415);
+  }
+
+  @Test
+  @Severity(SeverityLevel.NORMAL)
+  @DisplayName("API-QR-07: Ошибка валидации 400 при передаче пустого JSON {}")
+  @Description("Проверка обязательности параметров и возврата 400 Bad Request")
+  void shouldReturnBadRequestOnEmptyJsonBody() {
+    given()
+        .contentType(ContentType.JSON)
+        .body("{}")
+        .when()
+        .post("/api/qr")
+        .then()
+        .statusCode(400)
+        .contentType(ContentType.JSON)
+        .body("error", equalTo("URL is required"));
+  }
 }

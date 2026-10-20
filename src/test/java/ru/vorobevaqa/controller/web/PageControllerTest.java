@@ -37,6 +37,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.vorobevaqa.dto.AnsibleRoleDto;
+import ru.vorobevaqa.dto.DockerHubRepoDto;
 import ru.vorobevaqa.dto.GitHubRepoDto;
 import ru.vorobevaqa.service.AnsibleGalaxyService;
 import ru.vorobevaqa.service.DockerHubService;
@@ -88,40 +90,70 @@ class PageControllerTest {
 
   @Test
   @Severity(SeverityLevel.CRITICAL)
-  @DisplayName("WEB-04: GET /projects - Рендеринг страницы проектов со списком репозиториев")
-  @Description("Проверка передачи модели githubRepos в представление pages/projects")
+  @DisplayName("WEB-04: GET /projects - Рендеринг страницы проектов со всеми интеграциями")
+  @Description(
+      "Проверка передачи моделей githubRepos, dockerRepos и ansibleRoles в представление"
+          + " pages/projects")
   void shouldReturnProjectsPageWithRepos() throws Exception {
-    GitHubRepoDto mockRepo = new GitHubRepoDto();
-    mockRepo.setName("portfolio-service");
-    mockRepo.setDescription("Portfolio service with Spring Boot");
-    mockRepo.setHtmlUrl("https://github.com/AndreyJVM/portfolio-service");
-    mockRepo.setLanguage("Java");
-    mockRepo.setStars(5);
-    mockRepo.setForks(2);
+    GitHubRepoDto mockGitHub = new GitHubRepoDto();
+    mockGitHub.setName("portfolio-service");
+    mockGitHub.setDescription("Portfolio service with Spring Boot");
+    mockGitHub.setHtmlUrl("https://github.com/AndreyJVM/portfolio-service");
+    mockGitHub.setLanguage("Java");
+    mockGitHub.setStars(5);
+    mockGitHub.setForks(2);
 
-    when(gitHubService.getRecentRepositories()).thenReturn(List.of(mockRepo));
+    DockerHubRepoDto mockDocker =
+        DockerHubRepoDto.builder()
+            .name("portfolio-service")
+            .namespace("andreyjvm")
+            .description("Docker image for portfolio")
+            .pullCount(100)
+            .starCount(3)
+            .build();
+
+    AnsibleRoleDto mockAnsible = new AnsibleRoleDto();
+    mockAnsible.setName("security-baseline");
+    mockAnsible.setDescription("Ansible hardening role");
+    mockAnsible.setGithubUser("AndreyJVM");
+    mockAnsible.setDownloadCount(50);
+
+    when(gitHubService.getRecentRepositories()).thenReturn(List.of(mockGitHub));
+    when(dockerHubService.getRecentRepositories()).thenReturn(List.of(mockDocker));
+    when(ansibleGalaxyService.getRecentRoles()).thenReturn(List.of(mockAnsible));
 
     mockMvc
         .perform(get("/projects"))
         .andExpect(status().isOk())
         .andExpect(view().name("pages/projects"))
         .andExpect(model().attributeExists("githubRepos"))
-        .andExpect(model().attribute("githubRepos", List.of(mockRepo)));
+        .andExpect(model().attribute("githubRepos", List.of(mockGitHub)))
+        .andExpect(model().attributeExists("dockerRepos"))
+        .andExpect(model().attribute("dockerRepos", List.of(mockDocker)))
+        .andExpect(model().attributeExists("ansibleRoles"))
+        .andExpect(model().attribute("ansibleRoles", List.of(mockAnsible)));
   }
 
   @Test
   @Severity(SeverityLevel.NORMAL)
-  @DisplayName("WEB-05: GET /projects - Рендеринг страницы проектов при пустом списке репозиториев")
-  @Description("Проверка отображения страницы при отсутствии репозиториев")
+  @DisplayName("WEB-05: GET /projects - Рендеринг страницы проектов при пустых ответах интеграций")
+  @Description(
+      "Проверка корректного рендеринга страницы при пустых списках проектов из внешних API")
   void shouldReturnProjectsPageWithEmptyRepos() throws Exception {
     when(gitHubService.getRecentRepositories()).thenReturn(List.of());
+    when(dockerHubService.getRecentRepositories()).thenReturn(List.of());
+    when(ansibleGalaxyService.getRecentRoles()).thenReturn(List.of());
 
     mockMvc
         .perform(get("/projects"))
         .andExpect(status().isOk())
         .andExpect(view().name("pages/projects"))
         .andExpect(model().attributeExists("githubRepos"))
-        .andExpect(model().attribute("githubRepos", List.of()));
+        .andExpect(model().attribute("githubRepos", List.of()))
+        .andExpect(model().attributeExists("dockerRepos"))
+        .andExpect(model().attribute("dockerRepos", List.of()))
+        .andExpect(model().attributeExists("ansibleRoles"))
+        .andExpect(model().attribute("ansibleRoles", List.of()));
   }
 
   @Test
