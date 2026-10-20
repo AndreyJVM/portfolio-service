@@ -59,6 +59,8 @@ class TestConfigTest {
   private static final String PROP_SCREENSHOTS = "allure.screenshots";
   private static final String PROP_SAVE_PAGE_SOURCE = "allure.save-page-source";
   private static final String PROP_REMOTE_URL = "selenium.remote.url";
+  private static final String PROP_CI = "ci";
+  private static final String PROP_GITHUB_ACTIONS = "github.actions";
 
   @BeforeEach
   @AfterEach
@@ -78,6 +80,8 @@ class TestConfigTest {
     System.clearProperty(PROP_SCREENSHOTS);
     System.clearProperty(PROP_SAVE_PAGE_SOURCE);
     System.clearProperty(PROP_REMOTE_URL);
+    System.clearProperty(PROP_CI);
+    System.clearProperty(PROP_GITHUB_ACTIONS);
   }
 
   @Nested
@@ -145,13 +149,30 @@ class TestConfigTest {
       assertThat(TestConfig.isCustomBaseUrlConfigured()).isFalse();
     }
 
-    @Test
+    @ParameterizedTest
+    @ValueSource(strings = {"https://vorobevaqa.ru/", "https://vorobevaqa.ru///"})
     @Severity(SeverityLevel.NORMAL)
     @DisplayName(
-        "CFG-07: isCustomBaseUrlConfigured возвращает false при явном указании localhost:8080")
-    @Description("Проверка, что указание localhost не считается внешним кастомным хостом")
-    void shouldReturnFalseForLocalhostBaseUrl() {
-      System.setProperty(PROP_TEST_BASE_URL, "http://localhost:8080");
+        "CFG-07: Удаление закрывающего слэша (trailing slash) для предотвращения двойных слэшей")
+    @Description("Проверка нормализации URL и удаления завершающих слэшей")
+    void shouldStripTrailingSlashesFromBaseUrl(String urlWithSlash) {
+      System.setProperty(PROP_TEST_BASE_URL, urlWithSlash);
+      assertThat(TestConfig.getBaseUrl()).isEqualTo("https://vorobevaqa.ru");
+    }
+
+    @ParameterizedTest
+    @ValueSource(
+        strings = {
+          "http://localhost:8080",
+          "http://localhost:8080/",
+          "http://127.0.0.1:8080",
+          "http://127.0.0.1:8080/"
+        })
+    @Severity(SeverityLevel.NORMAL)
+    @DisplayName("CFG-08: isCustomBaseUrlConfigured возвращает false для локальных хостов")
+    @Description("Проверка, что localhost и 127.0.0.1 не считаются внешними стендами")
+    void shouldReturnFalseForLocalhostAndLoopbackBaseUrl(String localUrl) {
+      System.setProperty(PROP_TEST_BASE_URL, localUrl);
       assertThat(TestConfig.isCustomBaseUrlConfigured()).isFalse();
     }
   }
@@ -162,7 +183,7 @@ class TestConfigTest {
 
     @Test
     @Severity(SeverityLevel.NORMAL)
-    @DisplayName("CFG-08: Дефолтный браузер - chrome")
+    @DisplayName("CFG-09: Дефолтный браузер - chrome")
     @Description("Проверка значения по умолчанию для selenium.browser")
     void shouldReturnDefaultBrowser() {
       assertThat(TestConfig.getBrowser()).isEqualTo("chrome");
@@ -171,16 +192,26 @@ class TestConfigTest {
     @ParameterizedTest
     @ValueSource(strings = {"firefox", "edge", "safari"})
     @Severity(SeverityLevel.NORMAL)
-    @DisplayName("CFG-09: Чтение кастомного браузера из свойства selenium.browser")
+    @DisplayName("CFG-10: Чтение кастомного браузера из свойства selenium.browser")
     @Description("Проверка переопределения браузера через системные свойства")
     void shouldReturnCustomBrowserFromProperty(String browser) {
       System.setProperty(PROP_BROWSER, browser);
       assertThat(TestConfig.getBrowser()).isEqualTo(browser);
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"CHROME", "Firefox", "EdGe"})
+    @Severity(SeverityLevel.NORMAL)
+    @DisplayName("CFG-11: Приведение имени браузера к нижнему регистру (toLowerCase)")
+    @Description("Проверка нормализации регистра названий браузеров")
+    void shouldNormalizeBrowserNameToLowerCase(String mixedCaseBrowser) {
+      System.setProperty(PROP_BROWSER, mixedCaseBrowser);
+      assertThat(TestConfig.getBrowser()).isEqualTo(mixedCaseBrowser.toLowerCase());
+    }
+
     @Test
     @Severity(SeverityLevel.NORMAL)
-    @DisplayName("CFG-10: Дефолтная версия браузера - latest")
+    @DisplayName("CFG-12: Дефолтная версия браузера - latest")
     @Description("Проверка значения по умолчанию для selenium.browser.version")
     void shouldReturnDefaultBrowserVersion() {
       assertThat(TestConfig.getBrowserVersion()).isEqualTo("latest");
@@ -188,7 +219,7 @@ class TestConfigTest {
 
     @Test
     @Severity(SeverityLevel.NORMAL)
-    @DisplayName("CFG-11: Чтение версии браузера из свойства selenium.browser.version")
+    @DisplayName("CFG-13: Чтение версии браузера из свойства selenium.browser.version")
     @Description("Проверка переопределения версии браузера")
     void shouldReturnCustomBrowserVersionFromProperty() {
       System.setProperty(PROP_BROWSER_VERSION, "130.0");
@@ -197,7 +228,7 @@ class TestConfigTest {
 
     @Test
     @Severity(SeverityLevel.NORMAL)
-    @DisplayName("CFG-12: Дефолтное разрешение экрана - 1920x1080")
+    @DisplayName("CFG-14: Дефолтное разрешение экрана - 1920x1080")
     @Description("Проверка значения по умолчанию для selenium.browser.size")
     void shouldReturnDefaultBrowserSize() {
       assertThat(TestConfig.getBrowserSize()).isEqualTo("1920x1080");
@@ -205,7 +236,7 @@ class TestConfigTest {
 
     @Test
     @Severity(SeverityLevel.NORMAL)
-    @DisplayName("CFG-13: Чтение разрешения экрана из свойства selenium.browser.size")
+    @DisplayName("CFG-15: Чтение разрешения экрана из свойства selenium.browser.size")
     @Description("Проверка установки кастомного разрешения окна браузера")
     void shouldReturnCustomBrowserSizeFromProperty() {
       System.setProperty(PROP_BROWSER_SIZE, "1366x768");
@@ -219,7 +250,7 @@ class TestConfigTest {
 
     @Test
     @Severity(SeverityLevel.NORMAL)
-    @DisplayName("CFG-14: Дефолтный таймаут ожидания элементов - 10000 мс")
+    @DisplayName("CFG-16: Дефолтный таймаут ожидания элементов - 10000 мс")
     @Description("Проверка значения по умолчанию для selenide.timeout")
     void shouldReturnDefaultTimeout() {
       assertThat(TestConfig.getTimeout()).isEqualTo(10000L);
@@ -227,25 +258,27 @@ class TestConfigTest {
 
     @Test
     @Severity(SeverityLevel.NORMAL)
-    @DisplayName("CFG-15: Установка кастомного таймаута ожидания элементов")
+    @DisplayName("CFG-17: Установка кастомного таймаута ожидания элементов")
     @Description("Проверка чтения значения из selenide.timeout")
     void shouldReturnCustomTimeout() {
       System.setProperty(PROP_TIMEOUT, "15000");
       assertThat(TestConfig.getTimeout()).isEqualTo(15000L);
     }
 
-    @Test
+    @ParameterizedTest
+    @ValueSource(strings = {"invalid-long", "-5000", "0"})
     @Severity(SeverityLevel.NORMAL)
-    @DisplayName("CFG-16: Фолбэк на дефолт при невалидном формате selenide.timeout")
-    @Description("Проверка защиты от NumberFormatException при нечисловом значении")
-    void shouldFallbackToDefaultTimeoutOnInvalidFormat() {
-      System.setProperty(PROP_TIMEOUT, "invalid-long");
+    @DisplayName(
+        "CFG-18: Фолбэк на дефолт при невалидном или отрицательном значении selenide.timeout")
+    @Description("Проверка защиты от нечисловых, нулевых и отрицательных значений таймаута")
+    void shouldFallbackToDefaultTimeoutOnInvalidOrNonPositive(String invalidVal) {
+      System.setProperty(PROP_TIMEOUT, invalidVal);
       assertThat(TestConfig.getTimeout()).isEqualTo(10000L);
     }
 
     @Test
     @Severity(SeverityLevel.NORMAL)
-    @DisplayName("CFG-17: Дефолтный таймаут загрузки страницы - 60000 мс")
+    @DisplayName("CFG-19: Дефолтный таймаут загрузки страницы - 60000 мс")
     @Description("Проверка значения по умолчанию для selenide.page-load-timeout")
     void shouldReturnDefaultPageLoadTimeout() {
       assertThat(TestConfig.getPageLoadTimeout()).isEqualTo(60000L);
@@ -253,25 +286,26 @@ class TestConfigTest {
 
     @Test
     @Severity(SeverityLevel.NORMAL)
-    @DisplayName("CFG-18: Установка кастомного таймаута загрузки страницы")
+    @DisplayName("CFG-20: Установка кастомного таймаута загрузки страницы")
     @Description("Проверка чтения значения из selenide.page-load-timeout")
     void shouldReturnCustomPageLoadTimeout() {
       System.setProperty(PROP_PAGE_LOAD_TIMEOUT, "45000");
       assertThat(TestConfig.getPageLoadTimeout()).isEqualTo(45000L);
     }
 
-    @Test
+    @ParameterizedTest
+    @ValueSource(strings = {"abc", "-1", "0"})
     @Severity(SeverityLevel.NORMAL)
-    @DisplayName("CFG-19: Фолбэк на дефолт при невалидном формате selenide.page-load-timeout")
-    @Description("Проверка безопасной обработки некорректного значения таймаута загрузки")
-    void shouldFallbackToDefaultPageLoadTimeoutOnInvalidFormat() {
-      System.setProperty(PROP_PAGE_LOAD_TIMEOUT, "abc");
+    @DisplayName("CFG-21: Фолбэк на дефолт при некорректном selenide.page-load-timeout")
+    @Description("Проверка безопасной обработки отрицательного или некорректного таймаута загрузки")
+    void shouldFallbackToDefaultPageLoadTimeoutOnInvalid(String invalidVal) {
+      System.setProperty(PROP_PAGE_LOAD_TIMEOUT, invalidVal);
       assertThat(TestConfig.getPageLoadTimeout()).isEqualTo(60000L);
     }
 
     @Test
     @Severity(SeverityLevel.NORMAL)
-    @DisplayName("CFG-20: Дефолтная стратегия загрузки страниц - eager")
+    @DisplayName("CFG-22: Дефолтная стратегия загрузки страниц - eager")
     @Description("Проверка значения по умолчанию для selenide.page-load-strategy")
     void shouldReturnDefaultPageLoadStrategy() {
       assertThat(TestConfig.getPageLoadStrategy()).isEqualTo("eager");
@@ -280,7 +314,7 @@ class TestConfigTest {
     @ParameterizedTest
     @ValueSource(strings = {"normal", "none"})
     @Severity(SeverityLevel.NORMAL)
-    @DisplayName("CFG-21: Установка кастомной стратегии загрузки страницы")
+    @DisplayName("CFG-23: Установка кастомной стратегии загрузки страницы")
     @Description("Проверка чтения стратегий normal и none")
     void shouldReturnCustomPageLoadStrategy(String strategy) {
       System.setProperty(PROP_PAGE_LOAD_STRATEGY, strategy);
@@ -289,7 +323,7 @@ class TestConfigTest {
 
     @Test
     @Severity(SeverityLevel.NORMAL)
-    @DisplayName("CFG-22: Дефолтный интервал опроса элементов - 200 мс")
+    @DisplayName("CFG-24: Дефолтный интервал опроса элементов - 200 мс")
     @Description("Проверка значения по умолчанию для selenide.polling-interval")
     void shouldReturnDefaultPollingInterval() {
       assertThat(TestConfig.getPollingInterval()).isEqualTo(200L);
@@ -297,19 +331,20 @@ class TestConfigTest {
 
     @Test
     @Severity(SeverityLevel.NORMAL)
-    @DisplayName("CFG-23: Установка кастомного интервала опроса элементов")
+    @DisplayName("CFG-25: Установка кастомного интервала опроса элементов")
     @Description("Проверка чтения значения из selenide.polling-interval")
     void shouldReturnCustomPollingInterval() {
       System.setProperty(PROP_POLLING_INTERVAL, "350");
       assertThat(TestConfig.getPollingInterval()).isEqualTo(350L);
     }
 
-    @Test
+    @ParameterizedTest
+    @ValueSource(strings = {"invalid-interval", "-20", "0"})
     @Severity(SeverityLevel.NORMAL)
-    @DisplayName("CFG-24: Фолбэк на дефолт при невалидном формате selenide.polling-interval")
-    @Description("Проверка безопасной обработки некорректного значения интервала опроса")
-    void shouldFallbackToDefaultPollingIntervalOnInvalidFormat() {
-      System.setProperty(PROP_POLLING_INTERVAL, "invalid-interval");
+    @DisplayName("CFG-26: Фолбэк на дефолт при отрицательном или некорректном интервале опроса")
+    @Description("Проверка безопасной обработки интервала опроса")
+    void shouldFallbackToDefaultPollingIntervalOnInvalid(String invalidVal) {
+      System.setProperty(PROP_POLLING_INTERVAL, invalidVal);
       assertThat(TestConfig.getPollingInterval()).isEqualTo(200L);
     }
   }
@@ -320,7 +355,7 @@ class TestConfigTest {
 
     @Test
     @Severity(SeverityLevel.NORMAL)
-    @DisplayName("CFG-25: Дефолтный holdBrowserOpen - false")
+    @DisplayName("CFG-27: Дефолтный holdBrowserOpen - false")
     @Description("Проверка значения по умолчанию для selenide.hold-browser-open")
     void shouldReturnDefaultHoldBrowserOpen() {
       assertThat(TestConfig.isHoldBrowserOpen()).isFalse();
@@ -328,7 +363,7 @@ class TestConfigTest {
 
     @Test
     @Severity(SeverityLevel.NORMAL)
-    @DisplayName("CFG-26: Включение holdBrowserOpen через свойство selenide.hold-browser-open")
+    @DisplayName("CFG-28: Включение holdBrowserOpen через свойство selenide.hold-browser-open")
     @Description("Проверка удержания браузера открытым после тестов")
     void shouldEnableHoldBrowserOpen() {
       System.setProperty(PROP_HOLD_BROWSER_OPEN, "true");
@@ -337,7 +372,7 @@ class TestConfigTest {
 
     @Test
     @Severity(SeverityLevel.NORMAL)
-    @DisplayName("CFG-27: Дефолтный clickViaJs - false")
+    @DisplayName("CFG-29: Дефолтный clickViaJs - false")
     @Description("Проверка значения по умолчанию для selenide.click-via-js")
     void shouldReturnDefaultClickViaJs() {
       assertThat(TestConfig.isClickViaJs()).isFalse();
@@ -345,7 +380,7 @@ class TestConfigTest {
 
     @Test
     @Severity(SeverityLevel.NORMAL)
-    @DisplayName("CFG-28: Включение клика через JS через свойство selenide.click-via-js")
+    @DisplayName("CFG-30: Включение клика через JS через свойство selenide.click-via-js")
     @Description("Проверка включения эмуляции кликов через JavaScript")
     void shouldEnableClickViaJs() {
       System.setProperty(PROP_CLICK_VIA_JS, "true");
@@ -354,7 +389,7 @@ class TestConfigTest {
 
     @Test
     @Severity(SeverityLevel.NORMAL)
-    @DisplayName("CFG-29: Дефолтное создание скриншотов Allure - true")
+    @DisplayName("CFG-31: Дефолтное создание скриншотов Allure - true")
     @Description("Проверка значения по умолчанию для allure.screenshots")
     void shouldReturnDefaultScreenshotsEnabled() {
       assertThat(TestConfig.isScreenshotsEnabled()).isTrue();
@@ -362,7 +397,7 @@ class TestConfigTest {
 
     @Test
     @Severity(SeverityLevel.NORMAL)
-    @DisplayName("CFG-30: Отключение создания скриншотов Allure через свойство allure.screenshots")
+    @DisplayName("CFG-32: Отключение создания скриншотов Allure через свойство allure.screenshots")
     @Description("Проверка отключения автоматических скриншотов Allure")
     void shouldDisableScreenshots() {
       System.setProperty(PROP_SCREENSHOTS, "false");
@@ -371,7 +406,7 @@ class TestConfigTest {
 
     @Test
     @Severity(SeverityLevel.NORMAL)
-    @DisplayName("CFG-31: Дефолтное сохранение Page Source в Allure - true")
+    @DisplayName("CFG-33: Дефолтное сохранение Page Source в Allure - true")
     @Description("Проверка значения по умолчанию для allure.save-page-source")
     void shouldReturnDefaultSavePageSourceEnabled() {
       assertThat(TestConfig.isSavePageSourceEnabled()).isTrue();
@@ -379,7 +414,7 @@ class TestConfigTest {
 
     @Test
     @Severity(SeverityLevel.NORMAL)
-    @DisplayName("CFG-32: Отключение сохранения Page Source через свойство allure.save-page-source")
+    @DisplayName("CFG-34: Отключение сохранения Page Source через свойство allure.save-page-source")
     @Description("Проверка отключения сохранения исходного HTML страниц при падениях")
     void shouldDisableSavePageSource() {
       System.setProperty(PROP_SAVE_PAGE_SOURCE, "false");
@@ -388,12 +423,12 @@ class TestConfigTest {
   }
 
   @Nested
-  @DisplayName("5. Headless, Remote Grid и Рефлексия (Headless, Remote, Reflection)")
-  class HeadlessAndRemoteTests {
+  @DisplayName("5. Headless, Remote Grid, CI и Рефлексия (Headless, Remote, CI, Reflection)")
+  class HeadlessRemoteAndCiTests {
 
     @Test
     @Severity(SeverityLevel.NORMAL)
-    @DisplayName("CFG-33: Дефолтный headless режим - true")
+    @DisplayName("CFG-35: Дефолтный headless режим - true")
     @Description("Проверка значения по умолчанию для selenium.headless")
     void shouldReturnDefaultHeadlessTrue() {
       assertThat(TestConfig.isHeadless()).isTrue();
@@ -402,7 +437,7 @@ class TestConfigTest {
     @ParameterizedTest
     @ValueSource(strings = {"false", "FALSE", "False"})
     @Severity(SeverityLevel.NORMAL)
-    @DisplayName("CFG-34: Отключение headless режима через свойство selenium.headless")
+    @DisplayName("CFG-36: Отключение headless режима через свойство selenium.headless")
     @Description("Проверка отключения headless режима (false) независимо от регистра")
     void shouldReturnHeadlessFalseWhenConfigured(String headlessVal) {
       System.setProperty(PROP_HEADLESS, headlessVal);
@@ -411,7 +446,7 @@ class TestConfigTest {
 
     @Test
     @Severity(SeverityLevel.NORMAL)
-    @DisplayName("CFG-35: По умолчанию Remote Grid не сконфигурирован")
+    @DisplayName("CFG-37: По умолчанию Remote Grid не сконфигурирован")
     @Description("Проверка getRemoteUrl().isEmpty() и isRemote() == false")
     void shouldReturnRemoteDisabledByDefault() {
       assertThat(TestConfig.getRemoteUrl()).isEmpty();
@@ -420,7 +455,7 @@ class TestConfigTest {
 
     @Test
     @Severity(SeverityLevel.CRITICAL)
-    @DisplayName("CFG-36: Конфигурация Remote Selenium Grid / Selenoid")
+    @DisplayName("CFG-38: Конфигурация Remote Selenium Grid / Selenoid")
     @Description("Проверка считывания URL удалённого грида и флага isRemote()")
     void shouldConfigureRemoteGridUrl() {
       String remoteHub = "http://selenoid.local:4444/wd/hub";
@@ -431,8 +466,34 @@ class TestConfigTest {
     }
 
     @Test
+    @Severity(SeverityLevel.NORMAL)
+    @DisplayName("CFG-39: Дефолтное состояние isCi() - false")
+    @Description("Проверка выявления окружения непрерывной интеграции CI/CD")
+    void shouldReturnDefaultCiFalse() {
+      assertThat(TestConfig.isCi()).isFalse();
+    }
+
+    @Test
+    @Severity(SeverityLevel.NORMAL)
+    @DisplayName("CFG-40: Определение CI окружения через свойство ci=true")
+    @Description("Проверка активации флага CI через системное свойство ci")
+    void shouldDetectCiViaCiProperty() {
+      System.setProperty(PROP_CI, "true");
+      assertThat(TestConfig.isCi()).isTrue();
+    }
+
+    @Test
+    @Severity(SeverityLevel.NORMAL)
+    @DisplayName("CFG-41: Определение CI окружения через свойство github.actions=true")
+    @Description("Проверка активации флага CI через github.actions")
+    void shouldDetectCiViaGitHubActionsProperty() {
+      System.setProperty(PROP_GITHUB_ACTIONS, "true");
+      assertThat(TestConfig.isCi()).isTrue();
+    }
+
+    @Test
     @Severity(SeverityLevel.MINOR)
-    @DisplayName("CFG-37: Проверка приватного конструктора утилитного класса")
+    @DisplayName("CFG-42: Проверка приватного конструктора утилитного класса")
     @Description("Проверка приватного модификатора конструктора через рефлексию")
     void shouldHavePrivateConstructor()
         throws NoSuchMethodException,

@@ -38,20 +38,29 @@ public final class TestConfig {
   private TestConfig() {}
 
   public static String getBaseUrl() {
-    return getPropertyOrEnv("test.base.url", "TEST_BASE_URL")
-        .or(() -> getPropertyOrEnv("app.base-url", "APP_BASE_URL"))
-        .orElse(DEFAULT_BASE_URL);
+    String url =
+        getPropertyOrEnv("test.base.url", "TEST_BASE_URL")
+            .or(() -> getPropertyOrEnv("app.base-url", "APP_BASE_URL"))
+            .orElse(DEFAULT_BASE_URL);
+    return stripTrailingSlash(url);
   }
 
   public static boolean isCustomBaseUrlConfigured() {
     return getPropertyOrEnv("test.base.url", "TEST_BASE_URL")
         .or(() -> getPropertyOrEnv("app.base-url", "APP_BASE_URL"))
-        .filter(url -> !url.equals(DEFAULT_BASE_URL) && !url.contains("localhost:8080"))
+        .map(TestConfig::stripTrailingSlash)
+        .filter(
+            url ->
+                !url.equals(DEFAULT_BASE_URL)
+                    && !url.contains("localhost:8080")
+                    && !url.contains("127.0.0.1:8080"))
         .isPresent();
   }
 
   public static String getBrowser() {
-    return getPropertyOrEnv("selenium.browser", "SELENIUM_BROWSER").orElse(DEFAULT_BROWSER);
+    return getPropertyOrEnv("selenium.browser", "SELENIUM_BROWSER")
+        .map(String::toLowerCase)
+        .orElse(DEFAULT_BROWSER);
   }
 
   public static String getBrowserVersion() {
@@ -114,6 +123,18 @@ public final class TestConfig {
     return getRemoteUrl().isPresent();
   }
 
+  public static boolean isCi() {
+    return getBooleanPropertyOrEnv("ci", "CI", false)
+        || getBooleanPropertyOrEnv("github.actions", "GITHUB_ACTIONS", false);
+  }
+
+  private static String stripTrailingSlash(String url) {
+    if (url != null && url.endsWith("/")) {
+      return url.replaceAll("/+$", "");
+    }
+    return url;
+  }
+
   private static Optional<String> getPropertyOrEnv(String propKey, String envKey) {
     String sysProp = System.getProperty(propKey);
     if (sysProp != null && !sysProp.isBlank()) {
@@ -136,7 +157,8 @@ public final class TestConfig {
         .map(
             val -> {
               try {
-                return Long.parseLong(val);
+                long parsed = Long.parseLong(val);
+                return parsed > 0 ? parsed : defaultValue;
               } catch (NumberFormatException e) {
                 return defaultValue;
               }
