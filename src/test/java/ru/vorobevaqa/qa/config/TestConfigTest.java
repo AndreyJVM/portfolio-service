@@ -53,6 +53,11 @@ class TestConfigTest {
   private static final String PROP_TIMEOUT = "selenide.timeout";
   private static final String PROP_PAGE_LOAD_TIMEOUT = "selenide.page-load-timeout";
   private static final String PROP_PAGE_LOAD_STRATEGY = "selenide.page-load-strategy";
+  private static final String PROP_POLLING_INTERVAL = "selenide.polling-interval";
+  private static final String PROP_HOLD_BROWSER_OPEN = "selenide.hold-browser-open";
+  private static final String PROP_CLICK_VIA_JS = "selenide.click-via-js";
+  private static final String PROP_SCREENSHOTS = "allure.screenshots";
+  private static final String PROP_SAVE_PAGE_SOURCE = "allure.save-page-source";
   private static final String PROP_REMOTE_URL = "selenium.remote.url";
 
   @BeforeEach
@@ -67,6 +72,11 @@ class TestConfigTest {
     System.clearProperty(PROP_TIMEOUT);
     System.clearProperty(PROP_PAGE_LOAD_TIMEOUT);
     System.clearProperty(PROP_PAGE_LOAD_STRATEGY);
+    System.clearProperty(PROP_POLLING_INTERVAL);
+    System.clearProperty(PROP_HOLD_BROWSER_OPEN);
+    System.clearProperty(PROP_CLICK_VIA_JS);
+    System.clearProperty(PROP_SCREENSHOTS);
+    System.clearProperty(PROP_SAVE_PAGE_SOURCE);
     System.clearProperty(PROP_REMOTE_URL);
   }
 
@@ -204,7 +214,7 @@ class TestConfigTest {
   }
 
   @Nested
-  @DisplayName("3. Таймауты и стратегии загрузки (Timeouts & Strategies)")
+  @DisplayName("3. Таймауты, интервалы и стратегии загрузки (Timeouts & Strategies)")
   class TimeoutsAndStrategiesTests {
 
     @Test
@@ -276,15 +286,114 @@ class TestConfigTest {
       System.setProperty(PROP_PAGE_LOAD_STRATEGY, strategy);
       assertThat(TestConfig.getPageLoadStrategy()).isEqualTo(strategy);
     }
+
+    @Test
+    @Severity(SeverityLevel.NORMAL)
+    @DisplayName("CFG-22: Дефолтный интервал опроса элементов - 200 мс")
+    @Description("Проверка значения по умолчанию для selenide.polling-interval")
+    void shouldReturnDefaultPollingInterval() {
+      assertThat(TestConfig.getPollingInterval()).isEqualTo(200L);
+    }
+
+    @Test
+    @Severity(SeverityLevel.NORMAL)
+    @DisplayName("CFG-23: Установка кастомного интервала опроса элементов")
+    @Description("Проверка чтения значения из selenide.polling-interval")
+    void shouldReturnCustomPollingInterval() {
+      System.setProperty(PROP_POLLING_INTERVAL, "350");
+      assertThat(TestConfig.getPollingInterval()).isEqualTo(350L);
+    }
+
+    @Test
+    @Severity(SeverityLevel.NORMAL)
+    @DisplayName("CFG-24: Фолбэк на дефолт при невалидном формате selenide.polling-interval")
+    @Description("Проверка безопасной обработки некорректного значения интервала опроса")
+    void shouldFallbackToDefaultPollingIntervalOnInvalidFormat() {
+      System.setProperty(PROP_POLLING_INTERVAL, "invalid-interval");
+      assertThat(TestConfig.getPollingInterval()).isEqualTo(200L);
+    }
   }
 
   @Nested
-  @DisplayName("4. Headless, Remote Grid и Рефлексия (Headless, Remote, Reflection)")
+  @DisplayName("4. Расширенные параметры Selenide и Allure")
+  class AdvancedSettingsTests {
+
+    @Test
+    @Severity(SeverityLevel.NORMAL)
+    @DisplayName("CFG-25: Дефолтный holdBrowserOpen - false")
+    @Description("Проверка значения по умолчанию для selenide.hold-browser-open")
+    void shouldReturnDefaultHoldBrowserOpen() {
+      assertThat(TestConfig.isHoldBrowserOpen()).isFalse();
+    }
+
+    @Test
+    @Severity(SeverityLevel.NORMAL)
+    @DisplayName("CFG-26: Включение holdBrowserOpen через свойство selenide.hold-browser-open")
+    @Description("Проверка удержания браузера открытым после тестов")
+    void shouldEnableHoldBrowserOpen() {
+      System.setProperty(PROP_HOLD_BROWSER_OPEN, "true");
+      assertThat(TestConfig.isHoldBrowserOpen()).isTrue();
+    }
+
+    @Test
+    @Severity(SeverityLevel.NORMAL)
+    @DisplayName("CFG-27: Дефолтный clickViaJs - false")
+    @Description("Проверка значения по умолчанию для selenide.click-via-js")
+    void shouldReturnDefaultClickViaJs() {
+      assertThat(TestConfig.isClickViaJs()).isFalse();
+    }
+
+    @Test
+    @Severity(SeverityLevel.NORMAL)
+    @DisplayName("CFG-28: Включение клика через JS через свойство selenide.click-via-js")
+    @Description("Проверка включения эмуляции кликов через JavaScript")
+    void shouldEnableClickViaJs() {
+      System.setProperty(PROP_CLICK_VIA_JS, "true");
+      assertThat(TestConfig.isClickViaJs()).isTrue();
+    }
+
+    @Test
+    @Severity(SeverityLevel.NORMAL)
+    @DisplayName("CFG-29: Дефолтное создание скриншотов Allure - true")
+    @Description("Проверка значения по умолчанию для allure.screenshots")
+    void shouldReturnDefaultScreenshotsEnabled() {
+      assertThat(TestConfig.isScreenshotsEnabled()).isTrue();
+    }
+
+    @Test
+    @Severity(SeverityLevel.NORMAL)
+    @DisplayName("CFG-30: Отключение создания скриншотов Allure через свойство allure.screenshots")
+    @Description("Проверка отключения автоматических скриншотов Allure")
+    void shouldDisableScreenshots() {
+      System.setProperty(PROP_SCREENSHOTS, "false");
+      assertThat(TestConfig.isScreenshotsEnabled()).isFalse();
+    }
+
+    @Test
+    @Severity(SeverityLevel.NORMAL)
+    @DisplayName("CFG-31: Дефолтное сохранение Page Source в Allure - true")
+    @Description("Проверка значения по умолчанию для allure.save-page-source")
+    void shouldReturnDefaultSavePageSourceEnabled() {
+      assertThat(TestConfig.isSavePageSourceEnabled()).isTrue();
+    }
+
+    @Test
+    @Severity(SeverityLevel.NORMAL)
+    @DisplayName("CFG-32: Отключение сохранения Page Source через свойство allure.save-page-source")
+    @Description("Проверка отключения сохранения исходного HTML страниц при падениях")
+    void shouldDisableSavePageSource() {
+      System.setProperty(PROP_SAVE_PAGE_SOURCE, "false");
+      assertThat(TestConfig.isSavePageSourceEnabled()).isFalse();
+    }
+  }
+
+  @Nested
+  @DisplayName("5. Headless, Remote Grid и Рефлексия (Headless, Remote, Reflection)")
   class HeadlessAndRemoteTests {
 
     @Test
     @Severity(SeverityLevel.NORMAL)
-    @DisplayName("CFG-22: Дефолтный headless режим - true")
+    @DisplayName("CFG-33: Дефолтный headless режим - true")
     @Description("Проверка значения по умолчанию для selenium.headless")
     void shouldReturnDefaultHeadlessTrue() {
       assertThat(TestConfig.isHeadless()).isTrue();
@@ -293,7 +402,7 @@ class TestConfigTest {
     @ParameterizedTest
     @ValueSource(strings = {"false", "FALSE", "False"})
     @Severity(SeverityLevel.NORMAL)
-    @DisplayName("CFG-23: Отключение headless режима через свойство selenium.headless")
+    @DisplayName("CFG-34: Отключение headless режима через свойство selenium.headless")
     @Description("Проверка отключения headless режима (false) независимо от регистра")
     void shouldReturnHeadlessFalseWhenConfigured(String headlessVal) {
       System.setProperty(PROP_HEADLESS, headlessVal);
@@ -302,7 +411,7 @@ class TestConfigTest {
 
     @Test
     @Severity(SeverityLevel.NORMAL)
-    @DisplayName("CFG-24: По умолчанию Remote Grid не сконфигурирован")
+    @DisplayName("CFG-35: По умолчанию Remote Grid не сконфигурирован")
     @Description("Проверка getRemoteUrl().isEmpty() и isRemote() == false")
     void shouldReturnRemoteDisabledByDefault() {
       assertThat(TestConfig.getRemoteUrl()).isEmpty();
@@ -311,7 +420,7 @@ class TestConfigTest {
 
     @Test
     @Severity(SeverityLevel.CRITICAL)
-    @DisplayName("CFG-25: Конфигурация Remote Selenium Grid / Selenoid")
+    @DisplayName("CFG-36: Конфигурация Remote Selenium Grid / Selenoid")
     @Description("Проверка считывания URL удалённого грида и флага isRemote()")
     void shouldConfigureRemoteGridUrl() {
       String remoteHub = "http://selenoid.local:4444/wd/hub";
@@ -323,7 +432,7 @@ class TestConfigTest {
 
     @Test
     @Severity(SeverityLevel.MINOR)
-    @DisplayName("CFG-26: Проверка приватного конструктора утилитного класса")
+    @DisplayName("CFG-37: Проверка приватного конструктора утилитного класса")
     @Description("Проверка приватного модификатора конструктора через рефлексию")
     void shouldHavePrivateConstructor()
         throws NoSuchMethodException,

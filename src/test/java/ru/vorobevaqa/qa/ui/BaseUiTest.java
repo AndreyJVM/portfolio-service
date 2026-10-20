@@ -42,6 +42,9 @@ public abstract class BaseUiTest {
     Configuration.timeout = TestConfig.getTimeout();
     Configuration.pageLoadTimeout = TestConfig.getPageLoadTimeout();
     Configuration.pageLoadStrategy = TestConfig.getPageLoadStrategy();
+    Configuration.pollingInterval = TestConfig.getPollingInterval();
+    Configuration.holdBrowserOpen = TestConfig.isHoldBrowserOpen();
+    Configuration.clickViaJs = TestConfig.isClickViaJs();
     TestConfig.getRemoteUrl().ifPresent(url -> Configuration.remote = url);
 
     ChromeOptions options = new ChromeOptions();
@@ -57,7 +60,10 @@ public abstract class BaseUiTest {
     if (!SelenideLogger.hasListener("AllureSelenide")) {
       SelenideLogger.addListener(
           "AllureSelenide",
-          new AllureSelenide().screenshots(true).savePageSource(true).includeSelenideSteps(true));
+          new AllureSelenide()
+              .screenshots(TestConfig.isScreenshotsEnabled())
+              .savePageSource(TestConfig.isSavePageSourceEnabled())
+              .includeSelenideSteps(true));
     }
   }
 

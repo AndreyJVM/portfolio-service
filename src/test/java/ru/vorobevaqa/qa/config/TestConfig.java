@@ -29,6 +29,11 @@ public final class TestConfig {
   public static final long DEFAULT_TIMEOUT = 10000L;
   public static final long DEFAULT_PAGE_LOAD_TIMEOUT = 60000L;
   public static final String DEFAULT_PAGE_LOAD_STRATEGY = "eager";
+  public static final long DEFAULT_POLLING_INTERVAL = 200L;
+  public static final boolean DEFAULT_HOLD_BROWSER_OPEN = false;
+  public static final boolean DEFAULT_CLICK_VIA_JS = false;
+  public static final boolean DEFAULT_SCREENSHOTS = true;
+  public static final boolean DEFAULT_SAVE_PAGE_SOURCE = true;
 
   private TestConfig() {}
 
@@ -75,6 +80,30 @@ public final class TestConfig {
   public static String getPageLoadStrategy() {
     return getPropertyOrEnv("selenide.page-load-strategy", "SELENIDE_PAGE_LOAD_STRATEGY")
         .orElse(DEFAULT_PAGE_LOAD_STRATEGY);
+  }
+
+  public static long getPollingInterval() {
+    return getLongPropertyOrEnv(
+        "selenide.polling-interval", "SELENIDE_POLLING_INTERVAL", DEFAULT_POLLING_INTERVAL);
+  }
+
+  public static boolean isHoldBrowserOpen() {
+    return getBooleanPropertyOrEnv(
+        "selenide.hold-browser-open", "SELENIDE_HOLD_BROWSER_OPEN", DEFAULT_HOLD_BROWSER_OPEN);
+  }
+
+  public static boolean isClickViaJs() {
+    return getBooleanPropertyOrEnv(
+        "selenide.click-via-js", "SELENIDE_CLICK_VIA_JS", DEFAULT_CLICK_VIA_JS);
+  }
+
+  public static boolean isScreenshotsEnabled() {
+    return getBooleanPropertyOrEnv("allure.screenshots", "ALLURE_SCREENSHOTS", DEFAULT_SCREENSHOTS);
+  }
+
+  public static boolean isSavePageSourceEnabled() {
+    return getBooleanPropertyOrEnv(
+        "allure.save-page-source", "ALLURE_SAVE_PAGE_SOURCE", DEFAULT_SAVE_PAGE_SOURCE);
   }
 
   public static Optional<String> getRemoteUrl() {
