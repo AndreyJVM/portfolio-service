@@ -21,10 +21,8 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -37,6 +35,7 @@ import io.qameta.allure.Severity;
 import io.qameta.allure.SeverityLevel;
 import io.qameta.allure.Story;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -45,8 +44,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import ru.vorobevaqa.dto.QrRequest;
 import ru.vorobevaqa.exception.GlobalExceptionHandler;
 import ru.vorobevaqa.service.QrCodeService;
@@ -60,238 +61,238 @@ import ru.vorobevaqa.service.QrCodeService;
 @Import(GlobalExceptionHandler.class)
 class QrRestControllerTest {
 
-  @Autowired private MockMvc mockMvc;
+  private static final String QR_ENDPOINT = "/api/qr";
+  private static final String DEFAULT_VALID_URL = "https://vorobevaqa.ru";
+  private static final String MOCK_BASE64_QR = "iVBORw0KGgoAAAANSUhEUgAA...";
 
+  @Autowired private MockMvc mockMvc;
   @Autowired private ObjectMapper objectMapper;
 
   @MockBean private QrCodeService qrCodeService;
 
-  @Test
-  @Severity(SeverityLevel.BLOCKER)
-  @DisplayName("API-REST-01: POST /api/qr - успешная генерация возвращает 200 и валидный JSON")
-  @Description("Проверка возврата HTTP 200 OK, JSON-структуры с url и base64 qrCode")
-  void shouldReturnQrCodeOnValidRequest() throws Exception {
+  // ==========================================
+  // Helper Methods for clean, readable DSL
+  // ==========================================
+
+  private static QrRequest requestFor(String url) {
     QrRequest request = new QrRequest();
-    request.setUrl("https://vorobevaqa.ru");
-
-    String fakeBase64 = "fakeBase64String";
-    when(qrCodeService.generateQrCodeBase64(anyString())).thenReturn(fakeBase64);
-
-    mockMvc
-        .perform(
-            post("/api/qr")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
-        .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.url").value("https://vorobevaqa.ru"))
-        .andExpect(jsonPath("$.qrCode").value(fakeBase64));
-
-    verify(qrCodeService).generateQrCodeBase64("https://vorobevaqa.ru");
+    request.setUrl(url);
+    return request;
   }
 
-  @ParameterizedTest
-  @ValueSource(strings = {"invalid-url", "ftp://example.com", "javascript:alert(1)", "   "})
-  @Severity(SeverityLevel.CRITICAL)
-  @DisplayName("API-REST-02: POST /api/qr - ошибка валидации URL возвращает 400 Bad Request")
-  @Description(
-      "Проверка валидации протоколов http:// и https:// и возврата ошибки от"
-          + " GlobalExceptionHandler")
-  void shouldReturnBadRequestWhenUrlIsInvalid(String invalidUrl) throws Exception {
-    QrRequest request = new QrRequest();
-    request.setUrl(invalidUrl);
-
-    mockMvc
-        .perform(
-            post("/api/qr")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
-        .andExpect(status().isBadRequest())
-        .andExpect(jsonPath("$.error").exists());
-
-    verifyNoInteractions(qrCodeService);
+  private ResultActions performPost(QrRequest request) throws Exception {
+    return performPostRawJson(objectMapper.writeValueAsString(request));
   }
 
-  @Test
-  @Severity(SeverityLevel.NORMAL)
-  @DisplayName("API-REST-03: POST /api/qr - пустой или null URL возвращает 400 Bad Request")
-  @Description("Проверка валидации @NotBlank для поля url в теле запроса")
-  void shouldReturnBadRequestWhenUrlIsNull() throws Exception {
-    QrRequest request = new QrRequest();
-    request.setUrl(null);
-
-    mockMvc
-        .perform(
-            post("/api/qr")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
-        .andExpect(status().isBadRequest())
-        .andExpect(jsonPath("$.error").exists());
-
-    verifyNoInteractions(qrCodeService);
+  private ResultActions performPostRawJson(String json) throws Exception {
+    return mockMvc.perform(
+        post(QR_ENDPOINT)
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+            .content(json));
   }
 
-  @Test
-  @Severity(SeverityLevel.CRITICAL)
-  @DisplayName(
-      "API-REST-04: POST /api/qr - обработка ошибки сервиса возвращает 500 Internal Server Error")
-  @Description("Проверка обработки RuntimeException глобальным обработчиком GlobalExceptionHandler")
-  void shouldReturnInternalServerErrorWhenServiceFails() throws Exception {
-    QrRequest request = new QrRequest();
-    request.setUrl("https://vorobevaqa.ru");
+  // ==========================================
+  // 1. Успешные сценарии (200 OK)
+  // ==========================================
+  @Nested
+  @DisplayName("1. Успешная генерация QR-кода (200 OK)")
+  class SuccessScenarios {
 
-    when(qrCodeService.generateQrCodeBase64(anyString()))
-        .thenThrow(new RuntimeException("ZXing encoding error"));
+    @Test
+    @Severity(SeverityLevel.BLOCKER)
+    @DisplayName("API-REST-01: Успешная генерация возвращает 200 OK и валидный JSON")
+    @Description("Проверка возврата HTTP 200 OK, JSON-структуры с url и base64 qrCode")
+    void shouldReturnQrCodeOnValidRequest() throws Exception {
+      when(qrCodeService.generateQrCodeBase64(DEFAULT_VALID_URL)).thenReturn(MOCK_BASE64_QR);
 
-    mockMvc
-        .perform(
-            post("/api/qr")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
-        .andExpect(status().isInternalServerError())
-        .andExpect(jsonPath("$.error").value("Internal server error: ZXing encoding error"));
+      performPost(requestFor(DEFAULT_VALID_URL))
+          .andExpect(status().isOk())
+          .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+          .andExpect(jsonPath("$.url").value(DEFAULT_VALID_URL))
+          .andExpect(jsonPath("$.qrCode").value(MOCK_BASE64_QR));
+
+      verify(qrCodeService).generateQrCodeBase64(DEFAULT_VALID_URL);
+    }
+
+    @ParameterizedTest
+    @ValueSource(
+        strings = {
+          "http://vorobevaqa.ru",
+          "https://sub.domain.example.com:8443/api/v1/path?query=1&sort=asc#section",
+          "https://мойдомен.рф/тест",
+          "http://127.0.0.1:8080/ping"
+        })
+    @Severity(SeverityLevel.NORMAL)
+    @DisplayName("API-REST-02: Поддержка различных валидных структур и протоколов URL")
+    @Description(
+        "Проверка генерации QR для HTTP, HTTPS, нестандартных портов, query-параметров и кириллицы")
+    void shouldAcceptVariousValidUrlFormats(String validUrl) throws Exception {
+      when(qrCodeService.generateQrCodeBase64(validUrl)).thenReturn(MOCK_BASE64_QR);
+
+      performPost(requestFor(validUrl))
+          .andExpect(status().isOk())
+          .andExpect(jsonPath("$.url").value(validUrl))
+          .andExpect(jsonPath("$.qrCode").value(MOCK_BASE64_QR));
+
+      verify(qrCodeService).generateQrCodeBase64(validUrl);
+    }
+
+    @Test
+    @Severity(SeverityLevel.NORMAL)
+    @DisplayName("API-REST-03: Корректная обработка длинного URL (>1000 символов)")
+    @Description("Проверка передачи длинного URL без обрезания в бизнес-логику")
+    void shouldHandleLongUrlSuccessfully() throws Exception {
+      String longUrl = DEFAULT_VALID_URL + "/" + "a".repeat(1000);
+      when(qrCodeService.generateQrCodeBase64(longUrl)).thenReturn(MOCK_BASE64_QR);
+
+      performPost(requestFor(longUrl))
+          .andExpect(status().isOk())
+          .andExpect(jsonPath("$.url").value(longUrl))
+          .andExpect(jsonPath("$.qrCode").value(MOCK_BASE64_QR));
+
+      verify(qrCodeService).generateQrCodeBase64(longUrl);
+    }
+
+    @Test
+    @Severity(SeverityLevel.NORMAL)
+    @DisplayName("API-REST-04: Игнорирование неизвестных дополнительных полей в JSON")
+    @Description("Проверка устойчивости контроллера при получении нештатных дополнительных полей")
+    void shouldIgnoreUnknownFieldsInJson() throws Exception {
+      String payloadWithExtra =
+          "{\"url\": \"" + DEFAULT_VALID_URL + "\", \"unknownField\": \"value\", \"id\": 999}";
+      when(qrCodeService.generateQrCodeBase64(DEFAULT_VALID_URL)).thenReturn(MOCK_BASE64_QR);
+
+      performPostRawJson(payloadWithExtra)
+          .andExpect(status().isOk())
+          .andExpect(jsonPath("$.url").value(DEFAULT_VALID_URL))
+          .andExpect(jsonPath("$.qrCode").value(MOCK_BASE64_QR));
+
+      verify(qrCodeService).generateQrCodeBase64(DEFAULT_VALID_URL);
+    }
   }
 
-  @Test
-  @Severity(SeverityLevel.NORMAL)
-  @DisplayName("API-REST-05: POST /api/qr - пустой JSON объект {} возвращает 400 Bad Request")
-  @Description("Проверка валидации обязательности поля url при передаче пустого JSON")
-  void shouldReturnBadRequestWhenEmptyJsonProvided() throws Exception {
-    mockMvc
-        .perform(post("/api/qr").contentType(MediaType.APPLICATION_JSON).content("{}"))
-        .andExpect(status().isBadRequest())
-        .andExpect(jsonPath("$.error").value("URL is required"));
+  // ==========================================
+  // 2. Валидация входных данных (400 Bad Request)
+  // ==========================================
+  @Nested
+  @DisplayName("2. Валидация входных данных (400 Bad Request)")
+  class ValidationScenarios {
 
-    verifyNoInteractions(qrCodeService);
+    @ParameterizedTest
+    @ValueSource(
+        strings = {
+          "invalid-url",
+          "ftp://example.com",
+          "file:///etc/passwd",
+          "javascript:alert(1)",
+          "www.vorobevaqa.ru",
+          "   "
+        })
+    @Severity(SeverityLevel.CRITICAL)
+    @DisplayName("API-REST-05: Невалидный формат URL возвращает 400 Bad Request")
+    @Description("Проверка валидации протоколов http:// и https://")
+    void shouldReturnBadRequestWhenUrlIsInvalid(String invalidUrl) throws Exception {
+      performPost(requestFor(invalidUrl))
+          .andExpect(status().isBadRequest())
+          .andExpect(jsonPath("$.error").exists());
+
+      verifyNoInteractions(qrCodeService);
+    }
+
+    @Test
+    @Severity(SeverityLevel.NORMAL)
+    @DisplayName("API-REST-06: Null URL возвращает 400 Bad Request с понятным сообщением")
+    @Description("Проверка срабатывания аннотации @NotBlank для null значения")
+    void shouldReturnBadRequestWhenUrlIsNull() throws Exception {
+      performPost(requestFor(null))
+          .andExpect(status().isBadRequest())
+          .andExpect(jsonPath("$.error").value("URL is required"));
+
+      verifyNoInteractions(qrCodeService);
+    }
+
+    @Test
+    @Severity(SeverityLevel.NORMAL)
+    @DisplayName("API-REST-07: Пустой JSON объект {} возвращает 400 Bad Request")
+    @Description("Проверка обязательности поля url при передаче пустого JSON")
+    void shouldReturnBadRequestWhenEmptyJsonProvided() throws Exception {
+      performPostRawJson("{}")
+          .andExpect(status().isBadRequest())
+          .andExpect(jsonPath("$.error").value("URL is required"));
+
+      verifyNoInteractions(qrCodeService);
+    }
   }
 
-  @ParameterizedTest
-  @ValueSource(
-      strings = {
-        "http://vorobevaqa.ru",
-        "https://sub.domain.example.com:8443/api/v1/path?query=1&sort=asc#section",
-        "https://мойдомен.рф/тест",
-        "http://127.0.0.1:8080/ping"
-      })
-  @Severity(SeverityLevel.NORMAL)
-  @DisplayName("API-REST-06: POST /api/qr - поддержка различных валидных структур и протоколов URL")
-  @Description(
-      "Проверка генерации QR для HTTP, HTTPS, нестандартных портов, query-параметров и кириллицы")
-  void shouldAcceptVariousValidUrlFormats(String validUrl) throws Exception {
-    QrRequest request = new QrRequest();
-    request.setUrl(validUrl);
+  // ==========================================
+  // 3. Протокольные ограничения (405 & 415)
+  // ==========================================
+  @Nested
+  @DisplayName("3. Протокольные ограничения (405 Method Not Allowed & 415 Unsupported Media Type)")
+  class ProtocolScenarios {
 
-    when(qrCodeService.generateQrCodeBase64(validUrl)).thenReturn("mockQrBase64");
+    @ParameterizedTest
+    @ValueSource(strings = {"GET", "PUT", "DELETE", "PATCH"})
+    @Severity(SeverityLevel.NORMAL)
+    @DisplayName("API-REST-08: Неподдерживаемые HTTP методы возвращают 405 Method Not Allowed")
+    @Description("Проверка запрета методов GET, PUT, DELETE, PATCH для эндпоинта /api/qr")
+    void shouldReturnMethodNotAllowedForUnsupportedHttpMethods(String httpMethod) throws Exception {
+      mockMvc
+          .perform(
+              request(HttpMethod.valueOf(httpMethod), QR_ENDPOINT)
+                  .contentType(MediaType.APPLICATION_JSON)
+                  .content(objectMapper.writeValueAsString(requestFor(DEFAULT_VALID_URL))))
+          .andExpect(status().isMethodNotAllowed());
 
-    mockMvc
-        .perform(
-            post("/api/qr")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.url").value(validUrl))
-        .andExpect(jsonPath("$.qrCode").value("mockQrBase64"));
+      verifyNoInteractions(qrCodeService);
+    }
 
-    verify(qrCodeService).generateQrCodeBase64(validUrl);
+    @ParameterizedTest
+    @ValueSource(strings = {MediaType.APPLICATION_XML_VALUE, MediaType.TEXT_PLAIN_VALUE})
+    @Severity(SeverityLevel.NORMAL)
+    @DisplayName("API-REST-09: Неподдерживаемый Content-Type возвращает 415 Unsupported Media Type")
+    @Description("Проверка возврата HTTP 415 при передаче XML или plain text вместо JSON")
+    void shouldReturnUnsupportedMediaType(String contentType) throws Exception {
+      mockMvc
+          .perform(post(QR_ENDPOINT).contentType(contentType).content(DEFAULT_VALID_URL))
+          .andExpect(status().isUnsupportedMediaType());
+
+      verifyNoInteractions(qrCodeService);
+    }
   }
 
-  @Test
-  @Severity(SeverityLevel.NORMAL)
-  @DisplayName("API-REST-07: POST /api/qr - игнорирование неизвестных дополнительных полей в JSON")
-  @Description("Проверка устойчивости контроллера при получении нештатных дополнительных полей")
-  void shouldIgnoreUnknownFieldsInJson() throws Exception {
-    String payloadWithExtra =
-        "{\"url\": \"https://vorobevaqa.ru\", \"unknownField\": \"value\", \"id\": 999}";
+  // ==========================================
+  // 4. Обработка серверных сбоев (500 Internal Server Error)
+  // ==========================================
+  @Nested
+  @DisplayName("4. Обработка серверных сбоев (500 Internal Server Error)")
+  class ErrorHandlingScenarios {
 
-    when(qrCodeService.generateQrCodeBase64("https://vorobevaqa.ru")).thenReturn("extraFieldQr");
+    @Test
+    @Severity(SeverityLevel.CRITICAL)
+    @DisplayName("API-REST-10: Ошибка генерации QR в сервисе возвращает 500 Internal Server Error")
+    @Description(
+        "Проверка перехвата RuntimeException глобальным обработчиком GlobalExceptionHandler")
+    void shouldReturnInternalServerErrorWhenServiceFails() throws Exception {
+      when(qrCodeService.generateQrCodeBase64(anyString()))
+          .thenThrow(new RuntimeException("ZXing encoding error"));
 
-    mockMvc
-        .perform(post("/api/qr").contentType(MediaType.APPLICATION_JSON).content(payloadWithExtra))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.url").value("https://vorobevaqa.ru"))
-        .andExpect(jsonPath("$.qrCode").value("extraFieldQr"));
-  }
+      performPost(requestFor(DEFAULT_VALID_URL))
+          .andExpect(status().isInternalServerError())
+          .andExpect(jsonPath("$.error").value("Internal server error: ZXing encoding error"));
+    }
 
-  @ParameterizedTest
-  @ValueSource(strings = {MediaType.APPLICATION_XML_VALUE, MediaType.TEXT_PLAIN_VALUE})
-  @Severity(SeverityLevel.NORMAL)
-  @DisplayName(
-      "API-REST-08: POST /api/qr - возврат 415 Unsupported Media Type при неверном Content-Type")
-  @Description("Проверка возврата HTTP 415 при передаче XML или plain text вместо JSON")
-  void shouldReturnUnsupportedMediaType(String contentType) throws Exception {
-    mockMvc
-        .perform(post("/api/qr").contentType(contentType).content("https://vorobevaqa.ru"))
-        .andExpect(status().isUnsupportedMediaType());
+    @Test
+    @Severity(SeverityLevel.NORMAL)
+    @DisplayName("API-REST-11: Синтаксически некорректный JSON возвращает 500")
+    @Description("Проверка обработки синтаксически битого JSON через GlobalExceptionHandler")
+    void shouldHandleMalformedJsonBody() throws Exception {
+      String malformedJson = "{\"url\": \"https://vorobevaqa.ru\""; // незакрытая фигурная скобка
 
-    verifyNoInteractions(qrCodeService);
-  }
+      performPostRawJson(malformedJson).andExpect(status().is5xxServerError());
 
-  @Test
-  @Severity(SeverityLevel.NORMAL)
-  @DisplayName("API-REST-09: GET /api/qr - возврат 405 Method Not Allowed при вызове GET")
-  @Description("Проверка запрета метода GET для эндпоинта /api/qr")
-  void shouldReturnMethodNotAllowedOnGet() throws Exception {
-    mockMvc.perform(get("/api/qr")).andExpect(status().isMethodNotAllowed());
-  }
-
-  @Test
-  @Severity(SeverityLevel.NORMAL)
-  @DisplayName("API-REST-10: PUT /api/qr - возврат 405 Method Not Allowed при вызове PUT")
-  @Description("Проверка запрета метода PUT для эндпоинта /api/qr")
-  void shouldReturnMethodNotAllowedOnPut() throws Exception {
-    mockMvc
-        .perform(
-            put("/api/qr")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"url\": \"https://vorobevaqa.ru\"}"))
-        .andExpect(status().isMethodNotAllowed());
-  }
-
-  @Test
-  @Severity(SeverityLevel.NORMAL)
-  @DisplayName("API-REST-11: DELETE /api/qr - возврат 405 Method Not Allowed при вызове DELETE")
-  @Description("Проверка запрета метода DELETE для эндпоинта /api/qr")
-  void shouldReturnMethodNotAllowedOnDelete() throws Exception {
-    mockMvc.perform(delete("/api/qr")).andExpect(status().isMethodNotAllowed());
-  }
-
-  @Test
-  @Severity(SeverityLevel.NORMAL)
-  @DisplayName("API-REST-12: POST /api/qr - поддержка длинного URL (>1000 символов)")
-  @Description("Проверка корректной передачи длинного URL без искажений в бизнес-логику")
-  void shouldHandleLongUrlSuccessfully() throws Exception {
-    String longPath = "a".repeat(1000);
-    String longUrl = "https://vorobevaqa.ru/" + longPath;
-
-    QrRequest request = new QrRequest();
-    request.setUrl(longUrl);
-
-    when(qrCodeService.generateQrCodeBase64(longUrl)).thenReturn("longUrlQrBase64");
-
-    mockMvc
-        .perform(
-            post("/api/qr")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.url").value(longUrl))
-        .andExpect(jsonPath("$.qrCode").value("longUrlQrBase64"));
-
-    verify(qrCodeService).generateQrCodeBase64(longUrl);
-  }
-
-  @Test
-  @Severity(SeverityLevel.NORMAL)
-  @DisplayName("API-REST-13: POST /api/qr - синтаксически некорректный JSON возвращает 400 или 500")
-  @Description("Проверка реакции обработчика исключений при получении битого JSON (malformed JSON)")
-  void shouldHandleMalformedJsonBody() throws Exception {
-    String malformedJson = "{\"url\": \"https://vorobevaqa.ru\""; // незакрытая фигурная скобка
-
-    mockMvc
-        .perform(post("/api/qr").contentType(MediaType.APPLICATION_JSON).content(malformedJson))
-        .andExpect(status().is5xxServerError()); // GlobalExceptionHandler handles RuntimeException
-    // (HttpMessageNotReadableException)
-
-    verifyNoInteractions(qrCodeService);
+      verifyNoInteractions(qrCodeService);
+    }
   }
 }

@@ -40,10 +40,17 @@ public abstract class BaseUiTest {
     Configuration.browserSize = TestConfig.getBrowserSize();
     Configuration.headless = TestConfig.isHeadless();
     Configuration.timeout = 10000;
-    Configuration.pageLoadTimeout = 30000;
+    Configuration.pageLoadTimeout = 60000;
+    Configuration.pageLoadStrategy = "eager";
 
     ChromeOptions options = new ChromeOptions();
-    options.addArguments("--no-sandbox", "--disable-dev-shm-usage", "--disable-gpu");
+    options.addArguments(
+        "--no-sandbox",
+        "--disable-dev-shm-usage",
+        "--disable-gpu",
+        "--remote-allow-origins=*",
+        "--disable-background-networking",
+        "--disable-renderer-backgrounding");
     Configuration.browserCapabilities = options;
 
     if (!SelenideLogger.hasListener("AllureSelenide")) {
