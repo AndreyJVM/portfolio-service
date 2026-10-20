@@ -39,9 +39,10 @@ public abstract class BaseUiTest {
     Configuration.browser = TestConfig.getBrowser();
     Configuration.browserSize = TestConfig.getBrowserSize();
     Configuration.headless = TestConfig.isHeadless();
-    Configuration.timeout = 10000;
-    Configuration.pageLoadTimeout = 60000;
-    Configuration.pageLoadStrategy = "eager";
+    Configuration.timeout = TestConfig.getTimeout();
+    Configuration.pageLoadTimeout = TestConfig.getPageLoadTimeout();
+    Configuration.pageLoadStrategy = TestConfig.getPageLoadStrategy();
+    TestConfig.getRemoteUrl().ifPresent(url -> Configuration.remote = url);
 
     ChromeOptions options = new ChromeOptions();
     options.addArguments(
@@ -62,9 +63,8 @@ public abstract class BaseUiTest {
 
   @BeforeEach
   void initBaseUrl() {
-    String configuredUrl = TestConfig.getBaseUrl();
-    if (configuredUrl != null && !configuredUrl.contains("localhost:8080")) {
-      Configuration.baseUrl = configuredUrl;
+    if (TestConfig.isCustomBaseUrlConfigured()) {
+      Configuration.baseUrl = TestConfig.getBaseUrl();
     } else {
       Configuration.baseUrl = "http://localhost:" + serverPort;
     }

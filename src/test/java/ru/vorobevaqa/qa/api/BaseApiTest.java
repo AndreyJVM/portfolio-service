@@ -33,9 +33,8 @@ public abstract class BaseApiTest {
   void setUpRestAssured() {
     RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
 
-    String configuredUrl = TestConfig.getBaseUrl();
-    if (configuredUrl != null && !configuredUrl.contains("localhost:8080")) {
-      RestAssured.baseURI = configuredUrl;
+    if (TestConfig.isCustomBaseUrlConfigured()) {
+      RestAssured.baseURI = TestConfig.getBaseUrl();
     } else {
       RestAssured.baseURI = "http://localhost";
       RestAssured.port = serverPort;

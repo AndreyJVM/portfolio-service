@@ -21,30 +21,68 @@ import java.util.Optional;
 
 public final class TestConfig {
 
+  public static final String DEFAULT_BASE_URL = "http://localhost:8080";
+  public static final String DEFAULT_BROWSER = "chrome";
+  public static final String DEFAULT_BROWSER_VERSION = "latest";
+  public static final String DEFAULT_BROWSER_SIZE = "1920x1080";
+  public static final boolean DEFAULT_HEADLESS = true;
+  public static final long DEFAULT_TIMEOUT = 10000L;
+  public static final long DEFAULT_PAGE_LOAD_TIMEOUT = 60000L;
+  public static final String DEFAULT_PAGE_LOAD_STRATEGY = "eager";
+
   private TestConfig() {}
 
   public static String getBaseUrl() {
     return getPropertyOrEnv("test.base.url", "TEST_BASE_URL")
         .or(() -> getPropertyOrEnv("app.base-url", "APP_BASE_URL"))
-        .orElse("http://localhost:8080");
+        .orElse(DEFAULT_BASE_URL);
+  }
+
+  public static boolean isCustomBaseUrlConfigured() {
+    return getPropertyOrEnv("test.base.url", "TEST_BASE_URL")
+        .or(() -> getPropertyOrEnv("app.base-url", "APP_BASE_URL"))
+        .filter(url -> !url.equals(DEFAULT_BASE_URL) && !url.contains("localhost:8080"))
+        .isPresent();
   }
 
   public static String getBrowser() {
-    return getPropertyOrEnv("selenium.browser", "SELENIUM_BROWSER").orElse("chrome");
+    return getPropertyOrEnv("selenium.browser", "SELENIUM_BROWSER").orElse(DEFAULT_BROWSER);
   }
 
   public static String getBrowserVersion() {
     return getPropertyOrEnv("selenium.browser.version", "SELENIUM_BROWSER_VERSION")
-        .orElse("latest");
+        .orElse(DEFAULT_BROWSER_VERSION);
   }
 
   public static String getBrowserSize() {
-    return getPropertyOrEnv("selenium.browser.size", "SELENIUM_BROWSER_SIZE").orElse("1920x1080");
+    return getPropertyOrEnv("selenium.browser.size", "SELENIUM_BROWSER_SIZE")
+        .orElse(DEFAULT_BROWSER_SIZE);
   }
 
   public static boolean isHeadless() {
-    return Boolean.parseBoolean(
-        getPropertyOrEnv("selenium.headless", "SELENIUM_HEADLESS").orElse("true"));
+    return getBooleanPropertyOrEnv("selenium.headless", "SELENIUM_HEADLESS", DEFAULT_HEADLESS);
+  }
+
+  public static long getTimeout() {
+    return getLongPropertyOrEnv("selenide.timeout", "SELENIDE_TIMEOUT", DEFAULT_TIMEOUT);
+  }
+
+  public static long getPageLoadTimeout() {
+    return getLongPropertyOrEnv(
+        "selenide.page-load-timeout", "SELENIDE_PAGE_LOAD_TIMEOUT", DEFAULT_PAGE_LOAD_TIMEOUT);
+  }
+
+  public static String getPageLoadStrategy() {
+    return getPropertyOrEnv("selenide.page-load-strategy", "SELENIDE_PAGE_LOAD_STRATEGY")
+        .orElse(DEFAULT_PAGE_LOAD_STRATEGY);
+  }
+
+  public static Optional<String> getRemoteUrl() {
+    return getPropertyOrEnv("selenium.remote.url", "SELENIUM_REMOTE_URL");
+  }
+
+  public static boolean isRemote() {
+    return getRemoteUrl().isPresent();
   }
 
   private static Optional<String> getPropertyOrEnv(String propKey, String envKey) {
@@ -57,5 +95,23 @@ public final class TestConfig {
       return Optional.of(envVal.trim());
     }
     return Optional.empty();
+  }
+
+  private static boolean getBooleanPropertyOrEnv(
+      String propKey, String envKey, boolean defaultValue) {
+    return getPropertyOrEnv(propKey, envKey).map(Boolean::parseBoolean).orElse(defaultValue);
+  }
+
+  private static long getLongPropertyOrEnv(String propKey, String envKey, long defaultValue) {
+    return getPropertyOrEnv(propKey, envKey)
+        .map(
+            val -> {
+              try {
+                return Long.parseLong(val);
+              } catch (NumberFormatException e) {
+                return defaultValue;
+              }
+            })
+        .orElse(defaultValue);
   }
 }
