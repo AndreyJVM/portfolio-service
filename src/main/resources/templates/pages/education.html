@@ -44,9 +44,14 @@
         </p>
       </div>
       <div class="col-lg-4 text-start text-lg-end mt-4 mt-lg-0">
-        <button class="btn btn-outline-primary rounded-pill" onclick="window.print()">
-          <i class="fas fa-print me-2"></i>Печать (CV)
-        </button>
+        <div class="d-flex flex-wrap gap-2 justify-content-lg-end">
+          <a th:href="@{/api/pdf/resume}" target="_blank" class="btn btn-primary rounded-pill shadow-sm" id="downloadPdfResumeBtn">
+            <i class="fas fa-file-pdf me-2"></i>Скачать CV (PDF)
+          </a>
+          <button class="btn btn-outline-primary rounded-pill" onclick="window.print()">
+            <i class="fas fa-print me-2"></i>Печать
+          </button>
+        </div>
       </div>
     </div>
   </div>

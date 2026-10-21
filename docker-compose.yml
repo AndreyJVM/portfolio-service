@@ -34,6 +34,20 @@ services:
     networks:
       - app-network
 
+  # ========== GO PDF GENERATOR MICROSERVICE ==========
+  pdf-service:
+    image: andreyvorobevaqa/pdf-service:latest
+    container_name: pdf-microservice
+    restart: unless-stopped
+    environment:
+      PORT: "8082"
+    deploy:
+      resources:
+        limits:
+          memory: 64M
+    networks:
+      - app-network
+
   # ========== NGINX (REVERSE PROXY / API GATEWAY) ==========
   nginx:
     image: nginx:alpine
@@ -50,6 +64,8 @@ services:
       app:
         condition: service_healthy
       qr-service:
+        condition: service_started
+      pdf-service:
         condition: service_started
     networks:
       - app-network

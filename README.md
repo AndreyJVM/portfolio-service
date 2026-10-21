@@ -1,4 +1,4 @@
-# Portfolio & QR Code Generator Microservices
+# Portfolio & Multi-Microservices Platform
 
 [![Java](https://img.shields.io/badge/Java-21-orange?logo=openjdk)](https://openjdk.org/projects/jdk/21/)
 [![Go](https://img.shields.io/badge/Go-1.23-00ADD8?logo=go)](https://go.dev/)\
@@ -10,7 +10,7 @@
 [![Allure](https://img.shields.io/badge/Allure-Report%202-FF69B4?logo=qameta)](https://qameta.io/)
 [![JMeter](https://img.shields.io/badge/JMeter-5.5-red?logo=apachejmeter)](https://jmeter.apache.org/)
 
-Production-ready microservices architecture combining a personal portfolio and an ultra-fast QR code generator microservice written in Go. Containerized with Docker and deployed via a fully automated CI/CD pipeline.
+Production-ready microservices architecture combining a personal portfolio, an ultra-fast QR code generator microservice, and a dynamic vector PDF resume generator written in Go. Containerized with Docker and deployed via a fully automated CI/CD pipeline.
 
 **Live demo:** [vorobevaqa.ru](https://vorobevaqa.ru) · **Docker Hub:** [`andreyvorobevaqa/portfolio-service`](https://hub.docker.com/r/andreyvorobevaqa/portfolio-service)
 
@@ -36,6 +36,7 @@ Production-ready microservices architecture combining a personal portfolio and a
 flowchart TD
     Client["Browser / API Client"] -->|HTTPS :443| Nginx["Nginx Reverse Proxy & API Gateway"]
     Nginx -->|/api/qr| GoQR["Go QR Microservice (:8081)<br/>Ultra-lightweight ~10MB Scratch image"]
+    Nginx -->|/api/pdf| GoPDF["Go PDF Microservice (:8082)<br/>Resume Generator ~15MB Scratch image"]
     Nginx -->|/| JavaApp["Java Portfolio Service (:8080)<br/>Spring Boot 3.4 & Thymeleaf"]
 ```
 
@@ -43,6 +44,7 @@ flowchart TD
 |---|---|
 | **Backend (Web & Portfolio)** | Java 21 (Virtual Threads), Spring Boot 3.4, Spring MVC, Thymeleaf, Caffeine Cache |
 | **Microservice (QR Engine)** | Go 1.23, `skip2/go-qrcode`, Scratch base image (~10MB, <15ms latency) |
+| **Microservice (PDF Engine)** | Go 1.23, `signintech/gopdf`, embedded DejaVu typography (~15MB, <20ms latency) |
 | **QA Automation** | Selenide 7, REST Assured, JUnit 5, Allure Report 2 (Page Object Model) |
 | **Performance Testing** | Apache JMeter 5.5, `jmeter-maven-plugin`, HTML Dashboard Reports |
 | **Frontend** | Bootstrap 5.3, Font Awesome 6, Vanilla JS (ES6 modules, theme management) |
@@ -52,12 +54,13 @@ flowchart TD
 
 ## Key Features
 
-- **Microservice Architecture** — QR-генератор вынесен в независимый легковесный сервис на Go, Nginx выступает API Gateway.
-- **Ultra-efficient Resources** — Go микросервис упакован в `scratch` (образ всего ~10 МБ, потребляет ~10 МБ RAM).
+- **Multi-Microservices Architecture** — QR-генератор и генератор PDF-резюме вынесены в независимые изолированные Go-микросервисы, Nginx выступает API Gateway.
+- **Ultra-efficient Resources** — Go микросервисы упакованы в `scratch` (образы всего ~10–15 МБ, потребляют ~10 МБ RAM).
+- **Dynamic PDF Resume** — векторная генерация официального резюме «на лету» в один клик с встроенным QR-кодом и контактами.
 - **Personal Portfolio** — responsive showcase with dedicated sections for completed engineering projects, skills matrix, and certifications.
 - **Dark / Light Theme** — native toggle synchronized with Bootstrap 5.3 color modes (`data-bs-theme`), no flicker on load.
 - **Client Features** — one-click PNG download, Web Share API integration, instant clipboard copy.
-- **AQA Framework** — E2E UI тесты на Selenide (Page Object Model), REST Assured API тесты и Allure отчеты (125 автоматизированных тестов).
+- **AQA Framework** — E2E UI тесты на Selenide (Page Object Model), REST Assured API тесты и Allure отчеты (140 автоматизированных тестов).
 - **Performance Testing** — сценарии нагрузочного тестирования Apache JMeter с автоматической генерацией аналитических HTML-дашбордов.
 - **Production-Tuned** — Nginx reverse proxy with HTTP/2, Let's Encrypt SSL, and Gzip compression; JVM container limits configured via `JAVA_OPTS`. Actuator metrics enabled.
 
@@ -91,13 +94,13 @@ docker compose up -d --build
 
 ## QA Automation & Test Infrastructure
 
-В проект интегрирован фреймворк автоматизации тестирования на стеке **Java 21 + JUnit 5 + Selenide + REST Assured + Allure Report** (125 тестов).
+В проект интегрирован фреймворк автоматизации тестирования на стеке **Java 21 + JUnit 5 + Selenide + REST Assured + Allure Report** (140 тестов).
 
 ### Архитектура тестов:
-- **UI E2E тесты (Selenide):** реализованы с использованием паттерна Page Object Model (`BasePage`, `HomePage`, `ProjectsPage`, `EducationPage`, `QrPlaygroundPage`). Покрывают главную страницу, навигацию, каталог решений, дипломы и сертификаты, интерактивный QR Playground, переключение тем и кастомную 404 страницу.
-- **API тесты (REST Assured):** валидация контрактов `/api/qr`, позитивные и негативные сценарии, проверка структуры ошибок, граничных значений и HTTP статус-кодов (200, 400, 405, 415), мониторинг Spring Boot Actuator (`/actuator/health`, `/actuator/info`).
-- **WebMvc & Service Unit Tests:** изолированное модульное тестирование бизнес-логики интеграций с GitHub API, Docker Hub API, Ansible Galaxy API и контроллеров `PageController`, `QrRestController`.
-- **Go Unit Tests:** модульные тесты хендлеров `/health` и `/api/qr` в директории `qr-service/`.
+- **UI E2E тесты (Selenide):** реализованы с использованием паттерна Page Object Model (`BasePage`, `HomePage`, `ProjectsPage`, `EducationPage`, `QrPlaygroundPage`). Покрывают главную страницу, навигацию, каталог решений, дипломы и сертификаты, интерактивный QR Playground, скачивание PDF-резюме, переключение тем и кастомную 404 страницу.
+- **API тесты (REST Assured):** валидация контрактов `/api/qr` и `/api/pdf/*`, позитивные и негативные сценарии, проверка структуры ошибок, граничных значений и HTTP статус-кодов (200, 400, 405, 415), валидация бинарных потоков и сигнатур файлов (`%PDF-`), мониторинг Spring Boot Actuator (`/actuator/health`, `/actuator/info`).
+- **WebMvc & Service Unit Tests:** изолированное модульное тестирование бизнес-логики интеграций с GitHub API, Docker Hub API, Ansible Galaxy API и контроллеров `PageController`, `QrRestController`, `PdfRestController`.
+- **Go Unit Tests:** модульные тесты хендлеров `/health`, `/api/qr` и генератора `/api/pdf/resume` в микросервисах `qr-service/` и `pdf-service/`.
 - **Allure Reporting 2:** автоматическое логирование HTTP запросов/ответов через `AllureRestAssured`, скриншоты и Page Source при падениях через `AllureSelenide`, группировка по Epics/Features/Stories.
 
 ### Переменные конфигурации тестов (`.env` или `-D` параметры):
@@ -114,8 +117,9 @@ TEST_BASE_URL=http://localhost:8080               # Тестируемый хо�
 # Запуск всех Java тестов (Unit + API + E2E UI)
 mvn clean test
 
-# Запуск тестов микросервиса на Go
+# Запуск тестов Go микросервисов
 cd qr-service && go test -v ./... && cd ..
+cd pdf-service && go test -v ./... && cd ..
 
 # Генерация и локальный запуск интерактивного Allure Report в браузере
 mvn allure:serve
@@ -150,33 +154,24 @@ mvn verify -Pload-test \
   -Dloadtest.duration=30
 ```
 
-После завершения прогона генерируется интерактивный HTML-дашборд с графиками Response Times (p90, p95, p99), Throughput (RPS) и Error Rate в каталоге:
-`target/jmeter/reports/index.html`.
-
 ---
 
 ## Code Quality & Standards
 
-The project strictly follows the **[Google Java Style Guide](https://google.github.io/styleguide/javaguide.html)** (2-space indentation) and enforces consistent formatting and license compliance across all source files.
-
-### Tools
-- **Spotless Maven Plugin** (`com.diffplug.spotless:spotless-maven-plugin`) with `google-java-format` engine.
-- **Checkstyle Plugin** (`maven-checkstyle-plugin`) configured with standard `google_checks.xml`.
-- **SPDX Headers** — all Java source files contain Apache-2.0 SPDX copyright and license headers.
-- **EditorConfig** — `.editorconfig` maintains universal formatting rules across IDEs and editors.
-
-### Commands
+В проекте настроен автоматический контроль качества исходного кода:
+- **Google Java Style** через `spotless-maven-plugin`
+- **Checkstyle** для статического анализа Java-кода
+- **Go Fmt & Vet** для Go-микросервисов
 
 ```bash
-# Check source code compliance with Google Java Style and SPDX license headers
+# Проверка соответствия стилю кода
 mvn spotless:check
 
-# Automatically format all Java source files according to Google Java Style
+# Автоматическое форматирование кода
 mvn spotless:apply
-
-# Run Google Style static analysis checks
-mvn checkstyle:check
 ```
+
+---
 
 ## API Reference
 
@@ -192,7 +187,7 @@ mvn checkstyle:check
 
 ```json
 {
-  \"url\": \"https://vorobevaqa.ru\"
+  "url": "https://vorobevaqa.ru"
 }
 ```
 
@@ -200,8 +195,8 @@ mvn checkstyle:check
 
 ```json
 {
-  \"url\": \"https://vorobevaqa.ru\",
-  \"qrCode\": \"iVBORw0KGgoAAAANSUhEUgAA...\"
+  "url": "https://vorobevaqa.ru",
+  "qrCode": "iVBORw0KGgoAAAANSUhEUgAA..."
 }
 ```
 
@@ -209,20 +204,40 @@ mvn checkstyle:check
 
 ```json
 {
-  \"error\": \"URL must start with http:// or https://\"
+  "error": "URL must start with http:// or https://"
 }
 ```
 
+### Download Resume PDF
+
+| | |
+|---|---|
+| **Endpoint** | `GET /api/pdf/resume` |
+| **Service** | `pdf-service` (Go) |
+| **Query Params** | `download=true` (optional, attachment trigger) |
+| **Content-Type** | `application/pdf` |
+| **Headers** | `Content-Disposition: inline; filename="Andrey_Vorobev_QA_DevOps_Resume.pdf"`, `Cache-Control: public, max-age=3600` |
+
+### PDF Service Health
+
+| | |
+|---|---|
+| **Endpoint** | `GET /api/pdf/health` |
+| **Service** | `pdf-service` (Go) |
+| **Content-Type** | `application/json` |
+
+---
+
 ## CI/CD Pipeline
 
-1. **Build & Test** — параллельное тестирование Java приложения (Maven) и Go микросервиса (`go test`).
-2. **Containerization** — сборка и пуш в Docker Hub образов `andreyvorobevaqa/portfolio-service` и `andreyvorobevaqa/qr-service`.
+1. **Build & Test** — параллельное тестирование Java приложения (Maven) и Go микросервисов (`qr-service`, `pdf-service`).
+2. **Containerization** — сборка и пуш в Docker Hub образов `andreyvorobevaqa/portfolio-service`, `andreyvorobevaqa/qr-service` и `andreyvorobevaqa/pdf-service`.
 3. **Automated Deployment** — деплой обновленных образов на VDS через SSH с обновленной конфигурацией Nginx API Gateway и `docker compose up -d`.
 
 ```mermaid
 flowchart LR
     A[Push / PR] --> B[Build & Test<br/>Java 21 & Go 1.23]
-    B --> C[Build Docker Images<br/>App + Go QR Service]
+    B --> C[Build Docker Images<br/>App + QR + PDF Services]
     C --> D[Push to Docker Hub]
     D --> E[SSH Deploy to VDS]
     E --> F[Zero-downtime Restart]
@@ -232,11 +247,17 @@ flowchart LR
 
 ```
 portfolio/
-├── qr-service/              # Go QR Microservice
-│   ├── main.go              # HTTP API Server (:8081)
+├── qr-service/              # Go QR Microservice (:8081)
+│   ├── main.go              # HTTP API Server
 │   ├── main_test.go         # Go Unit Tests
 │   ├── go.mod & go.sum      # Go dependencies (skip2/go-qrcode)
 │   └── Dockerfile           # Minimal ~10MB Scratch image
+├── pdf-service/             # Go PDF Resume Generator Microservice (:8082)
+│   ├── fonts/               # Embedded DejaVu Unicode TTF fonts
+│   ├── main.go              # PDF vector rendering & HTTP API
+│   ├── main_test.go         # Go Unit Tests
+│   ├── go.mod & go.sum      # Go dependencies (signintech/gopdf)
+│   └── Dockerfile           # Minimal ~15MB Scratch image
 ├── src/
 │   ├── main/
 │   │   ├── java/            # Portfolio Web source code (Spring Boot 3.4)
@@ -250,10 +271,10 @@ portfolio/
 │       ├── jmeter/          # Apache JMeter load & performance test plans (.jmx)
 │       └── resources/       # Test properties & Allure configuration
 ├── nginx/
-│   └── nginx.conf           # API Gateway routing: /api/qr -> qr-service, / -> app
+│   └── nginx.conf           # API Gateway: /api/qr -> qr-service, /api/pdf -> pdf-service, / -> app
 ├── .editorconfig            # Universal editor configuration (2-space indent)
 ├── Dockerfile               # Java App multi-stage build
-├── docker-compose.yml       # Production stack (App + QR Microservice + Nginx)
+├── docker-compose.yml       # Production stack (App + QR Microservice + PDF Microservice + Nginx)
 ├── LICENSE                  # Apache License 2.0
 ├── pom.xml                  # Maven configuration with Spotless, Checkstyle & Allure
 └── .github/workflows/       # CI/CD pipeline definitions

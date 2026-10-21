@@ -6,6 +6,7 @@ on:
 env:
   DOCKER_IMAGE_NAME: andreyvorobevaqa/portfolio-service
   QR_SERVICE_IMAGE_NAME: andreyvorobevaqa/qr-service
+  PDF_SERVICE_IMAGE_NAME: andreyvorobevaqa/pdf-service
 
 jobs:
   # ==========================================
@@ -29,12 +30,16 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: '1.23'
-          cache-dependency-path: qr-service/go.sum
+          cache-dependency-path: |
+            qr-service/go.sum
+            pdf-service/go.sum
 
-      - name: Test Go QR Service
+      - name: Test Go Microservices
         run: |
-          cd qr-service
-          go test -v ./...
+          echo "Testing qr-service..."
+          cd qr-service && go test -v ./... && cd ..
+          echo "Testing pdf-service..."
+          cd pdf-service && go test -v ./... && cd ..
 
       - name: Build and run Java tests
         run: mvn clean verify
@@ -91,6 +96,15 @@ jobs:
             ${{ env.QR_SERVICE_IMAGE_NAME }}:latest
             ${{ env.QR_SERVICE_IMAGE_NAME }}:${{ github.sha }}
 
+      - name: Build and push Go PDF Service Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./pdf-service
+          push: true
+          tags: |
+            ${{ env.PDF_SERVICE_IMAGE_NAME }}:latest
+            ${{ env.PDF_SERVICE_IMAGE_NAME }}:${{ github.sha }}
+
   # ==========================================
   # JOB 3: Zero-Downtime деплой на VDS
   # ==========================================
@@ -121,10 +135,10 @@ jobs:
           script: |
             cd /home/${{ secrets.VDS_USER }}/apps/my-app/
             echo "📥 1. Загрузка свежих образов..."
-            docker compose pull app qr-service
+            docker compose pull app qr-service pdf-service
 
-            echo "⚡ 2. Быстрое обновление Go QR-микросервиса..."
-            docker compose up -d --no-deps qr-service
+            echo "⚡ 2. Быстрое обновление Go микросервисов..."
+            docker compose up -d --no-deps qr-service pdf-service
 
             echo "🚀 3. Запуск нового экземпляра Java приложения рядом со старым (scale app=2)..."
             # Запоминаем текущий работающий контейнер
