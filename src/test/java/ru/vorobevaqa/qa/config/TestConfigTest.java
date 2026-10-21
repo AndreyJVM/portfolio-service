@@ -467,9 +467,18 @@ class TestConfigTest {
 
     @Test
     @Severity(SeverityLevel.NORMAL)
-    @DisplayName("CFG-39: Дефолтное состояние isCi() - false")
-    @Description("Проверка выявления окружения непрерывной интеграции CI/CD")
-    void shouldReturnDefaultCiFalse() {
+    @DisplayName(
+        "CFG-39: Дефолтное состояние isCi() в зависимости от окружения или явного отключения")
+    @Description("Проверка выявления окружения CI/CD или дефолтного значения")
+    void shouldReturnDefaultCiOrRespectExplicitFalse() {
+      if (System.getenv("CI") != null || System.getenv("GITHUB_ACTIONS") != null) {
+        assertThat(TestConfig.isCi()).isTrue();
+      } else {
+        assertThat(TestConfig.isCi()).isFalse();
+      }
+
+      System.setProperty(PROP_CI, "false");
+      System.setProperty(PROP_GITHUB_ACTIONS, "false");
       assertThat(TestConfig.isCi()).isFalse();
     }
 
