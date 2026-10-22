@@ -1,6 +1,6 @@
 module pdf-service
 
-go 1.27.2
+go 1.23
 
 require (
 	github.com/phpdave11/gofpdi v1.0.14-0.20211212211723-1f10f9844311 // indirect

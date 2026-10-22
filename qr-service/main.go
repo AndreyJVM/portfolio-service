@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -29,6 +30,12 @@ type ErrorResponse struct {
 var urlProtocolRegex = regexp.MustCompile(`^(http|https)://.+$`)
 
 func main() {
+	// Native Docker healthcheck mode: /app/qr-service healthcheck
+	if len(os.Args) > 1 && os.Args[1] == "healthcheck" {
+		runHealthcheckCli()
+		return
+	}
+
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8081"
@@ -50,6 +57,25 @@ func main() {
 	if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 		log.Fatalf("Server error: %v", err)
 	}
+}
+
+func runHealthcheckCli() {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8081"
+	}
+
+	client := &http.Client{Timeout: 2 * time.Second}
+	resp, err := client.Get(fmt.Sprintf("http://127.0.0.1:%s/health", port))
+	if err != nil || resp.StatusCode != http.StatusOK {
+		if err != nil {
+			log.Printf("Healthcheck failed: %v", err)
+		} else {
+			log.Printf("Healthcheck failed with status: %d", resp.StatusCode)
+		}
+		os.Exit(1)
+	}
+	os.Exit(0)
 }
 
 func handleHealth(w http.ResponseWriter, r *http.Request) {
@@ -122,7 +148,6 @@ func corsMiddleware(next http.Handler) http.Handler {
 			w.WriteHeader(http.StatusOK)
 			return
 		}
-
 		next.ServeHTTP(w, r)
 	})
 }

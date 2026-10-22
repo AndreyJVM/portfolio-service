@@ -3,6 +3,8 @@ services:
   app:
     image: andreyvorobevaqa/portfolio-service:latest
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
     environment:
       SPRING_PROFILES_ACTIVE: prod
       APP_BASE_URL: ${APP_BASE_URL:-https://vorobevaqa.ru}
@@ -10,7 +12,16 @@ services:
     deploy:
       resources:
         limits:
+          cpus: "1.0"
           memory: 512M
+        reservations:
+          cpus: "0.2"
+          memory: 256M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
     networks:
       - app-network
     healthcheck:
@@ -25,37 +36,86 @@ services:
     image: andreyvorobevaqa/qr-service:latest
     container_name: qr-microservice
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
     environment:
       PORT: "8081"
     deploy:
       resources:
         limits:
+          cpus: "0.5"
           memory: 64M
+        reservations:
+          cpus: "0.05"
+          memory: 16M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
     networks:
       - app-network
+    healthcheck:
+      test: [ "CMD", "/app/qr-service", "healthcheck" ]
+      interval: 5s
+      timeout: 2s
+      retries: 3
+      start_period: 2s
 
   # ========== GO PDF GENERATOR MICROSERVICE ==========
   pdf-service:
     image: andreyvorobevaqa/pdf-service:latest
     container_name: pdf-microservice
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
     environment:
       PORT: "8082"
     deploy:
       resources:
         limits:
+          cpus: "0.5"
           memory: 64M
+        reservations:
+          cpus: "0.05"
+          memory: 16M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
     networks:
       - app-network
+    healthcheck:
+      test: [ "CMD", "/app/pdf-service", "healthcheck" ]
+      interval: 5s
+      timeout: 2s
+      retries: 3
+      start_period: 2s
 
   # ========== NGINX (REVERSE PROXY / API GATEWAY) ==========
   nginx:
     image: nginx:alpine
     container_name: nginx-proxy
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
     ports:
       - "80:80"
       - "443:443"
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 128M
+        reservations:
+          cpus: "0.05"
+          memory: 32M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
       - ./nginx/50x.html:/usr/share/nginx/html/50x.html:ro
@@ -64,9 +124,9 @@ services:
       app:
         condition: service_healthy
       qr-service:
-        condition: service_started
+        condition: service_healthy
       pdf-service:
-        condition: service_started
+        condition: service_healthy
     networks:
       - app-network
 

@@ -20,6 +20,7 @@ Production-ready microservices architecture combining a personal portfolio, an u
 - [Architecture & Tech Stack](#architecture--tech-stack)
 - [Key Features](#key-features)
 - [Quick Start](#quick-start)
+- [DevOps & Container Hardening](#devops--container-hardening)
 - [QA Automation & Test Infrastructure](#qa-automation--test-infrastructure)
 - [Performance & Load Testing (JMeter)](#performance--load-testing-jmeter)
 - [Code Quality & Standards](#code-quality--standards)
@@ -56,13 +57,13 @@ flowchart TD
 
 - **Multi-Microservices Architecture** — QR-генератор и генератор PDF-резюме вынесены в независимые изолированные Go-микросервисы, Nginx выступает API Gateway.
 - **Ultra-efficient Resources** — Go микросервисы упакованы в `scratch` (образы всего ~10–15 МБ, потребляют ~10 МБ RAM).
-- **Dynamic PDF Resume** — векторная генерация официального резюме «на лету» в один клик с встроенным QR-кодом и контактами.
+- **Dynamic PDF Resume** — векторная генерация официального резюме «на лету» в один клик со встроенным QR-кодом и контактами.
 - **Personal Portfolio** — responsive showcase with dedicated sections for completed engineering projects, skills matrix, and certifications.
 - **Dark / Light Theme** — native toggle synchronized with Bootstrap 5.3 color modes (`data-bs-theme`), no flicker on load.
 - **Client Features** — one-click PNG download, Web Share API integration, instant clipboard copy.
 - **AQA Framework** — E2E UI тесты на Selenide (Page Object Model), REST Assured API тесты и Allure отчеты (140 автоматизированных тестов).
 - **Performance Testing** — сценарии нагрузочного тестирования Apache JMeter с автоматической генерацией аналитических HTML-дашбордов.
-- **Production-Tuned** — Nginx reverse proxy with HTTP/2, Let's Encrypt SSL, and Gzip compression; JVM container limits configured via `JAVA_OPTS`. Actuator metrics enabled.
+- **Production-Tuned & DevOps Hardening** — Nginx reverse proxy с HTTP/2, Let's Encrypt SSL и Gzip-сжатием. Встроенные in-binary CLI healthchecks в Go scratch-контейнерах (`/app/*-service healthcheck`) без внешних зависимостей, строгая ротация логов `json-file` (`max-size: 10m`), жесткие квоты CPU/RAM (`limits` и `reservations`), изоляция `no-new-privileges:true` и координация запуска `condition: service_healthy` в Nginx Gateway.
 
 ## Quick Start
 
@@ -89,6 +90,45 @@ The application will be accessible at `http://localhost:8080`.
 ```bash
 docker compose up -d --build
 ```
+
+---
+
+## DevOps & Container Hardening
+
+Стек микросервисов развертывается через `docker-compose.yml` в соответствии со строгими production-стандартами Linux & DevOps:
+
+1. **In-Binary Healthchecks в Scratch-контейнерах:**
+   В минималистичных Docker-образах `scratch` отсутствуют командные оболочки (`/bin/sh`, `/bin/bash`), утилиты `curl` и `wget`. Проверка работоспособности реализована непосредственно внутри Go-бинарников:
+   ```yaml
+   healthcheck:
+     test: [ "CMD", "/app/qr-service", "healthcheck" ]
+     interval: 5s
+     timeout: 2s
+     retries: 3
+     start_period: 2s
+   ```
+   Флаг `healthcheck` запускает внутренний легковесный HTTP-клиент к эндпоинту `/health` с таймаутом 2 сек и завершается с exit code `0` при HTTP 200 или `1` при ошибке.
+
+2. **Защита дискового пространства от переполнения (Log Rotation):**
+   Все 4 сервиса защищены политикой ротации логов драйвером `json-file`:
+   ```yaml
+   logging:
+     driver: "json-file"
+     options:
+       max-size: "10m"
+       max-file: "3" # 5 для Nginx
+   ```
+
+3. **Лимиты ресурсов ядра (cgroups v2 limits & reservations):**
+   Для предотвращения OOM killer и CPU starvation заданы точные ограничения и резервирования:
+   - **`app` (Spring Boot 3.4 JVM):** limits: `1.0 CPU / 512M RAM`, reservations: `0.2 CPU / 256M RAM`
+   - **`qr-service` (Go):** limits: `0.5 CPU / 64M RAM`, reservations: `0.05 CPU / 16M RAM`
+   - **`pdf-service` (Go):** limits: `0.5 CPU / 64M RAM`, reservations: `0.05 CPU / 16M RAM`
+   - **`nginx` (Gateway):** limits: `0.5 CPU / 128M RAM`, reservations: `0.05 CPU / 32M RAM`
+
+4. **Безопасность контейнеров и координация запуска:**
+   - Директива ядра `security_opt: [no-new-privileges:true]` блокирует эскалацию привилегий внутри контейнеров.
+   - Nginx API Gateway запускается строго после подтверждения здоровья всех бэкендов (`condition: service_healthy` для `app`, `qr-service` и `pdf-service`).
 
 ---
 
