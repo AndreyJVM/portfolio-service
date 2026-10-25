@@ -51,7 +51,7 @@ flowchart TD
 | **Frontend** | Bootstrap 5.3, Font Awesome 6, Vanilla JS (ES6 modules, theme management) |
 | **Build & Tools** | Maven, Lombok, Spotless (Google Java Format), Checkstyle |
 | **Infrastructure** | Docker, Docker Compose, Nginx (reverse proxy, SSL, Gzip), Ubuntu VDS |
-| **CI/CD** | GitHub Actions (multi-service build, test, Docker Hub push, zero-downtime SSH deploy) |
+| **CI/CD** | GitHub Actions (multi-service build, test, Docker Hub push, zero-downtime SSH deploy via `scripts/deploy.sh`) |
 
 ## Key Features
 
@@ -129,6 +129,9 @@ docker compose up -d --build
 4. **Безопасность контейнеров и координация запуска:**
    - Директива ядра `security_opt: [no-new-privileges:true]` блокирует эскалацию привилегий внутри контейнеров.
    - Nginx API Gateway запускается строго после подтверждения здоровья всех бэкендов (`condition: service_healthy` для `app`, `qr-service` и `pdf-service`).
+
+5. **Отказоустойчивый Zero-Downtime деплой с авто-откатом (`scripts/deploy.sh`):**
+   Логика развертывания вынесена из CI/CD YAML в отдельный shell-скрипт с `set -euo pipefail`. Скрипт осуществляет прогрев нового контейнера Java (`scale app=2`), валидацию healthcheck в течение 60 секунд, мягкий reload Nginx и остановку старой версии. В случае непрохождения проверки скрипт автоматически удаляет сбойный контейнер, сохраняет рабочий инстанс и завершается с кодом `1`.
 
 ---
 
@@ -272,7 +275,7 @@ mvn spotless:apply
 
 1. **Build & Test** — параллельное тестирование Java приложения (Maven) и Go микросервисов (`qr-service`, `pdf-service`).
 2. **Containerization** — сборка и пуш в Docker Hub образов `andreyvorobevaqa/portfolio-service`, `andreyvorobevaqa/qr-service` и `andreyvorobevaqa/pdf-service`.
-3. **Automated Deployment** — деплой обновленных образов на VDS через SSH с обновленной конфигурацией Nginx API Gateway и `docker compose up -d`.
+3. **Automated Deployment** — доставка конфигураций через `scp-action` и запуск отказоустойчивого деплоя через `ssh-action` запуском скрипта `scripts/deploy.sh` с автоматическим rollback.
 
 ```mermaid
 flowchart LR
@@ -280,7 +283,7 @@ flowchart LR
     B --> C[Build Docker Images<br/>App + QR + PDF Services]
     C --> D[Push to Docker Hub]
     D --> E[SSH Deploy to VDS]
-    E --> F[Zero-downtime Restart]
+    E --> F[Run scripts/deploy.sh<br/>Zero-Downtime & Rollback]
 ```
 
 ## Project Structure
@@ -312,6 +315,8 @@ portfolio/
 │       └── resources/       # Test properties & Allure configuration
 ├── nginx/
 │   └── nginx.conf           # API Gateway: /api/qr -> qr-service, /api/pdf -> pdf-service, / -> app
+├── scripts/
+│   └── deploy.sh            # Production Zero-downtime Blue-Green deploy script with auto-rollback
 ├── .editorconfig            # Universal editor configuration (2-space indent)
 ├── Dockerfile               # Java App multi-stage build
 ├── docker-compose.yml       # Production stack (App + QR Microservice + PDF Microservice + Nginx)

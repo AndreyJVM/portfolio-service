@@ -117,16 +117,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Copy compose and nginx to VDS
+      - name: Copy deployment files to VDS
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.VDS_HOST }}
           username: ${{ secrets.VDS_USER }}
           key: ${{ secrets.VDS_SSH_KEY }}
-          source: "docker-compose.yml,nginx/"
+          source: "docker-compose.yml,nginx/,scripts/"
           target: "/home/${{ secrets.VDS_USER }}/apps/my-app/"
 
-      - name: Zero-Downtime Blue-Green Deploy via SSH
+      - name: Run Zero-Downtime Deploy via SSH
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.VDS_HOST }}
@@ -134,43 +134,5 @@ jobs:
           key: ${{ secrets.VDS_SSH_KEY }}
           script: |
             cd /home/${{ secrets.VDS_USER }}/apps/my-app/
-            echo "📥 1. Загрузка свежих образов..."
-            docker compose pull app qr-service pdf-service
-
-            echo "⚡ 2. Быстрое обновление Go микросервисов..."
-            docker compose up -d --no-deps qr-service pdf-service
-
-            echo "🚀 3. Запуск нового экземпляра Java приложения рядом со старым (scale app=2)..."
-            # Запоминаем текущий работающий контейнер
-            OLD_CONTAINER_ID=$(docker compose ps -q app | head -n 1)
-
-            # Поднимаем 2 контейнера app
-            docker compose up -d --no-deps --scale app=2 --no-recreate app
-
-            echo "⏳ 4. Ожидание готовности нового экземпляра (healthcheck)..."
-            for i in $(seq 1 30); do
-              HEALTHY_COUNT=$(docker compose ps app --format '{{.Health}}' | grep -c "healthy" || true)
-              if [ "$HEALTHY_COUNT" -ge 2 ]; then
-                echo "✅ Новый контейнер прогрет и полностью здоров!"
-                break
-              fi
-              echo "   ждем готовности... ($i/30)"
-              sleep 2
-            done
-
-            echo "🔄 5. Перезагрузка Nginx..."
-            docker compose up -d --no-deps nginx
-            docker compose exec -T nginx nginx -s reload || true
-
-            echo "🧹 6. Остановка старого контейнера..."
-            if [ -n "$OLD_CONTAINER_ID" ]; then
-              docker stop "$OLD_CONTAINER_ID" || true
-              docker rm "$OLD_CONTAINER_ID" || true
-            fi
-
-            # Возвращаем scale в 1
-            docker compose up -d --no-deps --scale app=1 app
-
-            echo "🗑️ 7. Очистка неиспользуемых слоев Docker..."
-            docker image prune -f
-            echo "🎉 Zero-downtime деплой успешно завершен!"
+            chmod +x scripts/deploy.sh
+            ./scripts/deploy.sh
