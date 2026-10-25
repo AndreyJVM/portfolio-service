@@ -2,11 +2,11 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="ru">
 <head>
   <th:block th:replace="~{fragments/head :: head(
-      title='Проекты',
-      description='Мои инженерные проекты, Open Source репозитории на GitHub и образы на DockerHub.',
-      keywords='проекты, GitHub, DockerHub, Java, Spring Boot, Open Source',
-      ogTitle='Проекты | Андрей Воробьев',
-      ogDescription='Открытый исходный код и docker-образы.',
+      title='Проекты и Инфраструктура',
+      description='DevOps и инженерные проекты Андрея Воробьева: архитектура стека, образы Docker Hub, роли Ansible Galaxy и репозитории GitHub.',
+      keywords='DevOps, Linux, Docker, Docker Hub, Ansible Galaxy, GitHub, CI/CD, Nginx, Spring Boot, микросервисы',
+      ogTitle='Проекты и Инфраструктура | Андрей Воробьев',
+      ogDescription='Архитектура развертывания, Docker-образы, Ansible-роли и открытый исходный код.',
       ogImage='/images/og-projects.png',
       ogUrl='https://vorobevaqa.ru/projects'
   )}"></th:block>
@@ -21,20 +21,25 @@
     <div class="row align-items-center reveal">
       <div class="col-lg-8">
         <div class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill mb-3">
-          <i class="fas fa-layer-group me-1"></i> Портфолио
+          <i class="fas fa-cubes me-1"></i> Инфраструктура & Проекты
         </div>
-        <h1 class="display-4 fw-bold mb-3">Инженерные <span class="text-gradient">Решения</span></h1>
-        <p class="lead text-body-secondary mb-0" style="max-width: 700px;">
-          Реализованные сервисы, инструменты автоматизации обеспечения качества и облачная инфраструктура.
+        <h1 class="display-4 fw-bold mb-3">Инженерные и <span class="text-gradient">DevOps Решения</span></h1>
+        <p class="lead text-body-secondary mb-0" style="max-width: 720px;">
+          Архитектура контейнерного развертывания, образы в Docker Hub, модули автоматизации Ansible Galaxy и открытые репозитории исходного кода.
         </p>
       </div>
       <div class="col-lg-4 text-start text-lg-end mt-4 mt-lg-0">
-        <a th:href="@{/qr}" class="btn btn-outline-primary rounded-pill mb-2 mb-sm-0 me-sm-2">
-          <i class="fas fa-qrcode me-2"></i>QR Playground
-        </a>
-        <a href="#github-activity" class="btn btn-outline-secondary rounded-pill">
-          <i class="fab fa-github me-2"></i>GitHub
-        </a>
+        <div class="d-flex flex-wrap gap-2 justify-content-lg-end">
+          <a href="#infra-stack" class="btn btn-outline-primary rounded-pill">
+            <i class="fas fa-server me-1"></i> Стек хоста
+          </a>
+          <a href="#docker-activity" class="btn btn-outline-primary rounded-pill">
+            <i class="fab fa-docker me-1"></i> Docker Hub
+          </a>
+          <a href="#ansible-activity" class="btn btn-outline-secondary rounded-pill">
+            <i class="fas fa-network-wired me-1"></i> Ansible
+          </a>
+        </div>
       </div>
     </div>
   </div>
@@ -42,118 +47,114 @@
   <div class="container py-4">
 
     <!-- ========================================== -->
-    <!-- GitHub Repositories Section                -->
+    <!-- Production Infrastructure Architecture     -->
     <!-- ========================================== -->
-    <section class="mb-5 reveal" id="github-activity" th:if="${githubRepos != null and !githubRepos.isEmpty()}">
+    <section class="mb-5 reveal" id="infra-stack">
       <div class="d-flex align-items-center mb-4">
-        <div class="p-2 rounded-3 bg-dark text-white me-3">
-          <i class="fab fa-github fa-xl"></i>
-        </div>
-        <h2 class="fw-bold mb-0">Открытый исходный код</h2>
-      </div>
-
-      <div class="row g-4">
-        <div th:each="repo : ${githubRepos}" class="col-md-6 reveal">
-          <div class="project-card h-100 p-4">
-            <div class="card-body p-0 d-flex flex-column h-100">
-              <div class="d-flex align-items-center justify-content-between mb-3">
-                <div class="project-icon-box">
-                  <i class="fas fa-code-branch fa-2x"></i>
-                </div>
-                <span class="badge bg-secondary-subtle text-secondary border">
-                  <i class="fas fa-star text-warning me-1 small"></i><span th:text="${repo.stars}">0</span>
-                </span>
-              </div>
-
-              <h4 class="card-title fw-bold mb-2">
-                <a th:href="${repo.htmlUrl}" target="_blank" rel="noopener noreferrer" class="text-decoration-none text-reset stretched-link" th:text="${repo.name}">
-                  Repo Name
-                </a>
-              </h4>
-              
-              <p class="card-text text-body-secondary small flex-grow-1" th:text="${repo.description != null ? repo.description : 'Репозиторий исходного кода'}">
-                Описание репозитория.
-              </p>
-
-              <!-- Topics / Tags -->
-              <div class="mb-4 d-flex flex-wrap gap-1" th:if="${repo.topics != null and !repo.topics.isEmpty()}">
-                <span th:each="topic : ${repo.topics}" class="badge tech-pill" th:text="${topic}">topic</span>
-              </div>
-              <div class="mb-4 d-flex flex-wrap gap-1" th:if="${repo.topics == null or repo.topics.isEmpty()}">
-                <span class="badge tech-pill" th:text="${repo.language != null ? repo.language : 'Code'}">Java</span>
-              </div>
-
-              <div class="pt-3 border-top d-flex justify-content-between align-items-center small text-body-secondary">
-                <span>
-                  <i class="fas fa-circle text-primary me-1" style="font-size: 0.6rem;"></i>
-                  <span th:text="${repo.language != null ? repo.language : 'Unknown'}">Java</span>
-                </span>
-                <span>
-                  <i class="fas fa-code-fork me-1"></i><span th:text="${repo.forks}">0</span>
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-        <!-- ========================================== -->
-    <!-- Ansible Galaxy Roles Section               -->
-    <!-- ========================================== -->
-    <section class="py-5 reveal mt-5" id="ansible-activity" th:if="${ansibleRoles != null and !ansibleRoles.isEmpty()}">
-      <div class="d-flex align-items-center mb-4">
-        <div class="p-2 rounded-3 bg-secondary-subtle text-secondary me-3">
+        <div class="p-2 rounded-3 bg-primary-subtle text-primary me-3">
           <i class="fas fa-network-wired fa-xl"></i>
         </div>
-        <h2 class="fw-bold mb-0">Ansible Roles</h2>
+        <div>
+          <h2 class="fw-bold mb-0">Архитектура продакшн-стека vorobevaqa.ru</h2>
+          <small class="text-body-secondary">Как устроен и развернут данный проект на Linux VDS</small>
+        </div>
       </div>
 
-      <div class="row g-4">
-        <div th:each="role : ${ansibleRoles}" class="col-md-6 reveal">
+      <div class="row g-4 mb-4">
+        <!-- Node 1: Linux Host & Security -->
+        <div class="col-md-6 col-lg-3 reveal">
           <div class="card h-100 shadow-sm border-0 rounded-4 p-4 project-card">
-            <div class="card-body p-0 d-flex flex-column h-100">
-              <div class="d-flex justify-content-between align-items-start mb-3">
-                <h5 class="card-title fw-bold mb-0">
-                  <a th:href="${role.url}" target="_blank" rel="noopener noreferrer" class="text-decoration-none text-reset stretched-link">
-                    <i class="fas fa-terminal text-secondary me-2"></i><span th:text="${role.name}">role_name</span>
-                  </a>
-                </h5>
+            <div class="card-body p-0 d-flex flex-column">
+              <div class="feature-icon-wrapper bg-primary-subtle text-primary mb-3">
+                <i class="fab fa-linux fa-2x"></i>
               </div>
-
-              <p class="card-text text-body-secondary small flex-grow-1" th:text="${role.description != null ? role.description : 'Ansible role for automated provisioning.'}">
-                Ansible role description.
+              <h5 class="fw-bold mb-2">Linux Хост (VDS)</h5>
+              <p class="text-body-secondary small flex-grow-1">
+                Ubuntu 24.04 LTS. Настроен UFW firewall (порты 80, 443, ограниченный SSH), Fail2ban, ротация системных логов, мониторинг swap и изоляция процессов.
               </p>
-
-              <div class="d-flex justify-content-between align-items-center pt-3 border-top small text-body-secondary">
-                <span class="badge bg-body-secondary text-body-secondary border">
-                  <i class="fas fa-download text-success me-1"></i><span th:text="${role.downloadCount}">0</span> downloads
-                </span>
-                <span th:if="${role.githubRepo != null}">
-                  <i class="fab fa-github me-1"></i><span th:text="${role.githubRepo}">repo</span>
-                </span>
+              <div class="pt-3 border-top small text-body-secondary">
+                <span class="badge tech-pill">Ubuntu</span>
+                <span class="badge tech-pill">UFW</span>
+                <span class="badge tech-pill">Fail2ban</span>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      
-      <div class="text-center mt-4">
-        <a href="https://galaxy.ansible.com/ui/standalone/namespaces/24255/" target="_blank" rel="noopener noreferrer" class="btn btn-outline-secondary rounded-pill px-4">
-          <i class="fas fa-network-wired me-2"></i>Перейти в Ansible Galaxy
-        </a>
+
+        <!-- Node 2: Nginx Gateway -->
+        <div class="col-md-6 col-lg-3 reveal reveal-delay-100">
+          <div class="card h-100 shadow-sm border-0 rounded-4 p-4 project-card">
+            <div class="card-body p-0 d-flex flex-column">
+              <div class="feature-icon-wrapper bg-primary-subtle text-primary mb-3">
+                <i class="fas fa-shield-halved fa-2x"></i>
+              </div>
+              <h5 class="fw-bold mb-2">Nginx Gateway</h5>
+              <p class="text-body-secondary small flex-grow-1">
+                Точка входа трафика (Reverse Proxy). Авто-выпуск и продление SSL (Let's Encrypt), Gzip сжатие, маршрутизация микросервисов (/api/*) и кастомная 50x страница.
+              </p>
+              <div class="pt-3 border-top small text-body-secondary">
+                <span class="badge tech-pill">Nginx</span>
+                <span class="badge tech-pill">SSL / HTTPS</span>
+                <span class="badge tech-pill">HTTP/2</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Node 3: Docker Compose Stack -->
+        <div class="col-md-6 col-lg-3 reveal reveal-delay-200">
+          <div class="card h-100 shadow-sm border-0 rounded-4 p-4 project-card">
+            <div class="card-body p-0 d-flex flex-column">
+              <div class="feature-icon-wrapper bg-primary-subtle text-primary mb-3">
+                <i class="fab fa-docker fa-2x"></i>
+              </div>
+              <h5 class="fw-bold mb-2">Docker Compose</h5>
+              <p class="text-body-secondary small flex-grow-1">
+                Изолированная сеть `app-network`. Нативные healthcheck (in-binary для scratch), строгие квоты CPU/RAM (cgroups limits), ротация логов `json-file` (10m) и `no-new-privileges`.
+              </p>
+              <div class="pt-3 border-top small text-body-secondary">
+                <span class="badge tech-pill">Healthchecks</span>
+                <span class="badge tech-pill">Logrotate</span>
+                <span class="badge tech-pill">Limits</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Node 4: CI/CD & Deploy Script -->
+        <div class="col-md-6 col-lg-3 reveal reveal-delay-300">
+          <div class="card h-100 shadow-sm border-0 rounded-4 p-4 project-card">
+            <div class="card-body p-0 d-flex flex-column">
+              <div class="feature-icon-wrapper bg-primary-subtle text-primary mb-3">
+                <i class="fas fa-infinity fa-2x"></i>
+              </div>
+              <h5 class="fw-bold mb-2">CI/CD & Deploy</h5>
+              <p class="text-body-secondary small flex-grow-1">
+                GitHub Actions: сборка и пуш образов в Docker Hub. Развертывание на VDS через `scripts/deploy.sh` по схеме Blue-Green с прогревом и автоматическим Rollback при сбое.
+              </p>
+              <div class="pt-3 border-top small text-body-secondary">
+                <span class="badge tech-pill">GitHub Actions</span>
+                <span class="badge tech-pill">Blue-Green</span>
+                <span class="badge tech-pill">Rollback</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
     <!-- ========================================== -->
     <!-- DockerHub Images Section                   -->
     <!-- ========================================== -->
-    <section class="py-5 reveal mt-5" id="docker-activity" th:if="${dockerRepos != null and !dockerRepos.isEmpty()}">
+    <section class="py-4 reveal" id="docker-activity" th:if="${dockerRepos != null and !dockerRepos.isEmpty()}">
       <div class="d-flex align-items-center mb-4">
         <div class="p-2 rounded-3 bg-primary-subtle text-primary me-3">
           <i class="fab fa-docker fa-xl"></i>
         </div>
-        <h2 class="fw-bold mb-0">Docker Образы</h2>
+        <div>
+          <h2 class="fw-bold mb-0">Публичные Docker Образы</h2>
+          <small class="text-body-secondary">Готовые к развертыванию контейнеры в Docker Hub Registry</small>
+        </div>
       </div>
 
       <div class="row g-4">
@@ -184,10 +185,126 @@
           </div>
         </div>
       </div>
-      
+
       <div class="text-center mt-4">
         <a href="https://hub.docker.com/repositories/andreyvorobevaqa" target="_blank" rel="noopener noreferrer" class="btn btn-outline-primary rounded-pill px-4">
-          <i class="fab fa-docker me-2"></i>Перейти в DockerHub
+          <i class="fab fa-docker me-2"></i>Перейти в профиль Docker Hub
+        </a>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- Ansible Galaxy Roles Section               -->
+    <!-- ========================================== -->
+    <section class="py-5 reveal mt-4" id="ansible-activity" th:if="${ansibleRoles != null and !ansibleRoles.isEmpty()}">
+      <div class="d-flex align-items-center mb-4">
+        <div class="p-2 rounded-3 bg-secondary-subtle text-secondary me-3">
+          <i class="fas fa-network-wired fa-xl"></i>
+        </div>
+        <div>
+          <h2 class="fw-bold mb-0">Ansible Galaxy Роли (IaC)</h2>
+          <small class="text-body-secondary">Модули автоматизации настройки окружения и сервисов</small>
+        </div>
+      </div>
+
+      <div class="row g-4">
+        <div th:each="role : ${ansibleRoles}" class="col-md-6 reveal">
+          <div class="card h-100 shadow-sm border-0 rounded-4 p-4 project-card">
+            <div class="card-body p-0 d-flex flex-column h-100">
+              <div class="d-flex justify-content-between align-items-start mb-3">
+                <h5 class="card-title fw-bold mb-0">
+                  <a th:href="${role.url}" target="_blank" rel="noopener noreferrer" class="text-decoration-none text-reset stretched-link">
+                    <i class="fas fa-terminal text-secondary me-2"></i><span th:text="${role.name}">role_name</span>
+                  </a>
+                </h5>
+              </div>
+
+              <p class="card-text text-body-secondary small flex-grow-1" th:text="${role.description != null ? role.description : 'Ansible role for automated provisioning.'}">
+                Ansible role description.
+              </p>
+
+              <div class="d-flex justify-content-between align-items-center pt-3 border-top small text-body-secondary">
+                <span class="badge bg-body-secondary text-body-secondary border">
+                  <i class="fas fa-download text-success me-1"></i><span th:text="${role.downloadCount}">0</span> downloads
+                </span>
+                <span th:if="${role.githubRepo != null}">
+                  <i class="fab fa-github me-1"></i><span th:text="${role.githubRepo}">repo</span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-center mt-4">
+        <a href="https://galaxy.ansible.com/ui/standalone/namespaces/24255/" target="_blank" rel="noopener noreferrer" class="btn btn-outline-secondary rounded-pill px-4">
+          <i class="fas fa-network-wired me-2"></i>Перейти в Ansible Galaxy
+        </a>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- GitHub Repositories Section                -->
+    <!-- ========================================== -->
+    <section class="mb-5 reveal mt-4" id="github-activity" th:if="${githubRepos != null and !githubRepos.isEmpty()}">
+      <div class="d-flex align-items-center mb-4">
+        <div class="p-2 rounded-3 bg-dark text-white me-3">
+          <i class="fab fa-github fa-xl"></i>
+        </div>
+        <div>
+          <h2 class="fw-bold mb-0">Репозитории на GitHub</h2>
+          <small class="text-body-secondary">Открытый исходный код сервисов, скриптов и тестов</small>
+        </div>
+      </div>
+
+      <div class="row g-4">
+        <div th:each="repo : ${githubRepos}" class="col-md-6 reveal">
+          <div class="project-card h-100 p-4">
+            <div class="card-body p-0 d-flex flex-column h-100">
+              <div class="d-flex align-items-center justify-content-between mb-3">
+                <div class="project-icon-box">
+                  <i class="fas fa-code-branch fa-2x"></i>
+                </div>
+                <span class="badge bg-secondary-subtle text-secondary border">
+                  <i class="fas fa-star text-warning me-1 small"></i><span th:text="${repo.stars}">0</span>
+                </span>
+              </div>
+
+              <h4 class="card-title fw-bold mb-2">
+                <a th:href="${repo.htmlUrl}" target="_blank" rel="noopener noreferrer" class="text-decoration-none text-reset stretched-link" th:text="${repo.name}">
+                  Repo Name
+                </a>
+              </h4>
+
+              <p class="card-text text-body-secondary small flex-grow-1" th:text="${repo.description != null ? repo.description : 'Репозиторий исходного кода'}">
+                Описание репозитория.
+              </p>
+
+              <!-- Topics / Tags -->
+              <div class="mb-4 d-flex flex-wrap gap-1" th:if="${repo.topics != null and !repo.topics.isEmpty()}">
+                <span th:each="topic : ${repo.topics}" class="badge tech-pill" th:text="${topic}">topic</span>
+              </div>
+              <div class="mb-4 d-flex flex-wrap gap-1" th:if="${repo.topics == null or repo.topics.isEmpty()}">
+                <span class="badge tech-pill" th:text="${repo.language != null ? repo.language : 'Code'}">Java</span>
+              </div>
+
+              <div class="pt-3 border-top d-flex justify-content-between align-items-center small text-body-secondary">
+                <span>
+                  <i class="fas fa-circle text-primary me-1" style="font-size: 0.6rem;"></i>
+                  <span th:text="${repo.language != null ? repo.language : 'Unknown'}">Java</span>
+                </span>
+                <span>
+                  <i class="fas fa-code-fork me-1"></i><span th:text="${repo.forks}">0</span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-center mt-4">
+        <a href="https://github.com/AndreyJVM" target="_blank" rel="noopener noreferrer" class="btn btn-outline-dark rounded-pill px-4">
+          <i class="fab fa-github me-2"></i>Открыть все репозитории на GitHub
         </a>
       </div>
     </section>
@@ -200,6 +317,3 @@
 <div th:replace="~{fragments/scripts :: scripts}"></div>
 </body>
 </html>
-
-
-
