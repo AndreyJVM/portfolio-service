@@ -44,7 +44,7 @@ public class ProjectsPage extends BasePage<ProjectsPage> {
 
   @Step("Проверить заголовок страницы проектов")
   public ProjectsPage shouldSeeProjectsTitle() {
-    pageTitle.shouldBe(visible).shouldHave(text("Инженерные Решения"));
+    pageTitle.shouldBe(visible).shouldHave(text("Инженерные и DevOps Решения"));
     qrPlaygroundLink.shouldBe(visible);
     githubSectionLink.shouldBe(visible);
     return this;

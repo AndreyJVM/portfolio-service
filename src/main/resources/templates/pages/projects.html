@@ -3,10 +3,10 @@
 <head>
   <th:block th:replace="~{fragments/head :: head(
       title='Проекты и Инфраструктура',
-      description='DevOps и инженерные проекты Андрея Воробьева: архитектура стека, образы Docker Hub, роли Ansible Galaxy и репозитории GitHub.',
-      keywords='DevOps, Linux, Docker, Docker Hub, Ansible Galaxy, GitHub, CI/CD, Nginx, Spring Boot, микросервисы',
+      description='Архитектура продакшн-окружения vorobevaqa.ru: Linux VDS, Docker Compose, Nginx Reverse Proxy, Ansible и CI/CD.',
+      keywords='проекты, архитектура, Linux, Docker, Docker Compose, Ansible, Nginx, CI/CD, GitHub Actions',
       ogTitle='Проекты и Инфраструктура | Андрей Воробьев',
-      ogDescription='Архитектура развертывания, Docker-образы, Ansible-роли и открытый исходный код.',
+      ogDescription='Стек развертывания, Docker-контейнеры, Ansible-роли и открытый исходный код сервисов.',
       ogImage='/images/og-projects.png',
       ogUrl='https://vorobevaqa.ru/projects'
   )}"></th:block>
@@ -19,7 +19,7 @@
 <main class="flex-shrink-0">
   <div class="container pt-5 pb-4 mb-4 border-bottom">
     <div class="row align-items-center reveal">
-      <div class="col-lg-8">
+      <div class="col-lg-7">
         <div class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill mb-3">
           <i class="fas fa-cubes me-1"></i> Инфраструктура & Проекты
         </div>
@@ -28,16 +28,19 @@
           Архитектура контейнерного развертывания, образы в Docker Hub, модули автоматизации Ansible Galaxy и открытые репозитории исходного кода.
         </p>
       </div>
-      <div class="col-lg-4 text-start text-lg-end mt-4 mt-lg-0">
+      <div class="col-lg-5 text-start text-lg-end mt-4 mt-lg-0">
         <div class="d-flex flex-wrap gap-2 justify-content-lg-end">
-          <a href="#infra-stack" class="btn btn-outline-primary rounded-pill">
+          <a th:href="@{/qr}" class="btn btn-outline-primary rounded-pill">
+            <i class="fas fa-qrcode me-1"></i> QR Playground
+          </a>
+          <a href="#infra-stack" class="btn btn-outline-secondary rounded-pill">
             <i class="fas fa-server me-1"></i> Стек хоста
           </a>
-          <a href="#docker-activity" class="btn btn-outline-primary rounded-pill">
+          <a href="#docker-activity" class="btn btn-outline-secondary rounded-pill">
             <i class="fab fa-docker me-1"></i> Docker Hub
           </a>
-          <a href="#ansible-activity" class="btn btn-outline-secondary rounded-pill">
-            <i class="fas fa-network-wired me-1"></i> Ansible
+          <a href="#github-activity" class="btn btn-outline-secondary rounded-pill">
+            <i class="fab fa-github me-1"></i> GitHub
           </a>
         </div>
       </div>
@@ -55,88 +58,80 @@
           <i class="fas fa-network-wired fa-xl"></i>
         </div>
         <div>
-          <h2 class="fw-bold mb-0">Архитектура продакшн-стека vorobevaqa.ru</h2>
-          <small class="text-body-secondary">Как устроен и развернут данный проект на Linux VDS</small>
+          <h2 class="fw-bold mb-0">Архитектура инфраструктуры продакшна</h2>
+          <small class="text-body-secondary">Реальное окружение сервиса vorobevaqa.ru: сетевой контур, изоляция и автоматизация релизов</small>
         </div>
       </div>
 
-      <div class="row g-4 mb-4">
-        <!-- Node 1: Linux Host & Security -->
-        <div class="col-md-6 col-lg-3 reveal">
-          <div class="card h-100 shadow-sm border-0 rounded-4 p-4 project-card">
-            <div class="card-body p-0 d-flex flex-column">
-              <div class="feature-icon-wrapper bg-primary-subtle text-primary mb-3">
-                <i class="fab fa-linux fa-2x"></i>
+      <div class="row g-4">
+        <!-- Уровень 1: Хост и Сеть -->
+        <div class="col-lg-4 col-md-6">
+          <div class="card h-100 border-0 shadow-sm rounded-4 p-4 project-card">
+            <div class="d-flex align-items-center mb-3">
+              <div class="project-icon-box me-3">
+                <i class="fab fa-linux fa-2x text-primary"></i>
               </div>
-              <h5 class="fw-bold mb-2">Linux Хост (VDS)</h5>
-              <p class="text-body-secondary small flex-grow-1">
-                Ubuntu 24.04 LTS. Настроен UFW firewall (порты 80, 443, ограниченный SSH), Fail2ban, ротация системных логов, мониторинг swap и изоляция процессов.
-              </p>
-              <div class="pt-3 border-top small text-body-secondary">
-                <span class="badge tech-pill">Ubuntu</span>
-                <span class="badge tech-pill">UFW</span>
-                <span class="badge tech-pill">Fail2ban</span>
+              <div>
+                <h5 class="fw-bold mb-0">Linux VDS & Сеть</h5>
+                <small class="text-body-secondary">Ubuntu 24.04 LTS</small>
               </div>
+            </div>
+            <p class="text-body-secondary small flex-grow-1">
+              Настроенный и защищенный выделенный хост: SSH по ed25519-ключам, сетевой экран UFW (порты 80, 443, ограниченный SSH), Fail2ban от брутфорса, мониторинг дисков и ротация логов (logrotate).
+            </p>
+            <div class="pt-3 border-top d-flex flex-wrap gap-1">
+              <span class="badge tech-pill">Ubuntu</span>
+              <span class="badge tech-pill">UFW</span>
+              <span class="badge tech-pill">Fail2ban</span>
+              <span class="badge tech-pill">systemd</span>
             </div>
           </div>
         </div>
 
-        <!-- Node 2: Nginx Gateway -->
-        <div class="col-md-6 col-lg-3 reveal reveal-delay-100">
-          <div class="card h-100 shadow-sm border-0 rounded-4 p-4 project-card">
-            <div class="card-body p-0 d-flex flex-column">
-              <div class="feature-icon-wrapper bg-primary-subtle text-primary mb-3">
-                <i class="fas fa-shield-halved fa-2x"></i>
+        <!-- Уровень 2: Nginx Gateway & SSL -->
+        <div class="col-lg-4 col-md-6">
+          <div class="card h-100 border-0 shadow-sm rounded-4 p-4 project-card">
+            <div class="d-flex align-items-center mb-3">
+              <div class="project-icon-box me-3">
+                <i class="fas fa-shield-halved fa-2x text-success"></i>
               </div>
-              <h5 class="fw-bold mb-2">Nginx Gateway</h5>
-              <p class="text-body-secondary small flex-grow-1">
-                Точка входа трафика (Reverse Proxy). Авто-выпуск и продление SSL (Let's Encrypt), Gzip сжатие, маршрутизация микросервисов (/api/*) и кастомная 50x страница.
-              </p>
-              <div class="pt-3 border-top small text-body-secondary">
-                <span class="badge tech-pill">Nginx</span>
-                <span class="badge tech-pill">SSL / HTTPS</span>
-                <span class="badge tech-pill">HTTP/2</span>
+              <div>
+                <h5 class="fw-bold mb-0">Nginx API Gateway</h5>
+                <small class="text-body-secondary">Reverse Proxy & SSL</small>
               </div>
+            </div>
+            <p class="text-body-secondary small flex-grow-1">
+              Единая точка входа с терминацией SSL (Let's Encrypt, Certbot), HTTP/2, сжатием Gzip и кастомными fallback-страницами ошибок 502/503. Роутинг трафика на контейнеры веб-приложения и микросервисов.
+            </p>
+            <div class="pt-3 border-top d-flex flex-wrap gap-1">
+              <span class="badge tech-pill">Nginx</span>
+              <span class="badge tech-pill">SSL / TLS</span>
+              <span class="badge tech-pill">HTTP/2</span>
+              <span class="badge tech-pill">Upstream</span>
             </div>
           </div>
         </div>
 
-        <!-- Node 3: Docker Compose Stack -->
-        <div class="col-md-6 col-lg-3 reveal reveal-delay-200">
-          <div class="card h-100 shadow-sm border-0 rounded-4 p-4 project-card">
-            <div class="card-body p-0 d-flex flex-column">
-              <div class="feature-icon-wrapper bg-primary-subtle text-primary mb-3">
-                <i class="fab fa-docker fa-2x"></i>
+        <!-- Уровень 3: Контейнеры и CI/CD -->
+        <div class="col-lg-4 col-md-12">
+          <div class="card h-100 border-0 shadow-sm rounded-4 p-4 project-card">
+            <div class="d-flex align-items-center mb-3">
+              <div class="project-icon-box me-3">
+                <i class="fab fa-docker fa-2x text-info"></i>
               </div>
-              <h5 class="fw-bold mb-2">Docker Compose</h5>
-              <p class="text-body-secondary small flex-grow-1">
-                Изолированная сеть `app-network`. Нативные healthcheck (in-binary для scratch), строгие квоты CPU/RAM (cgroups limits), ротация логов `json-file` (10m) и `no-new-privileges`.
-              </p>
-              <div class="pt-3 border-top small text-body-secondary">
-                <span class="badge tech-pill">Healthchecks</span>
-                <span class="badge tech-pill">Logrotate</span>
-                <span class="badge tech-pill">Limits</span>
+              <div>
+                <h5 class="fw-bold mb-0">Docker & Blue-Green</h5>
+                <small class="text-body-secondary">Zero-Downtime CD</small>
               </div>
             </div>
-          </div>
-        </div>
-
-        <!-- Node 4: CI/CD & Deploy Script -->
-        <div class="col-md-6 col-lg-3 reveal reveal-delay-300">
-          <div class="card h-100 shadow-sm border-0 rounded-4 p-4 project-card">
-            <div class="card-body p-0 d-flex flex-column">
-              <div class="feature-icon-wrapper bg-primary-subtle text-primary mb-3">
-                <i class="fas fa-infinity fa-2x"></i>
-              </div>
-              <h5 class="fw-bold mb-2">CI/CD & Deploy</h5>
-              <p class="text-body-secondary small flex-grow-1">
-                GitHub Actions: сборка и пуш образов в Docker Hub. Развертывание на VDS через `scripts/deploy.sh` по схеме Blue-Green с прогревом и автоматическим Rollback при сбое.
-              </p>
-              <div class="pt-3 border-top small text-body-secondary">
-                <span class="badge tech-pill">GitHub Actions</span>
-                <span class="badge tech-pill">Blue-Green</span>
-                <span class="badge tech-pill">Rollback</span>
-              </div>
+            <p class="text-body-secondary small flex-grow-1">
+              Микросервисы в изолированной docker-сети с жесткими лимитами памяти (cgroups). Zero-downtime скрипт <code class="text-primary">deploy.sh</code>: подъем параллельного инстанса, валидация через in-binary healthcheck и безопасный откат при сбое.
+            </p>
+            <div class="pt-3 border-top d-flex flex-wrap gap-1">
+              <span class="badge tech-pill">Docker Compose</span>
+              <span class="badge tech-pill">Blue-Green</span>
+              <span class="badge tech-pill">Auto-Rollback</span>
+              <span class="badge tech-pill">Healthchecks</span>
             </div>
           </div>
         </div>
@@ -146,14 +141,14 @@
     <!-- ========================================== -->
     <!-- DockerHub Images Section                   -->
     <!-- ========================================== -->
-    <section class="py-4 reveal" id="docker-activity" th:if="${dockerRepos != null and !dockerRepos.isEmpty()}">
+    <section class="mb-5 reveal mt-4" id="docker-activity" th:if="${dockerRepos != null and !dockerRepos.isEmpty()}">
       <div class="d-flex align-items-center mb-4">
         <div class="p-2 rounded-3 bg-primary-subtle text-primary me-3">
           <i class="fab fa-docker fa-xl"></i>
         </div>
         <div>
-          <h2 class="fw-bold mb-0">Публичные Docker Образы</h2>
-          <small class="text-body-secondary">Готовые к развертыванию контейнеры в Docker Hub Registry</small>
+          <h2 class="fw-bold mb-0">Публичные образы в Docker Hub</h2>
+          <small class="text-body-secondary">Готовые к развертыванию контейнеры и микросервисы</small>
         </div>
       </div>
 
@@ -162,14 +157,19 @@
           <div class="card h-100 shadow-sm border-0 rounded-4 p-4 project-card">
             <div class="card-body p-0 d-flex flex-column h-100">
               <div class="d-flex justify-content-between align-items-start mb-3">
-                <h5 class="card-title fw-bold mb-0">
-                  <a th:href="${docker.url}" target="_blank" rel="noopener noreferrer" class="text-decoration-none text-reset stretched-link">
-                    <i class="fab fa-docker text-primary me-2"></i><span th:text="${docker.name}">image-name</span>
-                  </a>
-                </h5>
+                <div class="project-icon-box">
+                  <i class="fab fa-docker fa-2x text-primary"></i>
+                </div>
+                <span class="badge bg-primary-subtle text-primary border">Docker Image</span>
               </div>
 
-              <p class="card-text text-body-secondary small flex-grow-1" th:text="${docker.description != null ? docker.description : 'Docker контейнер для развертывания'}">
+              <h5 class="card-title fw-bold mb-2">
+                <a th:href="${docker.url}" target="_blank" rel="noopener noreferrer" class="text-decoration-none text-reset stretched-link">
+                  <span th:text="${docker.name}">image-name</span>
+                </a>
+              </h5>
+
+              <p class="card-text text-body-secondary small flex-grow-1" th:text="${docker.description != null ? docker.description : 'Docker контейнер для развертывания инфраструктуры и микросервисов.'}">
                 Описание образа.
               </p>
 
@@ -208,27 +208,29 @@
       </div>
 
       <div class="row g-4">
-        <div th:each="role : ${ansibleRoles}" class="col-md-6 reveal">
+        <div th:each="role : ${ansibleRoles}" class="col-md-6 col-lg-4 reveal">
           <div class="card h-100 shadow-sm border-0 rounded-4 p-4 project-card">
             <div class="card-body p-0 d-flex flex-column h-100">
               <div class="d-flex justify-content-between align-items-start mb-3">
-                <h5 class="card-title fw-bold mb-0">
-                  <a th:href="${role.url}" target="_blank" rel="noopener noreferrer" class="text-decoration-none text-reset stretched-link">
-                    <i class="fas fa-terminal text-secondary me-2"></i><span th:text="${role.name}">role_name</span>
-                  </a>
-                </h5>
+                <div class="project-icon-box">
+                  <i class="fas fa-cube fa-2x text-secondary"></i>
+                </div>
+                <span class="badge bg-secondary-subtle text-secondary border">Ansible Role</span>
               </div>
 
-              <p class="card-text text-body-secondary small flex-grow-1" th:text="${role.description != null ? role.description : 'Ansible role for automated provisioning.'}">
-                Ansible role description.
+              <h5 class="card-title fw-bold mb-2">
+                <a th:href="${role.url}" target="_blank" rel="noopener noreferrer" class="text-decoration-none text-reset stretched-link">
+                  <span th:text="${role.name}">role-name</span>
+                </a>
+              </h5>
+
+              <p class="card-text text-body-secondary small flex-grow-1" th:text="${role.description != null ? role.description : 'Ansible роль для конфигурирования серверов и оркестрации окружения.'}">
+                Описание роли.
               </p>
 
               <div class="d-flex justify-content-between align-items-center pt-3 border-top small text-body-secondary">
                 <span class="badge bg-body-secondary text-body-secondary border">
-                  <i class="fas fa-download text-success me-1"></i><span th:text="${role.downloadCount}">0</span> downloads
-                </span>
-                <span th:if="${role.githubRepo != null}">
-                  <i class="fab fa-github me-1"></i><span th:text="${role.githubRepo}">repo</span>
+                  <i class="fas fa-download text-secondary me-1"></i><span th:text="${role.downloadCount}">0</span> downloads
                 </span>
               </div>
             </div>
@@ -313,7 +315,6 @@
 </main>
 
 <div th:replace="~{fragments/footer :: footer}"></div>
-
 <div th:replace="~{fragments/scripts :: scripts}"></div>
 </body>
 </html>
