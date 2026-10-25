@@ -1,33 +1,36 @@
-﻿/* Современные карточки сертификатов */
+﻿/* Современные карточки сертификатов и образования */
 .cert-card {
-  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  transition: all 0.35s cubic-bezier(0.165, 0.84, 0.44, 1);
   border: 1px solid var(--card-border);
   background-color: var(--card-bg);
-  border-radius: 1rem;
-  overflow: hidden;
+  border-radius: 1.25rem;
+  position: relative;
 }
 
 .cert-card:hover {
   transform: translateY(-5px);
-  border-color: rgba(var(--bs-primary-rgb), 0.4);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
+  border-color: rgba(var(--bs-primary-rgb), 0.45);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.08);
 }
 
 [data-theme="dark"] .cert-card:hover,
 [data-bs-theme="dark"] .cert-card:hover {
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.35);
 }
-/* ===== СТИЛИ СТРАНИЦЫ ОБО МНЕ (ABOUT) ===== */
+
+.cert-icon-box {
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.85rem;
+  flex-shrink: 0;
+}
+
+/* ===== СТИЛИ СТРАНИЦЫ ОБРАЗОВАНИЯ ===== */
 .cursor-pointer {
   cursor: pointer;
-}
-
-.cursor-pointer img {
-  transition: transform 0.25s ease;
-}
-
-.cursor-pointer:hover img {
-  transform: scale(1.03);
 }
 
 /* Модальная карусель сертификатов */
@@ -71,18 +74,6 @@
 
 /* ===== ПЕЧАТЬ И ЭКСПОРТ РЕЗЮМЕ В PDF ===== */
 @media print {
-  /* Разворачиваем все три вкладки в один последовательный документ */
-  #aboutTabs {
-    display: none !important;
-  }
-
-  .tab-content > .tab-pane {
-    display: block !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-    margin-bottom: 2.5rem !important;
-  }
-
   .print-resume-header {
     display: block !important;
     margin-bottom: 1.5rem !important;
@@ -90,24 +81,10 @@
     border-bottom: 2px solid #374151 !important;
   }
 
-  .skill-card-item {
-    display: block !important;
-    break-inside: avoid;
+  .cert-card {
+    border: 1px solid #ccc !important;
     page-break-inside: avoid;
-  }
-
-  /* Скрыть заглушку поиска в печати */
-  #noSkillsFound {
-    display: none !important;
-  }
-
-  .ratio {
-    height: 180px !important;
-  }
-
-  .ratio img {
-    max-height: 180px !important;
-    object-fit: contain !important;
+    break-inside: avoid;
+    margin-bottom: 1rem !important;
   }
 }
-

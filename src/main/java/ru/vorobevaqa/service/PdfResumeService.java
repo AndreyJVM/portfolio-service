@@ -65,7 +65,27 @@ public class PdfResumeService {
   }
 
   public byte[] generateFallbackPdf() {
-    String pdf =
+    String content =
+        "BT\n"
+            + "/F1 20 Tf\n"
+            + "40 790 Td\n"
+            + "(Andrey Vorobev) Tj\n"
+            + "0 -24 Td\n"
+            + "/F1 12 Tf\n"
+            + "(DevOps & Linux Infrastructure Engineer) Tj\n"
+            + "0 -20 Td\n"
+            + "/F2 9 Tf\n"
+            + "(Website: https://vorobevaqa.ru | Telegram: @AndreyAQA | GitHub:"
+            + " github.com/AndreyJVM) Tj\n"
+            + "0 -35 Td\n"
+            + "/F1 11 Tf\n"
+            + "(Core Skills: Linux, Bash, Docker, Docker Compose, Nginx, Ansible, CI/CD, Java) Tj\n"
+            + "ET\n";
+
+    byte[] contentBytes = content.getBytes(StandardCharsets.US_ASCII);
+    int streamLen = contentBytes.length;
+
+    String header =
         "%PDF-1.4\n"
             + "1 0 obj <</Type /Catalog /Pages 2 0 R>> endobj\n"
             + "2 0 obj <</Type /Pages /Kids [3 0 R] /Count 1>> endobj\n"
@@ -73,24 +93,12 @@ public class PdfResumeService {
             + " /Contents 5 0 R>> endobj\n"
             + "4 0 obj <</Font <</F1 <</Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold>> /F2"
             + " <</Type /Font /Subtype /Type1 /BaseFont /Helvetica>>>>>> endobj\n"
-            + "5 0 obj <</Length 350>> stream\n"
-            + "BT\n"
-            + "/F1 20 Tf\n"
-            + "40 790 Td\n"
-            + "(Andrey Vorobev) Tj\n"
-            + "0 -24 Td\n"
-            + "/F1 12 Tf\n"
-            + "(Lead QA Automation & DevOps / Backend Engineer) Tj\n"
-            + "0 -20 Td\n"
-            + "/F2 9 Tf\n"
-            + "(Website: https://vorobevaqa.ru | Telegram: @AndreyAQA | GitHub:"
-            + " github.com/AndreyJVM) Tj\n"
-            + "0 -35 Td\n"
-            + "/F1 11 Tf\n"
-            + "(Core Skills: Java 21, Spring Boot, Selenide, REST Assured, Go, Docker, Nginx,"
-            + " JMeter, Allure) Tj\n"
-            + "ET\n"
-            + "endstream\n"
+            + "5 0 obj <</Length "
+            + streamLen
+            + ">> stream\n";
+
+    String footer =
+        "endstream\n"
             + "endobj\n"
             + "xref\n"
             + "0 6\n"
@@ -104,6 +112,7 @@ public class PdfResumeService {
             + "startxref\n"
             + "750\n"
             + "%%EOF\n";
-    return pdf.getBytes(StandardCharsets.US_ASCII);
+
+    return (header + content + footer).getBytes(StandardCharsets.US_ASCII);
   }
 }

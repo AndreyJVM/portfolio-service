@@ -119,7 +119,7 @@ func generateResumePdf() ([]byte, error) {
 	const pageWidth = 595.28 // A4 width in pt
 	const contentWidth = pageWidth - (leftMargin * 2)
 
-	// ==================== HEADER ====================
+	// ==================== HEADER ====================\n
 	pdf.SetY(35)
 	pdf.SetX(leftMargin)
 	_ = pdf.SetFont("sans-bold", "", 20)
@@ -130,7 +130,7 @@ func generateResumePdf() ([]byte, error) {
 	pdf.SetX(leftMargin)
 	_ = pdf.SetFont("sans-bold", "", 12)
 	pdf.SetTextColor(37, 99, 235) // Blue 600
-	_ = pdf.Cell(nil, "Lead QA Automation & DevOps / Backend Engineer")
+	_ = pdf.Cell(nil, "DevOps & Linux Infrastructure Engineer")
 
 	pdf.SetY(78)
 	pdf.SetX(leftMargin)
@@ -182,10 +182,10 @@ func generateResumePdf() ([]byte, error) {
 	pdf.SetTextColor(51, 65, 85)
 
 	summaryLines := []string{
-		"Инженер по автоматизации тестирования и DevOps с глубокой экспертизой в экосистеме Java/JVM (Java 21,",
-		"Virtual Threads, Spring Boot 3.4), высокопроизводительных микросервисах (Go 1.23, Docker scratch), нагрузочном",
-		"тестировании (Apache JMeter 5.5) и автоматизации CI/CD (GitHub Actions). Автор продакшн-архитектуры",
-		"сервиса vorobevaqa.ru со 100% покрытием критических бизнес-процессов (125+ automated tests).",
+		"DevOps & Linux Infrastructure Engineer с практическим опытом системного администрирования серверов Linux,",
+		"контейнеризации в Docker, настройки реверс-прокси Nginx, автоматизации серверной инфраструктуры через Ansible",
+		"и построения CI/CD пайплайнов (GitHub Actions, GitLab CI). Инженерный бэкграунд в экосистеме Java",
+		"позволяет глубоко понимать процесс разработки и выстраивать надежные, стабильные процессы релизов.",
 	}
 	for _, line := range summaryLines {
 		pdf.SetY(currentY)
@@ -202,11 +202,11 @@ func generateResumePdf() ([]byte, error) {
 		Category string
 		Items    string
 	}{
-		{"Backend & JVM:", "Java 21 (Virtual Threads), Spring Boot 3.4, Go 1.23, Python, REST API, Thymeleaf, Caffeine Cache"},
-		{"QA Automation:", "Selenide 7 (Page Object Model), REST Assured, JUnit 5, Allure Report 2, Mockito, AssertJ"},
-		{"Load & Performance:", "Apache JMeter 5.5, high-concurrency API plans, HTML Dashboard Reports, Latency SLA <15ms"},
-		{"DevOps & Infra:", "Docker, Docker Compose, Nginx (API Gateway, HTTP/2, SSL, Gzip), GitHub Actions, Linux (Ubuntu), Bash"},
-		{"Code Quality:", "Spotless (Google Java Style), Checkstyle, Clean Architecture, Zero-downtime Blue/Green Deploy"},
+		{"Linux & OS:", "Ubuntu / Debian, Bash/Shell, systemd, cron, SSH по ключам, UFW firewall, Fail2ban, cgroups"},
+		{"Containers & Proxy:", "Docker, Docker Compose, Docker Swarm, Nginx (Reverse Proxy, SSL, Gzip), Docker Hub"},
+		{"CI/CD & IaC:", "GitHub Actions, GitLab CI, Ansible (playbooks/roles), Blue-Green деплой, авто-откаты"},
+		{"Backend & Scripting:", "Bash, Java (Spring Boot), Go (утилиты/микросервисы), PostgreSQL, REST API, Git"},
+		{"QA & Reliability:", "Healthcheck-мониторинг, автоматизированное тестирование, Allure 2, ротация логов"},
 	}
 
 	for _, s := range skills {
@@ -231,7 +231,7 @@ func generateResumePdf() ([]byte, error) {
 	pdf.SetX(leftMargin)
 	_ = pdf.SetFont("sans-bold", "", 9.5)
 	pdf.SetTextColor(15, 23, 42)
-	_ = pdf.Cell(nil, "Lead QA Automation / DevOps Engineer")
+	_ = pdf.Cell(nil, "DevOps & Infrastructure Engineer")
 
 	pdf.SetX(pageWidth - leftMargin - 100)
 	_ = pdf.SetFont("sans", "", 8.5)
@@ -240,11 +240,11 @@ func generateResumePdf() ([]byte, error) {
 	currentY += 14
 
 	expBullets := []string{
-		"• Разработка и внедрение архитектуры автоматизации тестирования с нуля (Java 21, Selenide, REST Assured, Allure).",
-		"• Проектирование микросервисного стека с выделенным Go микросервисом (<10MB RAM) и Nginx API Gateway.",
-		"• Построение полного цикла CI/CD в GitHub Actions с параллельным тестированием (Maven + Go) и Zero-downtime деплоем.",
-		"• Разработка профилей нагрузочного тестирования JMeter, выявление узких мест и оптимизация задержек до <15 мс.",
-		"• Обеспечение стабильности и качества кодовой базы: 125+ сквозных тестов, 0 дефектов форматирования (Spotless/Checkstyle).",
+		"• Настройка и сопровождение серверов на базе Linux (Ubuntu): сетевая безопасность, UFW, управление пользователями и SSH.",
+		"• Контейнеризация сервисов в Docker, настройка изоляции, квот CPU/RAM (cgroups limits) и in-binary healthchecks.",
+		"• Построение пайплайнов CI/CD в GitHub Actions и GitLab CI с авто-публикацией образов в Docker Hub Registry.",
+		"• Разработка отказоустойчивых скриптов развертывания с автоматическим откатом (Rollback) при сбое проверок здоровья.",
+		"• Написание переиспользуемых Ansible-ролей для автоматизации конфигурации Linux-хостов и инфраструктурного окружения.",
 	}
 
 	for _, b := range expBullets {
@@ -264,14 +264,14 @@ func generateResumePdf() ([]byte, error) {
 	pdf.SetX(leftMargin)
 	_ = pdf.SetFont("sans-bold", "", 9.5)
 	pdf.SetTextColor(15, 23, 42)
-	_ = pdf.Cell(nil, "Portfolio & Multi-Microservices Platform (https://vorobevaqa.ru)")
+	_ = pdf.Cell(nil, "Portfolio & Infrastructure Platform (https://vorobevaqa.ru)")
 	currentY += 14
 
 	projBullets := []string{
-		"• High-Performance QR Microservice (Go 1.23, scratch image ~10MB, <15ms response latency).",
-		"• Dynamic PDF Generator Microservice (Go 1.23, vector typography, dynamic QR embedding, <20ms generation).",
-		"• Java Portfolio Web Application (Spring Boot 3.4, Java 21 Virtual Threads, Caffeine Cache, Bootstrap 5.3).",
-		"• Complete QA Test Suite: 125+ automated UI, API and Unit tests, Allure 2 reports, JMeter load dashboards.",
+		"• Linux VDS хост: защита UFW/Fail2ban, системный тюнинг, изоляция процессов, управление ресурсами и ротация логов.",
+		"• Nginx API Gateway: SSL Let's Encrypt, HTTP/2, обратное проксирование микросервисов и кастомные fallback-страницы.",
+		"• Контейнерный стек Docker Compose: микросервисы (Java + легковесные Go-утилиты в scratch), healthchecks и квоты памяти.",
+		"• Автоматизация CI/CD: пайплайн GitHub Actions, Blue-Green ротация контейнеров без даунтайма с авто-откатом.",
 	}
 	for _, b := range projBullets {
 		pdf.SetY(currentY)
@@ -287,8 +287,8 @@ func generateResumePdf() ([]byte, error) {
 	drawSection("ОБРАЗОВАНИЕ И КВАЛИФИКАЦИЯ")
 
 	eduItems := []string{
-		"• Высшее техническое образование в сфере информационных технологий и автоматизированных систем.",
-		"• Профильная подготовка: Java Software Engineering, Enterprise AQA Frameworks, Linux Administration & DevOps.",
+		"• Университет «Синергия» — Бакалавр (09.03.02 Информационные системы и технологии).",
+		"• Профильная сертификация: Слёрм (Администрирование Linux), PurpleSchool (Docker + Ansible), Stepik (GitLab CI/CD).",
 	}
 	for _, e := range eduItems {
 		pdf.SetY(currentY)

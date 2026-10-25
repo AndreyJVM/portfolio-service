@@ -74,121 +74,151 @@
     <div class="row g-4">
       <!-- Слёрм: Linux -->
       <div class="col-md-6 col-lg-4 reveal">
-        <div class="card h-100 shadow-sm rounded-4 overflow-hidden border-0">
-          <div class="ratio ratio-16x9 bg-dark-subtle cursor-pointer" onclick="openCertModal('/images/certificates/slurm-linux.jpg', 'Слёрм: Администрирование Linux, Сертификация')">
-            <img th:src="@{/images/certificates/slurm-linux.jpg}" alt="Сертификат Слёрм Администрирование Linux" class="img-fluid object-fit-cover" loading="lazy">
-          </div>
-          <div class="card-body p-3 d-flex flex-column">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-              <span class="badge bg-primary">Linux Admin</span>
-              <span class="text-body-secondary small">30.12.2025</span>
+        <div class="card cert-card h-100 p-4 border-0 shadow-sm rounded-4 d-flex flex-column cursor-pointer"
+             onclick="openCertModal('/images/certificates/slurm-linux.jpg', 'Слёрм: Администрирование Linux, Сертификация')">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div class="cert-icon-box bg-primary-subtle text-primary">
+              <i class="fab fa-linux fa-2x"></i>
             </div>
-            <h6 class="fw-bold mb-1">Слёрм: Администрирование Linux</h6>
-            <p class="text-body-secondary small flex-grow-1">Успешная сдача итоговой сертификации и выполнение практических сценариев системного администрирования.</p>
-            <button class="btn btn-outline-primary btn-sm rounded-pill mt-2" onclick="openCertModal('/images/certificates/slurm-linux.jpg', 'Слёрм: Администрирование Linux')">
-              <i class="fas fa-magnifying-glass me-1"></i> Посмотреть сертификат
-            </button>
+            <div class="text-end">
+              <span class="badge bg-primary">Linux Admin</span>
+              <div class="text-body-secondary small mt-1">30.12.2025</div>
+            </div>
           </div>
+          <h5 class="fw-bold mb-1">Слёрм: Администрирование Linux</h5>
+          <div class="text-primary small fw-semibold mb-2">Слёрм &bull; Итоговая сертификация</div>
+          <p class="text-body-secondary small flex-grow-1 mb-3">
+            Системное администрирование: управление пользователями, правами доступа, systemd, дисками, процессами, сетью и базовой безопасностью Linux.
+          </p>
+          <button type="button" class="btn btn-outline-primary btn-sm rounded-pill w-100 mt-auto"
+                  onclick="event.stopPropagation(); openCertModal('/images/certificates/slurm-linux.jpg', 'Слёрм: Администрирование Linux, Сертификация')">
+            <i class="fas fa-expand me-1"></i> Посмотреть сертификат
+          </button>
         </div>
       </div>
 
       <!-- PurpleSchool: Docker + Ansible Swarm -->
       <div class="col-md-6 col-lg-4 reveal reveal-delay-100">
-        <div class="card h-100 shadow-sm rounded-4 overflow-hidden border-0">
-          <div class="ratio ratio-16x9 bg-dark-subtle cursor-pointer" onclick="openCertModal('/images/certificates/stepik-docker-ansible.jpg', 'PurpleSchool: Docker + Ansible — с нуля, деплой и Swarm')">
-            <img th:src="@{/images/certificates/stepik-docker-ansible.jpg}" alt="Сертификат Docker Ansible" class="img-fluid object-fit-cover" loading="lazy">
-          </div>
-          <div class="card-body p-3 d-flex flex-column">
-            <div class="d-flex justify-content-between align-items-center mb-2">
+        <div class="card cert-card h-100 p-4 border-0 shadow-sm rounded-4 d-flex flex-column cursor-pointer"
+             onclick="openCertModal('/images/certificates/stepik-docker-ansible.jpg', 'PurpleSchool: Docker + Ansible — с нуля, деплой и Swarm')">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div class="cert-icon-box bg-success-subtle text-success">
+              <i class="fab fa-docker fa-2x"></i>
+            </div>
+            <div class="text-end d-flex flex-column align-items-end gap-1">
               <span class="badge bg-success">Docker & Ansible</span>
               <span class="badge bg-warning-subtle text-warning border border-warning-subtle small">С отличием</span>
             </div>
-            <h6 class="fw-bold mb-1">PurpleSchool: Docker + Ansible</h6>
-            <p class="text-body-secondary small flex-grow-1">Контейнеризация, автоматизация плейбуками Ansible, деплой сервисов и основы Docker Swarm.</p>
-            <button class="btn btn-outline-success btn-sm rounded-pill mt-2" onclick="openCertModal('/images/certificates/stepik-docker-ansible.jpg', 'PurpleSchool: Docker + Ansible')">
-              <i class="fas fa-magnifying-glass me-1"></i> Посмотреть сертификат
-            </button>
           </div>
+          <h5 class="fw-bold mb-1">PurpleSchool: Docker + Ansible</h5>
+          <div class="text-success small fw-semibold mb-2">PurpleSchool &bull; Деплой, автоматизация и Swarm</div>
+          <p class="text-body-secondary small flex-grow-1 mb-3">
+            Контейнеризация сервисов, написание Ansible-плейбуков и ролей для автоматизации конфигурации серверов, деплой сервисов и основы Docker Swarm.
+          </p>
+          <button type="button" class="btn btn-outline-success btn-sm rounded-pill w-100 mt-auto"
+                  onclick="event.stopPropagation(); openCertModal('/images/certificates/stepik-docker-ansible.jpg', 'PurpleSchool: Docker + Ansible — с нуля, деплой и Swarm')">
+            <i class="fas fa-expand me-1"></i> Посмотреть сертификат
+          </button>
         </div>
       </div>
 
       <!-- Stepik: Gitlab в работе -->
       <div class="col-md-6 col-lg-4 reveal reveal-delay-200">
-        <div class="card h-100 shadow-sm rounded-4 overflow-hidden border-0">
-          <div class="ratio ratio-16x9 bg-dark-subtle cursor-pointer" onclick="openCertModal('/images/certificates/stepik-gitlab.jpg', 'Gitlab в работе (100% результат)')">
-            <img th:src="@{/images/certificates/stepik-gitlab.jpg}" alt="Сертификат Gitlab в работе" class="img-fluid object-fit-cover" loading="lazy">
-          </div>
-          <div class="card-body p-3 d-flex flex-column">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-              <span class="badge bg-info text-dark">CI/CD Пайплайны</span>
-              <span class="badge bg-success-subtle text-success border border-success-subtle small">100% Результат</span>
+        <div class="card cert-card h-100 p-4 border-0 shadow-sm rounded-4 d-flex flex-column cursor-pointer"
+             onclick="openCertModal('/images/certificates/stepik-gitlab.jpg', 'Gitlab в работе (100% результат)')">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div class="cert-icon-box bg-warning-subtle text-warning">
+              <i class="fab fa-gitlab fa-2x"></i>
             </div>
-            <h6 class="fw-bold mb-1">Stepik: GitLab в работе</h6>
-            <p class="text-body-secondary small flex-grow-1">Построение CI/CD пайплайнов, gitlab-runner, артефакты сборок, переменные и триггеры.</p>
-            <button class="btn btn-outline-info btn-sm rounded-pill mt-2" onclick="openCertModal('/images/certificates/stepik-gitlab.jpg', 'Gitlab в работе')">
-              <i class="fas fa-magnifying-glass me-1"></i> Посмотреть сертификат
-            </button>
+            <div class="text-end d-flex flex-column align-items-end gap-1">
+              <span class="badge bg-secondary">CI/CD</span>
+              <span class="badge bg-warning-subtle text-warning border border-warning-subtle small">100% результат</span>
+            </div>
           </div>
+          <h5 class="fw-bold mb-1">Gitlab в работе</h5>
+          <div class="text-warning small fw-semibold mb-2">Stepik &bull; Пайплайны и автоматизация</div>
+          <p class="text-body-secondary small flex-grow-1 mb-3">
+            Настройка .gitlab-ci.yml, раннеры, stages, кеширование, артефакты, переменные окружения и построение автоматизированного пайплайна релизов.
+          </p>
+          <button type="button" class="btn btn-outline-warning btn-sm rounded-pill w-100 mt-auto"
+                  onclick="event.stopPropagation(); openCertModal('/images/certificates/stepik-gitlab.jpg', 'Gitlab в работе (100% результат)')">
+            <i class="fas fa-expand me-1"></i> Посмотреть сертификат
+          </button>
         </div>
       </div>
 
       <!-- Merion Academy: Автотесты на Java -->
       <div class="col-md-6 col-lg-4 reveal">
-        <div class="card h-100 shadow-sm rounded-4 overflow-hidden border-0">
-          <div class="ratio ratio-16x9 bg-dark-subtle cursor-pointer" onclick="openCertModal('/images/certificates/merion-java-aqa.jpg', 'Merion Academy: Автотесты на Java')">
-            <img th:src="@{/images/certificates/merion-java-aqa.jpg}" alt="Сертификат Merion Academy Java AQA" class="img-fluid object-fit-cover" loading="lazy">
-          </div>
-          <div class="card-body p-3 d-flex flex-column">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-              <span class="badge bg-secondary">Разработка & QA</span>
-              <span class="text-body-secondary small">Курс пройден</span>
+        <div class="card cert-card h-100 p-4 border-0 shadow-sm rounded-4 d-flex flex-column cursor-pointer"
+             onclick="openCertModal('/images/certificates/merion-java-aqa.jpg', 'Merion Academy: Автотесты на Java')">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div class="cert-icon-box bg-secondary-subtle text-secondary">
+              <i class="fas fa-vial-circle-check fa-2x"></i>
             </div>
-            <h6 class="fw-bold mb-1">Merion: Автотесты и разработка Java</h6>
-            <p class="text-body-secondary small flex-grow-1">Selenium, RestAssured, Allure, JUnit, Docker, Kafka, JDBC, Hibernate.</p>
-            <button class="btn btn-outline-secondary btn-sm rounded-pill mt-2" onclick="openCertModal('/images/certificates/merion-java-aqa.jpg', 'Merion: Автотесты на Java')">
-              <i class="fas fa-magnifying-glass me-1"></i> Увеличить
-            </button>
+            <div class="text-end">
+              <span class="badge bg-secondary">Разработка & QA</span>
+              <div class="text-body-secondary small mt-1">Курс пройден</div>
+            </div>
           </div>
+          <h5 class="fw-bold mb-1">Merion: Автотесты и Java</h5>
+          <div class="text-secondary small fw-semibold mb-2">Merion Academy &bull; Практический курс</div>
+          <p class="text-body-secondary small flex-grow-1 mb-3">
+            Selenium, REST Assured, Allure Report, JUnit 5, основы работы с контейнерами Docker, очередями сообщений и реляционными базами данных.
+          </p>
+          <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill w-100 mt-auto"
+                  onclick="event.stopPropagation(); openCertModal('/images/certificates/merion-java-aqa.jpg', 'Merion Academy: Автотесты на Java')">
+            <i class="fas fa-expand me-1"></i> Посмотреть сертификат
+          </button>
         </div>
       </div>
 
       <!-- Stepik: Автотесты для API с Java & REST Assured -->
       <div class="col-md-6 col-lg-4 reveal reveal-delay-100">
-        <div class="card h-100 shadow-sm rounded-4 overflow-hidden border-0">
-          <div class="ratio ratio-16x9 bg-dark-subtle cursor-pointer" onclick="openCertModal('/images/certificates/stepik-api-rest-assured.jpg', 'Автотесты для API с Java, REST Assured и TestNG')">
-            <img th:src="@{/images/certificates/stepik-api-rest-assured.jpg}" alt="Сертификат REST Assured API" class="img-fluid object-fit-cover" loading="lazy">
-          </div>
-          <div class="card-body p-3 d-flex flex-column">
-            <div class="d-flex justify-content-between align-items-center mb-2">
+        <div class="card cert-card h-100 p-4 border-0 shadow-sm rounded-4 d-flex flex-column cursor-pointer"
+             onclick="openCertModal('/images/certificates/stepik-api-rest-assured.jpg', 'Автотесты для API с Java, REST Assured и TestNG')">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div class="cert-icon-box bg-secondary-subtle text-secondary">
+              <i class="fas fa-network-wired fa-2x"></i>
+            </div>
+            <div class="text-end d-flex flex-column align-items-end gap-1">
               <span class="badge bg-secondary">API Тестирование</span>
               <span class="badge bg-warning-subtle text-warning border border-warning-subtle small">С отличием</span>
             </div>
-            <h6 class="fw-bold mb-1">QA WAY: Автотесты API</h6>
-            <p class="text-body-secondary small flex-grow-1">Валидация JSON-схем, тестирование контрактов REST API, HTTP-статусы и автоматизация.</p>
-            <button class="btn btn-outline-secondary btn-sm rounded-pill mt-2" onclick="openCertModal('/images/certificates/stepik-api-rest-assured.jpg', 'Автотесты для API с Java')">
-              <i class="fas fa-magnifying-glass me-1"></i> Увеличить
-            </button>
           </div>
+          <h5 class="fw-bold mb-1">QA WAY: Автотесты API</h5>
+          <div class="text-secondary small fw-semibold mb-2">Stepik &bull; REST Assured & TestNG</div>
+          <p class="text-body-secondary small flex-grow-1 mb-3">
+            Тестирование контрактов REST API, валидация JSON-схем, спецификации запросов и ответов, автоматизация проверок серверного API.
+          </p>
+          <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill w-100 mt-auto"
+                  onclick="event.stopPropagation(); openCertModal('/images/certificates/stepik-api-rest-assured.jpg', 'Автотесты для API с Java, REST Assured и TestNG')">
+            <i class="fas fa-expand me-1"></i> Посмотреть сертификат
+          </button>
         </div>
       </div>
 
       <!-- Stepik: Автоматизация тестирования с Java и TestNG -->
       <div class="col-md-6 col-lg-4 reveal reveal-delay-200">
-        <div class="card h-100 shadow-sm rounded-4 overflow-hidden border-0">
-          <div class="ratio ratio-16x9 bg-dark-subtle cursor-pointer" onclick="openCertModal('/images/certificates/stepik-java-testng.jpg', 'Автоматизация тестирования с Java и TestNG')">
-            <img th:src="@{/images/certificates/stepik-java-testng.jpg}" alt="Сертификат Java TestNG" class="img-fluid object-fit-cover" loading="lazy">
-          </div>
-          <div class="card-body p-3 d-flex flex-column">
-            <div class="d-flex justify-content-between align-items-center mb-2">
+        <div class="card cert-card h-100 p-4 border-0 shadow-sm rounded-4 d-flex flex-column cursor-pointer"
+             onclick="openCertModal('/images/certificates/stepik-java-testng.jpg', 'Автоматизация тестирования с Java и TestNG')">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div class="cert-icon-box bg-secondary-subtle text-secondary">
+              <i class="fab fa-java fa-2x"></i>
+            </div>
+            <div class="text-end d-flex flex-column align-items-end gap-1">
               <span class="badge bg-secondary">Java Core</span>
               <span class="badge bg-warning-subtle text-warning border border-warning-subtle small">С отличием</span>
             </div>
-            <h6 class="fw-bold mb-1">QA WAY: Java Core & TestNG</h6>
-            <p class="text-body-secondary small flex-grow-1">Основы синтаксиса, многопоточность, аннотации и жизненный цикл выполнения кода.</p>
-            <button class="btn btn-outline-secondary btn-sm rounded-pill mt-2" onclick="openCertModal('/images/certificates/stepik-java-testng.jpg', 'Java и TestNG')">
-              <i class="fas fa-magnifying-glass me-1"></i> Увеличить
-            </button>
           </div>
+          <h5 class="fw-bold mb-1">QA WAY: Java Core & TestNG</h5>
+          <div class="text-secondary small fw-semibold mb-2">Stepik &bull; Базовый курс Java</div>
+          <p class="text-body-secondary small flex-grow-1 mb-3">
+            Объектно-ориентированное программирование, многопоточность, аннотации, коллекции и жизненный цикл выполнения кода.
+          </p>
+          <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill w-100 mt-auto"
+                  onclick="event.stopPropagation(); openCertModal('/images/certificates/stepik-java-testng.jpg', 'Автоматизация тестирования с Java и TestNG')">
+            <i class="fas fa-expand me-1"></i> Посмотреть сертификат
+          </button>
         </div>
       </div>
     </div>
@@ -211,47 +241,51 @@
     <div class="row g-4">
       <!-- Диплом бакалавра (Синергия) -->
       <div class="col-md-6 reveal">
-        <div class="card h-100 shadow-sm rounded-4 overflow-hidden border-0">
-          <div class="ratio ratio-16x9 bg-dark-subtle cursor-pointer" onclick="openCertModal('/images/certificates/diploma-synergy.jpg', 'Диплом бакалавра: Информационные системы и технологии')">
-            <img th:src="@{/images/certificates/diploma-synergy.jpg}" alt="Диплом бакалавра Синергия" class="img-fluid object-fit-cover" loading="lazy">
-          </div>
-          <div class="card-body p-4 d-flex flex-column">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-              <span class="badge bg-primary">Бакалавриат</span>
-              <span class="text-body-secondary small">Выдан: 12.05.2026</span>
+        <div class="card cert-card h-100 p-4 border-0 shadow-sm rounded-4 d-flex flex-column cursor-pointer"
+             onclick="openCertModal('/images/certificates/diploma-synergy.jpg', 'Диплом бакалавра: Информационные системы и технологии')">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div class="cert-icon-box bg-primary-subtle text-primary">
+              <i class="fas fa-graduation-cap fa-2x"></i>
             </div>
-            <h5 class="fw-bold mb-1">Университет «Синергия»</h5>
-            <p class="text-primary fw-medium small mb-2">09.03.02 Информационные системы и технологии</p>
-            <p class="text-body-secondary small flex-grow-1">
-              Квалификация: Бакалавр. Государственная итоговая аттестация по проектированию, администрированию и сопровождению информационных систем.
-            </p>
-            <button type="button" class="btn btn-outline-primary btn-sm rounded-pill mt-3 w-100" onclick="openCertModal('/images/certificates/diploma-synergy.jpg', 'Диплом бакалавра Синергия: Информационные системы и технологии')">
-              <i class="fas fa-expand me-1"></i> Посмотреть диплом
-            </button>
+            <div class="text-end">
+              <span class="badge bg-primary">Бакалавриат</span>
+              <div class="text-body-secondary small mt-1">Выдан: 12.05.2026</div>
+            </div>
           </div>
+          <h5 class="fw-bold mb-1">Университет «Синергия»</h5>
+          <p class="text-primary fw-medium small mb-2">09.03.02 Информационные системы и технологии</p>
+          <p class="text-body-secondary small flex-grow-1 mb-3">
+            Квалификация: Бакалавр. Государственная итоговая аттестация по проектированию, администрированию и сопровождению информационных систем.
+          </p>
+          <button type="button" class="btn btn-outline-primary btn-sm rounded-pill w-100 mt-auto"
+                  onclick="event.stopPropagation(); openCertModal('/images/certificates/diploma-synergy.jpg', 'Диплом бакалавра: Информационные системы и технологии')">
+            <i class="fas fa-expand me-1"></i> Посмотреть диплом
+          </button>
         </div>
       </div>
 
       <!-- Диплом Яндекс Практикум -->
       <div class="col-md-6 reveal reveal-delay-100">
-        <div class="card h-100 shadow-sm rounded-4 overflow-hidden border-0">
-          <div class="ratio ratio-16x9 bg-dark-subtle cursor-pointer" onclick="openCertModal('/images/certificates/diploma-yandex-practicum.jpg', 'Диплом о профессиональной переподготовке: Автоматизатор тестирования на Java')">
-            <img th:src="@{/images/certificates/diploma-yandex-practicum.jpg}" alt="Диплом Яндекс Практикум AQA Java" class="img-fluid object-fit-cover" loading="lazy">
-          </div>
-          <div class="card-body p-4 d-flex flex-column">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-              <span class="badge bg-success">Переподготовка (303 ч)</span>
-              <span class="text-body-secondary small">Выдан: 09.07.2026</span>
+        <div class="card cert-card h-100 p-4 border-0 shadow-sm rounded-4 d-flex flex-column cursor-pointer"
+             onclick="openCertModal('/images/certificates/diploma-yandex-practicum.jpg', 'Диплом о профессиональной переподготовке: Автоматизатор тестирования на Java')">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div class="cert-icon-box bg-success-subtle text-success">
+              <i class="fas fa-code-branch fa-2x"></i>
             </div>
-            <h5 class="fw-bold mb-1">Яндекс Практикум</h5>
-            <p class="text-success fw-medium small mb-2">Специалист по тестированию в IT (Java AQA)</p>
-            <p class="text-body-secondary small flex-grow-1">
-              Основы Java, JUnit 5, Selenide, тестирование Web и API, архитектура тестовых фреймворков и реляционные базы данных.
-            </p>
-            <button type="button" class="btn btn-outline-success btn-sm rounded-pill mt-3 w-100" onclick="openCertModal('/images/certificates/diploma-yandex-practicum.jpg', 'Диплом Яндекс Практикум: Автоматизатор тестирования на Java')">
-              <i class="fas fa-expand me-1"></i> Посмотреть диплом
-            </button>
+            <div class="text-end">
+              <span class="badge bg-success">Переподготовка (303 ч)</span>
+              <div class="text-body-secondary small mt-1">Выдан: 09.07.2026</div>
+            </div>
           </div>
+          <h5 class="fw-bold mb-1">Яндекс Практикум</h5>
+          <p class="text-success fw-medium small mb-2">Специалист по тестированию в IT (Java AQA)</p>
+          <p class="text-body-secondary small flex-grow-1 mb-3">
+            Основы Java, JUnit 5, Selenide, тестирование Web и API, архитектура тестовых фреймворков и реляционные базы данных.
+          </p>
+          <button type="button" class="btn btn-outline-success btn-sm rounded-pill w-100 mt-auto"
+                  onclick="event.stopPropagation(); openCertModal('/images/certificates/diploma-yandex-practicum.jpg', 'Диплом о профессиональной переподготовке: Автоматизатор тестирования на Java')">
+            <i class="fas fa-expand me-1"></i> Посмотреть диплом
+          </button>
         </div>
       </div>
     </div>
