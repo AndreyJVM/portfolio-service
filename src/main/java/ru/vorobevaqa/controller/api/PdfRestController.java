@@ -18,8 +18,8 @@
 package ru.vorobevaqa.controller.api;
 
 import java.util.Map;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -29,13 +29,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.vorobevaqa.service.PdfResumeService;
 
-@Slf4j
 @RestController
 @RequestMapping("/api/pdf")
-@RequiredArgsConstructor
 public class PdfRestController {
 
+  private static final Logger log = LoggerFactory.getLogger(PdfRestController.class);
+
   private final PdfResumeService pdfResumeService;
+
+  public PdfRestController(PdfResumeService pdfResumeService) {
+    this.pdfResumeService = pdfResumeService;
+  }
 
   @GetMapping(value = "/resume", produces = MediaType.APPLICATION_PDF_VALUE)
   public ResponseEntity<byte[]> getResume(

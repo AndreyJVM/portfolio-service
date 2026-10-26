@@ -17,7 +17,6 @@
  */
 package ru.vorobevaqa.controller.web;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,12 +25,20 @@ import ru.vorobevaqa.service.DockerHubService;
 import ru.vorobevaqa.service.GitHubService;
 
 @Controller
-@RequiredArgsConstructor
 public class PageController {
 
   private final GitHubService gitHubService;
   private final DockerHubService dockerHubService;
   private final AnsibleGalaxyService ansibleGalaxyService;
+
+  public PageController(
+      GitHubService gitHubService,
+      DockerHubService dockerHubService,
+      AnsibleGalaxyService ansibleGalaxyService) {
+    this.gitHubService = gitHubService;
+    this.dockerHubService = dockerHubService;
+    this.ansibleGalaxyService = ansibleGalaxyService;
+  }
 
   @GetMapping("/")
   public String index() {

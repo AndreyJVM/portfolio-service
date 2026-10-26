@@ -18,8 +18,8 @@
 package ru.vorobevaqa.controller.api;
 
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,13 +29,17 @@ import ru.vorobevaqa.dto.QrRequest;
 import ru.vorobevaqa.dto.QrResponse;
 import ru.vorobevaqa.service.QrCodeService;
 
-@Slf4j
 @RestController
 @RequestMapping("/api/qr")
-@RequiredArgsConstructor
 public class QrRestController {
 
+  private static final Logger log = LoggerFactory.getLogger(QrRestController.class);
+
   private final QrCodeService qrCodeService;
+
+  public QrRestController(QrCodeService qrCodeService) {
+    this.qrCodeService = qrCodeService;
+  }
 
   @PostMapping
   public ResponseEntity<QrResponse> generateQrCode(@Valid @RequestBody QrRequest request) {

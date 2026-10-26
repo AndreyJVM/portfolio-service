@@ -29,13 +29,14 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.EnumMap;
 import java.util.Map;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-@Slf4j
 @Service
 public class QrCodeService {
 
+  private static final Logger log = LoggerFactory.getLogger(QrCodeService.class);
   private static final int DEFAULT_SIZE = 300;
 
   public String generateQrCodeBase64(String text) {

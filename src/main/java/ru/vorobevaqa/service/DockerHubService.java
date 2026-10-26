@@ -20,7 +20,8 @@ package ru.vorobevaqa.service;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
@@ -32,9 +33,10 @@ import ru.vorobevaqa.config.CacheConfig;
 import ru.vorobevaqa.dto.DockerHubRepoDto;
 import ru.vorobevaqa.dto.DockerHubResponseDto;
 
-@Slf4j
 @Service
 public class DockerHubService {
+
+  private static final Logger log = LoggerFactory.getLogger(DockerHubService.class);
 
   private final RestClient restClient;
   private final String dockerhubUsername;
@@ -76,11 +78,11 @@ public class DockerHubService {
               .retrieve()
               .body(DockerHubResponseDto.class);
 
-      if (response == null || response.getResults() == null) {
+      if (response == null || response.results() == null) {
         return Collections.emptyList();
       }
 
-      return response.getResults();
+      return response.results();
     } catch (Exception e) {
       log.error("Failed to fetch repositories from DockerHub API: {}", e.getMessage());
       return Collections.emptyList();

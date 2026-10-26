@@ -20,7 +20,8 @@ package ru.vorobevaqa.service;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
@@ -32,9 +33,10 @@ import org.springframework.web.client.RestClient;
 import ru.vorobevaqa.config.CacheConfig;
 import ru.vorobevaqa.dto.GitHubRepoDto;
 
-@Slf4j
 @Service
 public class GitHubService {
+
+  private static final Logger log = LoggerFactory.getLogger(GitHubService.class);
 
   private final RestClient restClient;
   private final String githubUsername;

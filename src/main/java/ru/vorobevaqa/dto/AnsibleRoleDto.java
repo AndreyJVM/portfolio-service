@@ -19,9 +19,7 @@ package ru.vorobevaqa.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
 
-@Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AnsibleRoleDto {
 
@@ -36,6 +34,57 @@ public class AnsibleRoleDto {
 
   @JsonProperty("github_repo")
   private String githubRepo;
+
+  public AnsibleRoleDto() {}
+
+  public AnsibleRoleDto(
+      String name, String description, int downloadCount, String githubUser, String githubRepo) {
+    this.name = name;
+    this.description = description;
+    this.downloadCount = downloadCount;
+    this.githubUser = githubUser;
+    this.githubRepo = githubRepo;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+  public int getDownloadCount() {
+    return downloadCount;
+  }
+
+  public void setDownloadCount(int downloadCount) {
+    this.downloadCount = downloadCount;
+  }
+
+  public String getGithubUser() {
+    return githubUser;
+  }
+
+  public void setGithubUser(String githubUser) {
+    this.githubUser = githubUser;
+  }
+
+  public String getGithubRepo() {
+    return githubRepo;
+  }
+
+  public void setGithubRepo(String githubRepo) {
+    this.githubRepo = githubRepo;
+  }
 
   public String getUrl() {
     return "https://galaxy.ansible.com/ui/standalone/roles/" + githubUser + "/" + name + "/";

@@ -21,27 +21,17 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.ZonedDateTime;
 import java.util.List;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class GitHubRepoDto {
 
   private String name;
-
   private String description;
 
   @JsonProperty("html_url")
   private String htmlUrl;
 
   private String language;
-
   private List<String> topics;
 
   @JsonProperty("stargazers_count")
@@ -54,4 +44,165 @@ public class GitHubRepoDto {
   private ZonedDateTime updatedAt;
 
   private boolean fork;
+
+  public GitHubRepoDto() {}
+
+  public GitHubRepoDto(
+      String name,
+      String description,
+      String htmlUrl,
+      String language,
+      List<String> topics,
+      int stars,
+      int forks,
+      ZonedDateTime updatedAt,
+      boolean fork) {
+    this.name = name;
+    this.description = description;
+    this.htmlUrl = htmlUrl;
+    this.language = language;
+    this.topics = topics;
+    this.stars = stars;
+    this.forks = forks;
+    this.updatedAt = updatedAt;
+    this.fork = fork;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+  public String getHtmlUrl() {
+    return htmlUrl;
+  }
+
+  public void setHtmlUrl(String htmlUrl) {
+    this.htmlUrl = htmlUrl;
+  }
+
+  public String getLanguage() {
+    return language;
+  }
+
+  public void setLanguage(String language) {
+    this.language = language;
+  }
+
+  public List<String> getTopics() {
+    return topics;
+  }
+
+  public void setTopics(List<String> topics) {
+    this.topics = topics;
+  }
+
+  public int getStars() {
+    return stars;
+  }
+
+  public void setStars(int stars) {
+    this.stars = stars;
+  }
+
+  public int getForks() {
+    return forks;
+  }
+
+  public void setForks(int forks) {
+    this.forks = forks;
+  }
+
+  public ZonedDateTime getUpdatedAt() {
+    return updatedAt;
+  }
+
+  public void setUpdatedAt(ZonedDateTime updatedAt) {
+    this.updatedAt = updatedAt;
+  }
+
+  public boolean isFork() {
+    return fork;
+  }
+
+  public void setFork(boolean fork) {
+    this.fork = fork;
+  }
+
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  public static class Builder {
+    private String name;
+    private String description;
+    private String htmlUrl;
+    private String language;
+    private List<String> topics;
+    private int stars;
+    private int forks;
+    private ZonedDateTime updatedAt;
+    private boolean fork;
+
+    public Builder name(String name) {
+      this.name = name;
+      return this;
+    }
+
+    public Builder description(String description) {
+      this.description = description;
+      return this;
+    }
+
+    public Builder htmlUrl(String htmlUrl) {
+      this.htmlUrl = htmlUrl;
+      return this;
+    }
+
+    public Builder language(String language) {
+      this.language = language;
+      return this;
+    }
+
+    public Builder topics(List<String> topics) {
+      this.topics = topics;
+      return this;
+    }
+
+    public Builder stars(int stars) {
+      this.stars = stars;
+      return this;
+    }
+
+    public Builder forks(int forks) {
+      this.forks = forks;
+      return this;
+    }
+
+    public Builder updatedAt(ZonedDateTime updatedAt) {
+      this.updatedAt = updatedAt;
+      return this;
+    }
+
+    public Builder fork(boolean fork) {
+      this.fork = fork;
+      return this;
+    }
+
+    public GitHubRepoDto build() {
+      return new GitHubRepoDto(
+          name, description, htmlUrl, language, topics, stars, forks, updatedAt, fork);
+    }
+  }
 }

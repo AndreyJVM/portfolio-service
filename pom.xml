@@ -10,8 +10,8 @@
   <version>1.0.0</version>
   <packaging>jar</packaging>
 
-  <name>Portfolio &amp; QR Code Generator Service</name>
-  <description>Production-ready personal portfolio and QR code generator microservice built with Spring Boot</description>
+  <name>DevOps &amp; Linux Infrastructure Platform</name>
+  <description>Production platform for personal portfolio, infrastructure showcase and microservices built with Spring Boot and Linux container stack</description>
   <url>https://vorobevaqa.ru</url>
   <inceptionYear>2024</inceptionYear>
 
@@ -30,9 +30,10 @@
       <email>andrey@vorobevaqa.ru</email>
       <url>https://github.com/AndreyJVM</url>
       <roles>
-        <role>QA Automation</role>
-        <role>Backend Developer</role>
         <role>DevOps Engineer</role>
+        <role>Linux Infrastructure</role>
+        <role>Backend Developer</role>
+        <role>QA Automation</role>
       </roles>
       <timezone>Europe/Moscow</timezone>
     </developer>
@@ -53,9 +54,10 @@
 
   <properties>
     <java.version>21</java.version>
-    <maven.compiler.source>21</maven.compiler.source>
-    <maven.compiler.target>21</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+    <!-- Dependencies -->
+    <zxing.version>3.5.3</zxing.version>
 
     <!-- Code Quality & Style Plugins -->
     <spotless.version>2.43.0</spotless.version>
@@ -109,13 +111,13 @@
     <dependency>
       <groupId>com.google.zxing</groupId>
       <artifactId>core</artifactId>
-      <version>3.5.3</version>
+      <version>${zxing.version}</version>
     </dependency>
 
     <dependency>
       <groupId>com.google.zxing</groupId>
       <artifactId>javase</artifactId>
-      <version>3.5.3</version>
+      <version>${zxing.version}</version>
     </dependency>
 
     <!-- Caffeine Cache Provider -->
@@ -127,13 +129,6 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-cache</artifactId>
-    </dependency>
-
-    <!-- Lombok -->
-    <dependency>
-      <groupId>org.projectlombok</groupId>
-      <artifactId>lombok</artifactId>
-      <optional>true</optional>
     </dependency>
 
     <!-- DevTools -->

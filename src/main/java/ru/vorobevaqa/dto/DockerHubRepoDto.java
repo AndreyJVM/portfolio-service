@@ -20,15 +20,7 @@ package ru.vorobevaqa.dto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.ZonedDateTime;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DockerHubRepoDto {
 
@@ -45,7 +37,119 @@ public class DockerHubRepoDto {
   @JsonProperty("last_updated")
   private ZonedDateTime lastUpdated;
 
+  public DockerHubRepoDto() {}
+
+  public DockerHubRepoDto(
+      String name,
+      String namespace,
+      String description,
+      int pullCount,
+      int starCount,
+      ZonedDateTime lastUpdated) {
+    this.name = name;
+    this.namespace = namespace;
+    this.description = description;
+    this.pullCount = pullCount;
+    this.starCount = starCount;
+    this.lastUpdated = lastUpdated;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public String getNamespace() {
+    return namespace;
+  }
+
+  public void setNamespace(String namespace) {
+    this.namespace = namespace;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+  public int getPullCount() {
+    return pullCount;
+  }
+
+  public void setPullCount(int pullCount) {
+    this.pullCount = pullCount;
+  }
+
+  public int getStarCount() {
+    return starCount;
+  }
+
+  public void setStarCount(int starCount) {
+    this.starCount = starCount;
+  }
+
+  public ZonedDateTime getLastUpdated() {
+    return lastUpdated;
+  }
+
+  public void setLastUpdated(ZonedDateTime lastUpdated) {
+    this.lastUpdated = lastUpdated;
+  }
+
   public String getUrl() {
     return "https://hub.docker.com/r/" + namespace + "/" + name;
+  }
+
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  public static class Builder {
+    private String name;
+    private String namespace;
+    private String description;
+    private int pullCount;
+    private int starCount;
+    private ZonedDateTime lastUpdated;
+
+    public Builder name(String name) {
+      this.name = name;
+      return this;
+    }
+
+    public Builder namespace(String namespace) {
+      this.namespace = namespace;
+      return this;
+    }
+
+    public Builder description(String description) {
+      this.description = description;
+      return this;
+    }
+
+    public Builder pullCount(int pullCount) {
+      this.pullCount = pullCount;
+      return this;
+    }
+
+    public Builder starCount(int starCount) {
+      this.starCount = starCount;
+      return this;
+    }
+
+    public Builder lastUpdated(ZonedDateTime lastUpdated) {
+      this.lastUpdated = lastUpdated;
+      return this;
+    }
+
+    public DockerHubRepoDto build() {
+      return new DockerHubRepoDto(name, namespace, description, pullCount, starCount, lastUpdated);
+    }
   }
 }
