@@ -1,0 +1,27 @@
+# Git & Version Control
+.git
+.gitignore
+
+# Build outputs & temporary files
+target/
+build/
+*.class
+
+# IDE & Editor files
+.idea/
+*.iml
+.vscode/
+.DS_Store
+*.log
+*.tmp
+
+# Sub-services (built in their own isolated contexts)
+qr-service/
+pdf-service/
+
+# Repository documentation & CI/CD configs
+*.md
+LICENSE
+.github/
+scripts/
+docker-stack.yml
