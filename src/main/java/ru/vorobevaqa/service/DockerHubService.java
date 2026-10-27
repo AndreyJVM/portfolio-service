@@ -30,6 +30,7 @@ import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 import ru.vorobevaqa.config.CacheConfig;
+import ru.vorobevaqa.config.HttpConstants;
 import ru.vorobevaqa.dto.DockerHubRepoDto;
 import ru.vorobevaqa.dto.DockerHubResponseDto;
 
@@ -37,14 +38,17 @@ import ru.vorobevaqa.dto.DockerHubResponseDto;
 public class DockerHubService {
 
   private static final Logger log = LoggerFactory.getLogger(DockerHubService.class);
+  private static final Duration CONNECT_TIMEOUT = Duration.ofSeconds(2);
+  private static final Duration READ_TIMEOUT = Duration.ofSeconds(3);
 
   private final RestClient restClient;
   private final String dockerhubUsername;
 
   @Autowired
   public DockerHubService(
+      @Value("${dockerhub.api-url:https://hub.docker.com/v2}") String apiUrl,
       @Value("${dockerhub.username:andreyvorobevaqa}") String dockerhubUsername) {
-    this(defaultRestClient(), dockerhubUsername);
+    this(defaultRestClient(apiUrl), dockerhubUsername);
   }
 
   public DockerHubService(RestClient restClient, String dockerhubUsername) {
@@ -52,15 +56,15 @@ public class DockerHubService {
     this.dockerhubUsername = dockerhubUsername;
   }
 
-  private static RestClient defaultRestClient() {
+  private static RestClient defaultRestClient(String baseUrl) {
     SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
-    requestFactory.setConnectTimeout(Duration.ofSeconds(2));
-    requestFactory.setReadTimeout(Duration.ofSeconds(3));
+    requestFactory.setConnectTimeout(CONNECT_TIMEOUT);
+    requestFactory.setReadTimeout(READ_TIMEOUT);
 
     return RestClient.builder()
         .requestFactory(requestFactory)
-        .baseUrl("https://hub.docker.com/v2")
-        .defaultHeader(HttpHeaders.USER_AGENT, "Spring-Boot-Portfolio-App")
+        .baseUrl(baseUrl)
+        .defaultHeader(HttpHeaders.USER_AGENT, HttpConstants.DEFAULT_USER_AGENT)
         .build();
   }
 

@@ -30,6 +30,7 @@ import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 import ru.vorobevaqa.config.CacheConfig;
+import ru.vorobevaqa.config.HttpConstants;
 import ru.vorobevaqa.dto.AnsibleGalaxyResponseDto;
 import ru.vorobevaqa.dto.AnsibleRoleDto;
 
@@ -37,6 +38,9 @@ import ru.vorobevaqa.dto.AnsibleRoleDto;
 public class AnsibleGalaxyService {
 
   private static final Logger log = LoggerFactory.getLogger(AnsibleGalaxyService.class);
+  private static final String DEFAULT_BASE_URL = "https://galaxy.ansible.com/api/v1";
+  private static final Duration CONNECT_TIMEOUT = Duration.ofSeconds(5);
+  private static final Duration READ_TIMEOUT = Duration.ofSeconds(10);
 
   private final RestClient restClient;
   private final String githubUsername;
@@ -53,13 +57,13 @@ public class AnsibleGalaxyService {
 
   private static RestClient defaultRestClient() {
     SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
-    requestFactory.setConnectTimeout(Duration.ofSeconds(5));
-    requestFactory.setReadTimeout(Duration.ofSeconds(10));
+    requestFactory.setConnectTimeout(CONNECT_TIMEOUT);
+    requestFactory.setReadTimeout(READ_TIMEOUT);
 
     return RestClient.builder()
         .requestFactory(requestFactory)
-        .baseUrl("https://galaxy.ansible.com/api/v1")
-        .defaultHeader(HttpHeaders.USER_AGENT, "Spring-Boot-Portfolio-App")
+        .baseUrl(DEFAULT_BASE_URL)
+        .defaultHeader(HttpHeaders.USER_AGENT, HttpConstants.DEFAULT_USER_AGENT)
         .build();
   }
 

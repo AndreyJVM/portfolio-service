@@ -31,19 +31,25 @@ import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 import ru.vorobevaqa.config.CacheConfig;
+import ru.vorobevaqa.config.HttpConstants;
 import ru.vorobevaqa.dto.GitHubRepoDto;
 
 @Service
 public class GitHubService {
 
   private static final Logger log = LoggerFactory.getLogger(GitHubService.class);
+  private static final Duration CONNECT_TIMEOUT = Duration.ofSeconds(2);
+  private static final Duration READ_TIMEOUT = Duration.ofSeconds(3);
+  private static final String GITHUB_MEDIA_TYPE = "application/vnd.github.v3+json";
 
   private final RestClient restClient;
   private final String githubUsername;
 
   @Autowired
-  public GitHubService(@Value("${github.username:AndreyJVM}") String githubUsername) {
-    this(defaultRestClient(), githubUsername);
+  public GitHubService(
+      @Value("${github.api-url:https://api.github.com}") String apiUrl,
+      @Value("${github.username:AndreyJVM}") String githubUsername) {
+    this(defaultRestClient(apiUrl), githubUsername);
   }
 
   public GitHubService(RestClient restClient, String githubUsername) {
@@ -51,16 +57,16 @@ public class GitHubService {
     this.githubUsername = githubUsername;
   }
 
-  private static RestClient defaultRestClient() {
+  private static RestClient defaultRestClient(String baseUrl) {
     SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
-    requestFactory.setConnectTimeout(Duration.ofSeconds(2));
-    requestFactory.setReadTimeout(Duration.ofSeconds(3));
+    requestFactory.setConnectTimeout(CONNECT_TIMEOUT);
+    requestFactory.setReadTimeout(READ_TIMEOUT);
 
     return RestClient.builder()
         .requestFactory(requestFactory)
-        .baseUrl("https://api.github.com")
-        .defaultHeader(HttpHeaders.USER_AGENT, "Spring-Boot-Portfolio-App")
-        .defaultHeader(HttpHeaders.ACCEPT, "application/vnd.github.v3+json")
+        .baseUrl(baseUrl)
+        .defaultHeader(HttpHeaders.USER_AGENT, HttpConstants.DEFAULT_USER_AGENT)
+        .defaultHeader(HttpHeaders.ACCEPT, GITHUB_MEDIA_TYPE)
         .build();
   }
 
