@@ -35,9 +35,9 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.vorobevaqa.service.PdfResumeService;
 
@@ -51,7 +51,7 @@ class PdfRestControllerTest {
 
   @Autowired private MockMvc mockMvc;
 
-  @MockBean private PdfResumeService pdfResumeService;
+  @MockitoBean private PdfResumeService pdfResumeService;
 
   private static final byte[] MOCK_PDF =
       "%PDF-1.4 mock pdf content %%EOF".getBytes(StandardCharsets.US_ASCII);

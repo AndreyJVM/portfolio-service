@@ -35,7 +35,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.vorobevaqa.dto.AnsibleRoleDto;
 import ru.vorobevaqa.dto.DockerHubRepoDto;
@@ -54,9 +54,9 @@ class PageControllerTest {
 
   @Autowired private MockMvc mockMvc;
 
-  @MockBean private GitHubService gitHubService;
-  @MockBean private DockerHubService dockerHubService;
-  @MockBean private AnsibleGalaxyService ansibleGalaxyService;
+  @MockitoBean private GitHubService gitHubService;
+  @MockitoBean private DockerHubService dockerHubService;
+  @MockitoBean private AnsibleGalaxyService ansibleGalaxyService;
 
   @Test
   @Severity(SeverityLevel.BLOCKER)
