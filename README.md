@@ -1,13 +1,13 @@
-# DevOps & Linux Infrastructure Platform (vorobevaqa.ru)
-
-[![Linux](https://img.shields.io/badge/Linux-Ubuntu_24.04_LTS-E95420?logo=ubuntu&logoColor=white)](https://ubuntu.com/)
-[![Docker](https://img.shields.io/badge/Docker-Compose_%26_Swarm-2496ED?logo=docker&logoColor=white)](https://hub.docker.com/r/andreyvorobevaqa/portfolio-service)
-[![Ansible](https://img.shields.io/badge/Ansible-Galaxy_Roles-EE0000?logo=ansible&logoColor=white)](https://galaxy.ansible.com/ui/standalone/namespaces/24255/)
-[![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub_Actions_%26_GitLab-2088FF?logo=githubactions&logoColor=white)](https://github.com/AndreyJVM)
-[![Nginx](https://img.shields.io/badge/Nginx-API_Gateway_%26_SSL-009639?logo=nginx&logoColor=white)](https://nginx.org/)
-[![Java](https://img.shields.io/badge/Java-21-orange?logo=openjdk)](https://openjdk.org/projects/jdk/21/)
-[![Go](https://img.shields.io/badge/Go-1.23_Microservices-00ADD8?logo=go)](https://go.dev/)
-[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+<p align="center">
+  <a href="https://ubuntu.com/"><img src="https://img.shields.io/badge/Linux-Ubuntu_24.04_LTS-E95420?logo=ubuntu&logoColor=white" alt="Linux"></a>
+  <a href="https://hub.docker.com/r/andreyvorobevaqa/portfolio-service"><img src="https://img.shields.io/badge/Docker-Compose_%26_Swarm-2496ED?logo=docker&logoColor=white" alt="Docker"></a>
+  <a href="https://galaxy.ansible.com/ui/standalone/namespaces/24255/"><img src="https://img.shields.io/badge/Ansible-Galaxy_Roles-EE0000?logo=ansible&logoColor=white" alt="Ansible"></a>
+  <a href="https://github.com/AndreyJVM"><img src="https://img.shields.io/badge/CI%2FCD-GitHub_Actions_%26_GitLab-2088FF?logo=githubactions&logoColor=white" alt="CI/CD"></a>
+  <a href="https://nginx.org/"><img src="https://img.shields.io/badge/Nginx-API_Gateway_%26_SSL-009639?logo=nginx&logoColor=white" alt="Nginx"></a>
+  <a href="https://openjdk.org/projects/jdk/21/"><img src="https://img.shields.io/badge/Java-21-orange?logo=openjdk" alt="Java"></a>
+  <a href="https://go.dev/"><img src="https://img.shields.io/badge/Go-1.23_Microservices-00ADD8?logo=go" alt="Go"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg" alt="License"></a>
+</p>
 
 Продакшн-платформа личного портфолио и сопутствующих сервисов с фокусом на **системное администрирование Linux, контейнеризацию в Docker, автоматизацию через Ansible и надежные CI/CD пайплайны**.
 
