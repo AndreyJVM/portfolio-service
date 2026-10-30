@@ -30,7 +30,7 @@ import org.junit.jupiter.api.Test;
 
 @Epic("Core Services")
 @Feature("PDF Resume Generator")
-@Story("PdfResumeService - Генерация и фалбэк PDF резюме")
+@Story("PdfResumeService - Чтение PDF резюме")
 @Tag("unit")
 @Tag("service")
 class PdfResumeServiceTest {
@@ -39,32 +39,21 @@ class PdfResumeServiceTest {
 
   @BeforeEach
   void setUp() {
-    // Port 65530 simulates an unreachable Go service
-    pdfResumeService = new PdfResumeService("http://127.0.0.1:65530");
+    pdfResumeService = new PdfResumeService();
   }
 
   @Test
-  @DisplayName("generateFallbackPdf возвращает валидный PDF с магическими байтами %PDF-1.4")
-  void shouldGenerateFallbackPdfWithCorrectMagicBytes() {
-    byte[] pdf = pdfResumeService.generateFallbackPdf();
-
-    assertThat(pdf).isNotNull();
-    assertThat(pdf.length).isGreaterThan(200);
-
-    String pdfHeader = new String(pdf, 0, 8, StandardCharsets.US_ASCII);
-    assertThat(pdfHeader).startsWith("%PDF-1.");
-
-    String pdfString = new String(pdf, StandardCharsets.US_ASCII);
-    assertThat(pdfString).contains("Andrey Vorobev").contains("%%EOF");
-  }
-
-  @Test
-  @DisplayName("getResumePdf возвращает fallback PDF при недоступности внешнего сервиса")
-  void shouldReturnFallbackWhenServiceUnavailable() {
+  @DisplayName("getResumePdf возвращает валидный PDF с магическими байтами %PDF-")
+  void shouldReturnValidPdfFromClasspath() {
     byte[] pdf = pdfResumeService.getResumePdf();
 
     assertThat(pdf).isNotNull();
-    assertThat(pdf.length).isGreaterThan(200);
-    assertThat(new String(pdf, 0, 8, StandardCharsets.US_ASCII)).startsWith("%PDF-1.");
+    assertThat(pdf.length).isGreaterThan(1000);
+
+    String pdfHeader = new String(pdf, 0, 8, StandardCharsets.US_ASCII);
+    assertThat(pdfHeader).startsWith("%PDF-");
+
+    String pdfString = new String(pdf, StandardCharsets.ISO_8859_1);
+    assertThat(pdfString).contains("%%EOF");
   }
 }

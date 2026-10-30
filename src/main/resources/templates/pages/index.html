@@ -33,14 +33,11 @@
         Привет, я <span class="text-gradient">Андрей Воробьев</span>
       </h1>
       <p class="lead text-body-secondary mb-4" style="max-width: 650px;">
-        Занимаюсь системным администрированием Linux, контейнеризацией приложений в Docker и настройкой процессов CI/CD. Пишу плейбуки Ansible для автоматической конфигурации серверов и скрипты автоматизации на Bash. Есть практический бэкграунд в экосистеме Java и автоматизации тестирования.
+        Системное администрирование Linux, контейнеризация в Docker и автоматизация релизов в CI/CD. Настройка инфраструктуры через Ansible и Bash, практический опыт в экосистеме Java.
       </p>
       <div class="d-flex flex-wrap gap-3 justify-content-center justify-content-lg-start">
         <a th:href="@{/projects}" class="btn btn-primary btn-lg px-4 shadow-sm rounded-pill">
           <i class="fas fa-layer-group me-2"></i>Мои проекты
-        </a>
-        <a th:href="@{/api/pdf/resume}" target="_blank" class="btn btn-outline-primary btn-lg px-4 rounded-pill" id="heroResumePdfBtn">
-          <i class="fas fa-file-pdf me-2"></i>Резюме (PDF)
         </a>
         <a href="https://t.me/AndreyAQA" target="_blank" rel="noopener noreferrer" class="btn btn-outline-secondary btn-lg px-4 rounded-pill">
           <i class="fab fa-telegram me-2"></i>Telegram
@@ -62,9 +59,9 @@
   <div class="focus-banner rounded-4 p-4 p-md-5 mb-5 reveal reveal-delay-100">
     <div class="row align-items-center">
       <div class="col-md-8">
-        <h4 class="fw-bold mb-2">Текущий практический фокус</h4>
+        <h4 class="fw-bold mb-2">Боевой стенд платформы</h4>
         <p class="text-body-secondary mb-0">
-          Углубляюсь в администрирование серверов Linux (Ubuntu/Debian), настройку сетей и безопасности хоста (UFW, SSH, iptables), автоматизацию типовых сценариев деплоя через Ansible и построение надежных CI/CD пайплайнов (GitHub Actions, GitLab CI). Этот сайт развернут на VDS в Docker Compose с Nginx и автоматическим деплоем.
+          Сайт развёрнут на боевом VDS (Ubuntu 24.04). Сервисы работают в Docker Compose за Nginx с SSL, а деплой автоматизирован через GitHub Actions по схеме Zero-Downtime Blue-Green.
         </p>
       </div>
       <div class="col-md-4 text-start text-md-end mt-4 mt-md-0">
@@ -94,7 +91,7 @@
         </div>
         <h5 class="fw-bold mb-2">Linux & Серверы</h5>
         <p class="text-body-secondary small mb-4 flex-grow-1">
-          Работа в терминале Linux (Ubuntu/Debian), настройка прав доступа, управление процессами (systemd), написание скриптов автоматизации на Bash, базовая сетевая безопасность (UFW, SSH по ключам, Fail2ban).
+          Администрирование Ubuntu/Debian, управление службами systemd и cron, автоматизация на Bash, безопасность хоста (SSH-ключи, фаервол UFW).
         </p>
         <div>
           <span class="text-uppercase text-body-secondary small fw-bold d-block mb-2">Технологии:</span>
@@ -117,7 +114,7 @@
         </div>
         <h5 class="fw-bold mb-2">Контейнеризация и Nginx</h5>
         <p class="text-body-secondary small mb-4 flex-grow-1">
-          Создание многоэтапных Dockerfile, изоляция и квоты ресурсов (limits/reservations), управление микросервисами в Docker Compose, настройка Nginx как обратного прокси (Reverse Proxy, SSL, Gzip, роутинг).
+          Многоэтапные Dockerfile, лимиты ресурсов (cgroups), оркестрация в Docker Compose, Nginx Reverse Proxy (SSL, Gzip, маршрутизация микросервисов).
         </p>
         <div>
           <span class="text-uppercase text-body-secondary small fw-bold d-block mb-2">Технологии:</span>
@@ -140,7 +137,7 @@
         </div>
         <h5 class="fw-bold mb-2">CI/CD & Автоматизация</h5>
         <p class="text-body-secondary small mb-4 flex-grow-1">
-          Настройка сборочных пайплайнов в GitHub Actions и GitLab CI, автоматический деплой на сервер, написание идемпотентных плейбуков Ansible. Понимание структуры бэкенда на Java и принципов тестирования.
+          Пайплайны в GitHub Actions и GitLab CI с фильтрацией путей, Zero-Downtime Blue-Green деплой на VDS, роли и плейбуки Ansible.
         </p>
         <div>
           <span class="text-uppercase text-body-secondary small fw-bold d-block mb-2">Технологии:</span>

@@ -62,37 +62,6 @@ services:
       retries: 3
       start_period: 2s
 
-  # ========== GO PDF GENERATOR MICROSERVICE ==========
-  pdf-service:
-    image: andreyvorobevaqa/pdf-service:latest
-    container_name: pdf-microservice
-    restart: unless-stopped
-    security_opt:
-      - no-new-privileges:true
-    environment:
-      PORT: "8082"
-    deploy:
-      resources:
-        limits:
-          cpus: "0.5"
-          memory: 64M
-        reservations:
-          cpus: "0.05"
-          memory: 16M
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
-    networks:
-      - app-network
-    healthcheck:
-      test: [ "CMD", "/app/pdf-service", "healthcheck" ]
-      interval: 5s
-      timeout: 2s
-      retries: 3
-      start_period: 2s
-
   # ========== NGINX (REVERSE PROXY / API GATEWAY) ==========
   nginx:
     image: nginx:alpine
@@ -124,8 +93,6 @@ services:
       app:
         condition: service_healthy
       qr-service:
-        condition: service_healthy
-      pdf-service:
         condition: service_healthy
     networks:
       - app-network

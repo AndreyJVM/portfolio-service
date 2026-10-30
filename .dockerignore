@@ -17,7 +17,6 @@ build/
 
 # Sub-services (built in their own isolated contexts)
 qr-service/
-pdf-service/
 
 # Repository documentation & CI/CD configs
 *.md

@@ -37,16 +37,16 @@ log_info "Используется утилита: $COMPOSE_CMD"
 # 1. Загрузка актуальных образов из Docker Hub
 # ------------------------------------------------------------------------------
 log_info "📥 Шаг 1/5: Загрузка свежих Docker-образов..."
-$COMPOSE_CMD pull app qr-service pdf-service
+$COMPOSE_CMD pull app qr-service
 
 # ------------------------------------------------------------------------------
-# 2. Обновление Go микросервисов (мгновенный старт scratch ~10ms)
+# 2. Обновление Go микросервиса (мгновенный старт scratch ~10ms)
 # ------------------------------------------------------------------------------
-log_info "⚡ Шаг 2/5: Обновление Go микросервисов (qr-service, pdf-service)..."
-$COMPOSE_CMD up -d --no-deps qr-service pdf-service
+log_info "⚡ Шаг 2/5: Обновление Go микросервиса (qr-service)..."
+$COMPOSE_CMD up -d --no-deps qr-service
 
 # Ожидание готовности healthcheck для Go сервисов
-for svc in qr-service pdf-service; do
+for svc in qr-service; do
   log_info "Проверка готовности $svc..."
   SVC_READY=false
   for i in $(seq 1 15); do

@@ -24,6 +24,7 @@ import java.time.ZonedDateTime;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DockerHubRepoDto {
 
+  private static final String DOCKER_NUB_BASE_URL = "https://hub.docker.com/r/";
   private String name;
   private String namespace;
   private String description;
@@ -103,7 +104,10 @@ public class DockerHubRepoDto {
   }
 
   public String getUrl() {
-    return "https://hub.docker.com/r/" + namespace + "/" + name;
+    if (namespace == null || name == null) {
+      return "#";
+    }
+    return DOCKER_NUB_BASE_URL + namespace + "/" + name;
   }
 
   public static Builder builder() {

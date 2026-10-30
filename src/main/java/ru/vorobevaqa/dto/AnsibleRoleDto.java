@@ -23,6 +23,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AnsibleRoleDto {
 
+  private static final String GALAXY_ROLE_BASE_URL =
+      "https://galaxy.ansible.com/ui/standalone/roles/";
   private String name;
   private String description;
 
@@ -87,6 +89,9 @@ public class AnsibleRoleDto {
   }
 
   public String getUrl() {
-    return "https://galaxy.ansible.com/ui/standalone/roles/" + githubUser + "/" + name + "/";
+    if (githubUser == null || name == null) {
+      return "#";
+    }
+    return GALAXY_ROLE_BASE_URL + githubUser + "/" + name + "/";
   }
 }

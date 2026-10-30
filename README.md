@@ -33,7 +33,6 @@ flowchart TD
     Client["Внешний клиент / Браузер"] -->|HTTPS :443 / HTTP :80| Host["Linux VDS (Ubuntu 24.04 LTS)<br/>UFW Firewall • SSH ed25519 • Fail2ban • logrotate"]
     Host --> Nginx["Nginx Reverse Proxy & API Gateway<br/>Терминация SSL • HTTP/2 • Gzip • Fallback 50x"]
     Nginx -->|/api/qr| GoQR["Go QR Microservice (:8081)<br/>Scratch-образ ~10MB • cgroups квоты"]
-    Nginx -->|/api/pdf| GoPDF["Go PDF Microservice (:8082)<br/>Scratch-образ ~15MB • Векторный генератор"]
     Nginx -->|/| JavaApp["Java Portfolio Service (:8080)<br/>Spring Boot 3.4 • Multi-stage Docker"]
 ```
 
@@ -46,7 +45,7 @@ flowchart TD
 | **IaC & Оркестрация** | Ansible (идемпотентные плейбуки и роли в Ansible Galaxy), Blue-Green деплой скриптом `deploy.sh` |
 | **CI/CD** | GitHub Actions, GitLab CI (мультисервисная сборка, тесты, сборка образов, SSH деплой с авто-откатом) |
 | **Бэкенд приложения** | Java 21, Spring Boot 3.4, Spring MVC, Thymeleaf, REST API, Caffeine Cache |
-| **Микросервисы утилит** | Go 1.23 (`skip2/go-qrcode`, `signintech/gopdf`), минималистичные scratch-образы (~10–15 МБ, <15мс) |
+| **Микросервисы утилит** | Go 1.23 (`skip2/go-qrcode`), минималистичный scratch-образ (~10 МБ, <15мс) |
 | **Контроль качества & QA** | Allure 2, Selenide 7, REST Assured, JMeter 5.5, Spotless (Google Java Style), Checkstyle |
 
 
@@ -99,7 +98,7 @@ flowchart TD
 ```mermaid
 flowchart LR
     A[Git Push] --> B[Build & Test<br/>Java 21 & Go]
-    B --> C[Docker Build<br/>App + QR + PDF]
+    B --> C[Docker Build<br/>App + QR]
     C --> D[Push to Docker Hub]
     D --> E[SSH Deploy on VDS]
     E --> F[scripts/deploy.sh<br/>Blue-Green & Auto-Rollback]
@@ -116,9 +115,8 @@ flowchart LR
 # Запуск полного сьюта Java тестов (Unit + API + E2E UI)
 mvn clean test
 
-# Запуск тестов Go микросервисов
+# Запуск тестов Go микросервиса QR
 cd qr-service && go test -v ./... && cd ..
-cd pdf-service && go test -v ./... && cd ..
 
 # Проверка стиля кода
 mvn spotless:check
@@ -130,11 +128,10 @@ mvn spotless:check
 ```
 portfolio/
 ├── qr-service/              # Go QR Microservice (:8081, Scratch ~10MB)
-├── pdf-service/             # Go PDF Resume Microservice (:8082, Scratch ~15MB)
 ├── src/
 │   ├── main/
 │   │   ├── java/            # Исходный код Java приложения (Spring Boot 3.4)
-│   │   └── resources/       # Шаблоны Thymeleaf, статика, конфигурации
+│   │   └── resources/       # Шаблоны Thymeleaf, статика, конфигурации, PDF резюме
 │   └── test/                # 135+ автоматизированных тестов (Unit, API, E2E Selenide, Allure)
 ├── nginx/
 │   ├── nginx.conf           # Конфигурация API Gateway, SSL и роутинга
@@ -158,7 +155,8 @@ portfolio/
 - **Ansible Galaxy:** [Профиль автора](https://galaxy.ansible.com/ui/standalone/namespaces/24255/)
 - **Telegram:** [@AndreyAQA](https://t.me/AndreyAQA)
 
+---
 
 ## Лицензия
 
-Проект распространяется под лицензией **Apache License 2.0**. Подробности в файле [LICENSE](LICENSE).
+Проект распространяется под свободной лицензией [Apache License 2.0](LICENSE).
