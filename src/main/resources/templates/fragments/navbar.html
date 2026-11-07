@@ -34,6 +34,11 @@
                 <li class="nav-item">
                     <a class="nav-link" th:classappend="${active == 'qr'} ? 'active' : ''" th:href="@{/qr}">QR-генератор</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:classappend="${active == 'mustang'} ? 'active' : ''" th:href="@{/mustang}">
+                        <i class="fas fa-car-side me-1 text-danger"></i>Shelby GT500
+                    </a>
+                </li>
             </ul>
         </div>
     </div>

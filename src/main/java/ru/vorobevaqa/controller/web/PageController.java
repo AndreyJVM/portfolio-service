@@ -62,4 +62,9 @@ public class PageController {
   public String qrPage() {
     return "pages/qr";
   }
+
+  @GetMapping("/mustang")
+  public String mustang() {
+    return "pages/mustang";
+  }
 }

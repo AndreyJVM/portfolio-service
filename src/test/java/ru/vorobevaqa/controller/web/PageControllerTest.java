@@ -163,4 +163,15 @@ class PageControllerTest {
   void shouldReturnQrPage() throws Exception {
     mockMvc.perform(get("/qr")).andExpect(status().isOk()).andExpect(view().name("pages/qr"));
   }
+
+  @Test
+  @Severity(SeverityLevel.NORMAL)
+  @DisplayName("WEB-07: GET /mustang - Рендеринг страницы мечты Shelby GT500")
+  @Description("Проверка возврата HTTP 200 и шаблона pages/mustang")
+  void shouldReturnMustangPage() throws Exception {
+    mockMvc
+        .perform(get("/mustang"))
+        .andExpect(status().isOk())
+        .andExpect(view().name("pages/mustang"));
+  }
 }
