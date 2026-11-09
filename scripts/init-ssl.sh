@@ -8,7 +8,7 @@
 set -euo pipefail
 
 DOMAIN="vorobevaqa.ru"
-EMAIL="${1:-andrey.vorobev.qa@yandex.ru}"
+EMAIL="${1:-andrey.vorobev.aqa@gmail.com}"
 
 # Цвета для логов
 CLR_RESET="\033[0m"
@@ -34,10 +34,10 @@ fi
 log_info "1. Подготовка каталогов certbot и ssl..."
 mkdir -p certbot/conf certbot/www ssl
 
-log_info "2. Проверка доступности Nginx на 80 порту..."
-$COMPOSE_CMD up -d nginx
+log_info "2. Проверка и пересоздание Nginx с поддержкой webroot certbot..."
+$COMPOSE_CMD up -d --force-recreate nginx
 
-log_info "3. Запрос SSL сертификата у Let's Encrypt для $DOMAIN и www.$DOMAIN..."
+log_info "3. Запрос SSL сертификата у Let's Encrypt для $DOMAIN..."
 docker run --rm \
   -v "$(pwd)/certbot/conf:/etc/letsencrypt" \
   -v "$(pwd)/certbot/www:/var/www/certbot" \
@@ -48,9 +48,9 @@ docker run --rm \
   --agree-tos \
   --no-eff-email \
   --force-renewal \
-  -d "$DOMAIN" -d "www.$DOMAIN"
+  -d "$DOMAIN"
 
-log_info "4. Копирование актуальных сертификатов в ./ssl/..."
+log_info "4. Копирование актуальных сертификатов в ./ssl/... (симлинки разыменовываются)"
 cp -L "certbot/conf/live/$DOMAIN/fullchain.pem" ssl/public.pem
 cp -L "certbot/conf/live/$DOMAIN/privkey.pem" ssl/private.pem
 chmod 644 ssl/public.pem
