@@ -29,8 +29,10 @@ deploy.log
 .DS_Store
 Thumbs.db
 
-# === Secrets & Environment ===
+# === Secrets, Certificates & Environment ===
 .env
+ssl/
+certbot/
 
 # === Allure & QA Reports ===
 .allure/
