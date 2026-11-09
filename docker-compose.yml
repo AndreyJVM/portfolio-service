@@ -110,7 +110,7 @@ services:
     # Проверка обновления каждые 12 часов и копирование свежих сертификатов в ./ssl
     entrypoint: >
       /bin/sh -c 'trap exit TERM; while :; do
-        certbot renew --webroot -w /var/www/certbot --deploy-hook "cp /etc/letsencrypt/live/vorobevaqa.ru/fullchain.pem /ssl/public.pem && cp /etc/letsencrypt/live/vorobevaqa.ru/privkey.pem /ssl/private.pem";
+        certbot renew --webroot -w /var/www/certbot --deploy-hook "cp -L /etc/letsencrypt/live/vorobevaqa.ru/fullchain.pem /ssl/public.pem && cp -L /etc/letsencrypt/live/vorobevaqa.ru/privkey.pem /ssl/private.pem && chmod 644 /ssl/public.pem && chmod 600 /ssl/private.pem";
         sleep 12h & wait $${!};
       done;'
     networks:

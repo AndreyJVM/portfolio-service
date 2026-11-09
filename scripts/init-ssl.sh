@@ -34,33 +34,42 @@ fi
 log_info "1. Подготовка каталогов certbot и ssl..."
 mkdir -p certbot/conf certbot/www ssl
 
-log_info "2. Проверка и пересоздание Nginx с поддержкой webroot certbot..."
-$COMPOSE_CMD up -d --force-recreate nginx
+log_info "2. Временная остановка контейнера Nginx..."
+# Для первичного выпуска сертификатов используем standalone-режим Certbot.
+# Это исключает проблему «курицы и яйца» (когда Nginx не может запуститься без сертификатов).
+$COMPOSE_CMD stop nginx || true
 
-log_info "3. Запрос SSL сертификата у Let's Encrypt для $DOMAIN..."
+# Проверка, не занят ли порт 80 системной службой на хосте
+if command -v ss &>/dev/null && ss -tulpn 2>/dev/null | grep -qE ':(80|443) '; then
+  log_warn "Порт 80 или 443 занят сторонним процессом на хосте (возможно, systemd nginx/apache)."
+  log_warn "Если Certbot упадет с ошибкой 'port already in use', выполните: sudo systemctl stop nginx"
+fi
+
+log_info "3. Запрос SSL сертификата у Let's Encrypt для $DOMAIN (standalone режим)..."
 docker run --rm \
+  -p 80:80 \
   -v "$(pwd)/certbot/conf:/etc/letsencrypt" \
-  -v "$(pwd)/certbot/www:/var/www/certbot" \
   certbot/certbot:latest certonly \
-  --webroot \
-  --webroot-path=/var/www/certbot \
+  --standalone \
+  --preferred-challenges http \
   --email "$EMAIL" \
   --agree-tos \
   --no-eff-email \
   --force-renewal \
   -d "$DOMAIN"
 
-log_info "4. Копирование актуальных сертификатов в ./ssl/... (симлинки разыменовываются)"
+log_info "4. Копирование актуальных сертификатов в ./ssl/... (разыменовываем симлинки)"
 cp -L "certbot/conf/live/$DOMAIN/fullchain.pem" ssl/public.pem
 cp -L "certbot/conf/live/$DOMAIN/privkey.pem" ssl/private.pem
 chmod 644 ssl/public.pem
 chmod 600 ssl/private.pem
 
-log_info "5. Перезагрузка конфигурации Nginx..."
-$COMPOSE_CMD exec nginx nginx -s reload || $COMPOSE_CMD restart nginx
+log_info "5. Запуск Nginx с установленными сертификатами..."
+$COMPOSE_CMD up -d --remove-orphans nginx
 
 log_info "6. Запуск фонового контейнера автопродления Certbot..."
-$COMPOSE_CMD up -d certbot
+$COMPOSE_CMD up -d --remove-orphans certbot
 
 log_success "🎉 SSL сертификат успешно выпущен и установлен!"
-log_success "Автопродление активно в фоновом контейнере certbot."
+log_success "HTTPS сайт доступен: https://$DOMAIN"
+log_success "Фоновое автопродление активно в контейнере certbot."
