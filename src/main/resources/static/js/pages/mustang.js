@@ -167,9 +167,54 @@ document.addEventListener('DOMContentLoaded', () => {
     animFrameId = requestAnimationFrame(step);
   }
 
+  const cockpitPanel = document.querySelector('.cockpit-panel');
+  const gaugeWrapper = document.querySelector('.gauge-wrapper');
+  const exhaustBadge = document.getElementById('exhaustBadge');
+  const startEngineBtn = document.getElementById('startEngineBtn');
+  let isEngineRunning = false;
+
   function triggerRev(targetRpm, durationSec) {
     playV8Sound(targetRpm, durationSec);
     animateTachometer(targetRpm, durationSec * 1000);
+
+    // Visual WOW: Cockpit rumble shake
+    if (cockpitPanel) {
+      cockpitPanel.classList.add('rumbling');
+      setTimeout(() => cockpitPanel.classList.remove('rumbling'), durationSec * 1000);
+    }
+
+    // Visual WOW: Redline glow on gauge
+    if (gaugeWrapper && targetRpm >= 7000) {
+      gaugeWrapper.classList.add('redlining');
+      setTimeout(() => gaugeWrapper.classList.remove('redlining'), durationSec * 1000);
+    }
+
+    // Visual WOW: Flame backfire animation
+    if (exhaustBadge) {
+      exhaustBadge.classList.add('flame-active');
+      exhaustBadge.innerHTML = '<i class="fas fa-fire me-1 text-danger"></i>BACKFIRE BURST!';
+      setTimeout(() => {
+        exhaustBadge.classList.remove('flame-active');
+        exhaustBadge.innerHTML = '<i class="fas fa-fire me-1"></i>TRACK EXHAUST';
+      }, durationSec * 1000);
+    }
+  }
+
+  // Start / Stop Engine Interactive Feature
+  if (startEngineBtn) {
+    startEngineBtn.addEventListener('click', () => {
+      isEngineRunning = !isEngineRunning;
+      if (isEngineRunning) {
+        startEngineBtn.classList.add('running');
+        startEngineBtn.innerHTML = '<i class="fas fa-check-circle me-1"></i>Engine Running';
+        triggerRev(2500, 1.2);
+      } else {
+        startEngineBtn.classList.remove('running');
+        startEngineBtn.innerHTML = '<i class="fas fa-power-off me-1"></i>Start Engine';
+        if (tachometerNeedle) tachometerNeedle.style.transform = 'translateX(-50%) rotate(-120deg)';
+        if (rpmDisplay) rpmDisplay.textContent = '0';
+      }
+    });
   }
 
   if (gasPedalBtn) {

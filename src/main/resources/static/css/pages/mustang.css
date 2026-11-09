@@ -241,3 +241,51 @@
   background: var(--card-bg) !important;
   border-color: var(--card-border) !important;
 }
+
+/* ===== Visual WOW: Cockpit Shake, Nitro Flame, and Engine Status ===== */
+@keyframes cockpitRumble {
+  0% { transform: translate(0, 0); }
+  20% { transform: translate(-2px, 1.5px); }
+  40% { transform: translate(2px, -1.5px); }
+  60% { transform: translate(-1.5px, -1px); }
+  80% { transform: translate(1.5px, 2px); }
+  100% { transform: translate(0, 0); }
+}
+
+.cockpit-panel.rumbling {
+  animation: cockpitRumble 0.08s infinite ease-in-out;
+  box-shadow: 0 0 35px rgba(239, 68, 68, 0.45) !important;
+  border-color: rgba(239, 68, 68, 0.6) !important;
+}
+
+/* Engine Start Glow */
+#startEngineBtn {
+  transition: all 0.25s ease;
+}
+
+#startEngineBtn.running {
+  background-color: #10b981 !important;
+  border-color: #10b981 !important;
+  box-shadow: 0 0 15px rgba(16, 185, 129, 0.6) !important;
+}
+
+/* Redline Tachometer Flashing */
+@keyframes redlineGlow {
+  0%, 100% { filter: drop-shadow(0 0 4px #ef4444); }
+  50% { filter: drop-shadow(0 0 18px #ff0000); }
+}
+
+.gauge-wrapper.redlining .gauge-dial {
+  border-color: #ff1100 !important;
+  animation: redlineGlow 0.15s infinite alternate;
+}
+
+/* Nitro Flame Burst Indicator */
+.flame-active {
+  animation: flameFlicker 0.1s infinite alternate;
+}
+
+@keyframes flameFlicker {
+  0% { transform: scale(1); opacity: 0.9; }
+  100% { transform: scale(1.15); opacity: 1; filter: drop-shadow(0 0 10px #ff3b00); }
+}
