@@ -343,14 +343,20 @@
       </div>
 
       <!-- Интерактивная форма перевода -->
-      <div class="donation-box mx-auto p-4 rounded-4 border bg-body-tertiary" style="max-width: 650px;">
-        <h5 class="fw-bold mb-3 text-center">Оформить перевод на мечту</h5>
+      <div class="donation-box mx-auto p-4 p-md-5 rounded-4 border bg-body-tertiary" style="max-width: 680px;">
+        <div class="text-center mb-4">
+          <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-1 rounded-pill mb-2">
+            <i class="fas fa-bolt me-1"></i> Мгновенная оплата СБП
+          </span>
+          <h4 class="fw-bold mb-1">Оформить перевод на мечту</h4>
+          <p class="text-body-secondary small mb-0">Через официальный сервис CloudTips (Т-Банк / НСПК)</p>
+        </div>
 
         <div class="mb-3">
-          <label class="form-label small fw-semibold text-body-secondary">Сумма доната:</label>
-          <div class="input-group">
+          <label class="form-label small fw-semibold text-body-secondary">Сумма доната (₽):</label>
+          <div class="input-group input-group-lg">
             <span class="input-group-text bg-body border-end-0"><i class="fas fa-ruble-sign text-danger"></i></span>
-            <input type="number" id="customAmountInput" class="form-control border-start-0" value="500" min="10" step="50">
+            <input type="number" id="customAmountInput" class="form-control border-start-0 fw-bold" value="500" min="10" step="50">
           </div>
         </div>
 
@@ -360,21 +366,76 @@
         </div>
 
         <div class="mb-4">
-          <label class="form-label small fw-semibold text-body-secondary">Пожелание в дорогу:</label>
+          <label class="form-label small fw-semibold text-body-secondary">Пожелание в дорогу / комментарий:</label>
           <input type="text" id="donorMessageInput" class="form-control" placeholder="Ни гвоздя, ни жезла, ни 502 Bad Gateway!">
         </div>
 
-        <div class="d-grid gap-2">
-          <a href="https://t.me/AndreyAQA" target="_blank" rel="noopener noreferrer" class="btn btn-danger btn-lg rounded-pill shadow-sm" id="sendDonationBtn">
-            <i class="fab fa-telegram me-2"></i>Перевести / Написать автору в Telegram
+        <!-- Платежные методы логотипы -->
+        <div class="d-flex align-items-center justify-content-center flex-wrap gap-2 mb-4 py-2 px-3 rounded-3 bg-body border">
+          <span class="small text-muted fw-semibold me-1"><i class="fas fa-shield-alt text-success me-1"></i>Поддерживается:</span>
+          <span class="badge bg-dark-subtle text-body border py-2 px-2"><i class="fas fa-qrcode text-warning me-1"></i><strong>СБП</strong></span>
+          <span class="badge bg-dark-subtle text-body border py-2 px-2"><i class="far fa-credit-card text-primary me-1"></i>МИР / Visa / MC</span>
+          <span class="badge bg-dark-subtle text-body border py-2 px-2"><i class="fas fa-mobile-screen-button text-success me-1"></i>T-Pay / SberPay</span>
+        </div>
+
+        <!-- Кнопки действий -->
+        <div class="d-grid gap-3">
+          <a href="https://pay.cloudtips.ru/p/d4f93a46" target="_blank" rel="noopener noreferrer" class="btn btn-danger btn-lg rounded-pill shadow-sm fw-bold py-3" id="cloudtipsPayBtn">
+            <i class="fas fa-qrcode me-2"></i>Оплатить через СБП / Картой
           </a>
-          <button type="button" class="btn btn-outline-secondary rounded-pill" id="virtualThreadsDonateBtn">
-            <i class="fab fa-java me-2 text-danger"></i>Задонатить 1 000 000 виртуальных потоков Java 21
+
+          <div class="row g-2">
+            <div class="col-sm-6">
+              <button type="button" class="btn btn-outline-danger rounded-pill w-100 py-2" id="showQrModalBtn" data-bs-toggle="modal" data-bs-target="#sbpQrModal">
+                <i class="fas fa-expand me-1"></i>QR-код для смартфона
+              </button>
+            </div>
+            <div class="col-sm-6">
+              <a href="https://t.me/AndreyAQA" target="_blank" rel="noopener noreferrer" class="btn btn-outline-secondary rounded-pill w-100 py-2" id="sendTelegramBtn">
+                <i class="fab fa-telegram me-1"></i>Написать в Telegram
+              </a>
+            </div>
+          </div>
+
+          <button type="button" class="btn btn-link text-body-secondary text-decoration-none small py-1" id="virtualThreadsDonateBtn">
+            <i class="fab fa-java me-1 text-danger"></i>Или задонатить 1 000 000 виртуальных потоков Java 21
           </button>
         </div>
       </div>
     </div>
   </section>
+
+  <!-- ==================== МОДАЛЬНОЕ ОКНО С QR-КОДОМ ДЛЯ СМАРТФОНА ==================== -->
+  <div class="modal fade" id="sbpQrModal" tabindex="-1" aria-labelledby="sbpQrModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content rounded-4 border shadow-lg">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold" id="sbpQrModalLabel">
+            <i class="fas fa-qrcode text-danger me-2"></i>Оплата через СБП
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-center py-4">
+          <p class="text-body-secondary small mb-3">
+            Отсканируйте QR-код камерой телефона или в приложении любого банка РФ для моментального перевода:
+          </p>
+          <div class="qr-frame p-3 bg-white d-inline-block rounded-3 border shadow-sm mb-3">
+            <img src="/api/qr?text=https://pay.cloudtips.ru/p/d4f93a46" alt="QR-код CloudTips СБП" class="img-fluid" style="width: 230px; height: 230px;">
+          </div>
+          <div>
+            <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-1 rounded-pill">
+              Цель сбора: Ford Mustang Shelby GT500
+            </span>
+          </div>
+        </div>
+        <div class="modal-footer border-0 pt-0 justify-content-center">
+          <a href="https://pay.cloudtips.ru/p/d4f93a46" target="_blank" rel="noopener noreferrer" class="btn btn-danger rounded-pill px-4">
+            <i class="fas fa-external-link-alt me-1"></i>Открыть CloudTips напрямую
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
 
 </main>
 

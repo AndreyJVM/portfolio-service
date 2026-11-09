@@ -199,21 +199,29 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Dynamic Telegram link generator
-  function updateTelegramLink() {
-    if (!sendDonationBtn) return;
-    const amount = customAmountInput ? customAmountInput.value : '500';
+  const cloudtipsPayBtn = document.getElementById('cloudtipsPayBtn');
+  const sendTelegramBtn = document.getElementById('sendTelegramBtn');
+
+  // Dynamic CloudTips & Telegram link generator
+  function updateLinks() {
+    const amount = customAmountInput && customAmountInput.value ? customAmountInput.value : '500';
     const name = donorNameInput && donorNameInput.value.trim() ? donorNameInput.value.trim() : 'Пилот';
     const msg = donorMessageInput && donorMessageInput.value.trim() ? donorMessageInput.value.trim() : 'На мечту Shelby GT500!';
 
-    const text = encodeURIComponent(`Привет! Я ${name}. Донат на Ford Mustang Shelby GT500: ${amount} ₽.\nПожелание: ${msg}`);
-    sendDonationBtn.href = `https://t.me/AndreyAQA?text=${text}`;
+    if (cloudtipsPayBtn) {
+      cloudtipsPayBtn.href = `https://pay.cloudtips.ru/p/d4f93a46?amount=${encodeURIComponent(amount)}`;
+    }
+
+    if (sendTelegramBtn) {
+      const tgText = encodeURIComponent(`Привет! Я ${name}. Донат на Ford Mustang Shelby GT500: ${amount} ₽.\nПожелание: ${msg}`);
+      sendTelegramBtn.href = `https://t.me/AndreyAQA?text=${tgText}`;
+    }
   }
 
-  if (customAmountInput) customAmountInput.addEventListener('input', updateTelegramLink);
-  if (donorNameInput) donorNameInput.addEventListener('input', updateTelegramLink);
-  if (donorMessageInput) donorMessageInput.addEventListener('input', updateTelegramLink);
-  updateTelegramLink();
+  if (customAmountInput) customAmountInput.addEventListener('input', updateLinks);
+  if (donorNameInput) donorNameInput.addEventListener('input', updateLinks);
+  if (donorMessageInput) donorMessageInput.addEventListener('input', updateLinks);
+  updateLinks();
 
   // Joke Virtual Threads Donation Button
   if (virtualThreadsDonateBtn) {
