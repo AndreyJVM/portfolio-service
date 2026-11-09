@@ -245,48 +245,15 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   const cloudtipsPayBtn = document.getElementById('cloudtipsPayBtn');
-  const sendTelegramBtn = document.getElementById('sendTelegramBtn');
 
-  // Dynamic CloudTips & Telegram link generator
-  function updateLinks() {
+  // Dynamic CloudTips SBP Link Generator
+  function updateSbpLink() {
     const amount = customAmountInput && customAmountInput.value ? customAmountInput.value : '500';
-    const name = donorNameInput && donorNameInput.value.trim() ? donorNameInput.value.trim() : 'Пилот';
-    const msg = donorMessageInput && donorMessageInput.value.trim() ? donorMessageInput.value.trim() : 'На мечту Shelby GT500!';
-
     if (cloudtipsPayBtn) {
       cloudtipsPayBtn.href = `https://pay.cloudtips.ru/p/d4f93a46?amount=${encodeURIComponent(amount)}`;
     }
-
-    if (sendTelegramBtn) {
-      const tgText = encodeURIComponent(`Привет! Я ${name}. Донат на Ford Mustang Shelby GT500: ${amount} ₽.\nПожелание: ${msg}`);
-      sendTelegramBtn.href = `https://t.me/AndreyAQA?text=${tgText}`;
-    }
   }
 
-  if (customAmountInput) customAmountInput.addEventListener('input', updateLinks);
-  if (donorNameInput) donorNameInput.addEventListener('input', updateLinks);
-  if (donorMessageInput) donorMessageInput.addEventListener('input', updateLinks);
-  updateLinks();
-
-  // Joke Virtual Threads Donation Button
-  if (virtualThreadsDonateBtn) {
-    virtualThreadsDonateBtn.addEventListener('click', () => {
-      triggerRev(7800, 2.5);
-
-      const toastElement = document.getElementById('liveToast');
-      const toastMessage = document.getElementById('toastMessage');
-      const toastIcon = document.getElementById('toastIcon');
-
-      if (toastElement && window.bootstrap) {
-        if (toastMessage) {
-          toastMessage.textContent = '🚀 1 000 000 Virtual Threads Java 21 загружено в нагнетатель Shelby! +150 HP к продакшну!';
-        }
-        if (toastIcon) {
-          toastIcon.className = 'fas fa-fire text-danger me-2 fa-lg';
-        }
-        const toast = new bootstrap.Toast(toastElement, { delay: 4500 });
-        toast.show();
-      }
-    });
-  }
+  if (customAmountInput) customAmountInput.addEventListener('input', updateSbpLink);
+  updateSbpLink();
 });

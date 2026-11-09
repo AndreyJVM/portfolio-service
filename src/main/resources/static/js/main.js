@@ -20,19 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // 4. Индикатор прогресса чтения и кнопка "Наверх"
   initScrollControls();
 
-  // 5. Виджет сбора Shelby на главной (закрытие)
-  const closeMustangWidget = document.getElementById('closeMustangWidget');
-  if (closeMustangWidget) {
-    closeMustangWidget.addEventListener('click', () => {
-      const widget = document.querySelector('.mustang-floating-widget');
-      if (widget) {
-        widget.style.transition = 'all 0.3s ease';
-        widget.style.opacity = '0';
-        widget.style.transform = 'translateY(20px)';
-        setTimeout(() => widget.remove(), 300);
-      }
-    });
-  }
+
 });
 
 /**
