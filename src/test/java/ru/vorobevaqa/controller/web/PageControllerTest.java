@@ -19,6 +19,7 @@ package ru.vorobevaqa.controller.web;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
@@ -40,9 +41,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import ru.vorobevaqa.dto.AnsibleRoleDto;
 import ru.vorobevaqa.dto.DockerHubRepoDto;
 import ru.vorobevaqa.dto.GitHubRepoDto;
-import ru.vorobevaqa.service.AnsibleGalaxyService;
-import ru.vorobevaqa.service.DockerHubService;
-import ru.vorobevaqa.service.GitHubService;
+import ru.vorobevaqa.dto.ProjectsPageData;
+import ru.vorobevaqa.service.ProjectShowcaseService;
 
 @Epic("Web Layer")
 @Feature("Page Navigation & Routing")
@@ -54,9 +54,7 @@ class PageControllerTest {
 
   @Autowired private MockMvc mockMvc;
 
-  @MockitoBean private GitHubService gitHubService;
-  @MockitoBean private DockerHubService dockerHubService;
-  @MockitoBean private AnsibleGalaxyService ansibleGalaxyService;
+  @MockitoBean private ProjectShowcaseService projectShowcaseService;
 
   @Test
   @Severity(SeverityLevel.BLOCKER)
@@ -79,20 +77,20 @@ class PageControllerTest {
 
   @Test
   @Severity(SeverityLevel.NORMAL)
-  @DisplayName("WEB-03: GET /about - Проверка легаси алиаса для страницы образования")
-  @Description("Проверка маппинга /about на шаблон pages/education")
+  @DisplayName("WEB-03: GET /about - Проверка постоянного HTTP 301 редиректа на /education")
+  @Description("Проверка HTTP 301 Moved Permanently и заголовка Location: /education")
   void shouldReturnAboutPage() throws Exception {
     mockMvc
         .perform(get("/about"))
-        .andExpect(status().isOk())
-        .andExpect(view().name("pages/education"));
+        .andExpect(status().isMovedPermanently())
+        .andExpect(header().string("Location", "/education"));
   }
 
   @Test
   @Severity(SeverityLevel.CRITICAL)
   @DisplayName("WEB-04: GET /projects - Рендеринг страницы проектов со всеми интеграциями")
   @Description(
-      "Проверка передачи моделей githubRepos, dockerRepos и ansibleRoles в представление"
+      "Проверка передачи моделей projectsData, githubRepos, dockerRepos и ansibleRoles в представление"
           + " pages/projects")
   void shouldReturnProjectsPageWithRepos() throws Exception {
     GitHubRepoDto mockGitHub = new GitHubRepoDto();
@@ -118,14 +116,17 @@ class PageControllerTest {
     mockAnsible.setGithubUser("AndreyJVM");
     mockAnsible.setDownloadCount(50);
 
-    when(gitHubService.getRecentRepositories()).thenReturn(List.of(mockGitHub));
-    when(dockerHubService.getRecentRepositories()).thenReturn(List.of(mockDocker));
-    when(ansibleGalaxyService.getRecentRoles()).thenReturn(List.of(mockAnsible));
+    ProjectsPageData pageData =
+        new ProjectsPageData(List.of(mockGitHub), List.of(mockDocker), List.of(mockAnsible));
+
+    when(projectShowcaseService.getProjectsData()).thenReturn(pageData);
 
     mockMvc
         .perform(get("/projects"))
         .andExpect(status().isOk())
         .andExpect(view().name("pages/projects"))
+        .andExpect(model().attributeExists("projectsData"))
+        .andExpect(model().attribute("projectsData", pageData))
         .andExpect(model().attributeExists("githubRepos"))
         .andExpect(model().attribute("githubRepos", List.of(mockGitHub)))
         .andExpect(model().attributeExists("dockerRepos"))
@@ -140,14 +141,15 @@ class PageControllerTest {
   @Description(
       "Проверка корректного рендеринга страницы при пустых списках проектов из внешних API")
   void shouldReturnProjectsPageWithEmptyRepos() throws Exception {
-    when(gitHubService.getRecentRepositories()).thenReturn(List.of());
-    when(dockerHubService.getRecentRepositories()).thenReturn(List.of());
-    when(ansibleGalaxyService.getRecentRoles()).thenReturn(List.of());
+    ProjectsPageData emptyData = ProjectsPageData.empty();
+    when(projectShowcaseService.getProjectsData()).thenReturn(emptyData);
 
     mockMvc
         .perform(get("/projects"))
         .andExpect(status().isOk())
         .andExpect(view().name("pages/projects"))
+        .andExpect(model().attributeExists("projectsData"))
+        .andExpect(model().attribute("projectsData", emptyData))
         .andExpect(model().attributeExists("githubRepos"))
         .andExpect(model().attribute("githubRepos", List.of()))
         .andExpect(model().attributeExists("dockerRepos"))

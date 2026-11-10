@@ -17,54 +17,75 @@
  */
 package ru.vorobevaqa.controller.web;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import ru.vorobevaqa.service.AnsibleGalaxyService;
-import ru.vorobevaqa.service.DockerHubService;
-import ru.vorobevaqa.service.GitHubService;
+import org.springframework.web.servlet.view.RedirectView;
+import ru.vorobevaqa.dto.ProjectsPageData;
+import ru.vorobevaqa.service.ProjectShowcaseService;
 
+/**
+ * Контроллер веб-страниц Thymeleaf платформы.
+ */
 @Controller
 public class PageController {
 
-  private final GitHubService gitHubService;
-  private final DockerHubService dockerHubService;
-  private final AnsibleGalaxyService ansibleGalaxyService;
+  public static final String VIEW_INDEX = "pages/index";
+  public static final String VIEW_EDUCATION = "pages/education";
+  public static final String VIEW_PROJECTS = "pages/projects";
+  public static final String VIEW_QR = "pages/qr";
+  public static final String VIEW_MUSTANG = "pages/mustang";
 
-  public PageController(
-      GitHubService gitHubService,
-      DockerHubService dockerHubService,
-      AnsibleGalaxyService ansibleGalaxyService) {
-    this.gitHubService = gitHubService;
-    this.dockerHubService = dockerHubService;
-    this.ansibleGalaxyService = ansibleGalaxyService;
+  public static final String ATTR_PROJECTS_DATA = "projectsData";
+  public static final String ATTR_GITHUB_REPOS = "githubRepos";
+  public static final String ATTR_DOCKER_REPOS = "dockerRepos";
+  public static final String ATTR_ANSIBLE_ROLES = "ansibleRoles";
+
+  private final ProjectShowcaseService projectShowcaseService;
+
+  public PageController(ProjectShowcaseService projectShowcaseService) {
+    this.projectShowcaseService = projectShowcaseService;
   }
 
   @GetMapping("/")
   public String index() {
-    return "pages/index";
+    return VIEW_INDEX;
   }
 
-  @GetMapping({"/about", "/education"})
+  @GetMapping("/education")
   public String education() {
-    return "pages/education";
+    return VIEW_EDUCATION;
+  }
+
+  /**
+   * Каноничный HTTP 301 Permanent Redirect для предотвращения дублирования контента в SEO.
+   */
+  @GetMapping("/about")
+  public RedirectView redirectAbout() {
+    RedirectView redirectView = new RedirectView("/education", true);
+    redirectView.setStatusCode(HttpStatus.MOVED_PERMANENTLY);
+    return redirectView;
   }
 
   @GetMapping("/projects")
   public String projects(Model model) {
-    model.addAttribute("githubRepos", gitHubService.getRecentRepositories());
-    model.addAttribute("dockerRepos", dockerHubService.getRecentRepositories());
-    model.addAttribute("ansibleRoles", ansibleGalaxyService.getRecentRoles());
-    return "pages/projects";
+    ProjectsPageData projectsData = projectShowcaseService.getProjectsData();
+    model.addAttribute(ATTR_PROJECTS_DATA, projectsData);
+    // Обратная совместимость с текущими переменными в шаблоне
+    model.addAttribute(ATTR_GITHUB_REPOS, projectsData.githubRepos());
+    model.addAttribute(ATTR_DOCKER_REPOS, projectsData.dockerRepos());
+    model.addAttribute(ATTR_ANSIBLE_ROLES, projectsData.ansibleRoles());
+    return VIEW_PROJECTS;
   }
 
   @GetMapping("/qr")
   public String qrPage() {
-    return "pages/qr";
+    return VIEW_QR;
   }
 
   @GetMapping("/mustang")
   public String mustang() {
-    return "pages/mustang";
+    return VIEW_MUSTANG;
   }
 }
