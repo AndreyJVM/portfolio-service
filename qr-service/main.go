@@ -43,7 +43,7 @@ func main() {
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /health", handleHealth)
-	mux.HandleFunc("POST /api/qr", handleGenerateQr)
+	mux.HandleFunc("/api/qr", handleGenerateQr)
 
 	server := &http.Server{
 		Addr:         ":" + port,
@@ -88,15 +88,24 @@ func handleHealth(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleGenerateQr(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
+	var inputURL string
 
-	var req QrRequest
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		sendError(w, http.StatusBadRequest, "URL is required")
+	if r.Method == http.MethodGet {
+		inputURL = r.URL.Query().Get("url")
+		if inputURL == "" {
+			inputURL = r.URL.Query().Get("text")
+		}
+	} else if r.Method == http.MethodPost {
+		var req QrRequest
+		if err := json.NewDecoder(r.Body).Decode(&req); err == nil {
+			inputURL = req.URL
+		}
+	} else {
+		sendError(w, http.StatusMethodNotAllowed, "Method not allowed")
 		return
 	}
 
-	trimmedURL := strings.TrimSpace(req.URL)
+	trimmedURL := strings.TrimSpace(inputURL)
 	if trimmedURL == "" {
 		sendError(w, http.StatusBadRequest, "URL is required")
 		return
@@ -114,6 +123,13 @@ func handleGenerateQr(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if r.Method == http.MethodGet && strings.Contains(r.Header.Get("Accept"), "image/") {
+		w.Header().Set("Content-Type", "image/png")
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write(pngBytes)
+		return
+	}
+
 	base64QR := base64.StdEncoding.EncodeToString(pngBytes)
 
 	resp := QrResponse{
@@ -121,11 +137,13 @@ func handleGenerateQr(w http.ResponseWriter, r *http.Request) {
 		QRCode: base64QR,
 	}
 
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	_ = json.NewEncoder(w).Encode(resp)
 }
 
 func sendError(w http.ResponseWriter, statusCode int, message string) {
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(statusCode)
 	_ = json.NewEncoder(w).Encode(ErrorResponse{Error: message})
 }

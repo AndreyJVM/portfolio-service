@@ -28,9 +28,33 @@ func TestHandleHealth(t *testing.T) {
 	}
 }
 
-func TestHandleGenerateQr_Success(t *testing.T) {
+func TestHandleGenerateQr_SuccessPost(t *testing.T) {
 	reqBody, _ := json.Marshal(map[string]string{"url": "https://vorobevaqa.ru"})
 	req := httptest.NewRequest(http.MethodPost, "/api/qr", bytes.NewBuffer(reqBody))
+	rr := httptest.NewRecorder()
+
+	handleGenerateQr(rr, req)
+
+	if rr.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d", rr.Code)
+	}
+
+	var resp QrResponse
+	if err := json.Unmarshal(rr.Body.Bytes(), &resp); err != nil {
+		t.Fatalf("failed to decode json: %v", err)
+	}
+
+	if resp.URL != "https://vorobevaqa.ru" {
+		t.Errorf("expected url https://vorobevaqa.ru, got %s", resp.URL)
+	}
+
+	if len(resp.QRCode) == 0 {
+		t.Error("expected non-empty base64 qrCode")
+	}
+}
+
+func TestHandleGenerateQr_SuccessGet(t *testing.T) {
+	req := httptest.NewRequest(http.MethodGet, "/api/qr?url=https://vorobevaqa.ru", nil)
 	rr := httptest.NewRecorder()
 
 	handleGenerateQr(rr, req)
@@ -83,7 +107,7 @@ func TestHandleGenerateQr_BlankUrl(t *testing.T) {
 	handleGenerateQr(rr, req)
 
 	if rr.Code != http.StatusBadRequest {
-		t.Fatalf("expected status 400, got %d", rr.Code)
+		t.Fatalf("expected status 400, got %d", reqBody)
 	}
 
 	var errResp ErrorResponse

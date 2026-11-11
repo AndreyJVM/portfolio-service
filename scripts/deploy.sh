@@ -64,9 +64,9 @@ for svc in qr-service; do
 done
 
 # ------------------------------------------------------------------------------
-# 3. Бесперебойный (Zero-Downtime) деплой Java приложения
+# 3. Бесперебойный (Zero-Downtime) деплой Go платформы (app)
 # ------------------------------------------------------------------------------
-log_info "🚀 Шаг 3/5: Развертывание новой версии Java приложения (app)..."
+log_info "🚀 Шаг 3/5: Развертывание новой версии Go платформы Primary Cloud Lab (app)..."
 
 OLD_APP_CONTAINER=$($COMPOSE_CMD ps -q app 2>/dev/null | head -n 1 || true)
 
@@ -87,23 +87,23 @@ else
     fi
   done
 
-  log_info "Новый инстанс: ${NEW_APP_CONTAINER:-unknown}. Ожидание прохождения healthcheck (до 60 секунд)..."
+  log_info "Новый инстанс: ${NEW_APP_CONTAINER:-unknown}. Ожидание прохождения healthcheck (до 30 секунд)..."
 
   HEALTHCHECK_PASSED=false
-  for i in $(seq 1 30); do
+  for i in $(seq 1 15); do
     HEALTHY_COUNT=$($COMPOSE_CMD ps app --format '{{.Health}}' 2>/dev/null | grep -c "healthy" || true)
     if [ "$HEALTHY_COUNT" -ge 2 ]; then
       log_success "Новый контейнер app успешно прогрелся и сообщает status: healthy!"
       HEALTHCHECK_PASSED=true
       break
     fi
-    echo "  [Ожидание $i/30] Здоровых контейнеров app: $HEALTHY_COUNT/2..."
+    echo "  [Ожидание $i/15] Здоровых контейнеров app: $HEALTHY_COUNT/2..."
     sleep 2
   done
 
   # Автоматический откат (Rollback) в случае непрохождения проверки
   if [ "$HEALTHCHECK_PASSED" = false ]; then
-    log_error "❌ Новый контейнер app НЕ прошел проверку здоровья за 60 секунд!"
+    log_error "❌ Новый контейнер app НЕ прошел проверку здоровья за 30 секунд!"
     log_warn "🔄 Инициирован автоматический откат (ROLLBACK)..."
 
     if [ -n "$NEW_APP_CONTAINER" ]; then
