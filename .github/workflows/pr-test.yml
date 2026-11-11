@@ -15,10 +15,10 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v7
         with:
           go-version-file: 'go.mod'
           cache-dependency-path: go.sum
@@ -27,7 +27,7 @@ jobs:
         run: go test -v -race ./...
 
       - name: Set up Go for QR Service
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v7
         with:
           go-version-file: 'qr-service/go.mod'
           cache-dependency-path: qr-service/go.sum
