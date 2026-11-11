@@ -19,8 +19,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 4. Индикатор прогресса чтения и кнопка "Наверх"
   initScrollControls();
-
-
 });
 
 /**
@@ -55,7 +53,7 @@ window.showToast = function (message, type = 'success') {
 
 /**
  * Инициализирует IntersectionObserver для элементов с классом .reveal.
- * Элементы плавно всплывают при попадании в зону видимости окна.
+ * Элементы, уже находящиеся в поле зрения, отображаются мгновенно без задержки.
  */
 function initScrollReveal() {
   const revealElements = document.querySelectorAll('.reveal');
@@ -66,6 +64,15 @@ function initScrollReveal() {
     return;
   }
 
+  // Мгновенно отображаем элементы, которые уже находятся на экране при загрузке
+  const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+  revealElements.forEach((el) => {
+    const rect = el.getBoundingClientRect();
+    if (rect.top < windowHeight * 0.95) {
+      el.classList.add('revealed');
+    }
+  });
+
   const observer = new IntersectionObserver((entries, obs) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
@@ -74,11 +81,15 @@ function initScrollReveal() {
       }
     });
   }, {
-    threshold: 0.08,
-    rootMargin: '0px 0px -25px 0px'
+    threshold: 0.02,
+    rootMargin: '0px 0px 50px 0px'
   });
 
-  revealElements.forEach((el) => observer.observe(el));
+  revealElements.forEach((el) => {
+    if (!el.classList.contains('revealed')) {
+      observer.observe(el);
+    }
+  });
 }
 
 /**

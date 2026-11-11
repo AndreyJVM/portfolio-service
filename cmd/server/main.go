@@ -44,12 +44,15 @@ func main() {
 		_, _ = w.Write([]byte(`{"status":"UP","service":"devops-platform","runtime":"golang"}`))
 	})
 
-	// Статические файлы
-	filesDir := http.Dir(cfg.StaticDir)
-	fileServer(r, "/css", filesDir)
-	fileServer(r, "/js", filesDir)
-	fileServer(r, "/images", filesDir)
-	fileServer(r, "/pdf", filesDir)
+	// Статические файлы: /css/*, /js/*, /images/*, /pdf/*
+	staticFS := http.FileServer(http.Dir(cfg.StaticDir))
+	for _, prefix := range []string{"/css", "/js", "/images", "/pdf"} {
+		prefixPattern := prefix + "/*"
+		r.Handle(prefixPattern, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("Cache-Control", "public, max-age=86400")
+			staticFS.ServeHTTP(w, r)
+		}))
+	}
 
 	r.Get("/favicon.svg", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, cfg.StaticDir+"/favicon.svg")
@@ -113,18 +116,4 @@ func main() {
 
 	<-serverCtx.Done()
 	log.Println("✅ Сервер успешно остановлен.")
-}
-
-func fileServer(r chi.Router, path string, root http.FileSystem) {
-	fs := http.StripPrefix(path, http.FileServer(root))
-	if path != "/" && path[len(path)-1] != '/' {
-		r.Get(path, http.RedirectHandler(path+"/", http.StatusMovedPermanently).ServeHTTP)
-		path += "/"
-	}
-	path += "*"
-
-	r.Get(path, func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Cache-Control", "public, max-age=86400")
-		fs.ServeHTTP(w, r)
-	})
 }
