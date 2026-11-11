@@ -52,9 +52,11 @@
       </div>
 
       <div class="collapse navbar-collapse order-lg-2" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
+        <ul class="navbar-nav me-auto ms-lg-3 gap-lg-1">
           <li class="nav-item">
-            <a class="nav-link {{if eq .Meta.ActiveTab "home"}}active{{end}}" href="/">Главная</a>
+            <a class="nav-link {{if eq .Meta.ActiveTab "home"}}active{{end}}" href="/">
+              <i class="fas fa-home me-1"></i>Главная
+            </a>
           </li>
           <li class="nav-item">
             <a class="nav-link {{if eq .Meta.ActiveTab "courses"}}active{{end}}" href="/courses">
@@ -62,13 +64,19 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link {{if eq .Meta.ActiveTab "projects"}}active{{end}}" href="/projects">Проекты</a>
+            <a class="nav-link {{if eq .Meta.ActiveTab "projects"}}active{{end}}" href="/projects">
+              <i class="fas fa-cubes me-1 text-info"></i>Проекты
+            </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link {{if eq .Meta.ActiveTab "education"}}active{{end}}" href="/education">Сертификаты</a>
+            <a class="nav-link {{if eq .Meta.ActiveTab "education"}}active{{end}}" href="/education">
+              <i class="fas fa-certificate me-1 text-warning"></i>Сертификаты
+            </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link {{if eq .Meta.ActiveTab "qr"}}active{{end}}" href="/qr">QR-генератор</a>
+            <a class="nav-link {{if eq .Meta.ActiveTab "qr"}}active{{end}}" href="/qr">
+              <i class="fas fa-qrcode me-1 text-success"></i>QR-генератор
+            </a>
           </li>
           <li class="nav-item">
             <a class="nav-link {{if eq .Meta.ActiveTab "mustang"}}active{{end}}" href="/mustang">

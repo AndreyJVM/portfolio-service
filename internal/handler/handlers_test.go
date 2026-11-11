@@ -150,6 +150,13 @@ func TestLayoutIncludes(t *testing.T) {
 		"/images/avatar.jpg",  // Аватарка в Hero
 		"navbar-brand",        // Верхняя панель
 		"Primary Cloud Lab",   // Новое название бренда платформы
+		"navbar-nav me-auto",  // Навбар выровнен слева
+		"fa-home",             // Иконка Главная
+		"fa-graduation-cap",   // Иконка Курсы DevOps
+		"fa-cubes",            // Иконка Проекты
+		"fa-certificate",      // Иконка Сертификаты
+		"fa-qrcode",           // Иконка QR-генератор
+		"fa-car-side",         // Иконка Shelby GT500
 	}
 
 	for _, snippet := range requiredSnippets {
