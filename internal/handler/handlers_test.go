@@ -1,8 +1,10 @@
 package handler
 
 import (
+	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"github.com/go-chi/chi/v5"
@@ -65,5 +67,35 @@ func TestHandlers(t *testing.T) {
 				t.Errorf("%s: ожидался статус %d, получен %d", tt.url, tt.expectedStatus, w.Code)
 			}
 		})
+	}
+}
+
+func TestQRJsonEndpoint(t *testing.T) {
+	r := setupTestRouter()
+
+	body := `{"url":"https://vorobevaqa.ru"}`
+	req := httptest.NewRequest("POST", "/api/qr", strings.NewReader(body))
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Accept", "application/json")
+	w := httptest.NewRecorder()
+
+	r.ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("Ожидался статус 200, получен %d", w.Code)
+	}
+
+	var resp struct {
+		QRCode string `json:"qrCode"`
+		URL    string `json:"url"`
+	}
+	if err := json.NewDecoder(w.Body).Decode(&resp); err != nil {
+		t.Fatalf("Ошибка парсинга JSON: %v", err)
+	}
+	if resp.QRCode == "" {
+		t.Errorf("Ожидался base64 qrCode, получена пустая строка")
+	}
+	if resp.URL != "https://vorobevaqa.ru" {
+		t.Errorf("Ожидался url 'https://vorobevaqa.ru', получен '%s'", resp.URL)
 	}
 }

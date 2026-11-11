@@ -105,6 +105,19 @@
     </div>
   </footer>
 
+  <!-- Toast Notification Container -->
+  <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1090">
+    <div id="liveToast" class="toast align-items-center text-bg-dark border-0 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body d-flex align-items-center">
+          <i id="toastIcon" class="fas fa-circle-check text-success me-2 fa-lg"></i>
+          <span id="toastMessage">Уведомление</span>
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+    </div>
+  </div>
+
   <!-- Scripts -->
   <button type="button" id="backToTopBtn" class="btn btn-primary rounded-circle back-to-top shadow" aria-label="Вернуться наверх" title="Наверх">
     <i class="fas fa-chevron-up"></i>

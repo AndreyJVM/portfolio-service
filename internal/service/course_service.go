@@ -9,6 +9,8 @@ import (
 	"strings"
 
 	"github.com/yuin/goldmark"
+	"github.com/yuin/goldmark/extension"
+	"github.com/yuin/goldmark/renderer/html"
 	"ru.vorobevaqa/devops-platform/internal/model"
 )
 
@@ -20,7 +22,13 @@ type CourseService struct {
 func NewCourseService(contentDir string) *CourseService {
 	return &CourseService{
 		contentDir: contentDir,
-		mdParser:   goldmark.New(),
+		mdParser: goldmark.New(
+			goldmark.WithExtensions(extension.GFM),
+			goldmark.WithRendererOptions(
+				html.WithHardWraps(),
+				html.WithUnsafe(),
+			),
+		),
 	}
 }
 
@@ -44,120 +52,124 @@ func (s *CourseService) GetAllCourses() []model.Course {
 			Title:       "Docker & Контейнеризация",
 			Icon:        "fab fa-docker",
 			Color:       "#0284c7",
-			Level:       "Junior / Middle",
-			LessonCount: 3,
-			Description: "Namespaces и cgroups, многоэтапные Dockerfile, кэширование слоев, сети и оркестрация в Docker Compose с healthcheck.",
-			Tags:        []string{"Docker", "Compose", "Multi-stage", "Networking"},
-		},
-		{
-			ID:          "cicd",
-			Slug:        "cicd",
-			Title:       "CI/CD: GitHub Actions & Деплой",
-			Icon:        "fas fa-infinity",
-			Color:       "#10b981",
 			Level:       "Middle",
 			LessonCount: 2,
-			Description: "Автоматизация тестирования и сборки, paths-filter, Zero-Downtime Blue-Green деплой на VDS, безопасность секретов.",
-			Tags:        []string{"CI/CD", "GitHub Actions", "Blue-Green", "Zero-Downtime"},
+			Description: "Многоэтапные сборки, оптимизация кэша слоев, изоляция cgroups, сети bridge/overlay, Docker Compose v2 и Swarm.",
+			Tags:        []string{"Docker", "Compose", "cgroups", "Multi-stage"},
 		},
 		{
 			ID:          "ansible",
 			Slug:        "ansible",
-			Title:       "Ansible: Инфраструктура как Код (IaC)",
+			Title:       "Ansible & Инфраструктура как код (IaC)",
 			Icon:        "fas fa-network-wired",
-			Color:       "#ef4444",
-			Level:       "Middle",
+			Color:       "#dc2626",
+			Level:       "Middle / Senior",
 			LessonCount: 2,
-			Description: "Декларативное управление серверами, написание ролей, инвентарь, хэндлеры, шифрование Vault и публикация в Ansible Galaxy.",
-			Tags:        []string{"Ansible", "IaC", "Automation", "Vault"},
+			Description: "Идемпотентные плейбуки, создание модульных ролей для Galaxy, шифрование с Ansible Vault, управление inventory.",
+			Tags:        []string{"Ansible", "IaC", "Galaxy", "YAML"},
+		},
+		{
+			ID:          "cicd",
+			Slug:        "cicd",
+			Title:       "CI/CD: GitHub Actions & GitLab",
+			Icon:        "fas fa-infinity",
+			Color:       "#8b5cf6",
+			Level:       "Middle / Senior",
+			LessonCount: 2,
+			Description: "Проектирование надежных пайплайнов, Blue-Green деплой без простоя, авто-откат (rollback) и проверка здоровья.",
+			Tags:        []string{"CI/CD", "GitHub Actions", "GitLab CI", "Blue-Green"},
 		},
 	}
 }
 
-// GetCourseBySlug находит курс и загружает список его уроков.
+// GetCourseBySlug находит курс по слагу и загружает уроки из каталога content/courses/<slug>.
 func (s *CourseService) GetCourseBySlug(slug string) (*model.Course, error) {
 	courses := s.GetAllCourses()
-	for _, c := range courses {
-		if c.Slug == slug {
-			lessons, err := s.getLessonsForCourse(slug)
-			if err == nil {
-				c.Lessons = lessons
-				c.LessonCount = len(lessons)
-			}
-			return &c, nil
+	var foundCourse *model.Course
+	for i := range courses {
+		if courses[i].Slug == slug {
+			foundCourse = &courses[i]
+			break
 		}
 	}
-	return nil, fmt.Errorf("курс '%s' не найден", slug)
+	if foundCourse == nil {
+		return nil, fmt.Errorf("курс '%s' не найден", slug)
+	}
+
+	lessons, err := s.loadLessonsForCourse(slug)
+	if err == nil {
+		foundCourse.Lessons = lessons
+		foundCourse.LessonCount = len(lessons)
+	}
+
+	return foundCourse, nil
 }
 
-// GetLesson находит и рендерит урок из Markdown файла.
+// GetLesson загружает конкретный урок курса и парсит Markdown в HTML.
 func (s *CourseService) GetLesson(courseSlug, lessonSlug string) (*model.Course, *model.Lesson, error) {
 	course, err := s.GetCourseBySlug(courseSlug)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	for _, l := range course.Lessons {
-		if l.Slug == lessonSlug {
-			filePath := filepath.Join(s.contentDir, courseSlug, lessonSlug+".md")
-			mdBytes, err := os.ReadFile(filePath)
-			if err != nil {
-				return course, &l, nil
-			}
-
-			var buf bytes.Buffer
-			if err := s.mdParser.Convert(mdBytes, &buf); err != nil {
-				l.ContentHTML = string(mdBytes)
-			} else {
-				l.ContentHTML = buf.String()
-			}
-
-			return course, &l, nil
-		}
+	lessonPath := filepath.Join(s.contentDir, courseSlug, lessonSlug+".md")
+	contentBytes, err := os.ReadFile(lessonPath)
+	if err != nil {
+		return nil, nil, fmt.Errorf("урок '%s' не найден: %w", lessonSlug, err)
 	}
 
-	return nil, nil, fmt.Errorf("урок '%s' не найден в курсе '%s'", lessonSlug, courseSlug)
+	var buf bytes.Buffer
+	if err := s.mdParser.Convert(contentBytes, &buf); err != nil {
+		return nil, nil, fmt.Errorf("ошибка парсинга markdown: %w", err)
+	}
+
+	title := strings.ReplaceAll(lessonSlug, "-", " ")
+	title = strings.Title(title)
+
+	lesson := &model.Lesson{
+		CourseSlug:  courseSlug,
+		Slug:        lessonSlug,
+		Title:       title,
+		Duration:    "15 мин",
+		Description: "Практическое руководство и лабораторная работа",
+		ContentHTML: buf.String(),
+	}
+
+	return course, lesson, nil
 }
 
-func (s *CourseService) getLessonsForCourse(courseSlug string) ([]model.Lesson, error) {
-	dirPath := filepath.Join(s.contentDir, courseSlug)
-	entries, err := os.ReadDir(dirPath)
+func (s *CourseService) loadLessonsForCourse(courseSlug string) ([]model.Lesson, error) {
+	courseDir := filepath.Join(s.contentDir, courseSlug)
+	entries, err := os.ReadDir(courseDir)
 	if err != nil {
 		return nil, err
 	}
 
 	var lessons []model.Lesson
-	order := 1
-	for _, entry := range entries {
+	for idx, entry := range entries {
 		if !entry.IsDir() && strings.HasSuffix(entry.Name(), ".md") {
 			slug := strings.TrimSuffix(entry.Name(), ".md")
-			title := formatLessonTitle(slug)
+			title := strings.ReplaceAll(slug, "-", " ")
+			// Убираем числовой префикс если есть (напр. "01 ")
+			if len(title) > 3 && title[2] == ' ' {
+				title = title[3:]
+			}
+			title = strings.Title(title)
+
 			lessons = append(lessons, model.Lesson{
-				ID:          slug,
 				CourseSlug:  courseSlug,
 				Slug:        slug,
 				Title:       title,
-				Order:       order,
-				Duration:    "10-15 мин",
-				Description: "Практический материал и примеры конфигураций.",
+				Order:       idx + 1,
+				Duration:    "15-20 мин",
+				Description: fmt.Sprintf("Лабораторная работа и разбор темы %s", title),
 			})
-			order++
 		}
 	}
 
 	sort.Slice(lessons, func(i, j int) bool {
-		return lessons[i].Slug < lessons[j].Slug
+		return lessons[i].Order < lessons[j].Order
 	})
 
 	return lessons, nil
-}
-
-func formatLessonTitle(slug string) string {
-	parts := strings.Split(slug, "-")
-	for i, p := range parts {
-		if len(p) > 0 {
-			parts[i] = strings.ToUpper(p[:1]) + p[1:]
-		}
-	}
-	return strings.Join(parts, " ")
 }

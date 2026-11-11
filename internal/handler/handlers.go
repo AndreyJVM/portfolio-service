@@ -1,12 +1,14 @@
 package handler
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"html/template"
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/go-chi/chi/v5"
 	qrcode "github.com/skip2/go-qrcode"
@@ -293,6 +295,25 @@ func (h *Handler) GenerateQREndpoint(w http.ResponseWriter, r *http.Request) {
 	pngBytes, err := qrcode.Encode(text, qrcode.Medium, 256)
 	if err != nil {
 		http.Error(w, "Не удалось сгенерировать QR-код", http.StatusInternalServerError)
+		return
+	}
+
+	acceptsJSON := strings.Contains(r.Header.Get("Accept"), "application/json") ||
+		strings.Contains(r.Header.Get("Content-Type"), "application/json") ||
+		r.Method == http.MethodPost ||
+		r.URL.Query().Get("format") == "json"
+
+	if acceptsJSON {
+		base64Str := base64.StdEncoding.EncodeToString(pngBytes)
+		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Cache-Control", "no-cache")
+		w.WriteHeader(http.StatusOK)
+		_ = json.NewEncoder(w).Encode(map[string]interface{}{
+			"qrCode": base64Str,
+			"url":    text,
+			"size":   256,
+			"format": "PNG",
+		})
 		return
 	}
 
