@@ -3,7 +3,7 @@
 
 version: 2
 updates:
-  # 1. Зависимости основного сервиса Go (Go modules & vendor)
+  # 1. Зависимости основного сервиса Go (Go modules)
   - package-ecosystem: "gomod"
     directory: "/"
     schedule:
@@ -12,7 +12,6 @@ updates:
       time: "06:00"
       timezone: "Europe/Moscow"
     open-pull-requests-limit: 10
-    vendor: true
     labels:
       - "dependencies"
       - "go"
