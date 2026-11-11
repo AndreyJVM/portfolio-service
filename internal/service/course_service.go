@@ -7,6 +7,8 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
+	"sync"
+	"unicode"
 
 	"github.com/yuin/goldmark"
 	"github.com/yuin/goldmark/extension"
@@ -15,13 +17,16 @@ import (
 )
 
 type CourseService struct {
-	contentDir string
-	mdParser   goldmark.Markdown
+	contentDir  string
+	mdParser    goldmark.Markdown
+	lessonMu    sync.RWMutex
+	lessonCache map[string]*model.Lesson
 }
 
 func NewCourseService(contentDir string) *CourseService {
 	return &CourseService{
-		contentDir: contentDir,
+		contentDir:  contentDir,
+		lessonCache: make(map[string]*model.Lesson),
 		mdParser: goldmark.New(
 			goldmark.WithExtensions(extension.GFM),
 			goldmark.WithRendererOptions(
@@ -105,12 +110,20 @@ func (s *CourseService) GetCourseBySlug(slug string) (*model.Course, error) {
 	return foundCourse, nil
 }
 
-// GetLesson загружает конкретный урок курса и парсит Markdown в HTML.
+// GetLesson загружает конкретный урок курса и парсит Markdown в HTML с кэшированием в памяти.
 func (s *CourseService) GetLesson(courseSlug, lessonSlug string) (*model.Course, *model.Lesson, error) {
 	course, err := s.GetCourseBySlug(courseSlug)
 	if err != nil {
 		return nil, nil, err
 	}
+
+	cacheKey := courseSlug + "/" + lessonSlug
+	s.lessonMu.RLock()
+	if cached, ok := s.lessonCache[cacheKey]; ok {
+		s.lessonMu.RUnlock()
+		return course, cached, nil
+	}
+	s.lessonMu.RUnlock()
 
 	lessonPath := filepath.Join(s.contentDir, courseSlug, lessonSlug+".md")
 	contentBytes, err := os.ReadFile(lessonPath)
@@ -124,7 +137,7 @@ func (s *CourseService) GetLesson(courseSlug, lessonSlug string) (*model.Course,
 	}
 
 	title := strings.ReplaceAll(lessonSlug, "-", " ")
-	title = strings.Title(title)
+	title = titleCase(title)
 
 	lesson := &model.Lesson{
 		CourseSlug:  courseSlug,
@@ -134,6 +147,10 @@ func (s *CourseService) GetLesson(courseSlug, lessonSlug string) (*model.Course,
 		Description: "Практическое руководство и лабораторная работа",
 		ContentHTML: buf.String(),
 	}
+
+	s.lessonMu.Lock()
+	s.lessonCache[cacheKey] = lesson
+	s.lessonMu.Unlock()
 
 	return course, lesson, nil
 }
@@ -154,7 +171,7 @@ func (s *CourseService) loadLessonsForCourse(courseSlug string) ([]model.Lesson,
 			if len(title) > 3 && title[2] == ' ' {
 				title = title[3:]
 			}
-			title = strings.Title(title)
+			title = titleCase(title)
 
 			lessons = append(lessons, model.Lesson{
 				CourseSlug:  courseSlug,
@@ -172,4 +189,17 @@ func (s *CourseService) loadLessonsForCourse(courseSlug string) ([]model.Lesson,
 	})
 
 	return lessons, nil
+}
+
+// titleCase переводит первую букву каждого слова в верхний регистр (замена устаревшего strings.Title).
+func titleCase(s string) string {
+	words := strings.Fields(s)
+	for i, w := range words {
+		if len(w) > 0 {
+			r := []rune(w)
+			r[0] = unicode.ToUpper(r[0])
+			words[i] = string(r)
+		}
+	}
+	return strings.Join(words, " ")
 }

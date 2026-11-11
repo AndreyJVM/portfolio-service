@@ -14,24 +14,21 @@ type Config struct {
 	StaticDir    string
 }
 
+func getEnvOrDefault(key, fallback string) string {
+	if val := os.Getenv(key); val != "" {
+		return val
+	}
+	return fallback
+}
+
 func Load() *Config {
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8080"
-	}
-
-	baseURL := os.Getenv("APP_BASE_URL")
-	if baseURL == "" {
-		baseURL = "https://vorobevaqa.ru"
-	}
-
 	return &Config{
-		Port:         port,
-		AppBaseURL:   baseURL,
-		GitHubUser:   "AndreyJVM",
-		DockerUser:   "andreyvorobevaqa",
-		ContentDir:   "content/courses",
-		TemplatesDir: "web/templates",
-		StaticDir:    "web/static",
+		Port:         getEnvOrDefault("PORT", "8080"),
+		AppBaseURL:   getEnvOrDefault("APP_BASE_URL", "https://vorobevaqa.ru"),
+		GitHubUser:   getEnvOrDefault("GITHUB_USER", "AndreyJVM"),
+		DockerUser:   getEnvOrDefault("DOCKER_USER", "andreyvorobevaqa"),
+		ContentDir:   getEnvOrDefault("CONTENT_DIR", "content/courses"),
+		TemplatesDir: getEnvOrDefault("TEMPLATES_DIR", "web/templates"),
+		StaticDir:    getEnvOrDefault("STATIC_DIR", "web/static"),
 	}
 }

@@ -30,6 +30,7 @@ func main() {
 	r.Use(middleware.RealIP)
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
+	r.Use(middleware.GetHead)
 	r.Use(middleware.Compress(5))
 
 	// Healthcheck для Docker Compose (совместим с curl /health или /actuator/health)

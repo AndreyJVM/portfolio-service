@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 	"ru.vorobevaqa/devops-platform/internal/service"
 )
 
@@ -18,6 +19,7 @@ func setupTestRouter() *chi.Mux {
 	h := NewHandler(cs, is, "../../web/templates", staticDir, "https://vorobevaqa.ru")
 
 	r := chi.NewRouter()
+	r.Use(middleware.GetHead)
 
 	// Статические файлы
 	staticFS := http.FileServer(http.Dir(staticDir))
@@ -59,7 +61,9 @@ func TestHandlers(t *testing.T) {
 		expectedStatus int
 	}{
 		{"GET /", "GET", "/", http.StatusOK},
+		{"HEAD /", "HEAD", "/", http.StatusOK},
 		{"GET /courses", "GET", "/courses", http.StatusOK},
+		{"HEAD /courses", "HEAD", "/courses", http.StatusOK},
 		{"GET /courses/linux", "GET", "/courses/linux", http.StatusOK},
 		{"GET /courses/linux/01-permissions-and-systemd", "GET", "/courses/linux/01-permissions-and-systemd", http.StatusOK},
 		{"GET /courses/docker", "GET", "/courses/docker", http.StatusOK},
@@ -253,5 +257,16 @@ func TestQRJsonEndpoint(t *testing.T) {
 	}
 	if resp.URL != "https://vorobevaqa.ru" {
 		t.Errorf("Ожидался url 'https://vorobevaqa.ru', получен '%s'", resp.URL)
+	}
+}
+
+func BenchmarkRenderIndexCached(b *testing.B) {
+	r := setupTestRouter()
+	req := httptest.NewRequest("GET", "/", nil)
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		w := httptest.NewRecorder()
+		r.ServeHTTP(w, req)
 	}
 }
