@@ -1,8 +1,16 @@
-# === Maven & Build ===
-target/
-build/
-*.jar
-*.war
+# === Go Build & Binaries ===
+devops-platform
+server
+qr-service/qr-service
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# === Build Logs & Temp ===
 *.log
 deploy.log
 *.pid
@@ -39,7 +47,7 @@ certbot/
 allure-results/
 allure-report/
 
-# === AI Agents & Local LLM Scratchpads ===
+# === AI Agents & Local Scratchpads ===
 dump.sh
 data.txt
 .gemini/
