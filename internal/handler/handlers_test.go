@@ -96,6 +96,31 @@ func TestHandlers(t *testing.T) {
 	}
 }
 
+func TestNotFoundHandlers(t *testing.T) {
+	r := setupTestRouter()
+
+	notFoundTests := []struct {
+		name string
+		url  string
+	}{
+		{"Non-existent course", "/courses/non-existent-course-slug-12345"},
+		{"Non-existent lesson", "/courses/linux/non-existent-lesson-slug-12345"},
+		{"Non-existent course in lesson path", "/courses/non-existent-course/01-permissions"},
+	}
+
+	for _, tt := range notFoundTests {
+		t.Run(tt.name, func(t *testing.T) {
+			req := httptest.NewRequest("GET", tt.url, nil)
+			w := httptest.NewRecorder()
+			r.ServeHTTP(w, req)
+
+			if w.Code != http.StatusNotFound {
+				t.Errorf("%s: ожидался статус 404, получен %d", tt.url, w.Code)
+			}
+		})
+	}
+}
+
 func TestStaticAssets(t *testing.T) {
 	r := setupTestRouter()
 
@@ -290,6 +315,7 @@ func TestLearningProgressUI(t *testing.T) {
 func TestQRJsonEndpoint(t *testing.T) {
 	r := setupTestRouter()
 
+	// 1. Успешный POST-запрос JSON
 	body := `{"url":"https://vorobevaqa.ru"}`
 	req := httptest.NewRequest("POST", "/api/qr", strings.NewReader(body))
 	req.Header.Set("Content-Type", "application/json")
@@ -314,6 +340,55 @@ func TestQRJsonEndpoint(t *testing.T) {
 	}
 	if resp.URL != "https://vorobevaqa.ru" {
 		t.Errorf("Ожидался url 'https://vorobevaqa.ru', получен '%s'", resp.URL)
+	}
+
+	// 2. Запрос без параметра text/url (дефолтное значение fallback на baseURL)
+	emptyReq := httptest.NewRequest("GET", "/api/qr?format=json", nil)
+	emptyW := httptest.NewRecorder()
+	r.ServeHTTP(emptyW, emptyReq)
+	if emptyW.Code != http.StatusOK {
+		t.Errorf("Ожидался 200 с дефолтным url, получен %d", emptyW.Code)
+	}
+
+	// 3. Отдача сырого PNG при запросе без заголовков JSON
+	pngReq := httptest.NewRequest("GET", "/api/qr?text=https://test.com", nil)
+	pngW := httptest.NewRecorder()
+	r.ServeHTTP(pngW, pngReq)
+	if pngW.Code != http.StatusOK {
+		t.Errorf("Ожидался 200 для PNG, получен %d", pngW.Code)
+	}
+	if pngW.Header().Get("Content-Type") != "image/png" {
+		t.Errorf("Ожидался Content-Type image/png, получен %s", pngW.Header().Get("Content-Type"))
+	}
+}
+
+func TestResumePDF_MissingFile(t *testing.T) {
+	cs := service.NewCourseService("../../content/courses")
+	is := service.NewIntegrationsService("AndreyJVM", "andreyvorobevaqa")
+	// Передаем несуществующую директорию статики, чтобы вызвать ветку ошибки os.Stat
+	h := NewHandler(cs, is, "../../web/templates", "/tmp/non-existent-static-dir-12345", "https://vorobevaqa.ru")
+
+	req := httptest.NewRequest("GET", "/api/pdf/resume", nil)
+	w := httptest.NewRecorder()
+	h.ResumePDF(w, req)
+
+	if w.Code != http.StatusNotFound {
+		t.Errorf("Ожидался статус 404 при отсутствии файла резюме, получен %d", w.Code)
+	}
+}
+
+func TestTemplateErrors(t *testing.T) {
+	cs := service.NewCourseService("../../content/courses")
+	is := service.NewIntegrationsService("AndreyJVM", "andreyvorobevaqa")
+	// Передаем некорректную директорию шаблонов для проверки ветки ошибки компиляции
+	h := NewHandler(cs, is, "/tmp/non-existent-templates-dir-12345", "../../web/static", "https://vorobevaqa.ru")
+
+	req := httptest.NewRequest("GET", "/", nil)
+	w := httptest.NewRecorder()
+	h.Index(w, req)
+
+	if w.Code != http.StatusInternalServerError {
+		t.Errorf("Ожидался статус 500 при ошибке парсинга шаблона, получен %d", w.Code)
 	}
 }
 
