@@ -19,10 +19,10 @@
         document.documentElement.setAttribute('data-bs-theme', theme);
         document.documentElement.setAttribute('data-theme', theme);
 
-        const icon = document.getElementById('themeIcon');
-        if (icon) {
+        const icons = document.querySelectorAll('.theme-icon, #themeIcon, #themeIconMobile');
+        icons.forEach(icon => {
             icon.className = theme === THEME_DARK ? 'fas fa-sun' : 'fas fa-moon';
-        }
+        });
     }
 
     // Применяем тему немедленно при разборе <head>, чтобы избежать белого мерцания
@@ -33,15 +33,17 @@
     document.addEventListener('DOMContentLoaded', function () {
         applyTheme(getPreferredTheme());
 
-        const toggleBtn = document.getElementById('themeToggle');
-        if (toggleBtn) {
-            toggleBtn.addEventListener('click', function () {
-                const currentTheme = document.documentElement.getAttribute('data-bs-theme') || THEME_LIGHT;
-                const nextTheme = currentTheme === THEME_DARK ? THEME_LIGHT : THEME_DARK;
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-bs-theme') || THEME_LIGHT;
+            const nextTheme = currentTheme === THEME_DARK ? THEME_LIGHT : THEME_DARK;
 
-                localStorage.setItem(STORAGE_KEY, nextTheme);
-                applyTheme(nextTheme);
-            });
+            localStorage.setItem(STORAGE_KEY, nextTheme);
+            applyTheme(nextTheme);
         }
+
+        const toggleBtns = document.querySelectorAll('.theme-toggle, #themeToggle, #themeToggleMobile');
+        toggleBtns.forEach(btn => {
+            btn.addEventListener('click', toggleTheme);
+        });
     });
 })();

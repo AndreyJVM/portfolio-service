@@ -143,25 +143,38 @@ func TestLayoutIncludes(t *testing.T) {
 	requiredSnippets := []string{
 		"themeToggle",         // Кнопка переключения темы
 		"/js/theme-toggle.js", // Скрипт переключения темы
-		"/css/navbar.css",     // Стили верхней панели
+		"/css/navbar.css",     // Стили боковой и верхней панели
 		"/css/themes.css",     // Стили ночной и дневной темы
 		"/css/main.css",       // Основные стили
 		"liveToast",           // Контейнер уведомлений Toast
 		"/images/avatar.jpg",  // Аватарка в Hero
-		"navbar-brand",        // Верхняя панель
-		"Primary Cloud Lab",   // Новое название бренда платформы
-		"navbar-nav me-auto",  // Навбар выровнен слева
-		"fa-home",             // Иконка Главная
-		"fa-graduation-cap",   // Иконка Курсы DevOps
-		"fa-cubes",            // Иконка Проекты
-		"fa-certificate",      // Иконка Сертификаты
-		"fa-qrcode",           // Иконка QR-генератор
-		"fa-car-side",         // Иконка Shelby GT500
+		"navbar-brand",        // Бренд платформы
+		"Primary Cloud Lab",   // Название бренда
+		"app-sidebar",         // Боковая панель навигации слева
+		"sidebar-nav",         // Список навигационных ссылок
+		">Главная<",           // Ссылка Главная без иконок
+		">Курсы<",             // Ссылка Курсы без иконок
+		">Проекты<",           // Ссылка Проекты без иконок
+		">Сертификаты<",       // Ссылка Сертификаты без иконок
+		">QR-генератор<",      // Ссылка QR-генератор без иконок
+		">Shelby<",            // Ссылка Shelby без иконок
 	}
 
 	for _, snippet := range requiredSnippets {
 		if !strings.Contains(body, snippet) {
 			t.Errorf("Главная страница не содержит обязательный элемент: '%s'", snippet)
+		}
+	}
+
+	// Проверяем, что в блоке sidebar-nav отсутствуют значки <i> (минималистичный дизайн ссылок)
+	sidebarNavIdx := strings.Index(body, `sidebar-nav`)
+	if sidebarNavIdx != -1 {
+		sidebarNavEnd := strings.Index(body[sidebarNavIdx:], `</ul>`)
+		if sidebarNavEnd != -1 {
+			navHtml := body[sidebarNavIdx : sidebarNavIdx+sidebarNavEnd]
+			if strings.Contains(navHtml, "<i ") {
+				t.Errorf("Навигация в боковой панели не должна содержать тегов иконок <i>: %s", navHtml)
+			}
 		}
 	}
 }
