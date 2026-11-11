@@ -108,6 +108,7 @@ func TestStaticAssets(t *testing.T) {
 		{"Navbar CSS", "/css/navbar.css", "text/css"},
 		{"Themes CSS", "/css/themes.css", "text/css"},
 		{"Theme toggle JS", "/js/theme-toggle.js", "javascript"},
+		{"Learning progress JS", "/js/learning-progress.js", "javascript"},
 		{"Main JS", "/js/main.js", "javascript"},
 		{"About JS", "/js/pages/about.js", "javascript"},
 		{"Mustang JS", "/js/pages/mustang.js", "javascript"},
@@ -147,23 +148,24 @@ func TestLayoutIncludes(t *testing.T) {
 	body := w.Body.String()
 
 	requiredSnippets := []string{
-		"themeToggle",         // Кнопка переключения темы
-		"/js/theme-toggle.js", // Скрипт переключения темы
-		"/css/navbar.css",     // Стили боковой и верхней панели
-		"/css/themes.css",     // Стили ночной и дневной темы
-		"/css/main.css",       // Основные стили
-		"liveToast",           // Контейнер уведомлений Toast
-		"/images/avatar.jpg",  // Аватарка в Hero
-		"navbar-brand",        // Бренд платформы
-		"Primary Cloud Lab",   // Название бренда
-		"app-sidebar",         // Боковая панель навигации слева
-		"sidebar-nav",         // Список навигационных ссылок
-		">Главная<",           // Ссылка Главная без иконок
-		">Курсы<",             // Ссылка Курсы без иконок
-		">Проекты<",           // Ссылка Проекты без иконок
-		">Сертификаты<",       // Ссылка Сертификаты без иконок
-		">QR-генератор<",      // Ссылка QR-генератор без иконок
-		">Shelby<",            // Ссылка Shelby без иконок
+		"themeToggle",             // Кнопка переключения темы
+		"/js/theme-toggle.js",     // Скрипт переключения темы
+		"/js/learning-progress.js", // Скрипт учета прогресса обучения
+		"/css/navbar.css",         // Стили боковой и верхней панели
+		"/css/themes.css",         // Стили ночной и дневной темы
+		"/css/main.css",           // Основные стили
+		"liveToast",               // Контейнер уведомлений Toast
+		"/images/avatar.jpg",      // Аватарка в Hero
+		"navbar-brand",            // Бренд платформы
+		"Primary Cloud Lab",       // Название бренда
+		"app-sidebar",             // Боковая панель навигации слева
+		"sidebar-nav",             // Список навигационных ссылок
+		">Главная<",               // Ссылка Главная без иконок
+		">Курсы<",                 // Ссылка Курсы без иконок
+		">Проекты<",               // Ссылка Проекты без иконок
+		">Сертификаты<",           // Ссылка Сертификаты без иконок
+		">QR-генератор<",          // Ссылка QR-генератор без иконок
+		">Shelby<",                // Ссылка Shelby без иконок
 	}
 
 	for _, snippet := range requiredSnippets {
@@ -182,6 +184,45 @@ func TestLayoutIncludes(t *testing.T) {
 				t.Errorf("Навигация в боковой панели не должна содержать тегов иконок <i>: %s", navHtml)
 			}
 		}
+	}
+}
+
+func TestLearningProgressUI(t *testing.T) {
+	r := setupTestRouter()
+
+	// 1. Проверяем наличие контейнера прогресса в каталоге курсов
+	reqCourses := httptest.NewRequest("GET", "/courses", nil)
+	wCourses := httptest.NewRecorder()
+	r.ServeHTTP(wCourses, reqCourses)
+	if !strings.Contains(wCourses.Body.String(), "data-course-progress") {
+		t.Errorf("/courses не содержит контейнеров прогресса data-course-progress")
+	}
+
+	// 2. Проверяем наличие виджета прогресса и бейджей статусов на детальной странице курса
+	reqDetail := httptest.NewRequest("GET", "/courses/linux", nil)
+	wDetail := httptest.NewRecorder()
+	r.ServeHTTP(wDetail, reqDetail)
+	bodyDetail := wDetail.Body.String()
+	if !strings.Contains(bodyDetail, "courseDetailProgress") {
+		t.Errorf("/courses/linux не содержит виджета courseDetailProgress")
+	}
+	if !strings.Contains(bodyDetail, "lesson-status-badge") {
+		t.Errorf("/courses/linux не содержит бейджей lesson-status-badge")
+	}
+
+	// 3. Проверяем наличие интерактивного квиза и кнопки фиксации прогресса на странице урока
+	reqLesson := httptest.NewRequest("GET", "/courses/linux/01-permissions-and-systemd", nil)
+	wLesson := httptest.NewRecorder()
+	r.ServeHTTP(wLesson, reqLesson)
+	bodyLesson := wLesson.Body.String()
+	if !strings.Contains(bodyLesson, "lesson-quiz-card") {
+		t.Errorf("Страница урока не содержит блока проверочного квиза lesson-quiz-card")
+	}
+	if !strings.Contains(bodyLesson, "completeLessonBtn") {
+		t.Errorf("Страница урока не содержит кнопки completeLessonBtn")
+	}
+	if !strings.Contains(bodyLesson, "quiz-option-btn") {
+		t.Errorf("Страница урока не содержит вариантов ответов quiz-option-btn")
 	}
 }
 

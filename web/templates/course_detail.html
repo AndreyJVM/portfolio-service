@@ -10,7 +10,7 @@
   </nav>
 
   <div class="row g-4 mb-5">
-    <!-- Левая колонка: Описание курса -->
+    <!-- Левая колонка: Описание курса и Прогресс -->
     <div class="col-lg-5">
       <div class="card border rounded-4 p-4 shadow-sm bento-card sticky-top" style="top: 24px;">
         <div class="d-flex align-items-center gap-3 mb-3">
@@ -24,7 +24,19 @@
         </div>
 
         <h3 class="fw-bold mb-3">{{.Course.Title}}</h3>
-        <p class="text-body-secondary small mb-4">{{.Course.Description}}</p>
+        <p class="text-body-secondary small mb-3">{{.Course.Description}}</p>
+
+        <!-- Индикатор прогресса курса -->
+        <div class="mb-4 p-3 rounded-3 bg-body-tertiary border" id="courseDetailProgress" data-course-slug="{{.Course.Slug}}" data-total-lessons="{{.Course.LessonCount}}">
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <span class="small fw-semibold">Прогресс курса:</span>
+            <span class="small text-primary fw-bold" id="courseDetailProgressPercent">0%</span>
+          </div>
+          <div class="progress mb-2" style="height: 8px;">
+            <div class="progress-bar bg-success transition-all" id="courseDetailProgressBar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+          </div>
+          <div class="small text-muted" id="courseDetailProgressCount">Пройдено уроков: 0 из {{.Course.LessonCount}}</div>
+        </div>
 
         <div class="d-flex flex-wrap gap-1 mb-4">
           {{range .Course.Tags}}
@@ -45,8 +57,8 @@
       {{if .Course.Lessons}}
       <div class="d-flex flex-column gap-3">
         {{range .Course.Lessons}}
-        <div class="card border rounded-4 p-3 shadow-sm bento-card">
-          <div class="d-flex align-items-center justify-content-between">
+        <div class="lesson-card-item card border rounded-4 p-3 shadow-sm bento-card" data-course-slug="{{$.Course.Slug}}" data-lesson-slug="{{.Slug}}">
+          <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
             <div class="d-flex align-items-center gap-3">
               <span class="badge bg-primary rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
                 {{.Order}}
@@ -57,7 +69,12 @@
                     {{.Title}}
                   </a>
                 </h6>
-                <small class="text-muted"><i class="far fa-clock me-1"></i>{{.Duration}}</small>
+                <div class="d-flex align-items-center gap-2">
+                  <small class="text-muted"><i class="far fa-clock me-1"></i>{{.Duration}}</small>
+                  <span class="badge lesson-status-badge bg-body-secondary text-body-secondary border">
+                    <i class="far fa-circle me-1"></i>К изучению
+                  </span>
+                </div>
               </div>
             </div>
             <a href="/courses/{{$.Course.Slug}}/{{.Slug}}" class="btn btn-sm btn-outline-primary rounded-pill px-3">

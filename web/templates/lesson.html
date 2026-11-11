@@ -55,7 +55,7 @@
     <!-- Основной контент урока -->
     <div class="col-lg-9 mx-auto">
       <div class="card border rounded-4 p-4 p-md-5 shadow-sm bento-card mb-4">
-        <div class="d-flex align-items-center justify-content-between border-bottom pb-3 mb-4">
+        <div class="d-flex align-items-center justify-content-between border-bottom pb-3 mb-4 flex-wrap gap-2">
           <div>
             <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-1 rounded-pill mb-2">
               Урок {{.Lesson.Order}} • {{.Course.Title}}
@@ -71,30 +71,183 @@
           {{.LessonContentSafe}}
         </div>
 
+        <!-- Интерактивный проверочный квиз -->
+        <div class="card border rounded-4 p-4 mt-5 lesson-quiz-card bg-body-tertiary">
+          <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
+            <div class="d-flex align-items-center gap-2">
+              <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle px-3 py-2 rounded-pill">
+                <i class="fas fa-circle-question me-1"></i> Проверочный квиз
+              </span>
+              <span class="small text-muted">Закрепите материал урока</span>
+            </div>
+            <span class="badge bg-body-secondary text-body-secondary border">Самопроверка</span>
+          </div>
+
+          {{if or (eq .Lesson.Slug "01-permissions-and-systemd") (eq .Lesson.Slug "permissions-and-systemd")}}
+          <!-- Вопрос 1 -->
+          <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q1">
+            <h6 class="fw-bold mb-3">1. Какая команда корректно выставляет строгие права (только чтение/запись владельцу) на приватный ключ SSH?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                <code>chmod 777 ~/.ssh/id_ed25519</code>
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Права 600 (rw-------) дают доступ только владельцу файла, что строго требуется SSH-клиентом.">
+                <code>chmod 600 ~/.ssh/id_ed25519</code>
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                <code>chmod 644 ~/.ssh/id_ed25519</code>
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          <!-- Вопрос 2 -->
+          <div class="quiz-question mb-3 p-3 rounded-3 border bg-body" data-question-id="q2">
+            <h6 class="fw-bold mb-3">2. Какая директива секции <code>[Service]</code> в unit-файле systemd отвечает за автоматический перезапуск упавшего демона?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Директива Restart=always указывает systemd перезапускать службу при любом завершении.">
+                <code>Restart=always</code>
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                <code>AutoRestart=true</code>
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                <code>DaemonReload=yes</code>
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          {{else if or (eq .Lesson.Slug "01-multistage-and-cgroups") (eq .Lesson.Slug "multistage-and-cgroups")}}
+          <!-- Вопрос 1 -->
+          <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q1">
+            <h6 class="fw-bold mb-3">1. В чем главное преимущество Multi-stage сборок в Docker?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Финальный образ содержит только скомпилированный бинарник, исключая компиляторы и SDK, что снижает размер образа до десятков МБ.">
+                Исключение SDK и исходников из финального образа, снижая размер и уязвимости
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Автоматическое шифрование трафика между контейнерами
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Ускорение сетевого стека bridge
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          <!-- Вопрос 2 -->
+          <div class="quiz-question mb-3 p-3 rounded-3 border bg-body" data-question-id="q2">
+            <h6 class="fw-bold mb-3">2. Какая подсистема ядра Linux отвечает за ограничение оперативной памяти и CPU для контейнера?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Linux Namespaces (PID, NET)
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Control Groups (cgroups v2) изолируют и лимитируют ресурсы (RAM, CPU, I/O), защищая хост от OOM.">
+                Control Groups (cgroups)
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                SELinux Profiles
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          {{else if or (eq .Lesson.Slug "01-ansible-basics-and-playbooks") (eq .Lesson.Slug "ansible-basics-and-playbooks")}}
+          <!-- Вопрос 1 -->
+          <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q1">
+            <h6 class="fw-bold mb-3">1. Какой протокол используется для подключения Ansible к Linux-хостам без установки агентов?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Ansible агентless и подключается к узлам стандартно через SSH (OpenSSH).">
+                SSH (порт 22)
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                WinRM (порт 5985)
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                SNMP (порт 161)
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          <!-- Вопрос 2 -->
+          <div class="quiz-question mb-3 p-3 rounded-3 border bg-body" data-question-id="q2">
+            <h6 class="fw-bold mb-3">2. Что означает свойство идемпотентности плейбука?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Идемпотентность гарантирует, что повторный запуск плейбука оставляет систему в неизменном целевом состоянии без лишних действий.">
+                Повторный запуск не меняет систему, если она уже находится в желаемом состоянии
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Задачи всегда выполняются заново независимо от текущей конфигурации
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          {{else if or (eq .Lesson.Slug "01-github-actions-pipeline") (eq .Lesson.Slug "github-actions-pipeline")}}
+          <!-- Вопрос 1 -->
+          <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q1">
+            <h6 class="fw-bold mb-3">1. Какой тип кэша BuildKit позволяет хранить слои сборки Docker в GitHub Actions?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Драйвер cache-to: type=gha использует внутренний GitHub Actions Cache API, ускоряя сборку.">
+                <code>type=gha</code>
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                <code>type=local</code>
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          <!-- Вопрос 2 -->
+          <div class="quiz-question mb-3 p-3 rounded-3 border bg-body" data-question-id="q2">
+            <h6 class="fw-bold mb-3">2. Какая директива предотвращает параллельные конфликтующие деплои?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Группа concurrency блокирует одновременные запуски релизных jobs.">
+                <code>concurrency: group</code>
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                <code>strategy: matrix</code>
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          {{else}}
+          <!-- Общий квиз на закрепление -->
+          <div class="quiz-question mb-3 p-3 rounded-3 border bg-body" data-question-id="q1">
+            <h6 class="fw-bold mb-3">1. Успешно ли вы изучили и протестировали практические примеры данного урока?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Отлично! Закрепите знания, отметив урок как пройденный.">
+                Да, материал усвоен и готов к применению на практике
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Требуется дополнительное повторение конфигураций
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+          {{end}}
+
+          <!-- Блок поздравления при решении всех вопросов -->
+          <div class="quiz-celebration alert alert-success mt-3 p-3 border-0 rounded-3 d-none text-center">
+            <h6 class="fw-bold mb-1"><i class="fas fa-trophy text-warning me-2"></i>Отличная работа!</h6>
+            <p class="small mb-0">Вы правильно ответили на вопросы квиза. Урок автоматически зачтен в ваш прогресс обучения.</p>
+          </div>
+        </div>
+
         <!-- Навигация между уроками -->
-        <div class="d-flex justify-content-between align-items-center pt-4 mt-5 border-top">
+        <div class="d-flex justify-content-between align-items-center pt-4 mt-5 border-top flex-wrap gap-2">
           <a href="/courses/{{.Course.Slug}}" class="btn btn-outline-secondary rounded-pill px-4">
             <i class="fas fa-arrow-left me-1"></i> К списку уроков
           </a>
-          <button type="button" class="btn btn-success rounded-pill px-4" id="completeLessonBtn">
-            <i class="fas fa-check me-1"></i> Урок изучен
+          <button type="button" class="btn btn-outline-success rounded-pill px-4" id="completeLessonBtn" data-course-slug="{{.Course.Slug}}" data-lesson-slug="{{.Lesson.Slug}}">
+            <i class="far fa-check-circle me-1"></i> Отметить как пройденный
           </button>
         </div>
       </div>
     </div>
   </div>
 </div>
-{{end}}
-
-{{define "scripts_extra"}}
-<script>
-  document.getElementById('completeLessonBtn')?.addEventListener('click', function() {
-    this.classList.remove('btn-success');
-    this.classList.add('btn-outline-success');
-    this.innerHTML = '<i class="fas fa-check-double me-1"></i> Пройдено!';
-    if (window.showToast) {
-      window.showToast('Отлично! Прогресс урока сохранен.', 'success');
-    }
-  });
-</script>
 {{end}}
