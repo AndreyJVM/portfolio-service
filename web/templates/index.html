@@ -74,42 +74,6 @@
   </div>
 
   <!-- ========================================== -->
-  <!-- КУРСЫ ВИТРИНА                               -->
-  <!-- ========================================== -->
-  <div class="d-flex align-items-center justify-content-between mb-4 reveal">
-    <div class="d-flex align-items-center gap-2">
-      <div class="p-2 rounded-3 bg-primary-subtle text-primary">
-        <i class="fas fa-cubes fa-lg"></i>
-      </div>
-      <h3 class="fw-bold mb-0">Популярные направления</h3>
-    </div>
-    <a href="/courses" class="btn btn-sm btn-outline-secondary rounded-pill">Все треки &rarr;</a>
-  </div>
-
-  <div class="row g-4 mb-5">
-    {{range .FeaturedCourses}}
-    <div class="col-lg-6 reveal">
-      <div class="card h-100 border rounded-4 p-4 shadow-sm bento-card">
-        <div class="d-flex align-items-center justify-content-between mb-3">
-          <div class="feature-icon-wrapper rounded-3 p-3 text-white" style="background-color: {{.Color}};">
-            <i class="{{.Icon}} fa-2x"></i>
-          </div>
-          <span class="badge bg-body-secondary text-body-secondary border">{{.Level}}</span>
-        </div>
-        <h5 class="fw-bold mb-2">{{.Title}}</h5>
-        <p class="text-body-secondary small flex-grow-1">{{.Description}}</p>
-        <div class="d-flex align-items-center justify-content-between pt-3 border-top">
-          <span class="small text-muted"><i class="fas fa-file-lines me-1"></i>{{.LessonCount}} уроков</span>
-          <a href="/courses/{{.Slug}}" class="btn btn-sm btn-outline-primary rounded-pill px-3">
-            Открыть <i class="fas fa-arrow-right ms-1"></i>
-          </a>
-        </div>
-      </div>
-    </div>
-    {{end}}
-  </div>
-
-  <!-- ========================================== -->
   <!-- СТЕК И КОМПЕТЕНЦИИ                          -->
   <!-- ========================================== -->
   <div class="d-flex align-items-center gap-2 mb-4 reveal">

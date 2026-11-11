@@ -178,6 +178,31 @@ func TestLayoutIncludes(t *testing.T) {
 		}
 	}
 
+	// Заголовок браузера строго Primary Cloud Lab
+	if !strings.Contains(body, "<title>Primary Cloud Lab</title>") {
+		t.Errorf("Заголовок страницы должен быть <title>Primary Cloud Lab</title>")
+	}
+
+	// Под логотипом отсутствует DEVOPS PLATFORM
+	if strings.Contains(body, "DEVOPS PLATFORM") {
+		t.Errorf("Подпись 'DEVOPS PLATFORM' под логотипом должна быть удалена")
+	}
+
+	// В боковом меню убрано слово Навигация
+	if strings.Contains(body, "Навигация") {
+		t.Errorf("Слово 'Навигация' в боковом меню должно быть удалено")
+	}
+
+	// Бейдж версии Go удален
+	if strings.Contains(body, "Go 1.24") || strings.Contains(body, "Go 1.") {
+		t.Errorf("Бейдж версии Go должен быть удален из бокового меню")
+	}
+
+	// Раздел 'Популярные направления' удален с главной страницы
+	if strings.Contains(body, "Популярные направления") {
+		t.Errorf("Раздел 'Популярные направления' должен быть удален с главной страницы")
+	}
+
 	// Проверяем, что в блоке sidebar-nav отсутствуют значки <i> (минималистичный дизайн ссылок)
 	sidebarNavIdx := strings.Index(body, `sidebar-nav`)
 	if sidebarNavIdx != -1 {
@@ -188,6 +213,38 @@ func TestLayoutIncludes(t *testing.T) {
 				t.Errorf("Навигация в боковой панели не должна содержать тегов иконок <i>: %s", navHtml)
 			}
 		}
+	}
+}
+
+func TestCleanPagesLayout(t *testing.T) {
+	r := setupTestRouter()
+
+	// 1. Проверяем, что во вкладке браузера всех страниц строго <title>Primary Cloud Lab</title>
+	for _, path := range []string{"/", "/courses", "/projects", "/education", "/qr", "/mustang"} {
+		req := httptest.NewRequest("GET", path, nil)
+		w := httptest.NewRecorder()
+		r.ServeHTTP(w, req)
+		body := w.Body.String()
+
+		if !strings.Contains(body, "<title>Primary Cloud Lab</title>") {
+			t.Errorf("%s: заголовок должен быть строго <title>Primary Cloud Lab</title>", path)
+		}
+	}
+
+	// 2. Страница проектов не должна содержать лишнюю плашку курсов
+	reqProj := httptest.NewRequest("GET", "/projects", nil)
+	wProj := httptest.NewRecorder()
+	r.ServeHTTP(wProj, reqProj)
+	if strings.Contains(wProj.Body.String(), "Курсы DevOps") {
+		t.Errorf("/projects не должна содержать плашку 'Курсы DevOps'")
+	}
+
+	// 3. Страница QR не должна содержать лишнюю плашку курсов
+	reqQR := httptest.NewRequest("GET", "/qr", nil)
+	wQR := httptest.NewRecorder()
+	r.ServeHTTP(wQR, reqQR)
+	if strings.Contains(wQR.Body.String(), "Курсы DevOps") {
+		t.Errorf("/qr не должна содержать плашку 'Курсы DevOps'")
 	}
 }
 
@@ -206,11 +263,11 @@ func TestLearningProgressUI(t *testing.T) {
 	reqDetail := httptest.NewRequest("GET", "/courses/linux", nil)
 	wDetail := httptest.NewRecorder()
 	r.ServeHTTP(wDetail, reqDetail)
-	bodyDetail := wDetail.Body.String()
-	if !strings.Contains(bodyDetail, "courseDetailProgress") {
+	tbodyDetail := wDetail.Body.String()
+	if !strings.Contains(tbodyDetail, "courseDetailProgress") {
 		t.Errorf("/courses/linux не содержит виджета courseDetailProgress")
 	}
-	if !strings.Contains(bodyDetail, "lesson-status-badge") {
+	if !strings.Contains(tbodyDetail, "lesson-status-badge") {
 		t.Errorf("/courses/linux не содержит бейджей lesson-status-badge")
 	}
 
@@ -218,14 +275,14 @@ func TestLearningProgressUI(t *testing.T) {
 	reqLesson := httptest.NewRequest("GET", "/courses/linux/01-permissions-and-systemd", nil)
 	wLesson := httptest.NewRecorder()
 	r.ServeHTTP(wLesson, reqLesson)
-	bodyLesson := wLesson.Body.String()
-	if !strings.Contains(bodyLesson, "lesson-quiz-card") {
+	tbodyLesson := wLesson.Body.String()
+	if !strings.Contains(tbodyLesson, "lesson-quiz-card") {
 		t.Errorf("Страница урока не содержит блока проверочного квиза lesson-quiz-card")
 	}
-	if !strings.Contains(bodyLesson, "completeLessonBtn") {
+	if !strings.Contains(tbodyLesson, "completeLessonBtn") {
 		t.Errorf("Страница урока не содержит кнопки completeLessonBtn")
 	}
-	if !strings.Contains(bodyLesson, "quiz-option-btn") {
+	if !strings.Contains(tbodyLesson, "quiz-option-btn") {
 		t.Errorf("Страница урока не содержит вариантов ответов quiz-option-btn")
 	}
 }

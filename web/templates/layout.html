@@ -7,7 +7,7 @@
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <script src="/js/theme-toggle.js"></script>
 
-  <title>{{.Meta.Title}} | Андрей Воробьев • DevOps</title>
+  <title>Primary Cloud Lab</title>
   <meta name="description" content="{{.Meta.Description}}">
   <meta name="keywords" content="{{.Meta.Keywords}}">
   <meta name="robots" content="index, follow">
@@ -39,7 +39,7 @@
   <!-- Mobile Top Navigation Header -->
   <header class="mobile-top-bar d-lg-none sticky-top d-flex align-items-center justify-content-between px-3 py-2">
     <div class="d-flex align-items-center">
-      <button class="btn btn-outline-secondary btn-sm me-2 sidebar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarNav" aria-controls="sidebarNav" aria-label="Открыть меню">
+      <button class="btn btn-outline-secondary btn-sm me-2 sidebar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarNav" aria-controls="#sidebarNav" aria-label="Открыть меню">
         <i class="fas fa-bars"></i>
       </button>
       <a class="navbar-brand d-flex align-items-center" href="/" aria-label="Primary Cloud Lab">
@@ -57,18 +57,12 @@
     <div class="sidebar-header p-3 border-bottom d-flex align-items-center justify-content-between">
       <a class="navbar-brand d-flex align-items-center" href="/" aria-label="Primary Cloud Lab">
         <img src="/favicon.svg" alt="Логотип" class="navbar-brand-logo" width="36" height="36">
-        <div class="ms-2">
-          <span class="fw-bold text-gradient d-block lh-1">Primary Cloud Lab</span>
-          <small class="text-muted" style="font-size: 0.72rem; letter-spacing: 0.5px;">DEVOPS PLATFORM</small>
-        </div>
+        <span class="ms-2 fw-bold text-gradient">Primary Cloud Lab</span>
       </a>
       <button type="button" class="btn-close d-lg-none" data-bs-dismiss="offcanvas" data-bs-target="#sidebarNav" aria-label="Закрыть"></button>
     </div>
 
     <div class="sidebar-body flex-grow-1 p-3 overflow-y-auto">
-      <div class="text-uppercase text-muted fw-bold px-3 mb-2" style="font-size: 0.7rem; letter-spacing: 1px;">
-        Навигация
-      </div>
       <ul class="nav nav-pills flex-column gap-1 sidebar-nav w-100">
         <li class="nav-item">
           <a class="nav-link {{if eq .Meta.ActiveTab "home"}}active{{end}}" href="/">Главная</a>
@@ -92,14 +86,11 @@
     </div>
 
     <div class="sidebar-footer p-3 border-top mt-auto">
-      <div class="d-flex align-items-center justify-content-between">
-        <div class="d-flex align-items-center">
-          <button class="theme-toggle me-2" id="themeToggle" aria-label="Переключить тему">
-            <i class="fas fa-moon" id="themeIcon"></i>
-          </button>
-          <span class="small text-muted">Тема</span>
-        </div>
-        <span class="badge bg-body-secondary text-body-secondary border" style="font-size: 0.7rem;">Go 1.24</span>
+      <div class="d-flex align-items-center">
+        <button class="theme-toggle me-2" id="themeToggle" aria-label="Переключить тему">
+          <i class="fas fa-moon" id="themeIcon"></i>
+        </button>
+        <span class="small text-muted">Тема</span>
       </div>
     </div>
   </nav>
