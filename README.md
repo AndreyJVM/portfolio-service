@@ -8,7 +8,7 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg" alt="License"></a>
 </p>
 
-# DevOps Lab & Platform • vorobevaqa.ru
+# Primary Cloud Lab • vorobevaqa.ru
 
 Открытая интерактивная образовательная платформа по **DevOps, системному администрированию Linux, контейнеризации в Docker и автоматизации релизов**.
 
@@ -39,7 +39,7 @@
 flowchart TD
     Client["Внешний клиент / Студент"] -->|HTTPS :443 / HTTP :80| Host["Linux VDS (Ubuntu 24.04 LTS)<br/>UFW Firewall • SSH ed25519 • Fail2ban • logrotate"]
     Host --> Nginx["Nginx Reverse Proxy & API Gateway<br/>Терминация SSL • HTTP/2 • Gzip • Fallback 50x"]
-    Nginx -->|/courses, /, /projects, /mustang, /api/*| GoApp["Go DevOps Platform (:8080)<br/>Chi Router • Goldmark Markdown • RAM ~13MB"]
+    Nginx -->|/courses, /, /projects, /mustang, /api/*| GoApp["Go Primary Cloud Lab (:8080)<br/>Chi Router • Goldmark Markdown • RAM ~13MB"]
     Nginx -->|/api/qr fallback| GoQR["Go QR Microservice (:8081)<br/>Scratch-образ ~10MB • cgroups квоты"]
 ```
 

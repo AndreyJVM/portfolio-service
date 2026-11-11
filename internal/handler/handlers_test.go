@@ -149,6 +149,7 @@ func TestLayoutIncludes(t *testing.T) {
 		"liveToast",           // Контейнер уведомлений Toast
 		"/images/avatar.jpg",  // Аватарка в Hero
 		"navbar-brand",        // Верхняя панель
+		"Primary Cloud Lab",   // Новое название бренда платформы
 	}
 
 	for _, snippet := range requiredSnippets {
