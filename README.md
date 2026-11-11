@@ -3,6 +3,7 @@
   <a href="https://hub.docker.com/r/andreyvorobevaqa/portfolio-service"><img src="https://img.shields.io/badge/Docker-Compose_%26_Swarm-2496ED?logo=docker&logoColor=white" alt="Docker"></a>
   <a href="https://galaxy.ansible.com/ui/standalone/namespaces/24255/"><img src="https://img.shields.io/badge/Ansible-Galaxy_Roles-EE0000?logo=ansible&logoColor=white" alt="Ansible"></a>
   <a href="https://github.com/AndreyJVM/portfolio-service/actions"><img src="https://img.shields.io/badge/CI%2FCD-GitHub_Actions_Passed-2088FF?logo=githubactions&logoColor=white" alt="CI/CD"></a>
+  <a href="https://github.com/AndreyJVM/portfolio-service/security/dependabot"><img src="https://img.shields.io/badge/Dependabot-Active-02569B?logo=dependabot&logoColor=white" alt="Dependabot"></a>
   <a href="https://nginx.org/"><img src="https://img.shields.io/badge/Nginx-API_Gateway_%26_HA_Proxy-009639?logo=nginx&logoColor=white" alt="Nginx"></a>
   <a href="https://go.dev/"><img src="https://img.shields.io/badge/Go-1.26_Platform-00ADD8?logo=go&logoColor=white" alt="Go"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg" alt="License"></a>
@@ -57,6 +58,7 @@ flowchart TD
 | **Бэкенд платформы** | Go 1.26 (`go-chi/chi/v5`, `yuin/goldmark`, `skip2/go-qrcode`), статическая сборка со стриппингом символов |
 | **IaC & Оркестрация** | Ansible (идемпотентные плейбуки и роли в Ansible Galaxy), Blue-Green деплой скриптом `deploy.sh` |
 | **CI/CD** | GitHub Actions (параллельная сборка, BuildKit gha-кэш, Zero-Downtime деплой с авто-откатом) |
+| **Управление уязвимостями** | Dependabot (еженедельный аудит Go, Docker и GitHub Actions) |
 
 
 ## Образовательные треки и Лабораторные
@@ -142,6 +144,7 @@ flowchart LR
 1. **Path-based trigger:** Сборка запускается только для изменившихся компонентов (Go платформа, QR-сервис, конфигурация деплоя).
 2. **Concurrency lock:** Группа `production-deploy` блокирует одновременные гонки релизов.
 3. **Бесперебойное обновление:** `scripts/deploy.sh` запускает новый инстанс параллельно (`scale app=2`), ждет `healthy`, перезагружает Nginx и гасит старый инстанс. В случае сбоя срабатывает мгновенный автоматический откат (`rollback`).
+4. **Автоматический мониторинг зависимостей (Dependabot):** Еженедельный аудит безопасности и актуальности внешних модулей Go (с синхронизацией `vendor/`), базовых образов Dockerfile и действий GitHub Actions с автоматическим запуском тестов на Pull Request.
 
 
 ## Тестирование и локальный запуск
@@ -185,7 +188,9 @@ portfolio/
 ├── docker-compose.yml       # Конфигурация продакшн-стека микросервисов
 ├── Dockerfile               # Multi-stage сборка статического бинарника Go на Alpine
 ├── go.mod / go.sum          # Модули Go 1.26
-└── .github/workflows/       # Пайплайн GitHub Actions
+├── .github/
+│   ├── dependabot.yml       # Конфигурация Dependabot (Go, Docker, GitHub Actions)
+│   └── workflows/           # Пайплайны CI/CD (деплой в прод и тестирование PR)
 ```
 
 
