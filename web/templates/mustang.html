@@ -1,0 +1,288 @@
+{{define "head_extra"}}
+<link rel="stylesheet" href="/css/pages/mustang.css">
+{{end}}
+
+{{define "content"}}
+<!-- ==================== HERO SECTION ==================== -->
+<div class="mustang-hero py-5 position-relative border-bottom overflow-hidden">
+  <div class="racing-stripes"></div>
+  <div class="container position-relative z-1 pt-3 pb-2">
+    <div class="row align-items-center">
+      <div class="col-lg-8">
+        <div class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-2 rounded-pill mb-3">
+          <i class="fas fa-fire me-1"></i> 5.2L Supercharged V8 &bull; 760 HP &bull; Zero-Downtime Acceleration
+        </div>
+        <h1 class="display-4 fw-bold mb-3">
+          Фонд спасения от рутины:<br>
+          <span class="text-gradient-mustang">Ford Mustang Shelby GT500</span>
+        </h1>
+        <p class="lead text-body-secondary mb-4" style="max-width: 720px;">
+          Инфраструктура на VDS заведена, сервисы работают на быстром Go, CI/CD разворачивает Blue-Green релизы.
+          Остался последний критический тикет высокой важности — <strong>отсутствие 760 л.с. и компрессорного V8 в гараже</strong>.
+        </p>
+        <div class="d-flex flex-wrap gap-3">
+          <a href="#donate-section" class="btn btn-danger btn-lg px-4 rounded-pill shadow-sm">
+            <i class="fas fa-heart me-2"></i>Поддержать проект
+          </a>
+          <button type="button" id="gasPedalBtn" class="btn btn-outline-danger btn-lg px-4 rounded-pill shadow-sm">
+            <i class="fas fa-gauge-high me-2"></i>Газануть в отсечку!
+          </button>
+          <a href="#specs-section" class="btn btn-outline-secondary btn-lg px-4 rounded-pill shadow-sm">
+            <i class="fas fa-microchip me-2"></i>DevOps ТТХ
+          </a>
+        </div>
+      </div>
+      <div class="col-lg-4 text-center mt-5 mt-lg-0">
+        <div class="cobra-badge-box p-4 rounded-4 shadow-lg mx-auto">
+          <i class="fas fa-dragon cobra-icon display-1 text-danger"></i>
+          <h4 class="fw-bold mt-3 mb-1">SHELBY GT500</h4>
+          <span class="badge bg-dark-subtle text-body-secondary border">Predator 5.2L V8</span>
+          <div class="mt-3">
+            <button type="button" class="btn btn-sm btn-danger rounded-pill px-3 shadow-sm" id="startEngineBtn">
+              <i class="fas fa-power-off me-1"></i>Start Engine
+            </button>
+          </div>
+          <div class="sound-indicator mt-2 small text-muted">
+            <i class="fas fa-volume-high me-1 text-danger"></i> Web Audio V8 Synthesizer
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== ИНТЕРАКТИВНЫЙ КОКПИТ ==================== -->
+<section class="container py-5">
+  <div class="cockpit-panel p-4 p-md-5 rounded-4 border shadow-sm">
+    <div class="row align-items-center g-4">
+      <div class="col-lg-6 text-center">
+        <div class="gauge-wrapper mx-auto">
+          <div class="gauge-dial">
+            <div class="gauge-ticks"></div>
+            <div id="tachometerNeedle" class="gauge-needle"></div>
+            <div class="gauge-center-cap">
+              <span id="rpmDisplay" class="rpm-number">850</span>
+              <span class="rpm-label">RPM</span>
+            </div>
+          </div>
+          <div class="gauge-status d-flex justify-content-center gap-3 mt-3">
+            <span class="badge bg-success-subtle text-success border" id="launchControlBadge">
+              <i class="fas fa-bolt me-1"></i>LAUNCH CONTROL: ARMED
+            </span>
+            <span class="badge bg-danger-subtle text-danger border" id="exhaustBadge">
+              <i class="fas fa-fire me-1"></i>TRACK EXHAUST
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <h3 class="fw-bold mb-3">
+          <i class="fas fa-tachometer-alt text-danger me-2"></i>Телеметрия компрессорного V8
+        </h3>
+        <p class="text-body-secondary mb-4">
+          Нажмите кнопку «Газануть», чтобы раскрутить двигатель в отсечку 7500 RPM.
+          Звук синтезируется в реальном времени через <strong>Web Audio API</strong> прямо в вашем браузере!
+        </p>
+        <div class="d-flex flex-wrap gap-2 mb-4">
+          <button class="btn btn-danger px-4 py-2 rounded-pill shadow-sm rev-trigger-btn" id="revShortBtn">
+            <i class="fas fa-play me-1"></i>Перегазовка (3000 RPM)
+          </button>
+          <button class="btn btn-outline-danger px-4 py-2 rounded-pill shadow-sm rev-trigger-btn" id="revFullBtn">
+            <i class="fas fa-forward-fast me-1"></i>Отсечка (7500 RPM)
+          </button>
+        </div>
+        <div class="stats-mini-grid">
+          <div class="mini-stat-item">
+            <span class="text-muted small">0-100 км/ч</span>
+            <h5 class="fw-bold mb-0 text-danger">3.5 сек</h5>
+          </div>
+          <div class="mini-stat-item">
+            <span class="text-muted small">Мощность</span>
+            <h5 class="fw-bold mb-0">760 HP</h5>
+          </div>
+          <div class="mini-stat-item">
+            <span class="text-muted small">Крутящий момент</span>
+            <h5 class="fw-bold mb-0">847 Нм</h5>
+          </div>
+          <div class="mini-stat-item">
+            <span class="text-muted small">Коробка</span>
+            <h5 class="fw-bold mb-0">Tremec 7-DCT</h5>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== КРАУДФАНДИНГ ПРОГРЕСС ==================== -->
+<section class="container pb-5">
+  <div class="crowdfunding-card p-4 p-md-5 rounded-4 border shadow-sm">
+    <div class="row align-items-center mb-4">
+      <div class="col-md-8">
+        <div class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle px-3 py-1 rounded-pill mb-2">
+          <i class="fas fa-chart-line me-1"></i> Прогресс сбора
+        </div>
+        <h2 class="fw-bold mb-1">Собрано на мечту</h2>
+        <p class="text-body-secondary mb-0">Каждый донат приближает звук американского компрессорного V8 к продакшну.</p>
+      </div>
+      <div class="col-md-4 text-md-end mt-3 mt-md-0">
+        <div class="display-6 fw-bold text-danger">1 337 ₽</div>
+        <div class="small text-body-secondary">из 8 000 000 ₽ (0.02%)</div>
+      </div>
+    </div>
+
+    <div class="progress mb-4" style="height: 24px; border-radius: 12px; background: rgba(0,0,0,0.1);">
+      <div class="progress-bar progress-bar-striped progress-bar-animated bg-danger"
+           role="progressbar" style="width: 1.5%;" aria-valuenow="0.02" aria-valuemin="0" aria-valuemax="100">
+        0.02%
+      </div>
+    </div>
+
+    <!-- Roadmap комплектующих -->
+    <h5 class="fw-bold mt-4 mb-3"><i class="fas fa-list-check text-danger me-2"></i>Этапы сбора:</h5>
+    <div class="row g-3">
+      <div class="col-md-6 col-lg-4">
+        <div class="roadmap-card p-3 rounded-3 border bg-body-tertiary h-100 completed">
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <span class="badge bg-success"><i class="fas fa-check me-1"></i>Куплено</span>
+            <strong class="text-success">150 ₽</strong>
+          </div>
+          <h6 class="fw-bold mb-1">Колпачок на ниппель Shelby</h6>
+          <p class="small text-muted mb-0">Аэродинамика улучшена на 0.0001%.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="roadmap-card p-3 rounded-3 border bg-body-tertiary h-100 completed">
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <span class="badge bg-success"><i class="fas fa-check me-1"></i>Куплено</span>
+            <strong class="text-success">300 ₽</strong>
+          </div>
+          <h6 class="fw-bold mb-1">Ароматизатор «Ёлочка»</h6>
+          <p class="small text-muted mb-0">С аутентичным ароматом АИ-100 и жжёной резины.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="roadmap-card p-3 rounded-3 border bg-body-tertiary h-100 completed">
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <span class="badge bg-success"><i class="fas fa-check me-1"></i>Куплено</span>
+            <strong class="text-success">887 ₽</strong>
+          </div>
+          <h6 class="fw-bold mb-1">Брелок с Коброй</h6>
+          <p class="small text-muted mb-0">Тяжелый цинковый брелок для ключей от машины.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="roadmap-card p-3 rounded-3 border bg-body-tertiary h-100">
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <span class="badge bg-secondary">В очереди</span>
+            <strong class="text-muted">350 000 ₽</strong>
+          </div>
+          <h6 class="fw-bold mb-1">Карбоновое антикрыло GT4</h6>
+          <p class="small text-muted mb-0">Для прижимной силы при деплое на прод в пятницу.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="roadmap-card p-3 rounded-3 border bg-body-tertiary h-100">
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <span class="badge bg-secondary">В очереди</span>
+            <strong class="text-muted">850 000 ₽</strong>
+          </div>
+          <h6 class="fw-bold mb-1">Нагнетатель Eaton 2.65L</h6>
+          <p class="small text-muted mb-0">Наддув 12 psi для мгновенного отклика серверов.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="roadmap-card p-3 rounded-3 border bg-body-tertiary h-100">
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <span class="badge bg-danger">Главная цель</span>
+            <strong class="text-danger">6 798 663 ₽</strong>
+          </div>
+          <h6 class="fw-bold mb-1">Сам Ford Mustang Shelby GT500</h6>
+          <p class="small text-muted mb-0">Полноценный 760-сильный маслкар в боевом цвете Ford Performance Blue.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== СЕКЦИЯ ДОНАТА И ОПЛАТЫ СБП ==================== -->
+<section class="container pb-5" id="donate-section">
+  <div class="donate-panel p-4 p-md-5 rounded-4 border shadow-sm">
+    <div class="text-center mb-4">
+      <div class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-1 rounded-pill mb-2">
+        <i class="fas fa-gift me-1"></i> Тиры спонсорства
+      </div>
+      <h2 class="fw-bold">Выберите уровень поддержки</h2>
+      <p class="text-body-secondary mx-auto" style="max-width: 650px;">
+        Все средства идут исключительно на закупку комплектующих, бензин и моральное ускорение деплоев.
+      </p>
+    </div>
+
+    <!-- Карточки тиров -->
+    <div class="row g-4 mb-4">
+      <div class="col-md-6 col-lg-3">
+        <div class="tier-card p-4 rounded-4 border text-center h-100 d-flex flex-column" data-amount="100">
+          <h5 class="fw-bold">Junior Tuner</h5>
+          <div class="display-6 fw-bold text-danger my-2">100 ₽</div>
+          <p class="small text-muted flex-grow-1">Ваше имя попадает в комментарии к скрипту деплоя.</p>
+          <button class="btn btn-outline-danger rounded-pill w-100 select-tier-btn">Выбрать 100 ₽</button>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="tier-card p-4 rounded-4 border text-center h-100 d-flex flex-column popular" data-amount="500">
+          <span class="badge bg-danger position-absolute top-0 start-50 translate-middle rounded-pill px-3">Топ выбор</span>
+          <h5 class="fw-bold">Middle Pilot</h5>
+          <div class="display-6 fw-bold text-danger my-2">500 ₽</div>
+          <p class="small text-muted flex-grow-1">Оплата 2.5 литров бензина АИ-100 для тестового старта 0-100 км/ч.</p>
+          <button class="btn btn-danger rounded-pill w-100 select-tier-btn">Выбрать 500 ₽</button>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="tier-card p-4 rounded-4 border text-center h-100 d-flex flex-column" data-amount="2500">
+          <h5 class="fw-bold">Senior Launch</h5>
+          <div class="display-6 fw-bold text-danger my-2">2 500 ₽</div>
+          <p class="small text-muted flex-grow-1">Запуск персонального теста с максимальным приоритетом.</p>
+          <button class="btn btn-outline-danger rounded-pill w-100 select-tier-btn">Выбрать 2 500 ₽</button>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="tier-card p-4 rounded-4 border text-center h-100 d-flex flex-column" data-amount="8000000">
+          <h5 class="fw-bold">Root Sponsor</h5>
+          <div class="display-6 fw-bold text-danger my-2">8M ₽</div>
+          <p class="small text-muted flex-grow-1">Пожизненное место штурмана и передача ключей по четным дням месяца.</p>
+          <button class="btn btn-outline-danger rounded-pill w-100 select-tier-btn">Забрать Мустанг</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Интерактивная форма перевода -->
+    <div class="donation-box mx-auto p-4 p-md-5 rounded-4 border bg-body-tertiary" style="max-width: 520px;">
+      <div class="text-center mb-4">
+        <div class="d-inline-flex align-items-center justify-content-center p-3 rounded-circle bg-danger-subtle text-danger mb-3">
+          <i class="fas fa-qrcode fa-2x"></i>
+        </div>
+        <h4 class="fw-bold mb-1">Оплата через СБП</h4>
+        <p class="text-body-secondary small mb-0">Система Быстрых Платежей &bull; Любой банк РФ</p>
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label small fw-semibold text-body-secondary">Сумма перевода (₽):</label>
+        <div class="input-group input-group-lg shadow-sm rounded-pill overflow-hidden border">
+          <span class="input-group-text bg-body border-0 px-4"><i class="fas fa-ruble-sign text-danger"></i></span>
+          <input type="number" id="customAmountInput" class="form-control border-0 fw-bold fs-4 text-center ps-0" value="500" min="10" step="50">
+        </div>
+      </div>
+
+      <div class="d-grid gap-2">
+        <a href="https://pay.cloudtips.ru/p/d4f93a46" target="_blank" rel="noopener noreferrer" class="btn btn-danger btn-lg rounded-pill shadow-sm fw-bold py-3" id="cloudtipsPayBtn">
+          <i class="fas fa-bolt me-2"></i>Оплатить по СБП
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+{{end}}
+
+{{define "scripts_extra"}}
+<script src="/js/pages/mustang.js" defer></script>
+{{end}}

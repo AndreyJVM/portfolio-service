@@ -1,0 +1,44 @@
+{{define "content"}}
+<div class="container py-4">
+  <div class="text-center max-w-700 mx-auto mb-5 reveal">
+    <div class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill mb-3">
+      <i class="fas fa-graduation-cap me-1"></i> Бесплатная База Знаний
+    </div>
+    <h1 class="display-5 fw-bold mb-3">Обучающие треки <span class="text-gradient">DevOps & Linux</span></h1>
+    <p class="lead text-body-secondary">
+      Практические уроки, конфигурации и разбор архитектурных паттернов от системного администрирования до production CI/CD.
+    </p>
+  </div>
+
+  <div class="row g-4 mb-5">
+    {{range .Courses}}
+    <div class="col-lg-6 reveal">
+      <div class="card h-100 border rounded-4 p-4 shadow-sm bento-card">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <div class="feature-icon-wrapper rounded-3 p-3 text-white" style="background-color: {{.Color}};">
+            <i class="{{.Icon}} fa-2x"></i>
+          </div>
+          <span class="badge bg-body-secondary text-body-secondary border">{{.Level}}</span>
+        </div>
+
+        <h4 class="fw-bold mb-2">{{.Title}}</h4>
+        <p class="text-body-secondary small flex-grow-1">{{.Description}}</p>
+
+        <div class="d-flex flex-wrap gap-1 mb-4">
+          {{range .Tags}}
+          <span class="badge tech-badge">{{.}}</span>
+          {{end}}
+        </div>
+
+        <div class="d-flex align-items-center justify-content-between pt-3 border-top">
+          <span class="small text-muted"><i class="fas fa-book-open me-1"></i>Уроков: {{.LessonCount}}</span>
+          <a href="/courses/{{.Slug}}" class="btn btn-outline-primary rounded-pill px-4">
+            Начать обучение <i class="fas fa-arrow-right ms-1"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+    {{end}}
+  </div>
+</div>
+{{end}}

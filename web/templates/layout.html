@@ -1,0 +1,117 @@
+{{define "layout"}}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <script src="/js/theme-toggle.js"></script>
+
+  <title>{{.Meta.Title}} | Андрей Воробьев • DevOps</title>
+  <meta name="description" content="{{.Meta.Description}}">
+  <meta name="keywords" content="{{.Meta.Keywords}}">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="Андрей Воробьев">
+  <link rel="canonical" href="{{.Meta.CanonicalURL}}">
+
+  <meta property="og:title" content="{{.Meta.OGTitle}}">
+  <meta property="og:description" content="{{.Meta.OGDescription}}">
+  <meta property="og:image" content="{{.Meta.OGImage}}">
+  <meta property="og:url" content="{{.Meta.OGURL}}">
+  <meta property="og:type" content="website">
+
+  <!-- Vendor CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Core Theme & Layout Styles -->
+  <link rel="stylesheet" href="/css/themes.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/navbar.css">
+  {{block "head_extra" .}}{{end}}
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+  <!-- Navigation Bar -->
+  <nav class="navbar navbar-expand-lg fixed-top">
+    <div id="scrollProgressBar" class="scroll-progress-bar"></div>
+    <div class="container">
+      <a class="navbar-brand d-flex align-items-center" href="/" aria-label="DevOps Platform">
+        <img src="/favicon.svg" alt="Логотип" class="navbar-brand-logo" width="36" height="36">
+        <span class="ms-2 fw-bold text-gradient d-none d-sm-inline">DevOps Lab</span>
+      </a>
+
+      <div class="d-flex align-items-center order-lg-3">
+        <button class="theme-toggle" id="themeToggle" aria-label="Переключить тему">
+          <i class="fas fa-moon" id="themeIcon"></i>
+        </button>
+        <button class="navbar-toggler ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      </div>
+
+      <div class="collapse navbar-collapse order-lg-2" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link {{if eq .Meta.ActiveTab "home"}}active{{end}}" href="/">Главная</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {{if eq .Meta.ActiveTab "courses"}}active{{end}}" href="/courses">
+              <i class="fas fa-graduation-cap me-1 text-primary"></i>Курсы DevOps
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {{if eq .Meta.ActiveTab "projects"}}active{{end}}" href="/projects">Проекты</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {{if eq .Meta.ActiveTab "education"}}active{{end}}" href="/education">Сертификаты</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {{if eq .Meta.ActiveTab "qr"}}active{{end}}" href="/qr">QR-генератор</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {{if eq .Meta.ActiveTab "mustang"}}active{{end}}" href="/mustang">
+              <i class="fas fa-car-side me-1 text-danger"></i>Shelby GT500
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="flex-shrink-0 pt-5 mt-4">
+    {{block "content" .}}{{end}}
+  </main>
+
+  <!-- Footer -->
+  <footer class="mt-auto py-4 border-top">
+    <div class="container text-center">
+      <div class="mb-3 d-flex justify-content-center gap-3">
+        <a href="https://github.com/AndreyJVM" target="_blank" rel="noopener noreferrer" class="social-link" title="GitHub">
+          <i class="fab fa-github fa-lg"></i>
+        </a>
+        <a href="https://t.me/AndreyAQA" target="_blank" rel="noopener noreferrer" class="social-link" title="Telegram">
+          <i class="fab fa-telegram fa-lg"></i>
+        </a>
+        <a href="mailto:andrey.vorobev.qa@yandex.ru" class="social-link" title="Email">
+          <i class="fas fa-envelope fa-lg"></i>
+        </a>
+      </div>
+      <p class="mb-0 text-muted small">
+        &copy; 2026 Андрей Воробьев • Бесплатная открытая платформа по изучению DevOps & Linux.
+      </p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <button type="button" id="backToTopBtn" class="btn btn-primary rounded-circle back-to-top shadow" aria-label="Вернуться наверх" title="Наверх">
+    <i class="fas fa-chevron-up"></i>
+  </button>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/js/main.js" defer></script>
+  {{block "scripts_extra" .}}{{end}}
+</body>
+</html>
+{{end}}

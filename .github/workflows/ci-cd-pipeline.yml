@@ -1,7 +1,17 @@
 name: CI/CD Pipeline
 
 on:
+  push:
+    branches:
+      - master
   workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-deploy
+  cancel-in-progress: false
 
 env:
   DOCKER_IMAGE_NAME: andreyvorobevaqa/portfolio-service
@@ -11,6 +21,7 @@ jobs:
   detect-changes:
     name: Detect Changed Components
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     outputs:
       app: ${{ steps.filter.outputs.app }}
       qr: ${{ steps.filter.outputs.qr }}
@@ -25,8 +36,13 @@ jobs:
         with:
           filters: |
             app:
-              - 'src/**'
-              - 'pom.xml'
+              - 'cmd/**'
+              - 'internal/**'
+              - 'web/**'
+              - 'content/**'
+              - 'go.mod'
+              - 'go.sum'
+              - 'vendor/**'
               - 'Dockerfile'
               - '.dockerignore'
             qr:
@@ -37,23 +53,23 @@ jobs:
               - 'scripts/**'
 
   build-and-push-app:
-    name: Build & Push Java App
+    name: Build & Push Go DevOps Platform
     needs: detect-changes
     if: needs.detect-changes.outputs.app == 'true' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up JDK 21
-        uses: actions/setup-java@v5
+      - name: Set up Go 1.26
+        uses: actions/setup-go@v5
         with:
-          java-version: '21'
-          distribution: 'temurin'
-          cache: 'maven'
+          go-version: '1.26'
+          cache-dependency-path: go.sum
 
-      - name: Run Maven build and tests
-        run: mvn clean verify
+      - name: Run Go tests
+        run: go test -v ./...
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
@@ -64,7 +80,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build and push Java App Docker image
+      - name: Build and push DevOps Platform Docker image
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -72,20 +88,23 @@ jobs:
           tags: |
             ${{ env.DOCKER_IMAGE_NAME }}:latest
             ${{ env.DOCKER_IMAGE_NAME }}:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
   build-and-push-qr:
     name: Build & Push QR Service
     needs: detect-changes
     if: needs.detect-changes.outputs.qr == 'true' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Go 1.23
+      - name: Set up Go 1.26
         uses: actions/setup-go@v5
         with:
-          go-version: '1.23'
+          go-version: '1.26'
           cache-dependency-path: qr-service/go.sum
 
       - name: Test Go QR Service
@@ -108,6 +127,8 @@ jobs:
           tags: |
             ${{ env.QR_SERVICE_IMAGE_NAME }}:latest
             ${{ env.QR_SERVICE_IMAGE_NAME }}:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
   deploy-to-vds:
     name: Zero-Downtime Deploy to VDS
@@ -121,6 +142,7 @@ jobs:
        needs.detect-changes.outputs.deploy == 'true' ||
        github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

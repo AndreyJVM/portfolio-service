@@ -1,0 +1,97 @@
+{{define "head_extra"}}
+<link rel="stylesheet" href="/css/pages/qr.css">
+{{end}}
+
+{{define "content"}}
+<div class="container pt-4 pb-4 mb-4 border-bottom position-relative">
+  <div class="row align-items-center reveal z-1">
+    <div class="col-lg-8">
+      <div class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill mb-3">
+        <i class="fab fa-golang me-1"></i> Native Go Engine &bull; Zero Overhead
+      </div>
+      <h1 class="display-4 fw-bold mb-3">QR Code <span class="text-gradient">Playground</span></h1>
+      <p class="lead text-body-secondary mb-0" style="max-width: 720px;">
+        Интерактивный генератор QR-кодов на Go. Высокая скорость кодирования, поддержка векторных стилей и прямая отдача PNG/Base64.
+      </p>
+    </div>
+    <div class="col-lg-4 text-start text-lg-end mt-4 mt-lg-0">
+      <div class="d-flex flex-wrap gap-2 justify-content-lg-end">
+        <a href="/courses" class="btn btn-outline-primary rounded-pill shadow-sm">
+          <i class="fas fa-graduation-cap me-1"></i>Курсы DevOps
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container py-4">
+  <div class="qr-tool mx-auto reveal reveal-delay-100">
+    <div class="qr-tool__panel">
+      <div class="mb-4">
+        <label class="form-label small fw-semibold text-body-secondary mb-2">Быстрые шаблоны:</label>
+        <div class="d-flex flex-wrap gap-2">
+          <button type="button" class="btn btn-sm qr-preset-pill" data-preset="https://vorobevaqa.ru">
+            <i class="fas fa-globe me-1"></i>Платформа
+          </button>
+          <button type="button" class="btn btn-sm qr-preset-pill" data-preset="https://github.com/AndreyJVM">
+            <i class="fab fa-github me-1"></i>GitHub
+          </button>
+          <button type="button" class="btn btn-sm qr-preset-pill" data-preset="https://t.me/AndreyAQA">
+            <i class="fab fa-telegram me-1"></i>Telegram
+          </button>
+        </div>
+      </div>
+
+      <form id="qr-form" onsubmit="event.preventDefault(); generateQR();">
+        <label for="url-input" class="form-label fw-semibold">Данные для кодирования</label>
+        <div class="input-group mb-2 shadow-sm rounded-3">
+          <span class="input-group-text bg-body-tertiary border-end-0"><i class="fas fa-link text-primary"></i></span>
+          <input type="text" id="url-input" class="form-control border-start-0 ps-0"
+                 placeholder="https://example.com" value="https://vorobevaqa.ru" required>
+        </div>
+        <div class="form-text text-muted mb-4"><i class="fas fa-info-circle me-1"></i> Поддерживаются URL, текст, контакты</div>
+
+        <button type="submit" class="btn btn-primary w-100 btn-lg shadow text-uppercase fw-bold" id="generate-btn">
+          <i class="fas fa-bolt me-2"></i> Сгенерировать QR
+        </button>
+      </form>
+
+      <div id="error" class="qr-error mt-3" style="display: none;">
+        <i class="fas fa-circle-exclamation me-1"></i>
+        <span id="error-text"></span>
+      </div>
+    </div>
+
+    <!-- Результат -->
+    <div class="qr-tool__preview text-center p-4 border rounded-4 bg-body-tertiary">
+      <div id="qr-result-box" class="d-flex flex-column align-items-center">
+        <div class="qr-img-wrap p-3 bg-white rounded-3 shadow-sm mb-3">
+          <img id="qr-image" src="/api/qr?text=https://vorobevaqa.ru" alt="QR Code" class="img-fluid" style="width: 240px; height: 240px;">
+        </div>
+        <a id="download-btn" href="/api/qr?text=https://vorobevaqa.ru" download="qrcode.png" class="btn btn-outline-secondary rounded-pill btn-sm">
+          <i class="fas fa-download me-1"></i> Скачать PNG
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{{end}}
+
+{{define "scripts_extra"}}
+<script>
+  function generateQR() {
+    const input = document.getElementById('url-input').value.trim();
+    if (!input) return;
+    const qrUrl = '/api/qr?text=' + encodeURIComponent(input);
+    document.getElementById('qr-image').src = qrUrl;
+    document.getElementById('download-btn').href = qrUrl;
+  }
+
+  document.querySelectorAll('.qr-preset-pill').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.getElementById('url-input').value = this.getAttribute('data-preset');
+      generateQR();
+    });
+  });
+</script>
+{{end}}

@@ -19,8 +19,11 @@ build/
 qr-service/
 
 # Repository documentation & CI/CD configs
-*.md
+README.md
 LICENSE
 .github/
 scripts/
 docker-stack.yml
+
+# Ensure Markdown course lessons are included
+!content/**/*.md

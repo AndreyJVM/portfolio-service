@@ -1,31 +1,39 @@
-# --- Этап 1: Сборка артефакта ---
-FROM maven:3.9-eclipse-temurin-21-alpine AS builder
+# --- Этап 1: Сборка статического бинарника Go ---
+FROM golang:1.26-alpine AS builder
 
-WORKDIR /build
+WORKDIR /app
 
-# Кэшируем зависимости (слой не пересобирается, пока не изменился pom.xml)
-COPY pom.xml .
-RUN mvn dependency:go-offline -B
+# Копируем описание модулей и вендорированные зависимости
+COPY go.mod go.sum ./
+COPY vendor ./vendor
 
-# Копируем исходники и собираем jar без запуска тестов (тесты гоняются в CI)
-COPY src ./src
-RUN mvn clean package -DskipTests -B
+# Копируем исходный код
+COPY cmd ./cmd
+COPY internal ./internal
 
-# --- Этап 2: Production runtime ---
-FROM eclipse-temurin:21-jre-alpine
+# Статическая компиляция бинарника со стриппингом отладочных символов (-w -s)
+RUN CGO_ENABLED=0 GOOS=linux go build -mod=vendor -ldflags="-w -s" -o /app/devops-platform ./cmd/server
 
-RUN apk add --no-cache curl && \
+# --- Этап 2: Минимальный production runtime ---
+FROM alpine:latest
+
+RUN apk add --no-cache ca-certificates curl tzdata && \
     addgroup -S appgroup && \
     adduser -S appuser -G appgroup
 
 WORKDIR /app
 
-COPY --from=builder --chown=appuser:appgroup /build/target/*.jar app.jar
+COPY --from=builder /app/devops-platform .
+COPY content ./content
+COPY web ./web
+
+RUN chown -R appuser:appgroup /app
 
 USER appuser
 
 EXPOSE 8080
 
-ENV JAVA_OPTS="-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0"
+HEALTHCHECK --interval=5s --timeout=3s --retries=3 \
+  CMD curl -f http://localhost:8080/health || exit 1
 
-ENTRYPOINT ["sh", "-c", "exec java $JAVA_OPTS -jar app.jar"]
+ENTRYPOINT ["./devops-platform"]

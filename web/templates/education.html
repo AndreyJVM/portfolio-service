@@ -1,0 +1,145 @@
+{{define "head_extra"}}
+<link rel="stylesheet" href="/css/pages/about.css">
+{{end}}
+
+{{define "content"}}
+<div class="container pt-4 pb-4 mb-4 border-bottom">
+  <div class="row align-items-center reveal">
+    <div class="col-lg-8">
+      <div class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill mb-3">
+        <i class="fas fa-graduation-cap me-1"></i> Профильное развитие
+      </div>
+      <h1 class="display-4 fw-bold mb-3">Квалификация и <span class="text-gradient">Опыт</span></h1>
+      <p class="lead text-body-secondary mb-0" style="max-width: 720px;">
+        Академическая база по информационным системам, сертификация по администрированию Linux (Слёрм), практические курсы по Docker, Ansible, CI/CD и разработке.
+      </p>
+    </div>
+    <div class="col-lg-4 text-start text-lg-end mt-4 mt-lg-0">
+      <div class="d-flex flex-wrap gap-2 justify-content-lg-end">
+        <a href="/api/pdf/resume?download=true" class="btn btn-primary rounded-pill shadow-sm" id="downloadPdfResumeBtn">
+          <i class="fas fa-file-pdf me-2"></i>Скачать PDF
+        </a>
+        <button class="btn btn-outline-primary rounded-pill" onclick="window.print()">
+          <i class="fas fa-print me-2"></i>Печать
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container py-4">
+  <!-- СЕКЦИЯ 1: ПРОФЕССИОНАЛЬНЫЕ СЕРТИФИКАЦИИ -->
+  <section class="mb-5">
+    <div class="d-flex align-items-center gap-2 mb-4">
+      <div class="p-2 rounded-3 bg-primary-subtle text-primary">
+        <i class="fas fa-certificate fa-lg"></i>
+      </div>
+      <div>
+        <h3 class="fw-bold mb-0">Сертификации и курсы повышения квалификации</h3>
+        <small class="text-body-secondary">Профильная подготовка в Linux-администрировании, контейнеризации и CI/CD</small>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <!-- Слёрм: Linux -->
+      <div class="col-md-6 col-lg-4 reveal">
+        <div class="card cert-card h-100 p-4 border-0 shadow-sm rounded-4 d-flex flex-column cursor-pointer"
+             onclick="openCertModal('/images/certificates/slurm-linux.jpg', 'Слёрм: Администрирование Linux, Сертификация')">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div class="cert-icon-box bg-primary-subtle text-primary">
+              <i class="fab fa-linux fa-2x"></i>
+            </div>
+            <div class="text-end">
+              <span class="badge bg-primary">Linux Admin</span>
+              <div class="text-body-secondary small mt-1">30.12.2025</div>
+            </div>
+          </div>
+          <h5 class="fw-bold mb-1">Слёрм: Администрирование Linux</h5>
+          <div class="text-primary small fw-semibold mb-2">Слёрм &bull; Итоговая сертификация</div>
+          <p class="text-body-secondary small flex-grow-1 mb-3">
+            Системное администрирование: управление пользователями, правами доступа, systemd, дисками, процессами, сетью и базовой безопасностью Linux.
+          </p>
+          <button type="button" class="btn btn-outline-primary btn-sm rounded-pill w-100 mt-auto">
+            <i class="fas fa-expand me-1"></i> Посмотреть сертификат
+          </button>
+        </div>
+      </div>
+
+      <!-- PurpleSchool: Docker + Ansible Swarm -->
+      <div class="col-md-6 col-lg-4 reveal">
+        <div class="card cert-card h-100 p-4 border-0 shadow-sm rounded-4 d-flex flex-column cursor-pointer"
+             onclick="openCertModal('/images/certificates/purple-docker.jpg', 'PurpleSchool: Docker, Ansible, Swarm')">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div class="cert-icon-box bg-primary-subtle text-primary">
+              <i class="fab fa-docker fa-2x"></i>
+            </div>
+            <div class="text-end">
+              <span class="badge bg-primary">DevOps & Swarm</span>
+              <div class="text-body-secondary small mt-1">2025</div>
+            </div>
+          </div>
+          <h5 class="fw-bold mb-1">Docker, Swarm & Ansible</h5>
+          <div class="text-primary small fw-semibold mb-2">PurpleSchool &bull; Курс повышения квалификации</div>
+          <p class="text-body-secondary small flex-grow-1 mb-3">
+            Оркестрация в Docker Swarm, написание ролей Ansible, лимиты памяти/CPU, reverse proxy Nginx и автоматизация деплоя.
+          </p>
+          <button type="button" class="btn btn-outline-primary btn-sm rounded-pill w-100 mt-auto">
+            <i class="fas fa-expand me-1"></i> Посмотреть сертификат
+          </button>
+        </div>
+      </div>
+
+      <!-- Академическое образование -->
+      <div class="col-md-6 col-lg-4 reveal">
+        <div class="card cert-card h-100 p-4 border-0 shadow-sm rounded-4 d-flex flex-column">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div class="cert-icon-box bg-primary-subtle text-primary">
+              <i class="fas fa-university fa-2x"></i>
+            </div>
+            <div class="text-end">
+              <span class="badge bg-success">Высшее</span>
+              <div class="text-body-secondary small mt-1">Диплом</div>
+            </div>
+          </div>
+          <h5 class="fw-bold mb-1">Информационные системы</h5>
+          <div class="text-primary small fw-semibold mb-2">Государственный университет</div>
+          <p class="text-body-secondary small flex-grow-1 mb-3">
+            Проектирование информационных систем, базы данных, вычислительные сети и алгоритмы.
+          </p>
+          <span class="badge bg-body-secondary text-body-secondary border mt-auto py-2">
+            <i class="fas fa-check-circle text-success me-1"></i> Диплом подтвержден
+          </span>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- Модальное окно просмотра сертификата -->
+<div class="modal fade" id="certModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content rounded-4 border shadow-lg">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title fw-bold" id="certModalTitle">Сертификат</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-center p-3">
+        <img id="certModalImg" src="" alt="Сертификат" class="img-fluid rounded-3 border shadow-sm">
+      </div>
+    </div>
+  </div>
+</div>
+{{end}}
+
+{{define "scripts_extra"}}
+<script>
+  function openCertModal(imageSrc, title) {
+    const modalEl = document.getElementById('certModal');
+    if (!modalEl) return;
+    document.getElementById('certModalImg').src = imageSrc;
+    document.getElementById('certModalTitle').textContent = title;
+    const modal = new bootstrap.Modal(modalEl);
+    modal.show();
+  }
+</script>
+{{end}}

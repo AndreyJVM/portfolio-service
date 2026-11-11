@@ -1,22 +1,21 @@
 services:
-  # ========== JAVA PORTFOLIO APP ==========
+  # ========== DEVOPS PLATFORM (GOLANG BACKEND) ==========
   app:
     image: andreyvorobevaqa/portfolio-service:latest
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
     environment:
-      SPRING_PROFILES_ACTIVE: prod
       APP_BASE_URL: ${APP_BASE_URL:-https://vorobevaqa.ru}
-      JAVA_OPTS: "-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -Xms128m"
+      PORT: "8080"
     deploy:
       resources:
         limits:
-          cpus: "1.0"
-          memory: 512M
+          cpus: "0.5"
+          memory: 128M
         reservations:
-          cpus: "0.2"
-          memory: 256M
+          cpus: "0.05"
+          memory: 32M
     logging:
       driver: "json-file"
       options:
@@ -25,11 +24,11 @@ services:
     networks:
       - app-network
     healthcheck:
-      test: [ "CMD-SHELL", "curl -f http://localhost:8080/actuator/health || exit 1" ]
+      test: [ "CMD-SHELL", "curl -f http://localhost:8080/health || exit 1" ]
       interval: 5s
       timeout: 3s
-      retries: 6
-      start_period: 15s
+      retries: 4
+      start_period: 3s
 
   # ========== GO QR-CODE MICROSERVICE ==========
   qr-service:

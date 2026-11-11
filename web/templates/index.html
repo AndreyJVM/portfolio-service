@@ -1,0 +1,177 @@
+{{define "head_extra"}}
+<link rel="stylesheet" href="/css/pages/index.css">
+{{end}}
+
+{{define "content"}}
+<div class="container py-4">
+  <!-- ========================================== -->
+  <!-- HERO SECTION                               -->
+  <!-- ========================================== -->
+  <div class="row align-items-center py-5 mb-5 reveal position-relative">
+    <div class="hero-blob hero-blob-1"></div>
+    <div class="hero-blob hero-blob-2"></div>
+
+    <div class="col-lg-8 text-center text-lg-start position-relative z-1">
+      <div class="d-flex flex-wrap gap-2 justify-content-center justify-content-lg-start align-items-center mb-3">
+        <div class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill">
+          <i class="fas fa-terminal me-1"></i> DevOps & Linux Engineer
+        </div>
+        <a href="/mustang" class="mustang-hero-badge badge text-decoration-none px-3 py-2 rounded-pill d-inline-flex align-items-center">
+          <span class="badge-fire-dot me-2"></span>
+          <span class="text-body-emphasis fw-semibold me-1">Сбор на мечту:</span>
+          <span class="text-danger fw-bold">Shelby GT500</span>
+          <i class="fas fa-arrow-right ms-2 text-danger small"></i>
+        </a>
+      </div>
+
+      <h1 class="display-4 fw-bold mb-3">
+        Привет, я <span class="text-gradient">Андрей Воробьев</span>
+      </h1>
+      <p class="lead text-body-secondary mb-4" style="max-width: 650px;">
+        Инженер по инфраструктуре Linux, Docker и автоматизации CI/CD. Создатель открытой образовательной платформы <strong>DevOps Lab</strong> и практических руководств по системному инжинирингу на Go.
+      </p>
+
+      <div class="d-flex flex-wrap gap-3 justify-content-center justify-content-lg-start">
+        <a href="/courses" class="btn btn-primary btn-lg px-4 shadow-sm rounded-pill">
+          <i class="fas fa-graduation-cap me-2"></i>Изучать DevOps
+        </a>
+        <a href="/projects" class="btn btn-outline-primary btn-lg px-4 shadow-sm rounded-pill">
+          <i class="fas fa-layer-group me-2"></i>Мои проекты
+        </a>
+        <a href="https://t.me/AndreyAQA" target="_blank" rel="noopener noreferrer" class="btn btn-outline-secondary btn-lg px-4 rounded-pill">
+          <i class="fab fa-telegram me-2"></i>Telegram
+        </a>
+      </div>
+    </div>
+
+    <div class="col-lg-4 text-center mt-5 mt-lg-0 position-relative z-1">
+      <div class="avatar-wrapper">
+        <div class="avatar-placeholder rounded-circle d-inline-flex align-items-center justify-content-center p-1">
+          <img src="/images/avatar.jpg" alt="Андрей Воробьев" class="rounded-circle img-fluid avatar-image">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- FOCUS BANNER: ОБУЧАЮЩИЕ ТРЕКИ И ПЛАТФОРМА   -->
+  <!-- ========================================== -->
+  <div class="focus-banner rounded-4 p-4 p-md-5 mb-5 reveal reveal-delay-100">
+    <div class="row align-items-center">
+      <div class="col-md-8">
+        <div class="badge bg-primary text-white px-3 py-1 rounded-pill mb-2">Бесплатные материалы</div>
+        <h4 class="fw-bold mb-2">DevOps Lab: Практическая база знаний</h4>
+        <p class="text-body-secondary mb-0">
+          Интерактивные руководства по Linux, оптимизации Dockerfile, настройке systemd, написанию ролей Ansible и проектированию Zero-Downtime пайплайнов на VDS.
+        </p>
+      </div>
+      <div class="col-md-4 text-start text-md-end mt-4 mt-md-0">
+        <a href="/courses" class="btn btn-primary rounded-pill px-4 shadow-sm">
+          <i class="fas fa-book-open me-2"></i>Перейти к урокам
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- КУРСЫ ВИТРИНА                               -->
+  <!-- ========================================== -->
+  <div class="d-flex align-items-center justify-content-between mb-4 reveal">
+    <div class="d-flex align-items-center gap-2">
+      <div class="p-2 rounded-3 bg-primary-subtle text-primary">
+        <i class="fas fa-cubes fa-lg"></i>
+      </div>
+      <h3 class="fw-bold mb-0">Популярные направления</h3>
+    </div>
+    <a href="/courses" class="btn btn-sm btn-outline-secondary rounded-pill">Все треки &rarr;</a>
+  </div>
+
+  <div class="row g-4 mb-5">
+    {{range .FeaturedCourses}}
+    <div class="col-lg-6 reveal">
+      <div class="card h-100 border rounded-4 p-4 shadow-sm bento-card">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <div class="feature-icon-wrapper rounded-3 p-3 text-white" style="background-color: {{.Color}};">
+            <i class="{{.Icon}} fa-2x"></i>
+          </div>
+          <span class="badge bg-body-secondary text-body-secondary border">{{.Level}}</span>
+        </div>
+        <h5 class="fw-bold mb-2">{{.Title}}</h5>
+        <p class="text-body-secondary small flex-grow-1">{{.Description}}</p>
+        <div class="d-flex align-items-center justify-content-between pt-3 border-top">
+          <span class="small text-muted"><i class="fas fa-file-lines me-1"></i>{{.LessonCount}} уроков</span>
+          <a href="/courses/{{.Slug}}" class="btn btn-sm btn-outline-primary rounded-pill px-3">
+            Открыть <i class="fas fa-arrow-right ms-1"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+    {{end}}
+  </div>
+
+  <!-- ========================================== -->
+  <!-- СТЕК И КОМПЕТЕНЦИИ                          -->
+  <!-- ========================================== -->
+  <div class="d-flex align-items-center gap-2 mb-4 reveal">
+    <div class="p-2 rounded-3 bg-primary-subtle text-primary">
+      <i class="fas fa-screwdriver-wrench fa-lg"></i>
+    </div>
+    <h3 class="fw-bold mb-0">Стек и технологии платформы</h3>
+  </div>
+
+  <div class="row g-4 mb-5">
+    <div class="col-lg-4 col-md-6 reveal reveal-delay-100">
+      <div class="bento-card h-100 p-4 rounded-4 border shadow-sm">
+        <div class="feature-icon-wrapper bg-primary-subtle text-primary mb-3">
+          <i class="fab fa-linux fa-2x"></i>
+        </div>
+        <h5 class="fw-bold mb-2">Linux & Серверы</h5>
+        <p class="text-body-secondary small mb-4 flex-grow-1">
+          Администрирование Ubuntu/Debian, управление службами systemd и cron, автоматизация на Bash, безопасность хоста (SSH, UFW, Fail2ban).
+        </p>
+        <div class="d-flex flex-wrap gap-2">
+          <span class="badge tech-badge"><i class="fab fa-linux text-warning me-1"></i>Linux</span>
+          <span class="badge tech-badge"><i class="fas fa-terminal text-success me-1"></i>Bash</span>
+          <span class="badge tech-badge">Systemd</span>
+          <span class="badge tech-badge">SSH / UFW</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4 col-md-6 reveal reveal-delay-200">
+      <div class="bento-card h-100 p-4 rounded-4 border shadow-sm">
+        <div class="feature-icon-wrapper bg-primary-subtle text-primary mb-3">
+          <i class="fab fa-docker fa-2x"></i>
+        </div>
+        <h5 class="fw-bold mb-2">Контейнеризация и Nginx</h5>
+        <p class="text-body-secondary small mb-4 flex-grow-1">
+          Многоэтапные Dockerfile, изоляция ресурсов (cgroups), оркестрация в Docker Compose, Nginx Gateway (SSL, HTTP/2, Let's Encrypt).
+        </p>
+        <div class="d-flex flex-wrap gap-2">
+          <span class="badge tech-badge"><i class="fab fa-docker text-primary me-1"></i>Docker</span>
+          <span class="badge tech-badge">Compose</span>
+          <span class="badge tech-badge">Nginx Proxy</span>
+          <span class="badge tech-badge">Golang</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4 col-md-12 reveal reveal-delay-300">
+      <div class="bento-card h-100 p-4 rounded-4 border shadow-sm">
+        <div class="feature-icon-wrapper bg-primary-subtle text-primary mb-3">
+          <i class="fas fa-infinity fa-2x"></i>
+        </div>
+        <h5 class="fw-bold mb-2">CI/CD & Автоматизация</h5>
+        <p class="text-body-secondary small mb-4 flex-grow-1">
+          Пайплайны в GitHub Actions и GitLab CI, Zero-Downtime Blue-Green деплой на VDS, роли Ansible для декларативной настройки.
+        </p>
+        <div class="d-flex flex-wrap gap-2">
+          <span class="badge tech-badge"><i class="fab fa-github text-body me-1"></i>GitHub Actions</span>
+          <span class="badge tech-badge"><i class="fas fa-network-wired text-danger me-1"></i>Ansible</span>
+          <span class="badge tech-badge">Blue-Green</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{{end}}

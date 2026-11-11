@@ -4,23 +4,30 @@
   <a href="https://galaxy.ansible.com/ui/standalone/namespaces/24255/"><img src="https://img.shields.io/badge/Ansible-Galaxy_Roles-EE0000?logo=ansible&logoColor=white" alt="Ansible"></a>
   <a href="https://github.com/AndreyJVM"><img src="https://img.shields.io/badge/CI%2FCD-GitHub_Actions_%26_GitLab-2088FF?logo=githubactions&logoColor=white" alt="CI/CD"></a>
   <a href="https://nginx.org/"><img src="https://img.shields.io/badge/Nginx-API_Gateway_%26_SSL-009639?logo=nginx&logoColor=white" alt="Nginx"></a>
-  <a href="https://openjdk.org/projects/jdk/21/"><img src="https://img.shields.io/badge/Java-21-orange?logo=openjdk" alt="Java"></a>
-  <a href="https://go.dev/"><img src="https://img.shields.io/badge/Go-1.23_Microservices-00ADD8?logo=go" alt="Go"></a>
+  <a href="https://go.dev/"><img src="https://img.shields.io/badge/Go-1.26_Platform-00ADD8?logo=go&logoColor=white" alt="Go"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg" alt="License"></a>
 </p>
 
-Продакшн-платформа личного портфолио и сопутствующих сервисов с фокусом на **системное администрирование Linux, контейнеризацию в Docker, автоматизацию через Ansible и надежные CI/CD пайплайны**.
+# DevOps Lab & Platform • vorobevaqa.ru
 
-**Продакшн-сайт:** [vorobevaqa.ru](https://vorobevaqa.ru) · **Docker Hub:** [`andreyvorobevaqa`](https://hub.docker.com/repositories/andreyvorobevaqa) · **Ansible Galaxy:** [роли автоматизации](https://galaxy.ansible.com/ui/standalone/namespaces/24255/)
+Открытая интерактивная образовательная платформа по **DevOps, системному администрированию Linux, контейнеризации в Docker и автоматизации релизов**.
+
+Переписана с монолитной Java/Spring Boot архитектуры на высокопроизводительный, легковесный микростек на **Go (Golang)**:
+- 🚀 **Потребление RAM:** сократилось с ~450 МБ до **~13 МБ** (экономия >95% памяти на VDS);
+- ⚡ **Время холодного старта:** снизилось с ~15 секунд до **<5 миллисекунд**;
+- 📦 **Размер Docker-образа:** уменьшился с ~550 МБ до **~33 МБ**;
+- 📚 **Курсы как код (Courses as Code):** уроки хранятся в Git в Markdown-формате и компилируются на лету.
+
+**Продакшн-платформа:** [vorobevaqa.ru](https://vorobevaqa.ru) · **Docker Hub:** [`andreyvorobevaqa`](https://hub.docker.com/repositories/andreyvorobevaqa) · **Ansible Galaxy:** [роли автоматизации](https://galaxy.ansible.com/ui/standalone/namespaces/24255/)
 
 
 ## Содержание
 
 - [Инфраструктура и Архитектура](#инфраструктура-и-архитектура)
-- [Ключевые компетенции и решения](#ключевые-компетенции-и-решения)
+- [Образовательные треки (Курсы)](#образовательные-треки-курсы)
 - [DevOps & Hardening контейнеров](#devops--hardening-контейнеров)
-- [CI/CD & Автоматизация деплоя](#cicd--автоматизация-деплоя)
-- [Тестирование и Надежность](#тестирование-и-надежность)
+- [CI/CD & Бесперебойный Blue-Green деплой](#cicd--бесперебойный-blue-green-деплой)
+- [Тестирование и локальный запуск](#тестирование-и-локальный-запуск)
 - [Структура проекта](#структура-проекта)
 - [Автор и Контакты](#автор-и-контакты)
 - [Лицензия](#лицензия)
@@ -30,10 +37,10 @@
 
 ```mermaid
 flowchart TD
-    Client["Внешний клиент / Браузер"] -->|HTTPS :443 / HTTP :80| Host["Linux VDS (Ubuntu 24.04 LTS)<br/>UFW Firewall • SSH ed25519 • Fail2ban • logrotate"]
+    Client["Внешний клиент / Студент"] -->|HTTPS :443 / HTTP :80| Host["Linux VDS (Ubuntu 24.04 LTS)<br/>UFW Firewall • SSH ed25519 • Fail2ban • logrotate"]
     Host --> Nginx["Nginx Reverse Proxy & API Gateway<br/>Терминация SSL • HTTP/2 • Gzip • Fallback 50x"]
-    Nginx -->|/api/qr| GoQR["Go QR Microservice (:8081)<br/>Scratch-образ ~10MB • cgroups квоты"]
-    Nginx -->|/| JavaApp["Java Portfolio Service (:8080)<br/>Spring Boot 3.4 • Multi-stage Docker"]
+    Nginx -->|/courses, /, /projects, /mustang, /api/*| GoApp["Go DevOps Platform (:8080)<br/>Chi Router • Goldmark Markdown • RAM ~13MB"]
+    Nginx -->|/api/qr fallback| GoQR["Go QR Microservice (:8081)<br/>Scratch-образ ~10MB • cgroups квоты"]
 ```
 
 | Уровень | Технологии & Решения |
@@ -41,49 +48,49 @@ flowchart TD
 | **Хост и ОС** | Linux (Ubuntu 24.04 LTS), Bash-скрипты автоматизации, systemd, cron, ротация logrotate |
 | **Сетевая безопасность** | UFW firewall (ограничение SSH, 80/443), Fail2ban от брутфорса, SSH-аутентификация по ключам |
 | **Шлюз и Прокси** | Nginx (Reverse Proxy, API Gateway, SSL Let's Encrypt / Certbot, HTTP/2, Gzip, кастомные 50x fallback) |
-| **Контейнеризация** | Docker, Docker Compose, Docker Swarm (в процессе внедрения), Docker Hub Registry |
+| **Контейнеризация** | Docker, Docker Compose, Docker Hub Registry, Alpine Linux runtime |
+| **Бэкенд платформы** | Go 1.26 (`go-chi/chi/v5`, `yuin/goldmark`, `skip2/go-qrcode`), статическая сборка со стриппингом отладочных символов |
 | **IaC & Оркестрация** | Ansible (идемпотентные плейбуки и роли в Ansible Galaxy), Blue-Green деплой скриптом `deploy.sh` |
-| **CI/CD** | GitHub Actions, GitLab CI (мультисервисная сборка, тесты, сборка образов, SSH деплой с авто-откатом) |
-| **Бэкенд приложения** | Java 21, Spring Boot 3.4, Spring MVC, Thymeleaf, REST API, Caffeine Cache |
-| **Микросервисы утилит** | Go 1.23 (`skip2/go-qrcode`), минималистичный scratch-образ (~10 МБ, <15мс) |
-| **Контроль качества & QA** | Allure 2, Selenide 7, REST Assured, JMeter 5.5, Spotless (Google Java Style), Checkstyle |
+| **CI/CD** | GitHub Actions (параллельная сборка, BuildKit gha-кэш, Zero-Downtime деплой с авто-откатом) |
 
 
-## Ключевые компетенции и решения
+## Образовательные треки (Курсы)
 
-- **Безопасность и системный тюнинг хоста:** Настроенный файрвол UFW, изоляция портов (контейнеры общаются только во внутренней `app-network` без экспонирования лишних портов наружу).
-- **Hardening контейнеров:** Флаг `security_opt: [no-new-privileges:true]`, запуск без привилегий, in-binary healthchecks без сторонних утилит (`curl`/`wget`) в scratch-контейнерах, жесткие квоты памяти `cgroups` (`limits: 64M`, `reservations: 16M`).
-- **Защита от переполнения диска:** Строгая политика ротации логов `json-file` (`max-size: 10m`, `max-file: 3-5`) на всех контейнерах.
-- **Отказоустойчивый Blue-Green деплой:** Скрипт `scripts/deploy.sh` в строгом режиме `set -euo pipefail` с параллельным подъемом контейнера на временном порту, прогревом healthcheck и автоматическим `rollback` к предыдущей рабочей версии в случае ошибки.
-- **Инфраструктурный код (IaC):** Публичные роли в Ansible Galaxy для автоматической настройки хостов и окружения.
+1. 🐧 **Системное администрирование Linux** (`/courses/linux`):
+   - Права доступа (POSIX, SUID, SGID, Sticky bit), управление юнитами и таймерами systemd;
+   - Сетевой стек Linux (iproute2, ss, iptables, ufw), анализ трафика и сокетов.
+2. 🐳 **Контейнеризация и Docker** (`/courses/docker`):
+   - Многоэтапные сборки (Multi-stage), Linux cgroups v2, неймспейсы (PID/NET/MNT);
+   - Docker Compose v2, внутренняя DNS-маршрутизация и изоляция bridge-сетей.
 
 
 ## DevOps & Hardening контейнеров
 
 Стек развертывается через `docker-compose.yml` в соответствии с production-стандартами:
 
-1. **In-Binary Healthchecks в Scratch-образах:**
-   В минимальных scratch-образах нет shell (`/bin/sh`), утилит `curl` или `wget`. Проверка здоровья встроена напрямую в бинарники Go:
+1. **Минимальные права и non-root пользователь:**
+   Контейнер работает от непривилегированного пользователя `appuser:appgroup` с `security_opt: [no-new-privileges:true]`.
+2. **Встроенный Healthcheck:**
    ```yaml
    healthcheck:
-     test: [ "CMD", "/app/qr-service", "healthcheck" ]
+     test: [ "CMD-SHELL", "curl -f http://localhost:8080/health || exit 1" ]
      interval: 5s
-     timeout: 2s
-     retries: 3
-     start_period: 2s
+     timeout: 3s
+     retries: 4
+     start_period: 3s
    ```
-2. **Лимиты ресурсов (cgroups):**
+3. **Лимиты ресурсов (cgroups):**
    ```yaml
    deploy:
      resources:
        limits:
          cpus: "0.5"
-         memory: 64M
+         memory: 128M
        reservations:
          cpus: "0.05"
-         memory: 16M
+         memory: 32M
    ```
-3. **Ротация логов (Log Rotation):**
+4. **Ротация логов (Log Rotation):**
    ```yaml
    logging:
      driver: "json-file"
@@ -93,33 +100,34 @@ flowchart TD
    ```
 
 
-## CI/CD & Автоматизация деплоя
+## CI/CD & Бесперебойный Blue-Green деплой
 
 ```mermaid
 flowchart LR
-    A[Git Push] --> B[Build & Test<br/>Java 21 & Go]
-    B --> C[Docker Build<br/>App + QR]
-    C --> D[Push to Docker Hub]
-    D --> E[SSH Deploy on VDS]
-    E --> F[scripts/deploy.sh<br/>Blue-Green & Auto-Rollback]
+    A[Git Push master] --> B[detect-changes<br/>Paths Filter]
+    B --> C[Build & Test Go<br/>100% Passing]
+    C --> D[Docker Build & Push<br/>BuildKit Cache]
+    D --> E[Zero-Downtime Deploy VDS<br/>scripts/deploy.sh]
+    E --> F[Healthcheck Verify<br/>Nginx Reload & Prune]
 ```
 
-1. **Сборка и валидация:** Проверка стилей Spotless/Checkstyle, прогон 135+ тестов (Unit, REST API, UI).
-2. **Публикация артефактов:** Сборка и пуш версионированных образов в реестр Docker Hub.
-3. **Бесперебойное обновление:** Доставка на VDS и запуск Blue-Green ротации с контролем `condition: service_healthy`.
+1. **Path-based trigger:** Сборка запускается только для изменившихся компонентов (Go платформа, QR-сервис, конфигурация деплоя).
+2. **Concurrency lock:** Группа `production-deploy` блокирует одновременные гонки релизов.
+3. **Бесперебойное обновление:** `scripts/deploy.sh` запускает новый инстанс параллельно (`scale app=2`), ждет `healthy`, перезагружает Nginx и гасит старый инстанс. В случае сбоя срабатывает мгновенный автоматический откат (`rollback`).
 
 
-## Тестирование и Надежность
+## Тестирование и локальный запуск
 
 ```bash
-# Запуск полного сьюта Java тестов (Unit + API + E2E UI)
-mvn clean test
+# Запуск тестов платформы на Go
+go test -v ./...
 
-# Запуск тестов Go микросервиса QR
-cd qr-service && go test -v ./... && cd ..
+# Локальный запуск приложения Go
+go run cmd/server/main.go
 
-# Проверка стиля кода
-mvn spotless:check
+# Сборка и запуск в Docker
+docker build -t andreyvorobevaqa/portfolio-service:test .
+docker run -p 8080:8080 andreyvorobevaqa/portfolio-service:test
 ```
 
 
@@ -127,20 +135,24 @@ mvn spotless:check
 
 ```
 portfolio/
-├── qr-service/              # Go QR Microservice (:8081, Scratch ~10MB)
-├── src/
-│   ├── main/
-│   │   ├── java/            # Исходный код Java приложения (Spring Boot 3.4)
-│   │   └── resources/       # Шаблоны Thymeleaf, статика, конфигурации, PDF резюме
-│   └── test/                # 135+ автоматизированных тестов (Unit, API, E2E Selenide, Allure)
+├── cmd/server/main.go       # Точка входа веб-сервера Go (Chi роутер, Graceful shutdown)
+├── content/courses/         # Образовательные треки и уроки в Markdown (Linux, Docker)
+├── internal/
+│   ├── config/              # Конфигурация окружения
+│   ├── handler/             # HTTP-обработчики страниц и REST API
+│   ├── model/               # Модели данных (Courses, Lessons, Integrations)
+│   └── service/             # Бизнес-логика каталога и интеграций (GitHub, DockerHub, Ansible)
+├── web/
+│   ├── static/              # CSS, JS, изображения сертификатов, PDF резюме
+│   └── templates/           # HTML-шаблоны Go (layout, index, courses, projects, mustang)
 ├── nginx/
-│   ├── nginx.conf           # Конфигурация API Gateway, SSL и роутинга
+│   ├── nginx.conf           # Конфигурация Reverse Proxy, SSL Let's Encrypt и роутинга
 │   └── 50x.html             # Кастомная страница аварийных ошибок
 ├── scripts/
 │   └── deploy.sh            # Blue-Green развертывание с авто-откатом (Rollback)
 ├── docker-compose.yml       # Конфигурация продакшн-стека микросервисов
-├── Dockerfile               # Multi-stage сборка Java-приложения
-├── pom.xml                  # Конфигурация Maven
+├── Dockerfile               # Multi-stage сборка статического бинарника Go на Alpine
+├── go.mod / go.sum          # Модули Go 1.26
 └── .github/workflows/       # Пайплайн GitHub Actions
 ```
 

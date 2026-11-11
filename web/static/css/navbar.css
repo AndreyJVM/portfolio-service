@@ -1,0 +1,75 @@
+﻿.navbar {
+  background-color: var(--navbar-bg);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--navbar-border);
+  padding: 0.75rem 0;
+  transition: background-color 0.25s ease, border-color 0.25s ease;
+}
+
+.navbar-brand {
+  text-decoration: none;
+  padding: 0;
+}
+
+.navbar-brand-logo {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: block;
+  transition: transform 0.25s ease, filter 0.25s ease;
+}
+
+.navbar-brand:hover .navbar-brand-logo {
+  transform: scale(1.08);
+  filter: drop-shadow(0 0 10px rgba(34, 197, 94, 0.45));
+}
+
+.navbar-brand .brand-text {
+  font-weight: 700;
+  font-size: 1.35rem;
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.5px;
+}
+
+.navbar .nav-link {
+  color: var(--text-muted) !important;
+  font-weight: 500;
+  padding: 0.5rem 1rem !important;
+  border-radius: 8px;
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.navbar .nav-link:hover {
+  color: var(--text-color) !important;
+  background-color: rgba(var(--bs-primary-rgb), 0.08);
+}
+
+.navbar .nav-link.active {
+  color: var(--accent-color) !important;
+  font-weight: 600;
+}
+
+/* Кнопка переключения темы */
+.theme-toggle {
+  background: transparent;
+  border: 1px solid var(--card-border);
+  color: var(--text-color);
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.theme-toggle:hover {
+  background-color: rgba(var(--bs-primary-rgb), 0.1);
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+  transform: rotate(15deg);
+}
