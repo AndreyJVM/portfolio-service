@@ -29,15 +29,15 @@ type Course struct {
 
 // Lesson представляет отдельный урок курса.
 type Lesson struct {
-	ID          string   `json:"id"`
-	CourseSlug  string   `json:"courseSlug"`
-	Slug        string   `json:"slug"`
-	Title       string   `json:"title"`
-	Order       int      `json:"order"`
-	Duration    string   `json:"duration"`
-	Description string   `json:"description"`
-	ContentHTML string   `json:"contentHtml,omitempty"`
-	Quiz        *Quiz    `json:"quiz,omitempty"`
+	ID          string `json:"id"`
+	CourseSlug  string `json:"courseSlug"`
+	Slug        string `json:"slug"`
+	Title       string `json:"title"`
+	Order       int    `json:"order"`
+	Duration    string `json:"duration"`
+	Description string `json:"description"`
+	ContentHTML string `json:"contentHtml,omitempty"`
+	Quiz        *Quiz  `json:"quiz,omitempty"`
 }
 
 // SearchItem представляет элемент поискового индекса для быстрого поиска.
@@ -91,7 +91,7 @@ type AnsibleRoleDto struct {
 
 // ProjectsPageData объединяет все внешние интеграции.
 type ProjectsPageData struct {
-	GitHubRepos []GitHubRepoDto
-	DockerRepos []DockerHubRepoDto
+	GitHubRepos  []GitHubRepoDto
+	DockerRepos  []DockerHubRepoDto
 	AnsibleRoles []AnsibleRoleDto
 }

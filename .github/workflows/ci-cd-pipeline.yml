@@ -68,6 +68,16 @@ jobs:
           go-version-file: 'go.mod'
           cache-dependency-path: go.sum
 
+      - name: Verify Code Style (gofmt & go vet)
+        run: |
+          UNFORMATTED=$(gofmt -l cmd/ internal/)
+          if [ -n "$UNFORMATTED" ]; then
+            echo "❌ The following files are not formatted with gofmt:"
+            echo "$UNFORMATTED"
+            exit 1
+          fi
+          go vet ./...
+
       - name: Run Go tests
         run: go test -v ./...
 
@@ -106,6 +116,16 @@ jobs:
         with:
           go-version-file: 'qr-service/go.mod'
           cache-dependency-path: qr-service/go.sum
+
+      - name: Verify Code Style (gofmt & go vet)
+        run: |
+          UNFORMATTED=$(gofmt -l qr-service/)
+          if [ -n "$UNFORMATTED" ]; then
+            echo "❌ The following files are not formatted with gofmt:"
+            echo "$UNFORMATTED"
+            exit 1
+          fi
+          cd qr-service && go vet ./...
 
       - name: Test Go QR Service
         run: cd qr-service && go test -v ./...

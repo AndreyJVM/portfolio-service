@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   test:
-    name: Run Tests
+    name: Run Tests & Style Checks
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -23,6 +23,21 @@ jobs:
           go-version-file: 'go.mod'
           cache-dependency-path: go.sum
 
+      - name: Verify Code Style (gofmt)
+        run: |
+          UNFORMATTED=$(gofmt -l cmd/ internal/ qr-service/)
+          if [ -n "$UNFORMATTED" ]; then
+            echo "❌ The following files are not formatted with gofmt:"
+            echo "$UNFORMATTED"
+            exit 1
+          fi
+          echo "✅ All Go files conform to gofmt standards."
+
+      - name: Run go vet
+        run: |
+          go vet ./...
+          (cd qr-service && go vet ./...)
+
       - name: Run Platform Tests
         run: go test -v -race ./...
 
@@ -33,4 +48,4 @@ jobs:
           cache-dependency-path: qr-service/go.sum
 
       - name: Run QR Service Tests
-        run: cd qr-service && go test -v ./...
+        run: cd qr-service && go test -v -race ./...
