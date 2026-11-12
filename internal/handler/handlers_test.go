@@ -9,6 +9,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"ru.vorobevaqa/devops-platform/internal/model"
 	"ru.vorobevaqa/devops-platform/internal/service"
 )
 
@@ -47,6 +48,7 @@ func setupTestRouter() *chi.Mux {
 	r.Get("/about", h.RedirectAbout)
 	r.Get("/qr", h.QRPage)
 	r.Get("/mustang", h.Mustang)
+	r.Get("/api/search", h.SearchAPI)
 	r.Get("/api/qr", h.GenerateQREndpoint)
 	r.Post("/api/qr", h.GenerateQREndpoint)
 	r.Get("/api/pdf/resume", h.ResumePDF)
@@ -67,6 +69,8 @@ func TestHandlers(t *testing.T) {
 		{"HEAD /", "HEAD", "/", http.StatusOK},
 		{"GET /robots.txt", "GET", "/robots.txt", http.StatusOK},
 		{"GET /sitemap.xml", "GET", "/sitemap.xml", http.StatusOK},
+		{"GET /api/search", "GET", "/api/search", http.StatusOK},
+		{"GET /api/search?q=docker", "GET", "/api/search?q=docker", http.StatusOK},
 		{"GET /courses", "GET", "/courses", http.StatusOK},
 		{"HEAD /courses", "HEAD", "/courses", http.StatusOK},
 		{"GET /courses/linux", "GET", "/courses/linux", http.StatusOK},
@@ -98,6 +102,57 @@ func TestHandlers(t *testing.T) {
 				t.Errorf("%s: ожидался статус %d, получен %d", tt.url, tt.expectedStatus, w.Code)
 			}
 		})
+	}
+}
+
+func TestSearchAPI(t *testing.T) {
+	r := setupTestRouter()
+
+	// 1. Получение полного индекса поиска
+	req := httptest.NewRequest("GET", "/api/search", nil)
+	w := httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("Ожидался статус 200, получен %d", w.Code)
+	}
+
+	var items []model.SearchItem
+	if err := json.NewDecoder(w.Body).Decode(&items); err != nil {
+		t.Fatalf("Ошибка декодирования search JSON: %v", err)
+	}
+
+	if len(items) == 0 {
+		t.Errorf("Ожидался непустой индекс поиска")
+	}
+
+	// 2. Серверная фильтрация по запросу "docker"
+	reqQuery := httptest.NewRequest("GET", "/api/search?q=docker", nil)
+	wQuery := httptest.NewRecorder()
+	r.ServeHTTP(wQuery, reqQuery)
+
+	if wQuery.Code != http.StatusOK {
+		t.Fatalf("Ожидался статус 200 для ?q=docker, получен %d", wQuery.Code)
+	}
+
+	var queryItems []model.SearchItem
+	if err := json.NewDecoder(wQuery.Body).Decode(&queryItems); err != nil {
+		t.Fatalf("Ошибка декодирования отфильтрованного search JSON: %v", err)
+	}
+
+	if len(queryItems) == 0 {
+		t.Errorf("Ожидались результаты для запроса 'docker'")
+	}
+
+	// Проверяем, что во всех результатах есть упоминание docker
+	for _, it := range queryItems {
+		found := strings.Contains(strings.ToLower(it.Title), "docker") ||
+			strings.Contains(strings.ToLower(it.Description), "docker") ||
+			strings.Contains(strings.ToLower(it.Snippet), "docker") ||
+			strings.Contains(strings.ToLower(it.CourseTitle), "docker")
+		if !found {
+			t.Errorf("Элемент %s не соответствует запросу 'docker'", it.Title)
+		}
 	}
 }
 
@@ -201,6 +256,7 @@ func TestStaticAssets(t *testing.T) {
 		{"Themes CSS", "/css/themes.css", "text/css"},
 		{"Theme toggle JS", "/js/theme-toggle.js", "javascript"},
 		{"Learning progress JS", "/js/learning-progress.js", "javascript"},
+		{"Search JS", "/js/search.js", "javascript"},
 		{"Main JS", "/js/main.js", "javascript"},
 		{"About JS", "/js/pages/about.js", "javascript"},
 		{"Mustang JS", "/js/pages/mustang.js", "javascript"},
@@ -243,6 +299,9 @@ func TestLayoutIncludes(t *testing.T) {
 		"themeToggle",             // Кнопка переключения темы
 		"/js/theme-toggle.js",     // Скрипт переключения темы
 		"/js/learning-progress.js", // Скрипт учета прогресса обучения
+		"/js/search.js",            // Скрипт поиска
+		"searchModal",              // Модальное окно поиска
+		"searchTriggerSidebar",     // Кнопка поиска в сайдбаре
 		"/css/navbar.css",         // Стили боковой и верхней панели
 		"/css/themes.css",         // Стили ночной и дневной темы
 		"/css/main.css",           // Основные стили

@@ -40,6 +40,19 @@ type Lesson struct {
 	Quiz        *Quiz    `json:"quiz,omitempty"`
 }
 
+// SearchItem представляет элемент поискового индекса для быстрого поиска.
+type SearchItem struct {
+	Type        string   `json:"type"`        // "course" или "lesson"
+	Title       string   `json:"title"`       // Заголовок урока или курса
+	CourseTitle string   `json:"courseTitle"` // Название курса (для уроков)
+	CourseSlug  string   `json:"courseSlug"`  // Слаг курса
+	LessonSlug  string   `json:"lessonSlug"`  // Слаг урока (пустой для курса)
+	URL         string   `json:"url"`         // Относительный URL для перехода
+	Description string   `json:"description"` // Краткое описание или фрагмент текста
+	Tags        []string `json:"tags"`        // Теги технологий
+	Snippet     string   `json:"snippet"`     // Очищенный текстовый сниппет
+}
+
 // Quiz представляет интерактивный тест к уроку для самопроверки.
 type Quiz struct {
 	Question    string   `json:"question"`

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
 	"sort"
 	"strings"
 	"sync"
@@ -12,6 +13,7 @@ import (
 
 	"github.com/yuin/goldmark"
 	"github.com/yuin/goldmark/extension"
+	"github.com/yuin/goldmark/parser"
 	"github.com/yuin/goldmark/renderer/html"
 	"ru.vorobevaqa/devops-platform/internal/model"
 )
@@ -19,9 +21,11 @@ import (
 type CourseService struct {
 	contentDir  string
 	mdParser    goldmark.Markdown
-	lessonMu    sync.RWMutex
 	lessonCache map[string]*model.Lesson
+	lessonMu    sync.RWMutex
 }
+
+var mdTagRegex = regexp.MustCompile(`(?s)<[^>]+>|[#*` + "`" + `~_\[\]()-]`)
 
 func NewCourseService(contentDir string) *CourseService {
 	return &CourseService{
@@ -29,8 +33,12 @@ func NewCourseService(contentDir string) *CourseService {
 		lessonCache: make(map[string]*model.Lesson),
 		mdParser: goldmark.New(
 			goldmark.WithExtensions(extension.GFM),
+			goldmark.WithParserOptions(
+				parser.WithAutoHeadingID(),
+			),
 			goldmark.WithRendererOptions(
 				html.WithHardWraps(),
+				html.WithXHTML(),
 				html.WithUnsafe(),
 			),
 		),
@@ -58,30 +66,30 @@ func (s *CourseService) GetAllCourses() []model.Course {
 			Icon:        "fab fa-docker",
 			Color:       "#0284c7",
 			Level:       "Middle",
-			LessonCount: 2,
-			Description: "Многоэтапные сборки, оптимизация кэша слоев, изоляция cgroups, сети bridge/overlay, Docker Compose v2 и Swarm.",
-			Tags:        []string{"Docker", "Compose", "cgroups", "Multi-stage"},
+			LessonCount: 3,
+			Description: "Многоэтапная сборка (Multi-stage), оптимизация слоев, безопасность, cgroups, неймспейсы ядра и docker-compose оркестрация.",
+			Tags:        []string{"Docker", "Compose", "Containers", "DevOps", "Isolation"},
 		},
 		{
 			ID:          "ansible",
 			Slug:        "ansible",
-			Title:       "Ansible & Инфраструктура как код (IaC)",
+			Title:       "Ansible & Управление конфигурацией",
 			Icon:        "fas fa-network-wired",
 			Color:       "#dc2626",
-			Level:       "Middle / Senior",
-			LessonCount: 2,
-			Description: "Идемпотентные плейбуки, создание модульных ролей для Galaxy, шифрование с Ansible Vault, управление inventory.",
-			Tags:        []string{"Ansible", "IaC", "Galaxy", "YAML"},
+			Level:       "Middle",
+			LessonCount: 3,
+			Description: "Инфраструктура как код (IaC), декларативные плейбуки, роли, шаблонизация Jinja2, шифрование Ansible Vault и интеграция с CI/CD.",
+			Tags:        []string{"Ansible", "IaC", "Automation", "Galaxy", "YAML"},
 		},
 		{
 			ID:          "cicd",
 			Slug:        "cicd",
-			Title:       "CI/CD: GitHub Actions & GitLab",
+			Title:       "CI/CD: GitHub Actions & Деплой",
 			Icon:        "fas fa-infinity",
-			Color:       "#8b5cf6",
+			Color:       "#10b981",
 			Level:       "Middle / Senior",
-			LessonCount: 2,
-			Description: "Проектирование надежных пайплайнов, Blue-Green деплой без простоя, авто-откат (rollback) и проверка здоровья.",
+			LessonCount: 3,
+			Description: "Построение надежных конвейеров сборки, автотесты, публикация в Docker Hub, Zero-Downtime Blue-Green деплой на VDS хостинг.",
 			Tags:        []string{"CI/CD", "GitHub Actions", "GitLab CI", "Blue-Green"},
 		},
 	}
@@ -153,6 +161,62 @@ func (s *CourseService) GetLesson(courseSlug, lessonSlug string) (*model.Course,
 	s.lessonMu.Unlock()
 
 	return course, lesson, nil
+}
+
+// BuildSearchIndex создает плоский поисковый индекс по всем курсам и урокам базы знаний.
+func (s *CourseService) BuildSearchIndex() []model.SearchItem {
+	var index []model.SearchItem
+
+	courses := s.GetAllCourses()
+	for _, c := range courses {
+		// Добавляем карточку самого курса
+		index = append(index, model.SearchItem{
+			Type:        "course",
+			Title:       c.Title,
+			CourseTitle: c.Title,
+			CourseSlug:  c.Slug,
+			URL:         fmt.Sprintf("/courses/%s", c.Slug),
+			Description: c.Description,
+			Tags:        c.Tags,
+			Snippet:     c.Description,
+		})
+
+		// Загружаем все уроки курса
+		lessons, err := s.loadLessonsForCourse(c.Slug)
+		if err != nil {
+			continue
+		}
+
+		for _, l := range lessons {
+			lessonPath := filepath.Join(s.contentDir, c.Slug, l.Slug+".md")
+			rawBytes, err := os.ReadFile(lessonPath)
+			snippet := ""
+			if err == nil {
+				cleaned := mdTagRegex.ReplaceAllString(string(rawBytes), " ")
+				cleaned = strings.Join(strings.Fields(cleaned), " ")
+				if len(cleaned) > 200 {
+					cleaned = cleaned[:200] + "..."
+				}
+				snippet = cleaned
+			} else {
+				snippet = l.Description
+			}
+
+			index = append(index, model.SearchItem{
+				Type:        "lesson",
+				Title:       l.Title,
+				CourseTitle: c.Title,
+				CourseSlug:  c.Slug,
+				LessonSlug:  l.Slug,
+				URL:         fmt.Sprintf("/courses/%s/%s", c.Slug, l.Slug),
+				Description: l.Description,
+				Tags:        c.Tags,
+				Snippet:     snippet,
+			})
+		}
+	}
+
+	return index
 }
 
 func (s *CourseService) loadLessonsForCourse(courseSlug string) ([]model.Lesson, error) {

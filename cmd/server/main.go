@@ -68,6 +68,9 @@ func main() {
 	r.Get("/qr", h.QRPage)
 	r.Get("/mustang", h.Mustang)
 
+	// Полнотекстовый поиск по материалам и урокам
+	r.Get("/api/search", h.SearchAPI)
+
 	// API генерации QR-кодов (Go native engine)
 	r.Get("/api/qr", h.GenerateQREndpoint)
 	r.Post("/api/qr", h.GenerateQREndpoint)
