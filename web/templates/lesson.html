@@ -205,6 +205,58 @@
             <div class="quiz-feedback d-none"></div>
           </div>
 
+          {{else if or (eq .Lesson.Slug "04-bash-automation-and-scripting") (eq .Lesson.Slug "bash-automation-and-scripting")}}
+          <!-- Вопрос 1 -->
+          <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q1">
+            <h6 class="fw-bold mb-3">1. Зачем в production-скриптах обязательно объявляют опцию <code>set -o pipefail</code>?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="По умолчанию конвейер (cmd1 | cmd2) возвращает статус последней команды. Опция pipefail гарантирует, что сбой в любой промежуточной команде приведет к ошибке всего пайплайна.">
+                Чтобы код возврата конвейера (<code>cmd1 | cmd2</code>) сохранял ошибку первой упавшей команды, не маскируя сбой
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Для автоматического шифрования потоков данных между командами
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Для параллельного выполнения команд конвейера на всех ядрах CPU
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          <!-- Вопрос 2 -->
+          <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q2">
+            <h6 class="fw-bold mb-3">2. Какая команда в Bash гарантирует выполнение функции очистки ресурсов (удаление tmp-директорий, lock-файлов) при любом завершении скрипта?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Конструкция trap выполняет указанную функцию при получении сигналов или штатном выходе (EXIT/ERR/INT/TERM), аналогично defer в Go.">
+                <code>trap cleanup EXIT ERR INT TERM</code>
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                <code>defer cleanup()</code>
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                <code>try { ... } finally { cleanup() }</code>
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          <!-- Вопрос 3 -->
+          <div class="quiz-question mb-3 p-3 rounded-3 border bg-body" data-question-id="q3">
+            <h6 class="fw-bold mb-3">3. Какая конструкция подставит значение по умолчанию <code>8080</code>, если переменная окружения <code>PORT</code> не установлена?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Параметрическое расширение ${VAR:-default} возвращает значение переменной или default, если она не задана или пуста.">
+                <code>"${PORT:-8080}"</code>
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                <code>"${PORT || 8080}"</code>
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                <code>"$PORT ?? 8080"</code>
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
           {{else if or (eq .Lesson.Slug "01-multistage-and-cgroups") (eq .Lesson.Slug "multistage-and-cgroups")}}
           <!-- Вопрос 1 -->
           <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q1">
