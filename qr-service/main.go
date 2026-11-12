@@ -87,20 +87,28 @@ func main() {
 	log.Println("✅ QR service stopped gracefully.")
 }
 
+func checkHealth(baseURL string) error {
+	client := &http.Client{Timeout: 2 * time.Second}
+	resp, err := client.Get(baseURL + "/health")
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("healthcheck failed with status: %d", resp.StatusCode)
+	}
+	return nil
+}
+
 func runHealthcheckCli() {
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8081"
 	}
 
-	client := &http.Client{Timeout: 2 * time.Second}
-	resp, err := client.Get(fmt.Sprintf("http://127.0.0.1:%s/health", port))
-	if err != nil || resp.StatusCode != http.StatusOK {
-		if err != nil {
-			log.Printf("Healthcheck failed: %v", err)
-		} else {
-			log.Printf("Healthcheck failed with status: %d", resp.StatusCode)
-		}
+	if err := checkHealth(fmt.Sprintf("http://127.0.0.1:%s", port)); err != nil {
+		log.Printf("Healthcheck failed: %v", err)
 		os.Exit(1)
 	}
 	os.Exit(0)
@@ -149,10 +157,16 @@ func handleGenerateQr(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	const maxURLTextLen = 2048
+	if len(trimmedURL) > maxURLTextLen {
+		sendError(w, http.StatusBadRequest, "URL exceeds maximum length of 2048 characters")
+		return
+	}
+
 	pngBytes, err := qrcode.Encode(trimmedURL, qrcode.Medium, 300)
 	if err != nil {
-		log.Printf("Failed to generate QR for url %s: %v", trimmedURL, err)
-		sendError(w, http.StatusInternalServerError, "Failed to generate QR code")
+		log.Printf("Failed to generate QR code: %v", err)
+		sendError(w, http.StatusBadRequest, "Failed to generate QR code: invalid content")
 		return
 	}
 

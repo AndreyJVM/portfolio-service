@@ -5,10 +5,13 @@ import (
 	"errors"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"os"
+	"path/filepath"
 	"strings"
 	"sync"
 	"testing"
+	"unicode/utf8"
 
 	"github.com/go-chi/chi/v5"
 	"ru.vorobevaqa/devops-platform/internal/model"
@@ -747,5 +750,102 @@ func BenchmarkRenderIndexCached(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		w := httptest.NewRecorder()
 		r.ServeHTTP(w, req)
+	}
+}
+
+func TestSearchAPI_MultibyteUTF8Truncation(t *testing.T) {
+	r := setupTestRouter()
+
+	// Длинная кириллическая строка (>128 рун)
+	longQuery := strings.Repeat("контейнеры ", 20)
+	req := httptest.NewRequest("GET", "/api/search?q="+url.QueryEscape(longQuery), nil)
+	w := httptest.NewRecorder()
+
+	r.ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("Ожидался статус 200, получен %d", w.Code)
+	}
+
+	body := w.Body.Bytes()
+	if !utf8.Valid(body) {
+		t.Errorf("Ответ API поиска содержит невалидный UTF-8 из-за обрезки рун")
+	}
+
+	var results []model.SearchItem
+	if err := json.Unmarshal(body, &results); err != nil {
+		t.Fatalf("Не удалось распарсить JSON ответ: %v", err)
+	}
+}
+
+func TestRenderTemplate_BufferSafety(t *testing.T) {
+	tempDir := t.TempDir()
+
+	// Создаем layout.html с вызовом несуществующего поля для провокации runtime-ошибки выполнения шаблона
+	layoutContent := `{{define "layout"}}{{.InvalidField.SubField}}{{end}}`
+	if err := os.WriteFile(filepath.Join(tempDir, "layout.html"), []byte(layoutContent), 0644); err != nil {
+		t.Fatalf("Не удалось создать layout: %v", err)
+	}
+	indexContent := `{{define "content"}}Index{{end}}`
+	if err := os.WriteFile(filepath.Join(tempDir, "broken.html"), []byte(indexContent), 0644); err != nil {
+		t.Fatalf("Не удалось создать broken.html: %v", err)
+	}
+
+	cs := service.NewCourseService("../../content/courses")
+	is := service.NewIntegrationsService("AndreyJVM", "andreyvorobevaqa")
+	h := NewHandler(cs, is, tempDir, "../../web/static", "https://vorobevaqa.ru")
+
+	w := httptest.NewRecorder()
+	// Передаем структуру, у которой нет поля InvalidField, вызывая ошибку исполнения ExecuteTemplate
+	h.renderTemplate(w, "broken.html", struct{ Dummy string }{Dummy: "test"})
+
+	if w.Code != http.StatusInternalServerError {
+		t.Errorf("Ожидался статус 500 при ошибке исполнения шаблона, получен %d", w.Code)
+	}
+
+	if !strings.Contains(w.Body.String(), "Template execution error") {
+		t.Errorf("Ожидалось сообщение об ошибке исполнения шаблона, получено: %s", w.Body.String())
+	}
+}
+
+func TestStaticAssets_SecurityChecks(t *testing.T) {
+	r := setupTestRouter()
+
+	traversalURLs := []string{
+		"/css/..%2f..%2fetc/passwd",
+		"/css/%2e%2e/index.html",
+		"/js/../../main.go",
+		"/pdf/../../../etc/shadow",
+	}
+
+	for _, url := range traversalURLs {
+		t.Run("Static traversal: "+url, func(t *testing.T) {
+			req := httptest.NewRequest("GET", url, nil)
+			w := httptest.NewRecorder()
+			r.ServeHTTP(w, req)
+
+			if w.Code != http.StatusNotFound && w.Code != http.StatusBadRequest && w.Code != http.StatusMovedPermanently {
+				t.Errorf("Ожидался статус 404/400/301 для path traversal %s, получен %d", url, w.Code)
+			}
+		})
+	}
+
+	trailingSlashURLs := []string{
+		"/css/",
+		"/js/",
+		"/images/",
+		"/pdf/",
+	}
+
+	for _, url := range trailingSlashURLs {
+		t.Run("Trailing slash directory listing block: "+url, func(t *testing.T) {
+			req := httptest.NewRequest("GET", url, nil)
+			w := httptest.NewRecorder()
+			r.ServeHTTP(w, req)
+
+			if w.Code != http.StatusNotFound {
+				t.Errorf("Ожидался статус 404 для обращения к директории %s со слэшем, получен %d", url, w.Code)
+			}
+		})
 	}
 }

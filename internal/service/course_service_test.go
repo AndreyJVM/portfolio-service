@@ -4,7 +4,9 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
 	"testing"
+	"unicode/utf8"
 )
 
 func TestCourseService(t *testing.T) {
@@ -166,6 +168,24 @@ func TestExtractTitleAndTitleCase(t *testing.T) {
 			fallbackSlug: "docker-compose-intro",
 			expected:     "Docker Compose Intro",
 		},
+		{
+			name:         "No H1 header - single digit prefix",
+			content:      "",
+			fallbackSlug: "1-bash-scripting",
+			expected:     "Bash Scripting",
+		},
+		{
+			name:         "No H1 header - three digits prefix",
+			content:      "",
+			fallbackSlug: "007-advanced-kubernetes",
+			expected:     "Advanced Kubernetes",
+		},
+		{
+			name:         "No H1 header - unicode slug without digits",
+			content:      "",
+			fallbackSlug: "настройка-сети",
+			expected:     "Настройка Сети",
+		},
 	}
 
 	for _, tt := range tests {
@@ -244,4 +264,94 @@ func TestPathTraversal_Attacks(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestBuildSearchIndex_MultibyteUTF8(t *testing.T) {
+	tempDir := t.TempDir()
+	linuxDir := filepath.Join(tempDir, "linux")
+	if err := os.MkdirAll(linuxDir, 0755); err != nil {
+		t.Fatalf("Не удалось создать папку курса: %v", err)
+	}
+
+	// Создаем длинный русский текст (>200 рун), где байтовая граница на 200 байте попадает внутрь двухбайтовой кириллической руны
+	longRussianText := "# Управление памятью и процессами в ядре Linux\n" +
+		strings.Repeat("Операционная система распределяет оперативную память виртуальными страницами через MMU. ", 10)
+
+	lessonFile := filepath.Join(linuxDir, "01-memory-mmu.md")
+	if err := os.WriteFile(lessonFile, []byte(longRussianText), 0644); err != nil {
+		t.Fatalf("Не удалось записать тестовый файл: %v", err)
+	}
+
+	cs := NewCourseService(tempDir)
+	index := cs.BuildSearchIndex()
+
+	var snippet string
+	for _, item := range index {
+		if item.Type == "lesson" && item.LessonSlug == "01-memory-mmu" {
+			snippet = item.Snippet
+			break
+		}
+	}
+
+	if snippet == "" {
+		t.Fatal("Сниппет для 01-memory-mmu не найден в индексе")
+	}
+
+	if !utf8.ValidString(snippet) {
+		t.Errorf("Сниппет содержит невалидный UTF-8 из-за разрыва многобайтовой руны: %q", snippet)
+	}
+
+	if !strings.HasSuffix(snippet, "...") {
+		t.Errorf("Сниппет должен оканчиваться троеточием '...', получено: %s", snippet)
+	}
+
+	runes := []rune(snippet)
+	// Должно быть 200 рун + 3 символа точки
+	if len(runes) != 203 {
+		t.Errorf("Ожидалось 203 руны (200 + ...), получено: %d", len(runes))
+	}
+}
+
+func TestCourseService_NegativeAndConcurrency(t *testing.T) {
+	tempDir := t.TempDir()
+	linuxDir := filepath.Join(tempDir, "linux")
+	_ = os.MkdirAll(linuxDir, 0755)
+
+	content := "# Урок по системным вызовам\nСодержимое урока для тестирования параллельного доступа."
+	_ = os.WriteFile(filepath.Join(linuxDir, "01-syscalls.md"), []byte(content), 0644)
+
+	cs := NewCourseService(tempDir)
+
+	t.Run("Empty non-existent directory", func(t *testing.T) {
+		emptyCS := NewCourseService(filepath.Join(tempDir, "non-existent-dir"))
+		courses := emptyCS.GetAllCourses()
+		if len(courses) == 0 {
+			t.Errorf("GetAllCourses должен возвращать каталог курсов даже при пустой contentDir")
+		}
+		// Все курсы должны иметь 0 уроков
+		for _, c := range courses {
+			if c.LessonCount != 0 {
+				t.Errorf("Курс %s должен иметь 0 уроков, получено %d", c.Slug, c.LessonCount)
+			}
+		}
+	})
+
+	t.Run("Concurrent access to GetLesson and BuildSearchIndex", func(t *testing.T) {
+		var wg sync.WaitGroup
+		workers := 20
+		wg.Add(workers * 2)
+
+		for i := 0; i < workers; i++ {
+			go func() {
+				defer wg.Done()
+				_, _, _ = cs.GetLesson("linux", "01-syscalls")
+			}()
+			go func() {
+				defer wg.Done()
+				_ = cs.BuildSearchIndex()
+			}()
+		}
+
+		wg.Wait()
+	})
 }

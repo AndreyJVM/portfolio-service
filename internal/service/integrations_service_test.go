@@ -149,3 +149,35 @@ func TestIntegrationsService_NetworkError_Fallback(t *testing.T) {
 		t.Errorf("Ожидался fallback список Docker при ошибке сети")
 	}
 }
+
+func TestIntegrationsService_MalformedJSON_And_Empty(t *testing.T) {
+	svc := NewIntegrationsService("test-gh", "test-dh")
+
+	// Мокаем ответы 200 OK, но с поврежденным JSON
+	svc.client.Transport = mockRoundTripper(func(req *http.Request) (*http.Response, error) {
+		if strings.Contains(req.URL.Host, "api.github.com") {
+			return &http.Response{
+				StatusCode: http.StatusOK,
+				Body:       io.NopCloser(bytes.NewBufferString(`[{"name": "broken-unclosed"`)),
+				Header:     make(http.Header),
+			}, nil
+		}
+		if strings.Contains(req.URL.Host, "hub.docker.com") {
+			return &http.Response{
+				StatusCode: http.StatusOK,
+				Body:       io.NopCloser(bytes.NewBufferString(`{"results": []}`)),
+				Header:     make(http.Header),
+			}, nil
+		}
+		return &http.Response{StatusCode: http.StatusOK}, nil
+	})
+
+	data := svc.GetProjectsData()
+
+	if len(data.GitHubRepos) == 0 {
+		t.Errorf("Ожидался fallback список GitHub при битом JSON")
+	}
+	if len(data.DockerRepos) == 0 {
+		t.Errorf("Ожидался fallback список Docker при пустом списке результатов")
+	}
+}

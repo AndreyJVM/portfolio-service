@@ -316,3 +316,101 @@ func TestHandleGenerateQr_PostSuccess_Detailed(t *testing.T) {
 		})
 	}
 }
+
+func TestHandleGenerateQr_UrlLengthLimit(t *testing.T) {
+	// 1. URL с длиной более 2048 символов должен вернуть 400 Bad Request
+	oversizedURL := "https://example.com/" + strings.Repeat("a", 2050)
+	req := httptest.NewRequest(http.MethodGet, "/api/qr?url="+oversizedURL, nil)
+	rr := httptest.NewRecorder()
+
+	handleGenerateQr(rr, req)
+
+	if rr.Code != http.StatusBadRequest {
+		t.Fatalf("expected status 400 for URL > 2048 chars, got %d", rr.Code)
+	}
+
+	var errResp ErrorResponse
+	if err := json.Unmarshal(rr.Body.Bytes(), &errResp); err != nil {
+		t.Fatalf("failed to decode error json: %v", err)
+	}
+
+	if !strings.Contains(errResp.Error, "2048") {
+		t.Errorf("expected 2048 limit message, got %s", errResp.Error)
+	}
+
+	// 2. Валидный URL длиной ровно 500 символов должен отрабатывать без ошибок
+	validLongURL := "https://example.com/" + strings.Repeat("b", 450)
+	req2 := httptest.NewRequest(http.MethodGet, "/api/qr?url="+validLongURL, nil)
+	rr2 := httptest.NewRecorder()
+
+	handleGenerateQr(rr2, req2)
+
+	if rr2.Code != http.StatusOK {
+		t.Fatalf("expected status 200 for 500 chars URL, got %d", rr2.Code)
+	}
+}
+
+func TestHandleGenerateQr_AcceptHeaderVariations(t *testing.T) {
+	targetURL := "https://vorobevaqa.ru"
+
+	// 1. Accept: image/png -> бинарный PNG поток
+	reqPng := httptest.NewRequest(http.MethodGet, "/api/qr?url="+targetURL, nil)
+	reqPng.Header.Set("Accept", "image/png,image/*;q=0.9")
+	rrPng := httptest.NewRecorder()
+	handleGenerateQr(rrPng, reqPng)
+
+	if rrPng.Code != http.StatusOK {
+		t.Errorf("expected 200 for Accept image/png, got %d", rrPng.Code)
+	}
+	if rrPng.Header().Get("Content-Type") != "image/png" {
+		t.Errorf("expected Content-Type image/png, got %s", rrPng.Header().Get("Content-Type"))
+	}
+
+	// 2. Accept: application/json -> JSON с Base64
+	reqJson := httptest.NewRequest(http.MethodGet, "/api/qr?url="+targetURL, nil)
+	reqJson.Header.Set("Accept", "application/json")
+	rrJson := httptest.NewRecorder()
+	handleGenerateQr(rrJson, reqJson)
+
+	if rrJson.Code != http.StatusOK {
+		t.Errorf("expected 200 for Accept application/json, got %d", rrJson.Code)
+	}
+	if !strings.Contains(rrJson.Header().Get("Content-Type"), "application/json") {
+		t.Errorf("expected Content-Type application/json, got %s", rrJson.Header().Get("Content-Type"))
+	}
+}
+
+func TestCheckHealth(t *testing.T) {
+	t.Run("Healthcheck OK", func(t *testing.T) {
+		ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			if r.URL.Path == "/health" {
+				w.WriteHeader(http.StatusOK)
+				return
+			}
+			w.WriteHeader(http.StatusNotFound)
+		}))
+		defer ts.Close()
+
+		if err := checkHealth(ts.URL); err != nil {
+			t.Fatalf("expected healthcheck success, got: %v", err)
+		}
+	})
+
+	t.Run("Healthcheck Server Error", func(t *testing.T) {
+		ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			w.WriteHeader(http.StatusInternalServerError)
+		}))
+		defer ts.Close()
+
+		if err := checkHealth(ts.URL); err == nil {
+			t.Fatal("expected healthcheck to fail on 500 status")
+		}
+	})
+
+	t.Run("Healthcheck Network Failure", func(t *testing.T) {
+		// Заведомо недоступный адрес
+		if err := checkHealth("http://127.0.0.1:54321"); err == nil {
+			t.Fatal("expected healthcheck to fail on unreachable host")
+		}
+	})
+}

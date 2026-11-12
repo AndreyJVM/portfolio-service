@@ -49,9 +49,10 @@ func (h *Handler) SearchAPI(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handler) respondSearch(w http.ResponseWriter, r *http.Request, items []model.SearchItem) {
 	query := strings.TrimSpace(strings.ToLower(r.URL.Query().Get("q")))
-	// Ограничиваем длину поискового запроса для предотвращения CPU exhaustion
-	if len(query) > 128 {
-		query = query[:128]
+	// Ограничиваем длину поискового запроса по рунам для защиты от CPU exhaustion и сохранения валидности UTF-8
+	runes := []rune(query)
+	if len(runes) > 128 {
+		query = string(runes[:128])
 	}
 
 	var result []model.SearchItem

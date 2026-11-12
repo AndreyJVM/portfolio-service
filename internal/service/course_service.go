@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"regexp"
 	"sort"
+	"strconv"
 	"strings"
 	"sync"
 	"unicode"
@@ -208,8 +209,9 @@ func (s *CourseService) BuildSearchIndex() []model.SearchItem {
 			if err == nil {
 				cleaned := mdTagRegex.ReplaceAllString(string(rawBytes), " ")
 				cleaned = strings.Join(strings.Fields(cleaned), " ")
-				if len(cleaned) > 200 {
-					cleaned = cleaned[:200] + "..."
+				runes := []rune(cleaned)
+				if len(runes) > 200 {
+					cleaned = string(runes[:200]) + "..."
 				}
 				snippet = cleaned
 			} else {
@@ -288,10 +290,14 @@ func extractTitle(content []byte, fallbackSlug string) string {
 			return strings.TrimSpace(strings.TrimPrefix(trimmed, "# "))
 		}
 	}
-	title := strings.ReplaceAll(fallbackSlug, "-", " ")
-	if len(title) > 3 && title[2] == ' ' {
-		title = title[3:]
+	parts := strings.SplitN(fallbackSlug, "-", 2)
+	cleanedSlug := fallbackSlug
+	if len(parts) == 2 {
+		if _, err := strconv.Atoi(parts[0]); err == nil {
+			cleanedSlug = parts[1]
+		}
 	}
+	title := strings.ReplaceAll(cleanedSlug, "-", " ")
 	return titleCase(title)
 }
 

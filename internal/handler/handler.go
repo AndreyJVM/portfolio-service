@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"bytes"
 	"fmt"
 	"html/template"
 	"net/http"
@@ -68,7 +69,8 @@ func (h *Handler) getTemplate(templateName string) (*template.Template, error) {
 	return parsedTmpl, nil
 }
 
-// renderTemplate выполняет рендеринг кэшированного шаблона.
+// renderTemplate выполняет рендеринг кэшированного шаблона через буфер,
+// предотвращая частичную отдачу поврежденного HTML при ошибках исполнения.
 func (h *Handler) renderTemplate(w http.ResponseWriter, templateName string, data interface{}) {
 	tmpl, err := h.getTemplate(templateName)
 	if err != nil {
@@ -76,10 +78,15 @@ func (h *Handler) renderTemplate(w http.ResponseWriter, templateName string, dat
 		return
 	}
 
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	if err := tmpl.ExecuteTemplate(w, "layout", data); err != nil {
+	var buf bytes.Buffer
+	if err := tmpl.ExecuteTemplate(&buf, "layout", data); err != nil {
 		http.Error(w, fmt.Sprintf("Template execution error: %v", err), http.StatusInternalServerError)
+		return
 	}
+
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
+	_, _ = buf.WriteTo(w)
 }
 
 // Health возвращает статус здоровья сервиса для healthcheck (Docker, Nginx, K8s).
