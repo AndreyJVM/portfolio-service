@@ -257,6 +257,58 @@
             <div class="quiz-feedback d-none"></div>
           </div>
 
+          {{else if or (eq .Lesson.Slug "05-disks-filesystems-and-lvm") (eq .Lesson.Slug "disks-filesystems-and-lvm")}}
+          <!-- Вопрос 1 -->
+          <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q1">
+            <h6 class="fw-bold mb-3">1. При создании файла выводится ошибка <code>No space left on device</code>, однако команда <code>df -h</code> показывает 150 GB свободного места. Какая команда поможет подтвердить причину сбоя?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Команда df -ih проверяет доступность свободных inodes (индексных дескрипторов). Если таблица инодов заполнена миллионами мелких файлов (кэш, почтовая очередь), диск блокирует создание новых файлов даже при наличии гигабайтов свободного места.">
+                <code>df -ih</code> (проверка таблицы доступных inodes)
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                <code>free -m</code>
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                <code>uptime</code>
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          <!-- Вопрос 2 -->
+          <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q2">
+            <h6 class="fw-bold mb-3">2. Администратор удалил тяжелый файл логов командой <code>rm /var/log/heavy.log</code>, но свободное место в <code>df -h</code> не прибавилось. Почему это произошло?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Файл удерживается открытым дескриптором работающего процесса (lsof +L1). Ядро Linux не освобождает блоки данных на диске, пока процесс не закроет дескриптор или пока файл не будет обнулен через truncate.">
+                Файл удерживается открытым дескриптором работающего процесса, блоки диска освободятся только после закрытия дескриптора
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Файл переместился в скрытую корзину /root/.Trash
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Для применения команды rm всегда требуется полная перезагрузка ОС
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          <!-- Вопрос 3 -->
+          <div class="quiz-question mb-3 p-3 rounded-3 border bg-body" data-question-id="q3">
+            <h6 class="fw-bold mb-3">3. Какая команда позволяет безопасно протестировать изменения в <code>/etc/fstab</code> перед перезагрузкой сервера, чтобы избежать Emergency Shell?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Команда sudo mount -a монтирует все файловые системы, описанные в fstab. Если запись содержит синтаксическую ошибку или неверный UUID, mount немедленно выдаст ошибку без риска блокировки загрузки.">
+                <code>sudo mount -a</code>
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                <code>sudo systemctl restart fstab</code>
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                <code>sync && sudo reboot -f</code>
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
           {{else if or (eq .Lesson.Slug "01-multistage-and-cgroups") (eq .Lesson.Slug "multistage-and-cgroups")}}
           <!-- Вопрос 1 -->
           <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q1">

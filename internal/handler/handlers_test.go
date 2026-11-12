@@ -46,6 +46,7 @@ func TestHandlers(t *testing.T) {
 		{"GET /courses/linux/02-networking-and-firewalls", "GET", "/courses/linux/02-networking-and-firewalls", http.StatusOK},
 		{"GET /courses/linux/03-processes-and-system-limits", "GET", "/courses/linux/03-processes-and-system-limits", http.StatusOK},
 		{"GET /courses/linux/04-bash-automation-and-scripting", "GET", "/courses/linux/04-bash-automation-and-scripting", http.StatusOK},
+		{"GET /courses/linux/05-disks-filesystems-and-lvm", "GET", "/courses/linux/05-disks-filesystems-and-lvm", http.StatusOK},
 		{"GET /courses/docker", "GET", "/courses/docker", http.StatusOK},
 		{"GET /courses/docker/01-multistage-and-cgroups", "GET", "/courses/docker/01-multistage-and-cgroups", http.StatusOK},
 		{"GET /courses/ansible", "GET", "/courses/ansible", http.StatusOK},
