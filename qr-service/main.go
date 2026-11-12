@@ -1,14 +1,17 @@
 package main
 
 import (
+	"context"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"os/signal"
 	"regexp"
 	"strings"
+	"syscall"
 	"time"
 
 	qrcode "github.com/skip2/go-qrcode"
@@ -29,6 +32,15 @@ type ErrorResponse struct {
 
 var urlProtocolRegex = regexp.MustCompile(`^(http|https)://.+$`)
 
+// setupRouter конфигурирует маршруты и middleware микросервиса QR
+func setupRouter() http.Handler {
+	mux := http.NewServeMux()
+	mux.HandleFunc("GET /health", handleHealth)
+	mux.HandleFunc("/api/qr", handleGenerateQr)
+
+	return loggingMiddleware(corsMiddleware(mux))
+}
+
 func main() {
 	// Native Docker healthcheck mode: /app/qr-service healthcheck
 	if len(os.Args) > 1 && os.Args[1] == "healthcheck" {
@@ -41,22 +53,38 @@ func main() {
 		port = "8081"
 	}
 
-	mux := http.NewServeMux()
-	mux.HandleFunc("GET /health", handleHealth)
-	mux.HandleFunc("/api/qr", handleGenerateQr)
-
 	server := &http.Server{
 		Addr:         ":" + port,
-		Handler:      loggingMiddleware(corsMiddleware(mux)),
+		Handler:      setupRouter(),
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 10 * time.Second,
 		IdleTimeout:  120 * time.Second,
 	}
 
+	// Graceful shutdown по сигналам SIGINT и SIGTERM
+	serverCtx, serverStopCtx := context.WithCancel(context.Background())
+	sig := make(chan os.Signal, 1)
+	signal.Notify(sig, syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
+
+	go func() {
+		<-sig
+		shutdownCtx, cancel := context.WithTimeout(serverCtx, 5*time.Second)
+		defer cancel()
+
+		log.Println("🛑 Stopping QR service gracefully...")
+		if err := server.Shutdown(shutdownCtx); err != nil {
+			log.Printf("Error shutting down QR service: %v", err)
+		}
+		serverStopCtx()
+	}()
+
 	log.Printf("🚀 QR Code Service (Go) starting on port %s", port)
 	if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 		log.Fatalf("Server error: %v", err)
 	}
+
+	<-serverCtx.Done()
+	log.Println("✅ QR service stopped gracefully.")
 }
 
 func runHealthcheckCli() {
@@ -96,10 +124,15 @@ func handleGenerateQr(w http.ResponseWriter, r *http.Request) {
 			inputURL = r.URL.Query().Get("text")
 		}
 	} else if r.Method == http.MethodPost {
+		// Защита от DoS: ограничиваем размер входящего тела 64 КБ
+		r.Body = http.MaxBytesReader(w, r.Body, 64*1024)
+
 		var req QrRequest
-		if err := json.NewDecoder(r.Body).Decode(&req); err == nil {
-			inputURL = req.URL
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			sendError(w, http.StatusBadRequest, "Invalid JSON body or payload too large")
+			return
 		}
+		inputURL = req.URL
 	} else {
 		sendError(w, http.StatusMethodNotAllowed, "Method not allowed")
 		return
@@ -125,6 +158,7 @@ func handleGenerateQr(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method == http.MethodGet && strings.Contains(r.Header.Get("Accept"), "image/") {
 		w.Header().Set("Content-Type", "image/png")
+		w.Header().Set("Cache-Control", "public, max-age=86400")
 		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write(pngBytes)
 		return
@@ -137,13 +171,14 @@ func handleGenerateQr(w http.ResponseWriter, r *http.Request) {
 		QRCode: base64QR,
 	}
 
-	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.Header().Set("Cache-Control", "no-cache")
 	w.WriteHeader(http.StatusOK)
 	_ = json.NewEncoder(w).Encode(resp)
 }
 
 func sendError(w http.ResponseWriter, statusCode int, message string) {
-	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(statusCode)
 	_ = json.NewEncoder(w).Encode(ErrorResponse{Error: message})
 }

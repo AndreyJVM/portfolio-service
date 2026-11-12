@@ -9,6 +9,18 @@ import (
 	"testing"
 )
 
+func TestSetupRouter(t *testing.T) {
+	router := setupRouter()
+
+	req := httptest.NewRequest(http.MethodGet, "/health", nil)
+	rr := httptest.NewRecorder()
+	router.ServeHTTP(rr, req)
+
+	if rr.Code != http.StatusOK {
+		t.Errorf("expected 200 from router for /health, got %d", rr.Code)
+	}
+}
+
 func TestHandleHealth(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "/health", nil)
 	rr := httptest.NewRecorder()
@@ -155,6 +167,20 @@ func TestHandleGenerateQr_InvalidJson(t *testing.T) {
 
 	if rr.Code != http.StatusBadRequest {
 		t.Fatalf("expected status 400 for malformed json, got %d", rr.Code)
+	}
+}
+
+func TestHandleGenerateQr_PayloadTooLarge(t *testing.T) {
+	// Создаем тело запроса больше 64 КБ
+	largeURL := "https://example.com/" + strings.Repeat("a", 70*1024)
+	reqBody, _ := json.Marshal(map[string]string{"url": largeURL})
+	req := httptest.NewRequest(http.MethodPost, "/api/qr", bytes.NewBuffer(reqBody))
+	rr := httptest.NewRecorder()
+
+	handleGenerateQr(rr, req)
+
+	if rr.Code != http.StatusBadRequest {
+		t.Fatalf("expected status 400 for oversized payload, got %d", rr.Code)
 	}
 }
 
