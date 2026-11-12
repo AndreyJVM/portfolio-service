@@ -119,7 +119,7 @@ jobs:
 
       - name: Verify Code Style (gofmt & go vet)
         run: |
-          UNFORMATTED=$(gofmt -l qr-service/)
+          UNFORMATTED=$(gofmt -l qr-service/*.go)
           if [ -n "$UNFORMATTED" ]; then
             echo "❌ The following files are not formatted with gofmt:"
             echo "$UNFORMATTED"

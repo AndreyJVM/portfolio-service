@@ -15,21 +15,19 @@ COPY internal ./internal
 RUN CGO_ENABLED=0 GOOS=linux go build -mod=vendor -ldflags="-w -s" -o /app/devops-platform ./cmd/server
 
 # --- Этап 2: Минимальный production runtime ---
-FROM alpine:latest
+FROM alpine:3.21
 
 RUN apk add --no-cache ca-certificates curl tzdata && \
-    addgroup -S appgroup && \
-    adduser -S appuser -G appgroup
+    addgroup -S -g 10001 appgroup && \
+    adduser -S -u 10001 -G appgroup -s /sbin/nologin appuser
 
 WORKDIR /app
 
-COPY --from=builder /app/devops-platform .
-COPY content ./content
-COPY web ./web
+COPY --from=builder --chown=10001:10001 /app/devops-platform .
+COPY --chown=10001:10001 content ./content
+COPY --chown=10001:10001 web ./web
 
-RUN chown -R appuser:appgroup /app
-
-USER appuser
+USER 10001:10001
 
 EXPOSE 8080
 

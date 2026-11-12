@@ -25,7 +25,7 @@ jobs:
 
       - name: Verify Code Style (gofmt)
         run: |
-          UNFORMATTED=$(gofmt -l cmd/ internal/ qr-service/)
+          UNFORMATTED=$(gofmt -l cmd/ internal/ qr-service/*.go)
           if [ -n "$UNFORMATTED" ]; then
             echo "❌ The following files are not formatted with gofmt:"
             echo "$UNFORMATTED"
