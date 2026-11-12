@@ -83,7 +83,59 @@
             <span class="badge bg-body-secondary text-body-secondary border">Самопроверка</span>
           </div>
 
-          {{if or (eq .Lesson.Slug "01-permissions-and-systemd") (eq .Lesson.Slug "permissions-and-systemd")}}
+          {{if or (eq .Lesson.Slug "01-architecture-and-first-dockerfile") (eq .Lesson.Slug "architecture-and-first-dockerfile")}}
+          <!-- Вопрос 1 -->
+          <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q1">
+            <h6 class="fw-bold mb-3">1. Почему shell-форма записи <code>CMD ./app</code> (в отличие от exec-формы <code>CMD ["./app"]</code>) часто ломает Graceful Shutdown?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Shell-форма запускает процесс через оболочку /bin/sh -c. Оболочка становится PID 1 и не пробрасывает сигнал SIGTERM вашему приложению, что приводит к таймауту и жесткому SIGKILL.">
+                Процесс <code>/bin/sh</code> становится PID 1, перехватывает сигнал <code>SIGTERM</code> и не передает его приложению, приводя к жесткому убийству через 10 секунд
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Shell-форма отключает сетевые порты контейнера при получении любого сигнала
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Shell-форма работает только под пользователем root и блокирует непривилегированных пользователей
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          <!-- Вопрос 2 -->
+          <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q2">
+            <h6 class="fw-bold mb-3">2. Зачем манифесты зависимостей (например, <code>go.mod</code> или <code>package.json</code>) копировать и устанавливать отдельным шагом до <code>COPY . .</code>?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Благодаря слоистому кэшированию OverlayFS шаг скачивания библиотек мгновенно берется из кэша, пока вы не добавили или не обновили сами библиотеки. Любые правки кода не заставляют качать зависимости заново.">
+                Для утилизации кэша слоев: шаг скачивания библиотек переиспользуется из кэша и не выполняется заново при изменении исходного кода приложения
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Потому что команда RUN не имеет доступа к сети, если перед ней скопирован весь каталог с кодом
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Чтобы компилятор автоматически перешел в режим Multi-stage сборки
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          <!-- Вопрос 3 -->
+          <div class="quiz-question mb-3 p-3 rounded-3 border bg-body" data-question-id="q3">
+            <h6 class="fw-bold mb-3">3. Уменьшится ли итоговый размер образа, если написать <code>RUN apt-get update && apt-get install -y curl</code>, а отдельной инструкцией <code>RUN rm -rf /var/lib/apt/lists/*</code>?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Каждая директива RUN создает новый неизменяемый слой (read-only). Удаление файлов в следующем слое лишь скрывает их (whiteout), но они навсегда остаются в нижнем слое образа.">
+                Нет: каждый RUN создает неизменяемый слой, и удаление во 2-м слое лишь скроет файлы, оставив их навсегда зафиксированными в 1-м слое
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Да: Docker автоматически объединяет соседние инструкции RUN при оптимизации
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Да, но только если используется базовый образ Alpine
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          {{else if or (eq .Lesson.Slug "01-permissions-and-systemd") (eq .Lesson.Slug "permissions-and-systemd")}}
           <!-- Вопрос 1 -->
           <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q1">
             <h6 class="fw-bold mb-3">1. Какая команда корректно выставляет строгие права (только чтение/запись владельцу) на приватный ключ SSH?</h6>

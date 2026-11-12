@@ -47,18 +47,16 @@ func TestHandlers(t *testing.T) {
 		{"GET /api/search?q=docker", "GET", "/api/search?q=docker", http.StatusOK},
 		{"GET /courses", "GET", "/courses", http.StatusOK},
 		{"HEAD /courses", "HEAD", "/courses", http.StatusOK},
-		{"GET /courses/linux", "GET", "/courses/linux", http.StatusOK},
-		{"GET /courses/linux/01-permissions-and-systemd", "GET", "/courses/linux/01-permissions-and-systemd", http.StatusOK},
-		{"GET /courses/linux/02-networking-and-firewalls", "GET", "/courses/linux/02-networking-and-firewalls", http.StatusOK},
-		{"GET /courses/linux/03-processes-and-system-limits", "GET", "/courses/linux/03-processes-and-system-limits", http.StatusOK},
-		{"GET /courses/linux/04-bash-automation-and-scripting", "GET", "/courses/linux/04-bash-automation-and-scripting", http.StatusOK},
-		{"GET /courses/linux/05-disks-filesystems-and-lvm", "GET", "/courses/linux/05-disks-filesystems-and-lvm", http.StatusOK},
 		{"GET /courses/docker", "GET", "/courses/docker", http.StatusOK},
-		{"GET /courses/docker/01-multistage-and-cgroups", "GET", "/courses/docker/01-multistage-and-cgroups", http.StatusOK},
-		{"GET /courses/ansible", "GET", "/courses/ansible", http.StatusOK},
-		{"GET /courses/ansible/01-ansible-basics-and-playbooks", "GET", "/courses/ansible/01-ansible-basics-and-playbooks", http.StatusOK},
-		{"GET /courses/cicd", "GET", "/courses/cicd", http.StatusOK},
-		{"GET /courses/cicd/01-github-actions-pipeline", "GET", "/courses/cicd/01-github-actions-pipeline", http.StatusOK},
+		{"GET /courses/docker/01-architecture-and-first-dockerfile", "GET", "/courses/docker/01-architecture-and-first-dockerfile", http.StatusOK},
+		{"GET /courses/docker/02-multistage-and-cgroups", "GET", "/courses/docker/02-multistage-and-cgroups", http.StatusOK},
+		{"GET /courses/docker/03-docker-compose-and-networking", "GET", "/courses/docker/03-docker-compose-and-networking", http.StatusOK},
+		{"GET /courses/podman", "GET", "/courses/podman", http.StatusOK},
+		{"GET /courses/podman/01-podman-rootless-and-daemonless", "GET", "/courses/podman/01-podman-rootless-and-daemonless", http.StatusOK},
+		{"GET /courses/lxc", "GET", "/courses/lxc", http.StatusOK},
+		{"GET /courses/lxc/01-lxc-and-system-containers", "GET", "/courses/lxc/01-lxc-and-system-containers", http.StatusOK},
+		{"GET /courses/internals", "GET", "/courses/internals", http.StatusOK},
+		{"GET /courses/internals/01-namespaces-and-cgroups-v2", "GET", "/courses/internals/01-namespaces-and-cgroups-v2", http.StatusOK},
 		{"GET /projects", "GET", "/projects", http.StatusOK},
 		{"GET /education", "GET", "/education", http.StatusOK},
 		{"GET /about redirect", "GET", "/about", http.StatusMovedPermanently},
@@ -175,14 +173,14 @@ func TestSEOEndpoints(t *testing.T) {
 		"https://vorobevaqa.ru/education",
 		"https://vorobevaqa.ru/qr",
 		"https://vorobevaqa.ru/mustang",
-		"https://vorobevaqa.ru/courses/linux",
 		"https://vorobevaqa.ru/courses/docker",
-		"https://vorobevaqa.ru/courses/ansible",
-		"https://vorobevaqa.ru/courses/cicd",
-		"https://vorobevaqa.ru/courses/linux/01-permissions-and-systemd",
-		"https://vorobevaqa.ru/courses/docker/01-multistage-and-cgroups",
-		"https://vorobevaqa.ru/courses/ansible/01-ansible-basics-and-playbooks",
-		"https://vorobevaqa.ru/courses/cicd/01-github-actions-pipeline",
+		"https://vorobevaqa.ru/courses/podman",
+		"https://vorobevaqa.ru/courses/lxc",
+		"https://vorobevaqa.ru/courses/internals",
+		"https://vorobevaqa.ru/courses/docker/01-architecture-and-first-dockerfile",
+		"https://vorobevaqa.ru/courses/podman/01-podman-rootless-and-daemonless",
+		"https://vorobevaqa.ru/courses/lxc/01-lxc-and-system-containers",
+		"https://vorobevaqa.ru/courses/internals/01-namespaces-and-cgroups-v2",
 	}
 
 	for _, link := range expectedLinks {
@@ -200,7 +198,7 @@ func TestNotFoundHandlers(t *testing.T) {
 		url  string
 	}{
 		{"Non-existent course", "/courses/non-existent-course-slug-12345"},
-		{"Non-existent lesson", "/courses/linux/non-existent-lesson-slug-12345"},
+		{"Non-existent lesson", "/courses/docker/non-existent-lesson-slug-12345"},
 		{"Non-existent course in lesson path", "/courses/non-existent-course/01-permissions"},
 	}
 
@@ -385,19 +383,19 @@ func TestLearningProgressUI(t *testing.T) {
 	}
 
 	// 2. Проверяем наличие виджета прогресса и бейджей статусов на детальной странице курса
-	reqDetail := httptest.NewRequest("GET", "/courses/linux", nil)
+	reqDetail := httptest.NewRequest("GET", "/courses/docker", nil)
 	wDetail := httptest.NewRecorder()
 	r.ServeHTTP(wDetail, reqDetail)
 	tbodyDetail := wDetail.Body.String()
 	if !strings.Contains(tbodyDetail, "courseDetailProgress") {
-		t.Errorf("/courses/linux не содержит виджета courseDetailProgress")
+		t.Errorf("/courses/docker не содержит виджета courseDetailProgress")
 	}
 	if !strings.Contains(tbodyDetail, "lesson-status-badge") {
-		t.Errorf("/courses/linux не содержит бейджей lesson-status-badge")
+		t.Errorf("/courses/docker не содержит бейджей lesson-status-badge")
 	}
 
 	// 3. Проверяем наличие интерактивного квиза и кнопки фиксации прогресса на странице урока
-	reqLesson := httptest.NewRequest("GET", "/courses/linux/01-permissions-and-systemd", nil)
+	reqLesson := httptest.NewRequest("GET", "/courses/docker/01-architecture-and-first-dockerfile", nil)
 	wLesson := httptest.NewRecorder()
 	r.ServeHTTP(wLesson, reqLesson)
 	tbodyLesson := wLesson.Body.String()
@@ -712,8 +710,9 @@ func TestConcurrency_HighLoad(t *testing.T) {
 		urls := []string{
 			"/",
 			"/courses",
-			"/courses/linux",
-			"/courses/linux/01-permissions-and-systemd",
+			"/courses/docker",
+			"/courses/docker/01-architecture-and-first-dockerfile",
+			"/courses/podman",
 			"/projects",
 			"/education",
 			"/qr",

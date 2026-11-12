@@ -21,11 +21,11 @@ func (h *Handler) Index(w http.ResponseWriter, r *http.Request) {
 		FeaturedCourses []model.Course
 	}{
 		Meta: model.MetaData{
-			Title:         "Главная • Обучающая платформа DevOps",
-			Description:   "Бесплатная платформа по системному администрированию Linux, Docker, Ansible и CI/CD от Андрея Воробьева.",
-			Keywords:      "DevOps, Linux, Docker, Ansible, CI/CD, Go, Golang, уроки, курсы",
-			OGTitle:       "Андрей Воробьев • DevOps Platform & Engineer",
-			OGDescription: "Практические материалы и курсы по Linux, Docker, Ansible и автоматизации релизов.",
+			Title:         "Главная • Платформа по Контейнеризации",
+			Description:   "Специализированная база знаний и практические курсы по Docker, Podman, LXC и изоляции в ядре Linux от Андрея Воробьева.",
+			Keywords:      "контейнеризация, Docker, Podman, LXC, Incus, Cgroups, Namespaces, уроки, курсы",
+			OGTitle:       "Андрей Воробьев • Containerization & Infrastructure Engineer",
+			OGDescription: "Глубокие практические руководства по Docker, Podman, LXC и низкоуровневой изоляции в Linux.",
 			OGImage:       "/images/og-main.png",
 			OGURL:         h.baseURL + "/",
 			ActiveTab:     "home",

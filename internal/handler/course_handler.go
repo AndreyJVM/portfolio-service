@@ -18,11 +18,11 @@ func (h *Handler) CoursesList(w http.ResponseWriter, r *http.Request) {
 		Courses []model.Course
 	}{
 		Meta: model.MetaData{
-			Title:         "Курсы и Треки обучения DevOps",
-			Description:   "Бесплатные структурированные уроки по Linux, Docker, Kubernetes, Ansible и CI/CD.",
-			Keywords:      "курсы devops, linux обучение, docker с нуля, ansible уроки, ci cd github actions",
-			OGTitle:       "Курсы DevOps & Linux Infrastructure",
-			OGDescription: "Изучайте администрирование и автоматизацию инфраструктуры бесплатно на практике.",
+			Title:         "Курсы по Контейнеризации: Docker, Podman, LXC",
+			Description:   "Глубокие практические уроки по Docker, Podman, Quadlet, системным контейнерам LXC и архитектуре ядра.",
+			Keywords:      "курсы docker, podman обучение, lxc контейнеры, cgroups v2, namespaces, container security",
+			OGTitle:       "Курсы по Контейнеризации • Docker, Podman, LXC",
+			OGDescription: "Изучайте архитектуру контейнеров и изоляцию в Linux бесплатно на реальных production-примерах.",
 			OGImage:       "/images/og-main.png",
 			OGURL:         h.baseURL + "/courses",
 			ActiveTab:     "courses",

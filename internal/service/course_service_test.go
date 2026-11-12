@@ -12,13 +12,13 @@ import (
 func TestCourseService(t *testing.T) {
 	// Создаем временную директорию с курсом для тестов
 	tempDir := t.TempDir()
-	linuxDir := filepath.Join(tempDir, "linux")
-	if err := os.MkdirAll(linuxDir, 0755); err != nil {
+	dockerDir := filepath.Join(tempDir, "docker")
+	if err := os.MkdirAll(dockerDir, 0755); err != nil {
 		t.Fatalf("Не удалось создать тестовую папку: %v", err)
 	}
 
-	testMd := "# Тестовый урок Linux\nПример содержимого урока с кодом `ls -la` и описанием."
-	if err := os.WriteFile(filepath.Join(linuxDir, "01-test-lesson.md"), []byte(testMd), 0644); err != nil {
+	testMd := "# Тестовый урок Docker\nПример содержимого урока с кодом `docker run` и описанием."
+	if err := os.WriteFile(filepath.Join(dockerDir, "01-test-lesson.md"), []byte(testMd), 0644); err != nil {
 		t.Fatalf("Не удалось записать тестовый md: %v", err)
 	}
 
@@ -29,34 +29,34 @@ func TestCourseService(t *testing.T) {
 		if len(courses) == 0 {
 			t.Errorf("Ожидался непустой список курсов")
 		}
-		// Проверяем, что для linux количество уроков подсчитано верно (1)
-		var foundLinux bool
+		// Проверяем, что для docker количество уроков подсчитано верно (1)
+		var foundDocker bool
 		for _, c := range courses {
-			if c.Slug == "linux" {
-				foundLinux = true
+			if c.Slug == "docker" {
+				foundDocker = true
 				if c.LessonCount != 1 {
-					t.Errorf("Ожидался 1 урок для linux, получено: %d", c.LessonCount)
+					t.Errorf("Ожидался 1 урок для docker, получено: %d", c.LessonCount)
 				}
 			}
 		}
-		if !foundLinux {
-			t.Errorf("Курс linux не найден в списке курсов")
+		if !foundDocker {
+			t.Errorf("Курс docker не найден в списке курсов")
 		}
 	})
 
 	t.Run("GetCourseBySlug - Found", func(t *testing.T) {
-		course, err := cs.GetCourseBySlug("linux")
+		course, err := cs.GetCourseBySlug("docker")
 		if err != nil {
 			t.Fatalf("Ошибка получения курса: %v", err)
 		}
-		if course.Slug != "linux" {
-			t.Errorf("Ожидался slug linux, получено: %s", course.Slug)
+		if course.Slug != "docker" {
+			t.Errorf("Ожидался slug docker, получено: %s", course.Slug)
 		}
 		if len(course.Lessons) != 1 {
 			t.Errorf("Ожидался 1 урок, получено: %d", len(course.Lessons))
 		}
-		if course.Lessons[0].Title != "Тестовый урок Linux" {
-			t.Errorf("Ожидался заголовок из markdown 'Тестовый урок Linux', получено: '%s'", course.Lessons[0].Title)
+		if course.Lessons[0].Title != "Тестовый урок Docker" {
+			t.Errorf("Ожидался заголовок из markdown 'Тестовый урок Docker', получено: '%s'", course.Lessons[0].Title)
 		}
 	})
 
@@ -68,7 +68,7 @@ func TestCourseService(t *testing.T) {
 	})
 
 	t.Run("GetLesson - Success and Cache", func(t *testing.T) {
-		course, lesson, err := cs.GetLesson("linux", "01-test-lesson")
+		course, lesson, err := cs.GetLesson("docker", "01-test-lesson")
 		if err != nil {
 			t.Fatalf("Ошибка получения урока: %v", err)
 		}
@@ -78,15 +78,15 @@ func TestCourseService(t *testing.T) {
 		if lesson.Slug != "01-test-lesson" {
 			t.Errorf("Ожидался slug 01-test-lesson, получено: %s", lesson.Slug)
 		}
-		if lesson.Title != "Тестовый урок Linux" {
-			t.Errorf("Ожидался заголовок 'Тестовый урок Linux', получено: '%s'", lesson.Title)
+		if lesson.Title != "Тестовый урок Docker" {
+			t.Errorf("Ожидался заголовок 'Тестовый урок Docker', получено: '%s'", lesson.Title)
 		}
 		if lesson.ContentHTML == "" {
 			t.Errorf("Ожидался отрендеренный HTML контент урока")
 		}
 
 		// Повторный вызов должен возвращать закэшированный экземпляр
-		course2, lesson2, err2 := cs.GetLesson("linux", "01-test-lesson")
+		course2, lesson2, err2 := cs.GetLesson("docker", "01-test-lesson")
 		if err2 != nil || course2 == nil || lesson2 != lesson {
 			t.Errorf("Ожидалось получение того же инстанса из кэша")
 		}
@@ -100,7 +100,7 @@ func TestCourseService(t *testing.T) {
 	})
 
 	t.Run("GetLesson - Missing Lesson", func(t *testing.T) {
-		_, _, err := cs.GetLesson("linux", "non-existent-lesson")
+		_, _, err := cs.GetLesson("docker", "non-existent-lesson")
 		if err == nil {
 			t.Errorf("Ожидалась ошибка для несуществующего урока")
 		}
@@ -114,12 +114,12 @@ func TestCourseService(t *testing.T) {
 
 		var hasCourse, hasLesson bool
 		for _, item := range index {
-			if item.Type == "course" && item.CourseSlug == "linux" {
+			if item.Type == "course" && item.CourseSlug == "docker" {
 				hasCourse = true
 			}
-			if item.Type == "lesson" && item.CourseSlug == "linux" && item.LessonSlug == "01-test-lesson" {
+			if item.Type == "lesson" && item.CourseSlug == "docker" && item.LessonSlug == "01-test-lesson" {
 				hasLesson = true
-				if item.Title != "Тестовый урок Linux" {
+				if item.Title != "Тестовый урок Docker" {
 					t.Errorf("Неверный заголовок в индексе: %s", item.Title)
 				}
 				if !strings.Contains(item.Snippet, "Пример содержимого урока") {
@@ -129,7 +129,7 @@ func TestCourseService(t *testing.T) {
 		}
 
 		if !hasCourse {
-			t.Errorf("Курс linux не попал в индекс поиска")
+			t.Errorf("Курс docker не попал в индекс поиска")
 		}
 		if !hasLesson {
 			t.Errorf("Урок 01-test-lesson не попал в индекс поиска")
@@ -242,7 +242,7 @@ func TestPathTraversal_Attacks(t *testing.T) {
 
 	for _, slug := range maliciousLessonSlugs {
 		t.Run("Lesson slug traversal: "+slug, func(t *testing.T) {
-			_, _, err := cs.GetLesson("linux", slug)
+			_, _, err := cs.GetLesson("docker", slug)
 			if err == nil {
 				t.Errorf("Уязвимость Path Traversal: вызов с '%s' не вернул ошибку!", slug)
 			}
@@ -250,10 +250,10 @@ func TestPathTraversal_Attacks(t *testing.T) {
 	}
 
 	maliciousCourseSlugs := []string{
-		"../linux",
-		"..\\linux",
-		"/linux",
-		"linux/../../",
+		"../docker",
+		"..\\docker",
+		"/docker",
+		"docker/../../",
 	}
 
 	for _, slug := range maliciousCourseSlugs {
@@ -268,16 +268,16 @@ func TestPathTraversal_Attacks(t *testing.T) {
 
 func TestBuildSearchIndex_MultibyteUTF8(t *testing.T) {
 	tempDir := t.TempDir()
-	linuxDir := filepath.Join(tempDir, "linux")
-	if err := os.MkdirAll(linuxDir, 0755); err != nil {
+	dockerDir := filepath.Join(tempDir, "docker")
+	if err := os.MkdirAll(dockerDir, 0755); err != nil {
 		t.Fatalf("Не удалось создать папку курса: %v", err)
 	}
 
 	// Создаем длинный русский текст (>200 рун), где байтовая граница на 200 байте попадает внутрь двухбайтовой кириллической руны
-	longRussianText := "# Управление памятью и процессами в ядре Linux\n" +
-		strings.Repeat("Операционная система распределяет оперативную память виртуальными страницами через MMU. ", 10)
+	longRussianText := "# Управление памятью и процессами в контейнерах Docker\n" +
+		strings.Repeat("Операционная система распределяет оперативную память виртуальными страницами через cgroups. ", 10)
 
-	lessonFile := filepath.Join(linuxDir, "01-memory-mmu.md")
+	lessonFile := filepath.Join(dockerDir, "01-memory-cgroups.md")
 	if err := os.WriteFile(lessonFile, []byte(longRussianText), 0644); err != nil {
 		t.Fatalf("Не удалось записать тестовый файл: %v", err)
 	}
@@ -287,14 +287,14 @@ func TestBuildSearchIndex_MultibyteUTF8(t *testing.T) {
 
 	var snippet string
 	for _, item := range index {
-		if item.Type == "lesson" && item.LessonSlug == "01-memory-mmu" {
+		if item.Type == "lesson" && item.LessonSlug == "01-memory-cgroups" {
 			snippet = item.Snippet
 			break
 		}
 	}
 
 	if snippet == "" {
-		t.Fatal("Сниппет для 01-memory-mmu не найден в индексе")
+		t.Fatal("Сниппет для 01-memory-cgroups не найден в индексе")
 	}
 
 	if !utf8.ValidString(snippet) {
@@ -314,11 +314,11 @@ func TestBuildSearchIndex_MultibyteUTF8(t *testing.T) {
 
 func TestCourseService_NegativeAndConcurrency(t *testing.T) {
 	tempDir := t.TempDir()
-	linuxDir := filepath.Join(tempDir, "linux")
-	_ = os.MkdirAll(linuxDir, 0755)
+	dockerDir := filepath.Join(tempDir, "docker")
+	_ = os.MkdirAll(dockerDir, 0755)
 
-	content := "# Урок по системным вызовам\nСодержимое урока для тестирования параллельного доступа."
-	_ = os.WriteFile(filepath.Join(linuxDir, "01-syscalls.md"), []byte(content), 0644)
+	content := "# Урок по контейнеризации\nСодержимое урока для тестирования параллельного доступа."
+	_ = os.WriteFile(filepath.Join(dockerDir, "01-containers.md"), []byte(content), 0644)
 
 	cs := NewCourseService(tempDir)
 
@@ -344,7 +344,7 @@ func TestCourseService_NegativeAndConcurrency(t *testing.T) {
 		for i := 0; i < workers; i++ {
 			go func() {
 				defer wg.Done()
-				_, _, _ = cs.GetLesson("linux", "01-syscalls")
+				_, _, _ = cs.GetLesson("docker", "01-containers")
 			}()
 			go func() {
 				defer wg.Done()
