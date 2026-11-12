@@ -35,6 +35,9 @@ func setupTestRouter() *chi.Mux {
 		http.ServeFile(w, r, staticDir+"/favicon.svg")
 	})
 
+	r.Get("/robots.txt", h.RobotsTxt)
+	r.Get("/sitemap.xml", h.SitemapXML)
+
 	r.Get("/", h.Index)
 	r.Get("/courses", h.CoursesList)
 	r.Get("/courses/{courseSlug}", h.CourseDetail)
@@ -62,6 +65,8 @@ func TestHandlers(t *testing.T) {
 	}{
 		{"GET /", "GET", "/", http.StatusOK},
 		{"HEAD /", "HEAD", "/", http.StatusOK},
+		{"GET /robots.txt", "GET", "/robots.txt", http.StatusOK},
+		{"GET /sitemap.xml", "GET", "/sitemap.xml", http.StatusOK},
 		{"GET /courses", "GET", "/courses", http.StatusOK},
 		{"HEAD /courses", "HEAD", "/courses", http.StatusOK},
 		{"GET /courses/linux", "GET", "/courses/linux", http.StatusOK},
@@ -93,6 +98,64 @@ func TestHandlers(t *testing.T) {
 				t.Errorf("%s: ожидался статус %d, получен %d", tt.url, tt.expectedStatus, w.Code)
 			}
 		})
+	}
+}
+
+func TestSEOEndpoints(t *testing.T) {
+	r := setupTestRouter()
+
+	// 1. Тестируем robots.txt
+	reqRobots := httptest.NewRequest("GET", "/robots.txt", nil)
+	wRobots := httptest.NewRecorder()
+	r.ServeHTTP(wRobots, reqRobots)
+
+	if wRobots.Code != http.StatusOK {
+		t.Fatalf("Ожидался статус 200 для /robots.txt, получен %d", wRobots.Code)
+	}
+	if wRobots.Header().Get("Content-Type") != "text/plain; charset=utf-8" {
+		t.Errorf("Неверный Content-Type для robots.txt: %s", wRobots.Header().Get("Content-Type"))
+	}
+	robotsBody := wRobots.Body.String()
+	if !strings.Contains(robotsBody, "Sitemap: https://vorobevaqa.ru/sitemap.xml") {
+		t.Errorf("robots.txt не содержит правильную ссылку на sitemap.xml: %s", robotsBody)
+	}
+
+	// 2. Тестируем динамический sitemap.xml
+	reqSitemap := httptest.NewRequest("GET", "/sitemap.xml", nil)
+	wSitemap := httptest.NewRecorder()
+	r.ServeHTTP(wSitemap, reqSitemap)
+
+	if wSitemap.Code != http.StatusOK {
+		t.Fatalf("Ожидался статус 200 для /sitemap.xml, получен %d", wSitemap.Code)
+	}
+	if !strings.Contains(wSitemap.Header().Get("Content-Type"), "application/xml") {
+		t.Errorf("Неверный Content-Type для sitemap.xml: %s", wSitemap.Header().Get("Content-Type"))
+	}
+
+	sitemapBody := wSitemap.Body.String()
+
+	// Проверяем наличие всех 4 курсов и основных страниц
+	expectedLinks := []string{
+		"https://vorobevaqa.ru/",
+		"https://vorobevaqa.ru/courses",
+		"https://vorobevaqa.ru/projects",
+		"https://vorobevaqa.ru/education",
+		"https://vorobevaqa.ru/qr",
+		"https://vorobevaqa.ru/mustang",
+		"https://vorobevaqa.ru/courses/linux",
+		"https://vorobevaqa.ru/courses/docker",
+		"https://vorobevaqa.ru/courses/ansible",
+		"https://vorobevaqa.ru/courses/cicd",
+		"https://vorobevaqa.ru/courses/linux/01-permissions-and-systemd",
+		"https://vorobevaqa.ru/courses/docker/01-multistage-and-cgroups",
+		"https://vorobevaqa.ru/courses/ansible/01-ansible-basics-and-playbooks",
+		"https://vorobevaqa.ru/courses/cicd/01-github-actions-pipeline",
+	}
+
+	for _, link := range expectedLinks {
+		if !strings.Contains(sitemapBody, "<loc>"+link+"</loc>") {
+			t.Errorf("sitemap.xml не содержит обязательную ссылку: %s", link)
+		}
 	}
 }
 

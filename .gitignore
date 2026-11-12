@@ -1,6 +1,6 @@
 # === Go Build & Binaries ===
 devops-platform
-server
+/server
 qr-service/qr-service
 *.exe
 *.exe~
@@ -28,28 +28,14 @@ deploy.log
 .sts4-cache
 .kotlin
 /nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
+.cache/
 
-# === OS & System ===
+# === OS & Environment ===
 .DS_Store
 Thumbs.db
-
-# === Secrets, Certificates & Environment ===
+*.swp
+*.swo
+*~
 .env
-ssl/
-certbot/
-
-# === Allure & QA Reports ===
-.allure/
-allure-results/
-allure-report/
-
-# === AI Agents & Local Scratchpads ===
-dump.sh
-data.txt
-.gemini/
-.agents/
-skills/
+.env.local
+.env.*.local

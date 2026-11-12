@@ -19,33 +19,26 @@ import (
 func main() {
 	cfg := config.Load()
 
+	// Инициализация сервисного слоя
 	courseService := service.NewCourseService(cfg.ContentDir)
 	integrationsService := service.NewIntegrationsService(cfg.GitHubUser, cfg.DockerUser)
+
+	// Инициализация контроллеров
 	h := handler.NewHandler(courseService, integrationsService, cfg.TemplatesDir, cfg.StaticDir, cfg.AppBaseURL)
 
+	// Настройка роутера chi
 	r := chi.NewRouter()
 
-	// Стандартные эффективные middleware Chi
+	// Middleware стек
 	r.Use(middleware.RequestID)
 	r.Use(middleware.RealIP)
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
-	r.Use(middleware.GetHead)
 	r.Use(middleware.Compress(5))
+	r.Use(middleware.GetHead)
+	r.Use(middleware.Timeout(15 * time.Second))
 
-	// Healthcheck для Docker Compose (совместим с curl /health или /actuator/health)
-	r.Get("/health", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(`{"status":"UP","service":"devops-platform","runtime":"golang"}`))
-	})
-	r.Get("/actuator/health", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(`{"status":"UP","service":"devops-platform","runtime":"golang"}`))
-	})
-
-	// Статические файлы: /css/*, /js/*, /images/*, /pdf/*
+	// Раздача статических файлов (CSS, JS, Favicon, Сертификаты, Резюме)
 	staticFS := http.FileServer(http.Dir(cfg.StaticDir))
 	for _, prefix := range []string{"/css", "/js", "/images", "/pdf"} {
 		prefixPattern := prefix + "/*"
@@ -58,12 +51,10 @@ func main() {
 	r.Get("/favicon.svg", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, cfg.StaticDir+"/favicon.svg")
 	})
-	r.Get("/robots.txt", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, cfg.StaticDir+"/robots.txt")
-	})
-	r.Get("/sitemap.xml", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, cfg.StaticDir+"/sitemap.xml")
-	})
+
+	// Динамические SEO-эндпоинты
+	r.Get("/robots.txt", h.RobotsTxt)
+	r.Get("/sitemap.xml", h.SitemapXML)
 
 	// Страницы платформы
 	r.Get("/", h.Index)
