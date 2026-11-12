@@ -2,8 +2,10 @@ package handler
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"strings"
 	"testing"
 
@@ -484,6 +486,102 @@ func TestTemplateErrors(t *testing.T) {
 	if w.Code != http.StatusInternalServerError {
 		t.Errorf("Ожидался статус 500 при ошибке парсинга шаблона, получен %d", w.Code)
 	}
+}
+
+func TestSecurityHeaders(t *testing.T) {
+	r := setupTestRouter()
+	req := httptest.NewRequest("GET", "/", nil)
+	w := httptest.NewRecorder()
+
+	r.ServeHTTP(w, req)
+
+	if w.Header().Get("X-Content-Type-Options") != "nosniff" {
+		t.Errorf("Ожидался заголовок X-Content-Type-Options: nosniff, получено: %s", w.Header().Get("X-Content-Type-Options"))
+	}
+	if w.Header().Get("X-Frame-Options") != "SAMEORIGIN" {
+		t.Errorf("Ожидался заголовок X-Frame-Options: SAMEORIGIN, получено: %s", w.Header().Get("X-Frame-Options"))
+	}
+	if w.Header().Get("Referrer-Policy") != "strict-origin-when-cross-origin" {
+		t.Errorf("Ожидался заголовок Referrer-Policy: strict-origin-when-cross-origin, получено: %s", w.Header().Get("Referrer-Policy"))
+	}
+}
+
+func TestResumePDF_DownloadAttachment(t *testing.T) {
+	r := setupTestRouter()
+	req := httptest.NewRequest("GET", "/api/pdf/resume?download=true", nil)
+	w := httptest.NewRecorder()
+
+	r.ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("Ожидался статус 200, получен %d", w.Code)
+	}
+
+	disposition := w.Header().Get("Content-Disposition")
+	if !strings.HasPrefix(disposition, "attachment;") {
+		t.Errorf("Ожидался заголовок Content-Disposition c attachment, получено: %s", disposition)
+	}
+}
+
+func TestNoDirListingFS(t *testing.T) {
+	fs := noDirListingFS{fs: http.Dir("../../web/static")}
+
+	t.Run("Open valid regular file", func(t *testing.T) {
+		f, err := fs.Open("/favicon.svg")
+		if err != nil {
+			t.Fatalf("Не удалось открыть favicon.svg: %v", err)
+		}
+		defer f.Close()
+	})
+
+	t.Run("Open directory returns ErrNotExist", func(t *testing.T) {
+		_, err := fs.Open("/css")
+		if !errors.Is(err, os.ErrNotExist) {
+			t.Errorf("Ожидалась ошибка os.ErrNotExist для каталога, получено: %v", err)
+		}
+	})
+
+	t.Run("Open non-existent file returns error", func(t *testing.T) {
+		_, err := fs.Open("/non-existent-file-xyz.txt")
+		if err == nil {
+			t.Errorf("Ожидалась ошибка для несуществующего файла")
+		}
+	})
+}
+
+func TestQRGeneration_FallbackDefault(t *testing.T) {
+	r := setupTestRouter()
+
+	t.Run("GET without text param falls back to baseURL", func(t *testing.T) {
+		req := httptest.NewRequest("GET", "/api/qr?format=json", nil)
+		w := httptest.NewRecorder()
+
+		r.ServeHTTP(w, req)
+
+		if w.Code != http.StatusOK {
+			t.Fatalf("Ожидался статус 200, получен %d", w.Code)
+		}
+
+		var resp map[string]interface{}
+		if err := json.Unmarshal(w.Body.Bytes(), &resp); err != nil {
+			t.Fatalf("Ошибка декодирования JSON: %v", err)
+		}
+		if resp["url"] != "https://vorobevaqa.ru" {
+			t.Errorf("Ожидался fallback URL https://vorobevaqa.ru, получено: %v", resp["url"])
+		}
+	})
+
+	t.Run("POST with invalid JSON falls back to baseURL", func(t *testing.T) {
+		req := httptest.NewRequest("POST", "/api/qr", strings.NewReader("invalid-json-body"))
+		req.Header.Set("Content-Type", "application/json")
+		w := httptest.NewRecorder()
+
+		r.ServeHTTP(w, req)
+
+		if w.Code != http.StatusOK {
+			t.Fatalf("Ожидался статус 200, получен %d", w.Code)
+		}
+	})
 }
 
 func BenchmarkRenderIndexCached(b *testing.B) {
