@@ -81,3 +81,11 @@ func (h *Handler) renderTemplate(w http.ResponseWriter, templateName string, dat
 		http.Error(w, fmt.Sprintf("Template execution error: %v", err), http.StatusInternalServerError)
 	}
 }
+
+// Health возвращает статус здоровья сервиса для healthcheck (Docker, Nginx, K8s).
+func (h *Handler) Health(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	_, _ = w.Write([]byte(`{"status":"UP","service":"portfolio-service"}`))
+}
+

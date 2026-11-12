@@ -8,7 +8,6 @@ import (
 	"testing"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
 	"ru.vorobevaqa/devops-platform/internal/model"
 	"ru.vorobevaqa/devops-platform/internal/service"
 )
@@ -18,42 +17,7 @@ func setupTestRouter() *chi.Mux {
 	is := service.NewIntegrationsService("AndreyJVM", "andreyvorobevaqa")
 	staticDir := "../../web/static"
 	h := NewHandler(cs, is, "../../web/templates", staticDir, "https://vorobevaqa.ru")
-
-	r := chi.NewRouter()
-	r.Use(middleware.GetHead)
-
-	// Статические файлы
-	staticFS := http.FileServer(http.Dir(staticDir))
-	for _, prefix := range []string{"/css", "/js", "/images", "/pdf"} {
-		prefixPattern := prefix + "/*"
-		r.Handle(prefixPattern, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Cache-Control", "public, max-age=86400")
-			staticFS.ServeHTTP(w, r)
-		}))
-	}
-
-	r.Get("/favicon.svg", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, staticDir+"/favicon.svg")
-	})
-
-	r.Get("/robots.txt", h.RobotsTxt)
-	r.Get("/sitemap.xml", h.SitemapXML)
-
-	r.Get("/", h.Index)
-	r.Get("/courses", h.CoursesList)
-	r.Get("/courses/{courseSlug}", h.CourseDetail)
-	r.Get("/courses/{courseSlug}/{lessonSlug}", h.Lesson)
-	r.Get("/projects", h.Projects)
-	r.Get("/education", h.Education)
-	r.Get("/about", h.RedirectAbout)
-	r.Get("/qr", h.QRPage)
-	r.Get("/mustang", h.Mustang)
-	r.Get("/api/search", h.SearchAPI)
-	r.Get("/api/qr", h.GenerateQREndpoint)
-	r.Post("/api/qr", h.GenerateQREndpoint)
-	r.Get("/api/pdf/resume", h.ResumePDF)
-	r.Get("/api/pdf/health", h.PdfHealth)
-	return r
+	return NewRouter(h, staticDir)
 }
 
 func TestHandlers(t *testing.T) {
@@ -67,6 +31,10 @@ func TestHandlers(t *testing.T) {
 	}{
 		{"GET /", "GET", "/", http.StatusOK},
 		{"HEAD /", "HEAD", "/", http.StatusOK},
+		{"GET /health", "GET", "/health", http.StatusOK},
+		{"GET /api/health", "GET", "/api/health", http.StatusOK},
+		{"GET /favicon.svg", "GET", "/favicon.svg", http.StatusOK},
+		{"GET /css/ directory listing forbidden", "GET", "/css/", http.StatusNotFound},
 		{"GET /robots.txt", "GET", "/robots.txt", http.StatusOK},
 		{"GET /sitemap.xml", "GET", "/sitemap.xml", http.StatusOK},
 		{"GET /api/search", "GET", "/api/search", http.StatusOK},
@@ -75,6 +43,8 @@ func TestHandlers(t *testing.T) {
 		{"HEAD /courses", "HEAD", "/courses", http.StatusOK},
 		{"GET /courses/linux", "GET", "/courses/linux", http.StatusOK},
 		{"GET /courses/linux/01-permissions-and-systemd", "GET", "/courses/linux/01-permissions-and-systemd", http.StatusOK},
+		{"GET /courses/linux/02-networking-and-firewalls", "GET", "/courses/linux/02-networking-and-firewalls", http.StatusOK},
+		{"GET /courses/linux/03-processes-and-system-limits", "GET", "/courses/linux/03-processes-and-system-limits", http.StatusOK},
 		{"GET /courses/docker", "GET", "/courses/docker", http.StatusOK},
 		{"GET /courses/docker/01-multistage-and-cgroups", "GET", "/courses/docker/01-multistage-and-cgroups", http.StatusOK},
 		{"GET /courses/ansible", "GET", "/courses/ansible", http.StatusOK},

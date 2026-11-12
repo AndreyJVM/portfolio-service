@@ -2,113 +2,86 @@ package main
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"log"
+	"net"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
 	"ru.vorobevaqa/devops-platform/internal/config"
 	"ru.vorobevaqa/devops-platform/internal/handler"
 	"ru.vorobevaqa/devops-platform/internal/service"
 )
 
+// validateDirs проверяет наличие обязательных директорий ресурсов при старте сервиса.
+func validateDirs(dirs ...string) error {
+	for _, dir := range dirs {
+		info, err := os.Stat(dir)
+		if err != nil {
+			return fmt.Errorf("каталог '%s' недоступен: %w", dir, err)
+		}
+		if !info.IsDir() {
+			return fmt.Errorf("путь '%s' не является каталогом", dir)
+		}
+	}
+	return nil
+}
+
 func main() {
 	cfg := config.Load()
+
+	// Валидация существования необходимых ресурсов
+	if err := validateDirs(cfg.ContentDir, cfg.TemplatesDir, cfg.StaticDir); err != nil {
+		log.Printf("⚠️ Предупреждение о путях конфигурации: %v", err)
+	}
 
 	// Инициализация сервисного слоя
 	courseService := service.NewCourseService(cfg.ContentDir)
 	integrationsService := service.NewIntegrationsService(cfg.GitHubUser, cfg.DockerUser)
 
-	// Инициализация контроллеров
+	// Инициализация контроллеров и роутера
 	h := handler.NewHandler(courseService, integrationsService, cfg.TemplatesDir, cfg.StaticDir, cfg.AppBaseURL)
-
-	// Настройка роутера chi
-	r := chi.NewRouter()
-
-	// Middleware стек
-	r.Use(middleware.RequestID)
-	r.Use(middleware.RealIP)
-	r.Use(middleware.Logger)
-	r.Use(middleware.Recoverer)
-	r.Use(middleware.Compress(5))
-	r.Use(middleware.GetHead)
-	r.Use(middleware.Timeout(15 * time.Second))
-
-	// Раздача статических файлов (CSS, JS, Favicon, Сертификаты, Резюме)
-	staticFS := http.FileServer(http.Dir(cfg.StaticDir))
-	for _, prefix := range []string{"/css", "/js", "/images", "/pdf"} {
-		prefixPattern := prefix + "/*"
-		r.Handle(prefixPattern, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Cache-Control", "public, max-age=86400")
-			staticFS.ServeHTTP(w, r)
-		}))
-	}
-
-	r.Get("/favicon.svg", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, cfg.StaticDir+"/favicon.svg")
-	})
-
-	// Динамические SEO-эндпоинты
-	r.Get("/robots.txt", h.RobotsTxt)
-	r.Get("/sitemap.xml", h.SitemapXML)
-
-	// Страницы платформы
-	r.Get("/", h.Index)
-	r.Get("/courses", h.CoursesList)
-	r.Get("/courses/{courseSlug}", h.CourseDetail)
-	r.Get("/courses/{courseSlug}/{lessonSlug}", h.Lesson)
-
-	r.Get("/projects", h.Projects)
-	r.Get("/education", h.Education)
-	r.Get("/about", h.RedirectAbout)
-	r.Get("/qr", h.QRPage)
-	r.Get("/mustang", h.Mustang)
-
-	// Полнотекстовый поиск по материалам и урокам
-	r.Get("/api/search", h.SearchAPI)
-
-	// API генерации QR-кодов (Go native engine)
-	r.Get("/api/qr", h.GenerateQREndpoint)
-	r.Post("/api/qr", h.GenerateQREndpoint)
-
-	// API PDF резюме
-	r.Get("/api/pdf/resume", h.ResumePDF)
-	r.Get("/api/pdf/health", h.PdfHealth)
+	router := handler.NewRouter(h, cfg.StaticDir)
 
 	server := &http.Server{
-		Addr:         ":" + cfg.Port,
-		Handler:      r,
-		ReadTimeout:  10 * time.Second,
-		WriteTimeout: 15 * time.Second,
-		IdleTimeout:  60 * time.Second,
+		Addr:              net.JoinHostPort("", cfg.Port),
+		Handler:           router,
+		ReadHeaderTimeout: 5 * time.Second,
+		ReadTimeout:       10 * time.Second,
+		WriteTimeout:      15 * time.Second,
+		IdleTimeout:       60 * time.Second,
 	}
 
-	// Graceful shutdown
-	serverCtx, serverStopCtx := context.WithCancel(context.Background())
-	sig := make(chan os.Signal, 1)
-	signal.Notify(sig, syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
+	// Graceful shutdown на базе signal.NotifyContext
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM, syscall.SIGQUIT)
+	defer stop()
 
+	serverErr := make(chan error, 1)
 	go func() {
-		<-sig
-		shutdownCtx, cancel := context.WithTimeout(serverCtx, 10*time.Second)
-		defer cancel()
-
-		log.Println("🛑 Получен сигнал завершения, плавная остановка сервера Go...")
-		if err := server.Shutdown(shutdownCtx); err != nil {
-			log.Printf("Ошибка при остановке сервера: %v\n", err)
+		log.Printf("🚀 DevOps Platform (Go) успешно запущена на http://0.0.0.0:%s\n", cfg.Port)
+		if err := server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			serverErr <- err
 		}
-		serverStopCtx()
 	}()
 
-	log.Printf("🚀 DevOps Platform (Go) успешно запущена на http://0.0.0.0:%s\n", cfg.Port)
-	if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-		log.Fatalf("Ошибка ListenAndServe: %v\n", err)
+	select {
+	case err := <-serverErr:
+		log.Fatalf("❌ Критическая ошибка ListenAndServe: %v\n", err)
+	case <-ctx.Done():
+		log.Println("🛑 Получен сигнал завершения, плавная остановка сервера Go...")
 	}
 
-	<-serverCtx.Done()
-	log.Println("✅ Сервер успешно остановлен.")
+	// Ожидание завершения активных соединений (grace period 10 секунд)
+	shutdownCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	if err := server.Shutdown(shutdownCtx); err != nil {
+		log.Printf("⚠️ Ошибка при остановке сервера: %v\n", err)
+	} else {
+		log.Println("✅ Сервер успешно остановлен.")
+	}
 }

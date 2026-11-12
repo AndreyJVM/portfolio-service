@@ -47,7 +47,7 @@ func NewCourseService(contentDir string) *CourseService {
 
 // GetAllCourses возвращает список всех доступных курсов.
 func (s *CourseService) GetAllCourses() []model.Course {
-	return []model.Course{
+	courses := []model.Course{
 		{
 			ID:          "linux",
 			Slug:        "linux",
@@ -55,8 +55,7 @@ func (s *CourseService) GetAllCourses() []model.Course {
 			Icon:        "fab fa-linux",
 			Color:       "#f59e0b",
 			Level:       "Junior / Middle",
-			LessonCount: 3,
-			Description: "Устройство ОС Linux, работа с ядром, права доступа (chmod, chown), systemd сервисы, cron демоны и автоматизация на Bash.",
+			Description: "Устройство ОС Linux, работа с ядром, права доступа (chmod, chown), systemd сервисы, мониторинг процессов и автоматизация на Bash.",
 			Tags:        []string{"Linux", "Ubuntu", "Bash", "Systemd", "SSH"},
 		},
 		{
@@ -66,7 +65,6 @@ func (s *CourseService) GetAllCourses() []model.Course {
 			Icon:        "fab fa-docker",
 			Color:       "#0284c7",
 			Level:       "Middle",
-			LessonCount: 3,
 			Description: "Многоэтапная сборка (Multi-stage), оптимизация слоев, безопасность, cgroups, неймспейсы ядра и docker-compose оркестрация.",
 			Tags:        []string{"Docker", "Compose", "Containers", "DevOps", "Isolation"},
 		},
@@ -77,7 +75,6 @@ func (s *CourseService) GetAllCourses() []model.Course {
 			Icon:        "fas fa-network-wired",
 			Color:       "#dc2626",
 			Level:       "Middle",
-			LessonCount: 3,
 			Description: "Инфраструктура как код (IaC), декларативные плейбуки, роли, шаблонизация Jinja2, шифрование Ansible Vault и интеграция с CI/CD.",
 			Tags:        []string{"Ansible", "IaC", "Automation", "Galaxy", "YAML"},
 		},
@@ -88,11 +85,16 @@ func (s *CourseService) GetAllCourses() []model.Course {
 			Icon:        "fas fa-infinity",
 			Color:       "#10b981",
 			Level:       "Middle / Senior",
-			LessonCount: 3,
 			Description: "Построение надежных конвейеров сборки, автотесты, публикация в Docker Hub, Zero-Downtime Blue-Green деплой на VDS хостинг.",
 			Tags:        []string{"CI/CD", "GitHub Actions", "GitLab CI", "Blue-Green"},
 		},
 	}
+
+	for i := range courses {
+		courses[i].LessonCount = s.countLessons(courses[i].Slug)
+	}
+
+	return courses
 }
 
 // GetCourseBySlug находит курс по слагу и загружает уроки из каталога content/courses/<slug>.
@@ -144,14 +146,13 @@ func (s *CourseService) GetLesson(courseSlug, lessonSlug string) (*model.Course,
 		return nil, nil, fmt.Errorf("ошибка парсинга markdown: %w", err)
 	}
 
-	title := strings.ReplaceAll(lessonSlug, "-", " ")
-	title = titleCase(title)
+	title := extractTitle(contentBytes, lessonSlug)
 
 	lesson := &model.Lesson{
 		CourseSlug:  courseSlug,
 		Slug:        lessonSlug,
 		Title:       title,
-		Duration:    "15 мин",
+		Duration:    "15-20 мин",
 		Description: "Практическое руководство и лабораторная работа",
 		ContentHTML: buf.String(),
 	}
@@ -219,6 +220,20 @@ func (s *CourseService) BuildSearchIndex() []model.SearchItem {
 	return index
 }
 
+func (s *CourseService) countLessons(slug string) int {
+	entries, err := os.ReadDir(filepath.Join(s.contentDir, slug))
+	if err != nil {
+		return 0
+	}
+	count := 0
+	for _, e := range entries {
+		if !e.IsDir() && strings.HasSuffix(e.Name(), ".md") {
+			count++
+		}
+	}
+	return count
+}
+
 func (s *CourseService) loadLessonsForCourse(courseSlug string) ([]model.Lesson, error) {
 	courseDir := filepath.Join(s.contentDir, courseSlug)
 	entries, err := os.ReadDir(courseDir)
@@ -230,12 +245,8 @@ func (s *CourseService) loadLessonsForCourse(courseSlug string) ([]model.Lesson,
 	for idx, entry := range entries {
 		if !entry.IsDir() && strings.HasSuffix(entry.Name(), ".md") {
 			slug := strings.TrimSuffix(entry.Name(), ".md")
-			title := strings.ReplaceAll(slug, "-", " ")
-			// Убираем числовой префикс если есть (напр. "01 ")
-			if len(title) > 3 && title[2] == ' ' {
-				title = title[3:]
-			}
-			title = titleCase(title)
+			rawBytes, _ := os.ReadFile(filepath.Join(courseDir, entry.Name()))
+			title := extractTitle(rawBytes, slug)
 
 			lessons = append(lessons, model.Lesson{
 				CourseSlug:  courseSlug,
@@ -253,6 +264,22 @@ func (s *CourseService) loadLessonsForCourse(courseSlug string) ([]model.Lesson,
 	})
 
 	return lessons, nil
+}
+
+// extractTitle извлекает заголовок h1 из первой строки markdown или форматирует slug.
+func extractTitle(content []byte, fallbackSlug string) string {
+	lines := strings.Split(string(content), "\n")
+	for _, line := range lines {
+		trimmed := strings.TrimSpace(line)
+		if strings.HasPrefix(trimmed, "# ") {
+			return strings.TrimSpace(strings.TrimPrefix(trimmed, "# "))
+		}
+	}
+	title := strings.ReplaceAll(fallbackSlug, "-", " ")
+	if len(title) > 3 && title[2] == ' ' {
+		title = title[3:]
+	}
+	return titleCase(title)
 }
 
 // titleCase переводит первую букву каждого слова в верхний регистр (замена устаревшего strings.Title).

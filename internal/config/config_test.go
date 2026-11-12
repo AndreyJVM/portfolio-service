@@ -77,3 +77,68 @@ func TestConfig_CustomEnvValues(t *testing.T) {
 		t.Errorf("Ожидался StaticDir '/custom/static', получен '%s'", cfg.StaticDir)
 	}
 }
+
+func TestGetEnvOrDefaults(t *testing.T) {
+	t.Run("fallback when unset", func(t *testing.T) {
+		result := getEnvOrDefault("NON_EXISTING_KEY_12345", "my-default-value")
+		if result != "my-default-value" {
+			t.Errorf("expected 'my-default-value', but got '%s'", result)
+		}
+	})
+
+	t.Run("value when set", func(t *testing.T) {
+		t.Setenv("TEST_EXISTING_VAR", "actual_value")
+		result := getEnvOrDefault("TEST_EXISTING_VAR", "default_val")
+		if result != "actual_value" {
+			t.Errorf("expected 'actual_value', got '%s'", result)
+		}
+	})
+}
+
+func TestGetEnvOrDefault_TableDriven(t *testing.T) {
+	// 1. Описываем колонки и строки нашей таблицы проверок
+	tests := []struct {
+		name        string // Описание тест-кейса
+		envKey      string // Ключ переменной
+		envVal      string // Значение (если пустое — не устанавливаем)
+		fallbackVal string // Дефолтное значение
+		expected    string // Что должна вернуть функция
+	}{
+		{
+			name:        "returns fallback when env var does not exist",
+			envKey:      "TEST_NOT_SET_KEY",
+			envVal:      "",
+			fallbackVal: "default_1",
+			expected:    "default_1",
+		},
+		{
+			name:        "returns env value when set",
+			envKey:      "TEST_SET_KEY",
+			envVal:      "custom_value_42",
+			fallbackVal: "default_1",
+			expected:    "custom_value_42",
+		},
+		{
+			name:        "returns fallback when env var is explicitly empty string",
+			envKey:      "TEST_EMPTY_KEY",
+			envVal:      "",
+			fallbackVal: "fallback_for_empty",
+			expected:    "fallback_for_empty",
+		},
+	}
+
+	// 2. Итерируемся по таблице и запускаем каждый кейс как подтест
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if tt.envVal != "" {
+				t.Setenv(tt.envKey, tt.envVal)
+			}
+
+			actual := getEnvOrDefault(tt.envKey, tt.fallbackVal)
+
+			if actual != tt.expected {
+				t.Errorf("case '%s': expected '%s', got '%s'", tt.name, tt.expected, actual)
+			}
+		})
+	}
+}

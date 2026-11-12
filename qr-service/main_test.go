@@ -216,3 +216,103 @@ func TestMiddlewares(t *testing.T) {
 		t.Errorf("expected body 'OK', got %s", rrGet.Body.String())
 	}
 }
+
+func TestHandleHealth_Detailed(t *testing.T) {
+	// 1. Виртуальный GET запрос к /health
+	req := httptest.NewRequest(http.MethodGet, "/health", nil)
+	rr := httptest.NewRecorder()
+
+	// 2. Вызов хендлера
+	handleHealth(rr, req)
+
+	// 3. Проверка HTTP статус-кода
+	if rr.Code != http.StatusOK {
+		t.Errorf("expected status code %d, got %d", http.StatusOK, rr.Code)
+	}
+
+	// 4. Проверка заголовка Content-Type
+	contentType := rr.Header().Get("Content-Type")
+	expectedContentType := "application/json"
+	if contentType != expectedContentType {
+		t.Errorf("expected Content-Type '%s', got '%s'", expectedContentType, contentType)
+	}
+
+	// 5. Парсинг JSON-ответа
+	var responseBody struct {
+		Service string `json:"service"`
+		Status  string `json:"status"`
+	}
+
+	err := json.Unmarshal(rr.Body.Bytes(), &responseBody)
+	if err != nil {
+		t.Fatalf("failed to parse JSON response: %v", err)
+	}
+
+	// 6. Проверка полей распарсенного JSON
+	if responseBody.Status != "UP" {
+		t.Errorf("expected status 'UP', got '%s'", responseBody.Status)
+	}
+	if responseBody.Service != "qr-service" {
+		t.Errorf("expected service 'qr-service', got '%s'", responseBody.Service)
+	}
+}
+
+func TestHandleGenerateQr_PostSuccess_Detailed(t *testing.T) {
+	// Список различных валидных URL, которые должен поддерживать генератор
+	testCases := []struct {
+		name string
+		url  string
+	}{
+		{
+			name: "primary domain HTTPS",
+			url:  "https://vorobevaqa.ru",
+		},
+		{
+			name: "HTTP with subpath and query parameters",
+			url:  "http://example.com/courses/docker?lesson=1",
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			// 1. Формируем тело запроса безопасно через json.Marshal
+			reqDto := map[string]string{"url": tc.url}
+			jsonBytes, err := json.Marshal(reqDto)
+			if err != nil {
+				t.Fatalf("failed to marshal request: %v", err)
+			}
+
+			// 2. Создаем HTTP POST запрос
+			req := httptest.NewRequest(http.MethodPost, "/api/qr", bytes.NewBuffer(jsonBytes))
+			req.Header.Set("Content-Type", "application/json")
+
+			rr := httptest.NewRecorder()
+			handleGenerateQr(rr, req)
+
+			// 3. Проверяем HTTP статус 200 OK
+			if rr.Code != http.StatusOK {
+				t.Fatalf("expected status 200, got %d. Response: %s", rr.Code, rr.Body.String())
+			}
+
+			// 4. Парсим JSON ответ
+			var resp struct {
+				URL    string `json:"url"`
+				QRCode string `json:"qrCode"`
+			}
+
+			if err := json.Unmarshal(rr.Body.Bytes(), &resp); err != nil {
+				t.Fatalf("failed to decode JSON response: %v", err)
+			}
+
+			// 5. Проверяем, что url в ответе совпадает с переданным tc.url
+			if resp.URL != tc.url {
+				t.Errorf("expected url '%s', got '%s'", tc.url, resp.URL)
+			}
+
+			// 6. Проверяем, что картинка сгенерирована
+			if len(resp.QRCode) == 0 {
+				t.Errorf("expected non-empty qrCode for url '%s'", tc.url)
+			}
+		})
+	}
+}

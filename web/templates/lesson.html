@@ -118,6 +118,93 @@
             <div class="quiz-feedback d-none"></div>
           </div>
 
+          {{else if or (eq .Lesson.Slug "02-networking-and-firewalls") (eq .Lesson.Slug "networking-and-firewalls")}}
+          <!-- Вопрос 1 -->
+          <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q1">
+            <h6 class="fw-bold mb-3">1. Какая команда выведет все слушающие TCP-порты с числовыми значениями и указанием PID процесса?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Флаги -tulpn означают: TCP, UDP, Listening, Process PID и Numeric (без задержек на DNS запросы).">
+                <code>sudo ss -tulpn</code>
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                <code>ping -c 4 localhost</code>
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                <code>traceroute 8.8.8.8</code>
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          <!-- Вопрос 2 -->
+          <div class="quiz-question mb-3 p-3 rounded-3 border bg-body" data-question-id="q2">
+            <h6 class="fw-bold mb-3">2. Что произойдет, если включить UFW (<code>sudo ufw default deny incoming && sudo ufw enable</code>), забыв разрешить SSH?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="UFW заблокирует входящий порт 22, текущая сессия разорвется, и удаленный доступ к серверу будет утерян.">
+                Входящие пакеты на порт 22 будут сброшены, и удаленный доступ к серверу будет потерян
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                UFW автоматически распознает SSH и сделает исключение
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Сервер уйдет в Kernel Panic
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          {{else if or (eq .Lesson.Slug "03-processes-and-system-limits") (eq .Lesson.Slug "processes-and-system-limits")}}
+          <!-- Вопрос 1 -->
+          <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q1">
+            <h6 class="fw-bold mb-3">1. Какой сигнал ядра следует отправлять процессу первым для корректной плавной остановки (Graceful Shutdown)?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="SIGTERM (15) запрашивает штатное завершение, позволяя приложению освободить порты, закрыть соединения и сбросить буферы на диск.">
+                <code>SIGTERM (сигнал 15)</code>
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                <code>SIGKILL (сигнал 9)</code>
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                <code>SIGSTOP (сигнал 19)</code>
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          <!-- Вопрос 2 -->
+          <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q2">
+            <h6 class="fw-bold mb-3">2. Процесс находится в статусе <code>D</code> (Uninterruptible Sleep). Почему команда <code>kill -9</code> не завершает его?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Состояние D означает, что поток заблокирован в ядре в ожидании аппаратного I/O (диск, сеть, NFS). Сигналы не доставляются до выхода из вызова ядра.">
+                Процесс заблокирован ядром в ожидании аппаратного I/O, сигналы откладываются до завершения операции
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                У процесса включен иммунитет в файле /etc/sudoers
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Команда kill -9 требует обязательного указания флага --force
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          <!-- Вопрос 3 -->
+          <div class="quiz-question mb-3 p-3 rounded-3 border bg-body" data-question-id="q3">
+            <h6 class="fw-bold mb-3">3. Сервер сообщает об ошибке <code>socket: too many open files</code>. Какая команда покажет открытые дескрипторы процесса?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Утилита lsof (List Open Files) и каталог /proc/<PID>/fd показывают все открытые процессом сокеты, файлы и пайпы.">
+                <code>sudo lsof -p &lt;PID&gt;</code> или <code>ls -1 /proc/&lt;PID&gt;/fd | wc -l</code>
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                <code>free -m</code>
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                <code>uname -a</code>
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
           {{else if or (eq .Lesson.Slug "01-multistage-and-cgroups") (eq .Lesson.Slug "multistage-and-cgroups")}}
           <!-- Вопрос 1 -->
           <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q1">

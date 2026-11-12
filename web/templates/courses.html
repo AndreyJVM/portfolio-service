@@ -1,51 +1,61 @@
 {{define "content"}}
 <div class="container py-4">
-  <div class="text-center max-w-700 mx-auto mb-5 reveal">
-    <div class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill mb-3">
-      <i class="fas fa-graduation-cap me-1"></i> Бесплатная База Знаний
-    </div>
-    <h1 class="display-5 fw-bold mb-3">Обучающие треки <span class="text-gradient">DevOps & Linux</span></h1>
-    <p class="lead text-body-secondary">
-      Практические уроки, конфигурации и разбор архитектурных паттернов от системного администрирования до production CI/CD.
+  <!-- Лаконичный заголовок страницы без визуального шума -->
+  <div class="max-w-700 mx-auto text-center mb-4">
+    <h1 class="h2 fw-bold mb-2">Курсы DevOps & Linux</h1>
+    <p class="text-body-secondary small mb-0">
+      Практические руководства, разборы production-конфигураций и интерактивные проверочные тесты.
     </p>
   </div>
 
-  <div class="row g-4 mb-5">
+  <!-- Компактная минималистичная сетка курсов -->
+  <div class="row g-3 g-md-4 mb-4">
     {{range .Courses}}
-    <div class="col-lg-6 reveal">
-      <div class="card h-100 border rounded-4 p-4 shadow-sm bento-card d-flex flex-column">
+    <div class="col-md-6">
+      <div class="card h-100 border rounded-3 p-3 p-md-4 shadow-sm d-flex flex-column bg-body">
         <div class="d-flex align-items-center justify-content-between mb-3">
-          <div class="feature-icon-wrapper rounded-3 p-3 text-white" style="background-color: {{.Color}};">
-            <i class="{{.Icon}} fa-2x"></i>
+          <div class="d-flex align-items-center gap-3">
+            <div class="d-flex align-items-center justify-content-center rounded-3 bg-body-tertiary border" style="width: 44px; height: 44px;">
+              <i class="{{.Icon}} fa-lg text-primary"></i>
+            </div>
+            <div>
+              <h5 class="fw-bold mb-0">{{.Title}}</h5>
+              <span class="badge bg-body-tertiary text-body-secondary border-0 fw-normal px-2 py-0 mt-1" style="font-size: 0.75rem;">
+                {{.Level}}
+              </span>
+            </div>
           </div>
-          <span class="badge bg-body-secondary text-body-secondary border">{{.Level}}</span>
         </div>
 
-        <h4 class="fw-bold mb-2">{{.Title}}</h4>
-        <p class="text-body-secondary small flex-grow-1">{{.Description}}</p>
+        <p class="text-body-secondary small mb-3 flex-grow-1" style="line-height: 1.55;">
+          {{.Description}}
+        </p>
 
+        <!-- Неброские теги -->
         <div class="d-flex flex-wrap gap-1 mb-3">
           {{range .Tags}}
-          <span class="badge tech-badge">{{.}}</span>
+          <span class="badge bg-body-tertiary text-body-secondary border-0 fw-normal" style="font-size: 0.72rem;">
+            {{.}}
+          </span>
           {{end}}
         </div>
 
         <!-- Индикатор прогресса обучения -->
-        <div class="course-progress-box mb-3 pt-3 border-top" data-course-progress data-course-slug="{{.Slug}}" data-total-lessons="{{.LessonCount}}">
+        <div class="course-progress-box mb-3 pt-2 border-top" data-course-progress data-course-slug="{{.Slug}}" data-total-lessons="{{.LessonCount}}">
           <div class="d-flex justify-content-between align-items-center mb-1">
-            <span class="small text-muted">
-              <i class="fas fa-book-open me-1"></i>Уроков: <span class="course-progress-count">0 из {{.LessonCount}}</span>
+            <span class="small text-muted" style="font-size: 0.78rem;">
+              <i class="far fa-circle-check me-1"></i>Пройдено: <span class="course-progress-count">0 из {{.LessonCount}}</span>
             </span>
-            <span class="small fw-semibold text-primary course-progress-label">0%</span>
+            <span class="small fw-semibold text-primary course-progress-label" style="font-size: 0.78rem;">0%</span>
           </div>
-          <div class="progress" style="height: 6px; background-color: rgba(var(--bs-primary-rgb), 0.1);">
+          <div class="progress" style="height: 4px; background-color: rgba(var(--bs-primary-rgb), 0.1);">
             <div class="progress-bar bg-success" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
           </div>
         </div>
 
-        <div class="d-flex align-items-center justify-content-between pt-2">
-          <a href="/courses/{{.Slug}}" class="btn btn-primary rounded-pill px-4 w-100">
-            Перейти к курсу <i class="fas fa-arrow-right ms-1"></i>
+        <div class="pt-1">
+          <a href="/courses/{{.Slug}}" class="btn btn-sm btn-outline-primary rounded-pill w-100 py-2">
+            Открыть программу <i class="fas fa-arrow-right ms-1"></i>
           </a>
         </div>
       </div>
