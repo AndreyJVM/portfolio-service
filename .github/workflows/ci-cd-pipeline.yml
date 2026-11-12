@@ -102,7 +102,7 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Scan DevOps Platform image with Trivy (Security Gate)
-        uses: aquasecurity/trivy-action@v0.29.0
+        uses: aquasecurity/trivy-action@0.35.0
         with:
           image-ref: '${{ env.DOCKER_IMAGE_NAME }}:${{ github.sha }}'
           format: 'table'
@@ -161,7 +161,7 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Scan QR Service image with Trivy (Security Gate)
-        uses: aquasecurity/trivy-action@v0.29.0
+        uses: aquasecurity/trivy-action@0.35.0
         with:
           image-ref: '${{ env.QR_SERVICE_IMAGE_NAME }}:${{ github.sha }}'
           format: 'table'
