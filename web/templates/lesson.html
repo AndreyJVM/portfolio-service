@@ -239,6 +239,58 @@
             <div class="quiz-feedback d-none"></div>
           </div>
 
+          {{else if or (eq .Lesson.Slug "04-volumes-and-data-persistence") (eq .Lesson.Slug "volumes-and-data-persistence")}}
+          <!-- Вопрос 1 -->
+          <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q1">
+            <h6 class="fw-bold mb-3">1. Почему при монтировании папки хоста (Bind Mount) база данных часто падает с ошибкой <code>Permission Denied</code>?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Linux проверяет доступ по числовым UID/GID. Папка на хосте принадлежит вашему пользователю (например UID 1000), а процесс СУБД в контейнере запущен под своим пользователем (например postgres с UID 999), у которого нет прав записи в каталог хоста.">
+                Несовпадение числовых идентификаторов UID/GID: процесс в контейнере работает под пользователем (например UID 999), у которого нет прав на запись в каталог хоста
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Docker блокирует запись в любые папки хоста по умолчанию через профиль AppArmor
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Файловая система хоста автоматически блокирует сокеты при обнаружении демона dockerd
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          <!-- Вопрос 2 -->
+          <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q2">
+            <h6 class="fw-bold mb-3">2. Чем поведение именованного тома (Named Volume) отличается от Bind Mount при первом монтировании в непустой каталог контейнера?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Если именованный том пуст, Docker автоматически копирует в него начальные файлы и выставляет правильные права владельца из образа. Bind Mount же наглухо перекрывает (маскирует) содержимое папки в контейнере содержимым папки хоста.">
+                Если именованный том пуст, Docker автоматически скопирует в него файлы и права из образа, а Bind Mount просто перекроет содержимое каталога контейнера
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Именованный том всегда шифрует файлы алгоритмом AES-256
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Bind Mount запрещает удаление файлов, пока контейнер работает
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          <!-- Вопрос 3 -->
+          <div class="quiz-question mb-3 p-3 rounded-3 border bg-body" data-question-id="q3">
+            <h6 class="fw-bold mb-3">3. Удалятся ли именованные тома с данными, если выполнить стандартную команду <code>docker compose down</code>?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Стандартный docker compose down удаляет только контейнеры и сети. Тома намеренно сохраняются, чтобы избежать случайной потери данных. Для их удаления требуется явно указать флаг -v (docker compose down -v).">
+                Нет: тома намеренно сохраняются для защиты от потери данных; для их удаления требуется передать флаг <code>-v</code>
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Да: команда down безвозвратно удаляет все ресурсы, включая тома и образы
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Тома удалятся, только если размер контейнера превышает 1 ГБ
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
           {{else if or (eq .Lesson.Slug "01-permissions-and-systemd") (eq .Lesson.Slug "permissions-and-systemd")}}
           <!-- Вопрос 1 -->
           <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q1">
