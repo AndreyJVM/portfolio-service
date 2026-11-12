@@ -101,6 +101,16 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+      - name: Scan DevOps Platform image with Trivy (Security Gate)
+        uses: aquasecurity/trivy-action@0.29.0
+        with:
+          image-ref: '${{ env.DOCKER_IMAGE_NAME }}:${{ github.sha }}'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
+
   build-and-push-qr:
     name: Build & Push QR Service
     needs: detect-changes
@@ -149,6 +159,16 @@ jobs:
             ${{ env.QR_SERVICE_IMAGE_NAME }}:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Scan QR Service image with Trivy (Security Gate)
+        uses: aquasecurity/trivy-action@0.29.0
+        with:
+          image-ref: '${{ env.QR_SERVICE_IMAGE_NAME }}:${{ github.sha }}'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
 
   deploy-to-vds:
     name: Zero-Downtime Deploy to VDS
