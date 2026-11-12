@@ -178,6 +178,8 @@ func TestSEOEndpoints(t *testing.T) {
 		"https://vorobevaqa.ru/courses/lxc",
 		"https://vorobevaqa.ru/courses/internals",
 		"https://vorobevaqa.ru/courses/docker/01-architecture-and-first-dockerfile",
+		"https://vorobevaqa.ru/courses/docker/02-multistage-and-cgroups",
+		"https://vorobevaqa.ru/courses/docker/03-docker-compose-and-networking",
 		"https://vorobevaqa.ru/courses/podman/01-podman-rootless-and-daemonless",
 		"https://vorobevaqa.ru/courses/lxc/01-lxc-and-system-containers",
 		"https://vorobevaqa.ru/courses/internals/01-namespaces-and-cgroups-v2",
@@ -407,6 +409,15 @@ func TestLearningProgressUI(t *testing.T) {
 	}
 	if !strings.Contains(tbodyLesson, "quiz-option-btn") {
 		t.Errorf("Страница урока не содержит вариантов ответов quiz-option-btn")
+	}
+
+	// 4. Проверяем интерактивный квиз на уроке 02 (Multi-stage)
+	reqLesson2 := httptest.NewRequest("GET", "/courses/docker/02-multistage-and-cgroups", nil)
+	wLesson2 := httptest.NewRecorder()
+	r.ServeHTTP(wLesson2, reqLesson2)
+	tbodyLesson2 := wLesson2.Body.String()
+	if !strings.Contains(tbodyLesson2, "quiz-option-btn") {
+		t.Errorf("Страница урока 02 не содержит вариантов ответов quiz-option-btn")
 	}
 }
 

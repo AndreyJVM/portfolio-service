@@ -135,6 +135,58 @@
             <div class="quiz-feedback d-none"></div>
           </div>
 
+          {{else if or (eq .Lesson.Slug "02-multistage-and-cgroups") (eq .Lesson.Slug "multistage-and-cgroups")}}
+          <!-- Вопрос 1 -->
+          <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q1">
+            <h6 class="fw-bold mb-3">1. Что представляет собой базовый образ <code>FROM scratch</code> в Dockerfile?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="scratch — это зарезервированное псевдо-имя Docker, обозначающее абсолютно пустую файловую систему (0 байт) без утилит, ядра и libc. Идеально подходит для статически скомпилированных бинарников на Go/Rust.">
+                Абсолютно пустая файловая система (0 байт) без оболочки (/bin/sh), пакетного менеджера и библиотек libc
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Минималистичный дистрибутив Alpine Linux без пакетного менеджера apk
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Специальный образ Ubuntu, подготовленный для компиляции исходников
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          <!-- Вопрос 2 -->
+          <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q2">
+            <h6 class="fw-bold mb-3">2. Зачем при компиляции Go-бинарника для минимальных контейнеров передаются флаги <code>CGO_ENABLED=0</code> и <code>-ldflags="-w -s"</code>?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="CGO_ENABLED=0 выключает зависимость от системного glibc и генерирует полностью автономный статический бинарник. Флаги -w -s вырезают DWARF-отладку и таблицу символов, уменьшая размер файла на 25–35%.">
+                <code>CGO_ENABLED=0</code> собирает полностью автономный статический бинарник без зависимости от системных C-библиотек (glibc/musl), а <code>-w -s</code> удаляет отладочные символы, сокращая размер файла
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Для включения многопоточной компиляции и автоматического запуска от non-root пользователя
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Чтобы упаковать бинарник в UPX-архив перед записью в образ
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          <!-- Вопрос 3 -->
+          <div class="quiz-question mb-3 p-3 rounded-3 border bg-body" data-question-id="q3">
+            <h6 class="fw-bold mb-3">3. В чем ключевое преимущество образов Google Distroless по сравнению со стандартными образами Debian/Ubuntu?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Distroless содержит только runtime и glibc/сертификаты, но в нем нет шеллов (/bin/sh, bash) и утилит (curl, wget). Если в приложении найдут уязвимость, злоумышленник не сможет выполнить системные команды оболочки.">
+                В образе отсутствуют шелл (/bin/sh, bash) и системные утилиты, что блокирует большинство векторов атак при RCE-уязвимостях
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Distroless автоматически перезапускает упавшие процессы без помощи systemd
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Distroless не требует директивы ENTRYPOINT и запускает бинарники по умолчанию
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
           {{else if or (eq .Lesson.Slug "01-permissions-and-systemd") (eq .Lesson.Slug "permissions-and-systemd")}}
           <!-- Вопрос 1 -->
           <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q1">
