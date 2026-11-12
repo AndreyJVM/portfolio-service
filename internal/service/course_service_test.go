@@ -195,3 +195,53 @@ func TestExtractTitleAndTitleCase(t *testing.T) {
 		}
 	})
 }
+
+func TestPathTraversal_Attacks(t *testing.T) {
+	tempDir := t.TempDir()
+	linuxDir := filepath.Join(tempDir, "linux")
+	if err := os.MkdirAll(linuxDir, 0755); err != nil {
+		t.Fatalf("Не удалось создать тестовую папку: %v", err)
+	}
+
+	// Создаем секретный файл вне каталога курса
+	secretFile := filepath.Join(tempDir, "secret.md")
+	if err := os.WriteFile(secretFile, []byte("# SECRET TOKEN"), 0644); err != nil {
+		t.Fatalf("Не удалось записать secret.md: %v", err)
+	}
+
+	cs := NewCourseService(tempDir)
+
+	maliciousLessonSlugs := []string{
+		"../../secret",
+		"../secret",
+		"..\\secret",
+		"/etc/passwd",
+		"sub/lesson",
+		"nested\\lesson",
+	}
+
+	for _, slug := range maliciousLessonSlugs {
+		t.Run("Lesson slug traversal: "+slug, func(t *testing.T) {
+			_, _, err := cs.GetLesson("linux", slug)
+			if err == nil {
+				t.Errorf("Уязвимость Path Traversal: вызов с '%s' не вернул ошибку!", slug)
+			}
+		})
+	}
+
+	maliciousCourseSlugs := []string{
+		"../linux",
+		"..\\linux",
+		"/linux",
+		"linux/../../",
+	}
+
+	for _, slug := range maliciousCourseSlugs {
+		t.Run("Course slug traversal: "+slug, func(t *testing.T) {
+			_, err := cs.GetCourseBySlug(slug)
+			if err == nil {
+				t.Errorf("Уязвимость Path Traversal: вызов с '%s' не вернул ошибку!", slug)
+			}
+		})
+	}
+}

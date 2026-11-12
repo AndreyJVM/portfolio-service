@@ -55,9 +55,14 @@ func (h *Handler) GenerateQREndpoint(w http.ResponseWriter, r *http.Request) {
 		text = h.baseURL
 	}
 
+	if len(text) > 2048 {
+		http.Error(w, "Слишком длинный текст для QR-кода (максимум 2048 символов)", http.StatusBadRequest)
+		return
+	}
+
 	pngBytes, err := qrcode.Encode(text, qrcode.Medium, 256)
 	if err != nil {
-		http.Error(w, "Не удалось сгенерировать QR-код", http.StatusInternalServerError)
+		http.Error(w, "Не удалось сгенерировать QR-код: невалидные данные", http.StatusBadRequest)
 		return
 	}
 

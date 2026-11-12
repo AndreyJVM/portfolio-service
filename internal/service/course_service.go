@@ -99,6 +99,10 @@ func (s *CourseService) GetAllCourses() []model.Course {
 
 // GetCourseBySlug находит курс по слагу и загружает уроки из каталога content/courses/<slug>.
 func (s *CourseService) GetCourseBySlug(slug string) (*model.Course, error) {
+	if strings.Contains(slug, "..") || strings.ContainsAny(slug, `/\`) {
+		return nil, fmt.Errorf("недопустимый идентификатор курса: %s", slug)
+	}
+
 	courses := s.GetAllCourses()
 	var foundCourse *model.Course
 	for i := range courses {
@@ -122,9 +126,19 @@ func (s *CourseService) GetCourseBySlug(slug string) (*model.Course, error) {
 
 // GetLesson загружает конкретный урок курса и парсит Markdown в HTML с кэшированием в памяти.
 func (s *CourseService) GetLesson(courseSlug, lessonSlug string) (*model.Course, *model.Lesson, error) {
+	if strings.Contains(lessonSlug, "..") || strings.ContainsAny(lessonSlug, `/\`) {
+		return nil, nil, fmt.Errorf("недопустимый идентификатор урока: %s", lessonSlug)
+	}
+
 	course, err := s.GetCourseBySlug(courseSlug)
 	if err != nil {
 		return nil, nil, err
+	}
+
+	courseDir := filepath.Clean(filepath.Join(s.contentDir, courseSlug))
+	lessonPath := filepath.Clean(filepath.Join(courseDir, lessonSlug+".md"))
+	if !strings.HasPrefix(lessonPath, courseDir+string(filepath.Separator)) {
+		return nil, nil, fmt.Errorf("попытка выхода за пределы каталога курса")
 	}
 
 	cacheKey := courseSlug + "/" + lessonSlug
@@ -135,7 +149,6 @@ func (s *CourseService) GetLesson(courseSlug, lessonSlug string) (*model.Course,
 	}
 	s.lessonMu.RUnlock()
 
-	lessonPath := filepath.Join(s.contentDir, courseSlug, lessonSlug+".md")
 	contentBytes, err := os.ReadFile(lessonPath)
 	if err != nil {
 		return nil, nil, fmt.Errorf("урок '%s' не найден: %w", lessonSlug, err)

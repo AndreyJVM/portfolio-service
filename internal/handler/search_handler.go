@@ -31,6 +31,14 @@ func (h *Handler) SearchAPI(w http.ResponseWriter, r *http.Request) {
 	searchIndexMu.RUnlock()
 
 	searchIndexMu.Lock()
+	// Double-Checked Locking: проверяем, не построил ли индекс другой параллельный запрос
+	if len(searchIndexCache) > 0 && time.Since(lastIndexBuild) < 1*time.Hour {
+		items := searchIndexCache
+		searchIndexMu.Unlock()
+		h.respondSearch(w, r, items)
+		return
+	}
+
 	searchIndexCache = h.courseService.BuildSearchIndex()
 	lastIndexBuild = time.Now()
 	items := searchIndexCache
@@ -41,6 +49,10 @@ func (h *Handler) SearchAPI(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handler) respondSearch(w http.ResponseWriter, r *http.Request, items []model.SearchItem) {
 	query := strings.TrimSpace(strings.ToLower(r.URL.Query().Get("q")))
+	// Ограничиваем длину поискового запроса для предотвращения CPU exhaustion
+	if len(query) > 128 {
+		query = query[:128]
+	}
 
 	var result []model.SearchItem
 	if query == "" {

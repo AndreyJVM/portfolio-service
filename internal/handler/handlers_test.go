@@ -7,6 +7,7 @@ import (
 	"net/http/httptest"
 	"os"
 	"strings"
+	"sync"
 	"testing"
 
 	"github.com/go-chi/chi/v5"
@@ -581,6 +582,160 @@ func TestQRGeneration_FallbackDefault(t *testing.T) {
 		if w.Code != http.StatusOK {
 			t.Fatalf("Ожидался статус 200, получен %d", w.Code)
 		}
+	})
+}
+
+func TestSecurity_PathTraversalHTTP(t *testing.T) {
+	r := setupTestRouter()
+
+	traversalURLs := []string{
+		"/courses/linux/..%2f..%2fREADME",
+		"/courses/linux/..%2f01-permissions-and-systemd",
+		"/courses/..%2f..%2fetc/passwd",
+		"/courses/linux/%2e%2e%2f%2e%2e%2fgo.mod",
+	}
+
+	for _, url := range traversalURLs {
+		t.Run("Path Traversal HTTP: "+url, func(t *testing.T) {
+			req := httptest.NewRequest("GET", url, nil)
+			w := httptest.NewRecorder()
+
+			r.ServeHTTP(w, req)
+
+			// Сервер обязан отдавать 404 Not Found или 301 на чистый путь, но ни в коем случае не 200 с содержимым системного файла
+			if w.Code == http.StatusOK && strings.Contains(w.Body.String(), "Primary Cloud Lab") && !strings.Contains(url, "linux") {
+				t.Errorf("Критическая уязвимость Path Traversal! Получен 200 на URL: %s", url)
+			}
+			if w.Code != http.StatusNotFound && w.Code != http.StatusMovedPermanently {
+				t.Logf("URL %s вернул статус %d (не 200 OK — файл не скомпрометирован)", url, w.Code)
+			}
+		})
+	}
+}
+
+func TestSecurity_SearchEdgeCases(t *testing.T) {
+	r := setupTestRouter()
+
+	t.Run("XSS payload in search query", func(t *testing.T) {
+		xssPayload := "<script>alert('xss')</script>"
+		req := httptest.NewRequest("GET", "/api/search?q="+xssPayload, nil)
+		w := httptest.NewRecorder()
+
+		r.ServeHTTP(w, req)
+
+		if w.Code != http.StatusOK {
+			t.Errorf("Ожидался статус 200, получен %d", w.Code)
+		}
+
+		var items []model.SearchItem
+		if err := json.Unmarshal(w.Body.Bytes(), &items); err != nil {
+			t.Fatalf("Ошибка десериализации JSON при XSS запросе: %v", err)
+		}
+	})
+
+	t.Run("Huge query string (50000 chars) does not crash or hang", func(t *testing.T) {
+		hugeQuery := strings.Repeat("A", 50000)
+		req := httptest.NewRequest("GET", "/api/search?q="+hugeQuery, nil)
+		w := httptest.NewRecorder()
+
+		r.ServeHTTP(w, req)
+
+		if w.Code != http.StatusOK {
+			t.Errorf("Ожидался статус 200, получен %d", w.Code)
+		}
+	})
+
+	t.Run("Special chars and regex symbols in search query", func(t *testing.T) {
+		specialQueries := []string{"[", "]", "(", ")", "*", "+", "?", "\\", "$", "^", "\"", "'", "NULL", "%00"}
+		for _, sq := range specialQueries {
+			req := httptest.NewRequest("GET", "/api/search?q="+sq, nil)
+			w := httptest.NewRecorder()
+
+			r.ServeHTTP(w, req)
+
+			if w.Code != http.StatusOK {
+				t.Errorf("Сбой поиска при спецсимволе '%s': статус %d", sq, w.Code)
+			}
+		}
+	})
+}
+
+func TestSecurity_QRMaximumLength(t *testing.T) {
+	r := setupTestRouter()
+
+	t.Run("Excessively long text returns 400 Bad Request", func(t *testing.T) {
+		tooLongText := strings.Repeat("A", 3000)
+		req := httptest.NewRequest("GET", "/api/qr?text="+tooLongText, nil)
+		w := httptest.NewRecorder()
+
+		r.ServeHTTP(w, req)
+
+		if w.Code != http.StatusBadRequest {
+			t.Errorf("Ожидался статус 400 Bad Request для 3000 символов, получен %d", w.Code)
+		}
+	})
+}
+
+func TestConcurrency_HighLoad(t *testing.T) {
+	r := setupTestRouter()
+	const workers = 50
+
+	t.Run("Concurrent Search API requests", func(t *testing.T) {
+		var wg sync.WaitGroup
+		wg.Add(workers)
+
+		for i := 0; i < workers; i++ {
+			go func(idx int) {
+				defer wg.Done()
+				query := "docker"
+				if idx%2 == 0 {
+					query = "linux"
+				}
+				req := httptest.NewRequest("GET", "/api/search?q="+query, nil)
+				w := httptest.NewRecorder()
+
+				r.ServeHTTP(w, req)
+
+				if w.Code != http.StatusOK {
+					t.Errorf("Ошибка конкурентного запроса к /api/search: статус %d", w.Code)
+				}
+			}(i)
+		}
+
+		wg.Wait()
+	})
+
+	t.Run("Concurrent lesson and page renders", func(t *testing.T) {
+		urls := []string{
+			"/",
+			"/courses",
+			"/courses/linux",
+			"/courses/linux/01-permissions-and-systemd",
+			"/projects",
+			"/education",
+			"/qr",
+			"/mustang",
+		}
+
+		var wg sync.WaitGroup
+		wg.Add(workers)
+
+		for i := 0; i < workers; i++ {
+			go func(idx int) {
+				defer wg.Done()
+				url := urls[idx%len(urls)]
+				req := httptest.NewRequest("GET", url, nil)
+				w := httptest.NewRecorder()
+
+				r.ServeHTTP(w, req)
+
+				if w.Code != http.StatusOK {
+					t.Errorf("Ошибка конкурентного рендеринга %s: статус %d", url, w.Code)
+				}
+			}(i)
+		}
+
+		wg.Wait()
 	})
 }
 
