@@ -187,6 +187,58 @@
             <div class="quiz-feedback d-none"></div>
           </div>
 
+          {{else if or (eq .Lesson.Slug "03-docker-compose-and-networking") (eq .Lesson.Slug "docker-compose-and-networking")}}
+          <!-- Вопрос 1 -->
+          <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q1">
+            <h6 class="fw-bold mb-3">1. В чем главная опасность директивы <code>ports: ["5432:5432"]</code> для контейнера базы данных в продакшне?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="ports пробрасывает порт на внешний интерфейс хоста (0.0.0.0), делая базу открытой для брутфорса из интернета. Внутри сети Compose порт и так доступен по DNS-имени сервиса (db:5432) без всякого проброса наружу.">
+                Порт публикуется на внешнем сетевом интерфейсе сервера (0.0.0.0), открывая базу данных для атак из публичного интернета
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Docker запрещает запускать базы данных с открытыми портами из-за ограничений лицензии
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Это замедляет дисковые транзакции PostgreSQL в 10 раз из-за проверки контрольных сумм
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          <!-- Вопрос 2 -->
+          <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q2">
+            <h6 class="fw-bold mb-3">2. Чем отличается <code>depends_on: [db]</code> от расширенной формы с <code>condition: service_healthy</code>?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Обычный depends_on ждет только создания контейнера (PID запущен). Но СУБД может инициализировать таблицы еще 10-20 секунд. condition: service_healthy ждет, пока команда healthcheck (например pg_isready) вернет статус 0.">
+                Простой <code>depends_on</code> ждет лишь старта процесса (PID), а <code>condition: service_healthy</code> ожидает успешного прохождения проверки readiness (готовности принимать запросы)
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                condition: service_healthy автоматически перезапускает сервер при нехватке памяти
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Простой depends_on работает только в режиме Docker Swarm
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          <!-- Вопрос 3 -->
+          <div class="quiz-question mb-3 p-3 rounded-3 border bg-body" data-question-id="q3">
+            <h6 class="fw-bold mb-3">3. Что произойдет на сервере при утечке памяти в контейнере, если для него явно задан лимит <code>deploy.resources.limits.memory: 256M</code>?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Благодаря cgroups ядро Linux активирует OOM Killer изолированно для контрольной группы этого контейнера (код 137). Хостовая ОС, sshd, dockerd и соседние сервисы остаются стабильными и не падают.">
+                Ядро Linux изолированно убьет (OOM) только процесс внутри контейнера (exit 137), защитив хост и критичные службы (sshd, dockerd) от падения
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Вся операционная система хоста уйдет в Kernel Panic
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Контейнер автоматически перенесет излишки памяти в файл подкачки /swapfile на хосте
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
           {{else if or (eq .Lesson.Slug "01-permissions-and-systemd") (eq .Lesson.Slug "permissions-and-systemd")}}
           <!-- Вопрос 1 -->
           <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q1">

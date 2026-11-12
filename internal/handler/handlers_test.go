@@ -419,6 +419,15 @@ func TestLearningProgressUI(t *testing.T) {
 	if !strings.Contains(tbodyLesson2, "quiz-option-btn") {
 		t.Errorf("Страница урока 02 не содержит вариантов ответов quiz-option-btn")
 	}
+
+	// 5. Проверяем интерактивный квиз на уроке 03 (Compose & Networks)
+	reqLesson3 := httptest.NewRequest("GET", "/courses/docker/03-docker-compose-and-networking", nil)
+	wLesson3 := httptest.NewRecorder()
+	r.ServeHTTP(wLesson3, reqLesson3)
+	tbodyLesson3 := wLesson3.Body.String()
+	if !strings.Contains(tbodyLesson3, "quiz-option-btn") {
+		t.Errorf("Страница урока 03 не содержит вариантов ответов quiz-option-btn")
+	}
 }
 
 func TestQRJsonEndpoint(t *testing.T) {
