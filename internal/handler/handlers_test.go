@@ -54,6 +54,7 @@ func TestHandlers(t *testing.T) {
 		{"GET /courses/docker/04-volumes-and-data-persistence", "GET", "/courses/docker/04-volumes-and-data-persistence", http.StatusOK},
 		{"GET /courses/docker/05-container-security-and-hardening", "GET", "/courses/docker/05-container-security-and-hardening", http.StatusOK},
 		{"GET /courses/docker/06-logging-diagnostics-and-daemon-tuning", "GET", "/courses/docker/06-logging-diagnostics-and-daemon-tuning", http.StatusOK},
+		{"GET /courses/docker/07-multiarch-buildx-and-cicd", "GET", "/courses/docker/07-multiarch-buildx-and-cicd", http.StatusOK},
 		{"GET /courses/podman", "GET", "/courses/podman", http.StatusOK},
 		{"GET /courses/podman/01-podman-rootless-and-daemonless", "GET", "/courses/podman/01-podman-rootless-and-daemonless", http.StatusOK},
 		{"GET /courses/lxc", "GET", "/courses/lxc", http.StatusOK},
@@ -186,6 +187,7 @@ func TestSEOEndpoints(t *testing.T) {
 		"https://vorobevaqa.ru/courses/docker/04-volumes-and-data-persistence",
 		"https://vorobevaqa.ru/courses/docker/05-container-security-and-hardening",
 		"https://vorobevaqa.ru/courses/docker/06-logging-diagnostics-and-daemon-tuning",
+		"https://vorobevaqa.ru/courses/docker/07-multiarch-buildx-and-cicd",
 		"https://vorobevaqa.ru/courses/podman/01-podman-rootless-and-daemonless",
 		"https://vorobevaqa.ru/courses/lxc/01-lxc-and-system-containers",
 		"https://vorobevaqa.ru/courses/internals/01-namespaces-and-cgroups-v2",
@@ -460,6 +462,15 @@ func TestLearningProgressUI(t *testing.T) {
 	tbodyLesson6 := wLesson6.Body.String()
 	if !strings.Contains(tbodyLesson6, "quiz-option-btn") {
 		t.Errorf("Страница урока 06 не содержит вариантов ответов quiz-option-btn")
+	}
+
+	// 9. Проверяем интерактивный квиз на уроке 07 (Multi-arch & CI/CD)
+	reqLesson7 := httptest.NewRequest("GET", "/courses/docker/07-multiarch-buildx-and-cicd", nil)
+	wLesson7 := httptest.NewRecorder()
+	r.ServeHTTP(wLesson7, reqLesson7)
+	tbodyLesson7 := wLesson7.Body.String()
+	if !strings.Contains(tbodyLesson7, "quiz-option-btn") {
+		t.Errorf("Страница урока 07 не содержит вариантов ответов quiz-option-btn")
 	}
 }
 

@@ -395,6 +395,58 @@
             <div class="quiz-feedback d-none"></div>
           </div>
 
+          {{else if or (eq .Lesson.Slug "07-multiarch-buildx-and-cicd") (eq .Lesson.Slug "multiarch-buildx-and-cicd")}}
+          <!-- Вопрос 1 -->
+          <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q1">
+            <h6 class="fw-bold mb-3">1. За счет чего один и тот же тег образа (например <code>golang:alpine</code>) прозрачно работает и на x86_64 серверах, и на процессорах Apple Silicon / ARM?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="OCI Image Index (манифест-лист) выступает каталогом, связывающим один тег с несколькими манифестами. При pull Docker daemon запрашивает манифест, считывает архитектуру хоста и скачивает только подходящие слои.">
+                Благодаря OCI Image Index (манифест-листу), связывающему единый тег с отдельными манифестами и слоями под каждую архитектуру
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Ядро Linux выполняет динамическую декомпиляцию бинарного кода в реальном времени
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Образ содержит виртуальную машину Java (JVM), которая исполняет универсальный байткод
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          <!-- Вопрос 2 -->
+          <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q2">
+            <h6 class="fw-bold mb-3">2. Почему при мультиплатформенной сборке <code>docker buildx build --platform linux/amd64,linux/arm64</code> обязателен флаг <code>--push</code>?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Локальный Docker daemon хранит образы только одной текущей архитектуры хоста. Мультиплатформенный манифест-лист формируется BuildKit и загружается напрямую в OCI-совместимый Container Registry.">
+                Локальный Docker daemon не умеет хранить мульти-архитектурные манифест-листы в локальном кэше, поэтому результат загружается сразу в реестр
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Без флага --push Buildx собирает только код на языке C++
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Флаг --push необходим для валидации лицензии Docker Pro
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          <!-- Вопрос 3 -->
+          <div class="quiz-question mb-3 p-3 rounded-3 border bg-body" data-question-id="q3">
+            <h6 class="fw-bold mb-3">3. Что дает директива <code>cache-to: type=gha,mode=max</code> в GitHub Actions пайплайне сборки?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Режим mode=max инструктирует BuildKit экспортировать в кэш не только финальный слой образа, но и промежуточные слои всех стадий Multi-stage сборки (компиляция, кэш зависимостей), ускоряя последующие сборки в разы.">
+                Экспортирует в кэш GitHub Actions промежуточные слои всех стадий Multi-stage билда, ускоряя повторные CI-прогоны
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Увеличивает объем оперативной памяти runner'а до максимума
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Шифрует кэш квантово-устойчивым алгоритмом
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
           {{else if or (eq .Lesson.Slug "01-permissions-and-systemd") (eq .Lesson.Slug "permissions-and-systemd")}}
           <!-- Вопрос 1 -->
           <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q1">
