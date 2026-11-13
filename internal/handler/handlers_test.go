@@ -61,6 +61,7 @@ func TestHandlers(t *testing.T) {
 		{"GET /courses/lxc/01-lxc-and-system-containers", "GET", "/courses/lxc/01-lxc-and-system-containers", http.StatusOK},
 		{"GET /courses/lxc/02-storage-pools-zfs-and-snapshots", "GET", "/courses/lxc/02-storage-pools-zfs-and-snapshots", http.StatusOK},
 		{"GET /courses/lxc/03-networking-bridge-macvlan-and-proxy", "GET", "/courses/lxc/03-networking-bridge-macvlan-and-proxy", http.StatusOK},
+		{"GET /courses/lxc/04-profiles-cgroups-and-autostart", "GET", "/courses/lxc/04-profiles-cgroups-and-autostart", http.StatusOK},
 		{"GET /courses/internals", "GET", "/courses/internals", http.StatusOK},
 		{"GET /courses/internals/01-namespaces-and-cgroups-v2", "GET", "/courses/internals/01-namespaces-and-cgroups-v2", http.StatusOK},
 		{"GET /projects", "GET", "/projects", http.StatusOK},
@@ -194,6 +195,7 @@ func TestSEOEndpoints(t *testing.T) {
 		"https://vorobevaqa.ru/courses/lxc/01-lxc-and-system-containers",
 		"https://vorobevaqa.ru/courses/lxc/02-storage-pools-zfs-and-snapshots",
 		"https://vorobevaqa.ru/courses/lxc/03-networking-bridge-macvlan-and-proxy",
+		"https://vorobevaqa.ru/courses/lxc/04-profiles-cgroups-and-autostart",
 		"https://vorobevaqa.ru/courses/internals/01-namespaces-and-cgroups-v2",
 	}
 
@@ -502,6 +504,15 @@ func TestLearningProgressUI(t *testing.T) {
 	tbodyLxc3 := wLxc3.Body.String()
 	if !strings.Contains(tbodyLxc3, "quiz-option-btn") {
 		t.Errorf("Страница урока LXC 03 не содержит вариантов ответов quiz-option-btn")
+	}
+
+	// 13. Проверяем интерактивный квиз на уроке LXC 04 (Profiles & Cgroups)
+	reqLxc4 := httptest.NewRequest("GET", "/courses/lxc/04-profiles-cgroups-and-autostart", nil)
+	wLxc4 := httptest.NewRecorder()
+	r.ServeHTTP(wLxc4, reqLxc4)
+	tbodyLxc4 := wLxc4.Body.String()
+	if !strings.Contains(tbodyLxc4, "quiz-option-btn") {
+		t.Errorf("Страница урока LXC 04 не содержит вариантов ответов quiz-option-btn")
 	}
 }
 

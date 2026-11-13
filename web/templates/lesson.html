@@ -603,6 +603,58 @@
             <div class="quiz-feedback d-none"></div>
           </div>
 
+          {{else if or (eq .Lesson.Slug "04-profiles-cgroups-and-autostart") (eq .Lesson.Slug "profiles-cgroups-and-autostart")}}
+          <!-- Вопрос 1 -->
+          <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q1">
+            <h6 class="fw-bold mb-3">1. Зачем для высоконагруженных СУБД (PostgreSQL, ClickHouse) в контейнерах настраивают CPU Pinning (<code>limits.cpu: "0,1,2,3"</code>)?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="CPU Pinning жестко привязывает контейнер к конкретным физическим ядрам процессора и NUMA-узлам, исключая миграцию потоков между ядрами и сохраняя прогретые L1/L2/L3 кэши процессора.">
+                Чтобы жестко привязать процессы к конкретным ядрам, предотвращая сброс процессорных кэшей L3 и межъядерное переключение контекста
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Для автоматического разгона тактовой частоты процессора до максимума
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Чтобы скрыть факт использования базы данных от хостовой операционной системы
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          <!-- Вопрос 2 -->
+          <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q2">
+            <h6 class="fw-bold mb-3">2. От какой проблемы защищает директива <code>boot.autostart.delay: 15</code> при перезагрузке физического сервера?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Без задержки все контейнеры стартуют одновременно, создавая пиковую дисковую нагрузку (I/O storm) и замедляя загрузку сервера. Параметр delay разносит запуск групп контейнеров во времени.">
+                Предотвращает дисковый «I/O шторм», разнося одновременный старт десятков операционных систем во времени
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Предотвращает утечку оперативной памяти в ядре Linux
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Дает время системному администратору вручную подтвердить загрузку по SSH
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          <!-- Вопрос 3 -->
+          <div class="quiz-question mb-3 p-3 rounded-3 border bg-body" data-question-id="q3">
+            <h6 class="fw-bold mb-3">3. Как объединить базовый профиль сети/диска <code>default</code> и профиль продакшен-лимитов <code>production</code> при запуске контейнера?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Incus поддерживает многократное указание флага -p: настройки и устройства объединяются, а при коллизиях приоритет имеет профиль, указанный правее.">
+                Передать несколько флагов <code>-p</code>: <code>incus launch images:ubuntu/24.04 my-app -p default -p production</code>
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Склеить файлы профилей вручную через утилиту cat
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Один контейнер может использовать строго один профиль
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
           {{else if or (eq .Lesson.Slug "01-permissions-and-systemd") (eq .Lesson.Slug "permissions-and-systemd")}}
           <!-- Вопрос 1 -->
           <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q1">
