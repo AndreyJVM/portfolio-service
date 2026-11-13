@@ -53,6 +53,7 @@ func TestHandlers(t *testing.T) {
 		{"GET /courses/docker/03-docker-compose-and-networking", "GET", "/courses/docker/03-docker-compose-and-networking", http.StatusOK},
 		{"GET /courses/docker/04-volumes-and-data-persistence", "GET", "/courses/docker/04-volumes-and-data-persistence", http.StatusOK},
 		{"GET /courses/docker/05-container-security-and-hardening", "GET", "/courses/docker/05-container-security-and-hardening", http.StatusOK},
+		{"GET /courses/docker/06-logging-diagnostics-and-daemon-tuning", "GET", "/courses/docker/06-logging-diagnostics-and-daemon-tuning", http.StatusOK},
 		{"GET /courses/podman", "GET", "/courses/podman", http.StatusOK},
 		{"GET /courses/podman/01-podman-rootless-and-daemonless", "GET", "/courses/podman/01-podman-rootless-and-daemonless", http.StatusOK},
 		{"GET /courses/lxc", "GET", "/courses/lxc", http.StatusOK},
@@ -184,6 +185,7 @@ func TestSEOEndpoints(t *testing.T) {
 		"https://vorobevaqa.ru/courses/docker/03-docker-compose-and-networking",
 		"https://vorobevaqa.ru/courses/docker/04-volumes-and-data-persistence",
 		"https://vorobevaqa.ru/courses/docker/05-container-security-and-hardening",
+		"https://vorobevaqa.ru/courses/docker/06-logging-diagnostics-and-daemon-tuning",
 		"https://vorobevaqa.ru/courses/podman/01-podman-rootless-and-daemonless",
 		"https://vorobevaqa.ru/courses/lxc/01-lxc-and-system-containers",
 		"https://vorobevaqa.ru/courses/internals/01-namespaces-and-cgroups-v2",
@@ -449,6 +451,15 @@ func TestLearningProgressUI(t *testing.T) {
 	tbodyLesson5 := wLesson5.Body.String()
 	if !strings.Contains(tbodyLesson5, "quiz-option-btn") {
 		t.Errorf("Страница урока 05 не содержит вариантов ответов quiz-option-btn")
+	}
+
+	// 8. Проверяем интерактивный квиз на уроке 06 (Logging & Diagnostics)
+	reqLesson6 := httptest.NewRequest("GET", "/courses/docker/06-logging-diagnostics-and-daemon-tuning", nil)
+	wLesson6 := httptest.NewRecorder()
+	r.ServeHTTP(wLesson6, reqLesson6)
+	tbodyLesson6 := wLesson6.Body.String()
+	if !strings.Contains(tbodyLesson6, "quiz-option-btn") {
+		t.Errorf("Страница урока 06 не содержит вариантов ответов quiz-option-btn")
 	}
 }
 

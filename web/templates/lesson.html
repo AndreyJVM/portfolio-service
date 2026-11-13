@@ -343,6 +343,58 @@
             <div class="quiz-feedback d-none"></div>
           </div>
 
+          {{else if or (eq .Lesson.Slug "06-logging-diagnostics-and-daemon-tuning") (eq .Lesson.Slug "logging-diagnostics-and-daemon-tuning")}}
+          <!-- Вопрос 1 -->
+          <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q1">
+            <h6 class="fw-bold mb-3">1. Зачем в конфигурации <code>/etc/docker/daemon.json</code> включают параметр <code>"live-restore": true</code>?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="По умолчанию перезапуск демона dockerd останавливает все запущенные контейнеры. Директива live-restore: true сохраняет containerd-shim и оставляет контейнеры запущенными без простоя клиентского трафика при обновлении Docker.">
+                Чтобы контейнеры продолжали работать и обслуживать трафик во время перезапуска или обновления демона dockerd
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Для автоматического восстановления удаленных томов из облачной копии
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Для непрерывного горячего обновления ядра Linux без перезагрузки хоста
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          <!-- Вопрос 2 -->
+          <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q2">
+            <h6 class="fw-bold mb-3">2. Контейнер завершил работу с <code>Exit Code 137</code>. Какова наиболее частая причина в продакшене?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Exit Code 137 означает 128 + 9 (SIGKILL). В подавляющем большинстве случаев это означает OOMKilled — ядро Linux принудительно убило процесс за превышение cgroups-лимита памяти (проверяется через State.OOMKilled в docker inspect).">
+                Процесс убит ядром по сигналу SIGKILL (128 + 9) из-за OOMKilled (превышение выделенного лимита памяти)
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                В контейнере произошла ошибка монтирования внешнего тома
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Истек срок действия SSL-сертификата веб-сервера
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          <!-- Вопрос 3 -->
+          <div class="quiz-question mb-3 p-3 rounded-3 border bg-body" data-question-id="q3">
+            <h6 class="fw-bold mb-3">3. Как провести диагностику портов и сети в hardening-контейнере на базе <code>Scratch</code> или <code>Distroless</code>, где нет командной оболочки sh/bash и утилит netstat?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Утилита nsenter позволяет подключиться к любому пространству имен (Network, Mount, PID) существующего процесса. Узнав PID процесса через docker inspect, инженер использует nsenter -t $PID -n <утилита_хоста> без изменения контейнера.">
+                Узнать хостовый PID контейнера через <code>docker inspect</code> и выполнить диагностику утилитами хоста через <code>nsenter -t $PID -n &lt;команда&gt;</code>
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Пересобрать образ с флагом <code>--with-debug-tools</code> на продакшене
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Запустить <code>docker exec -it &lt;id&gt; apt-get install iproute2</code>
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
           {{else if or (eq .Lesson.Slug "01-permissions-and-systemd") (eq .Lesson.Slug "permissions-and-systemd")}}
           <!-- Вопрос 1 -->
           <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q1">
