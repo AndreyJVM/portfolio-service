@@ -52,6 +52,7 @@ func TestHandlers(t *testing.T) {
 		{"GET /courses/docker/02-multistage-and-cgroups", "GET", "/courses/docker/02-multistage-and-cgroups", http.StatusOK},
 		{"GET /courses/docker/03-docker-compose-and-networking", "GET", "/courses/docker/03-docker-compose-and-networking", http.StatusOK},
 		{"GET /courses/docker/04-volumes-and-data-persistence", "GET", "/courses/docker/04-volumes-and-data-persistence", http.StatusOK},
+		{"GET /courses/docker/05-container-security-and-hardening", "GET", "/courses/docker/05-container-security-and-hardening", http.StatusOK},
 		{"GET /courses/podman", "GET", "/courses/podman", http.StatusOK},
 		{"GET /courses/podman/01-podman-rootless-and-daemonless", "GET", "/courses/podman/01-podman-rootless-and-daemonless", http.StatusOK},
 		{"GET /courses/lxc", "GET", "/courses/lxc", http.StatusOK},
@@ -182,6 +183,7 @@ func TestSEOEndpoints(t *testing.T) {
 		"https://vorobevaqa.ru/courses/docker/02-multistage-and-cgroups",
 		"https://vorobevaqa.ru/courses/docker/03-docker-compose-and-networking",
 		"https://vorobevaqa.ru/courses/docker/04-volumes-and-data-persistence",
+		"https://vorobevaqa.ru/courses/docker/05-container-security-and-hardening",
 		"https://vorobevaqa.ru/courses/podman/01-podman-rootless-and-daemonless",
 		"https://vorobevaqa.ru/courses/lxc/01-lxc-and-system-containers",
 		"https://vorobevaqa.ru/courses/internals/01-namespaces-and-cgroups-v2",
@@ -438,6 +440,15 @@ func TestLearningProgressUI(t *testing.T) {
 	tbodyLesson4 := wLesson4.Body.String()
 	if !strings.Contains(tbodyLesson4, "quiz-option-btn") {
 		t.Errorf("Страница урока 04 не содержит вариантов ответов quiz-option-btn")
+	}
+
+	// 7. Проверяем интерактивный квиз на уроке 05 (Security & Hardening)
+	reqLesson5 := httptest.NewRequest("GET", "/courses/docker/05-container-security-and-hardening", nil)
+	wLesson5 := httptest.NewRecorder()
+	r.ServeHTTP(wLesson5, reqLesson5)
+	tbodyLesson5 := wLesson5.Body.String()
+	if !strings.Contains(tbodyLesson5, "quiz-option-btn") {
+		t.Errorf("Страница урока 05 не содержит вариантов ответов quiz-option-btn")
 	}
 }
 

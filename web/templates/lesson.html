@@ -291,6 +291,58 @@
             <div class="quiz-feedback d-none"></div>
           </div>
 
+          {{else if or (eq .Lesson.Slug "05-container-security-and-hardening") (eq .Lesson.Slug "container-security-and-hardening")}}
+          <!-- Вопрос 1 -->
+          <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q1">
+            <h6 class="fw-bold mb-3">1. Какая стратегия настройки Linux Capabilities считается эталонной для продакшн-контейнеров?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Правило наименьших привилегий: сбросить абсолютно все capabilities ядра через cap_drop: [ALL] и точечно вернуть в cap_add только то, без чего приложение не может работать (например, NET_BIND_SERVICE).">
+                Сбросить все возможности ядра через <code>cap_drop: [ALL]</code> и вернуть только минимально необходимые в <code>cap_add</code>
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Использовать флаг <code>privileged: true</code> для автоматического согласования прав
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Оставить дефолтный набор Capabilities без изменений, так как они зашифрованы в Docker daemon
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          <!-- Вопрос 2 -->
+          <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q2">
+            <h6 class="fw-bold mb-3">2. От какой угрозы защищает директива <code>security_opt: ["no-new-privileges:true"]</code>?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Параметр PR_SET_NO_NEW_PRIVS в ядре Linux запрещает процессу и его потомкам повышать привилегии через SUID/SGID бинарники (например, попытка выполнить sudo или запуск созданного злоумышленником SUID-файла).">
+                Запрещает процессам повышать свои привилегии через исполнение SUID-бинарников (например, sudo)
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Блокирует создание новых входящих сетевых соединений из внешней сети
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Запрещает запуск более одного контейнера на физическом сервере
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          <!-- Вопрос 3 -->
+          <div class="quiz-question mb-3 p-3 rounded-3 border bg-body" data-question-id="q3">
+            <h6 class="fw-bold mb-3">3. Что делает параметр <code>--exit-code 1</code> при запуске сканера Trivy в GitHub Actions CI/CD пайплайне?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Флаг exit-code 1 заставляет Trivy вернуть ненулевой код возврата при нахождении уязвимостей заданного уровня, что приводит к падению шага Action и блокирует автоматический деплой опасного образа.">
+                Завершает шаг сканирования ошибкой (Exit Code 1) при обнаружении критических CVE, прерывая пайплайн и блокируя деплой
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Автоматически патчит уязвимый Dockerfile и перезапускает сборку
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Отправляет отчет об уязвимостях в базу данных NVD
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
           {{else if or (eq .Lesson.Slug "01-permissions-and-systemd") (eq .Lesson.Slug "permissions-and-systemd")}}
           <!-- Вопрос 1 -->
           <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q1">
