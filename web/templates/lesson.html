@@ -551,6 +551,58 @@
             <div class="quiz-feedback d-none"></div>
           </div>
 
+          {{else if or (eq .Lesson.Slug "03-networking-bridge-macvlan-and-proxy") (eq .Lesson.Slug "networking-bridge-macvlan-and-proxy")}}
+          <!-- Вопрос 1 -->
+          <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q1">
+            <h6 class="fw-bold mb-3">1. В чем главное преимущество сетевого драйвера <code>macvlan</code> перед стандартным мостом <code>incusbr0</code>?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Macvlan выделяет контейнеру собственный MAC-адрес и подключает его напрямую к физическому коммутатору/роутеру, позволяя получать реальные IP-адреса локальной сети без NAT.">
+                Контейнер получает собственный уникальный MAC-адрес и реальный IP от физического роутера локальной сети без NAT
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Macvlan увеличивает скорость шифрования VPN в 10 раз
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Macvlan полностью отключает брандмауэр на физическом роутере
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          <!-- Вопрос 2 -->
+          <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q2">
+            <h6 class="fw-bold mb-3">2. С помощью какого штатного механизма Incus публикует порты контейнера наружу без редактирования iptables?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Устройства типа proxy (incus config device add <ct> <name> proxy listen=... connect=...) пересылают TCP/UDP сокеты с хоста в контейнер автоматически.">
+                С помощью виртуального устройства типа <code>proxy</code> (<code>incus config device add ... proxy listen=... connect=...</code>)
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Через перепрошивку сетевой карты утилитой ethtool
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                С помощью ручного изменения исходного кода ядра Linux
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          <!-- Вопрос 3 -->
+          <div class="quiz-question mb-3 p-3 rounded-3 border bg-body" data-question-id="q3">
+            <h6 class="fw-bold mb-3">3. Какое ограничение накладывает сетевой драйвер <code>macvlan</code> в ядре Linux?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Политика безопасности ядра Linux изолирует физический интерфейс хоста от дочерних macvlan-подинтерфейсов, поэтому хост и контейнер не могут пинговать друг друга напрямую (но видны всем остальным машинам в сети).">
+                Сам физический хост и запущенный на нем macvlan-контейнер не могут обмениваться пакетами напрямую без вспомогательного интерфейса
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Контейнер теряет способность обрабатывать TCP-пакеты
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                В контейнере блокируется протокол DNS
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
           {{else if or (eq .Lesson.Slug "01-permissions-and-systemd") (eq .Lesson.Slug "permissions-and-systemd")}}
           <!-- Вопрос 1 -->
           <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q1">
