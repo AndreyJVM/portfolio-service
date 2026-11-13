@@ -447,6 +447,58 @@
             <div class="quiz-feedback d-none"></div>
           </div>
 
+          {{else if or (eq .Lesson.Slug "01-lxc-and-system-containers") (eq .Lesson.Slug "lxc-and-system-containers")}}
+          <!-- Вопрос 1 -->
+          <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q1">
+            <h6 class="fw-bold mb-3">1. В чем главное архитектурное отличие системного контейнера LXC/Incus от прикладного контейнера Docker?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="В LXC в качестве PID 1 работает полноценная система инициализации (systemd), управляющая десятками фоновых служб (cron, sshd, rsyslog, journald) и постоянным состоянием диска (stateful), аналогично виртуальной машине.">
+                В LXC процессом PID 1 является полноценный <code>systemd</code>, управляющий деревом системных демонов, а в Docker обычно изолируется один процесс
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                LXC работает только под управлением ОС Windows
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                В LXC запрещено использование сетевого моста
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          <!-- Вопрос 2 -->
+          <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q2">
+            <h6 class="fw-bold mb-3">2. Почему системные контейнеры LXC/Incus работают на порядок быстрее виртуальных машин KVM и потребляют всего 15–35 МБ памяти в простое?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Контейнеры используют единое ядро хоста через namespaces и cgroups v2 напрямую, без прослойки гипервизора, эмуляции виртуального оборудования (BIOS, шина PCI) и запуска второго ядра гостевой ОС.">
+                Они делят единое ядро с хостом через cgroups и namespaces напрямую, без накладных расходов гипервизора и эмуляции оборудования
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                LXC запускает все процессы исключительно в оперативной памяти без записи на диск
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                LXC отключает проверку прав доступа Linux для ускорения вызовов
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          <!-- Вопрос 3 -->
+          <div class="quiz-question mb-3 p-3 rounded-3 border bg-body" data-question-id="q3">
+            <h6 class="fw-bold mb-3">3. Какой независимый проект сообщества Linux Containers является современным открытым преемником и форком LXD?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Проект Incus был создан оригинальными авторами Linux Containers под эгидой сообщества после изменения лицензии и перехода LXD под закрытый контроль Canonical.">
+                <code>Incus</code>
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                <code>Vagrant</code>
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                <code>Hyper-V</code>
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
           {{else if or (eq .Lesson.Slug "01-permissions-and-systemd") (eq .Lesson.Slug "permissions-and-systemd")}}
           <!-- Вопрос 1 -->
           <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q1">

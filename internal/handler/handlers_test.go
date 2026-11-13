@@ -472,6 +472,15 @@ func TestLearningProgressUI(t *testing.T) {
 	if !strings.Contains(tbodyLesson7, "quiz-option-btn") {
 		t.Errorf("Страница урока 07 не содержит вариантов ответов quiz-option-btn")
 	}
+
+	// 10. Проверяем интерактивный квиз на уроке LXC 01
+	reqLxc1 := httptest.NewRequest("GET", "/courses/lxc/01-lxc-and-system-containers", nil)
+	wLxc1 := httptest.NewRecorder()
+	r.ServeHTTP(wLxc1, reqLxc1)
+	tbodyLxc1 := wLxc1.Body.String()
+	if !strings.Contains(tbodyLxc1, "quiz-option-btn") {
+		t.Errorf("Страница урока LXC 01 не содержит вариантов ответов quiz-option-btn")
+	}
 }
 
 func TestQRJsonEndpoint(t *testing.T) {
