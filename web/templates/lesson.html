@@ -655,6 +655,58 @@
             <div class="quiz-feedback d-none"></div>
           </div>
 
+          {{else if or (eq .Lesson.Slug "05-security-unprivileged-and-docker-nesting") (eq .Lesson.Slug "security-unprivileged-and-docker-nesting")}}
+          <!-- Вопрос 1 -->
+          <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q1">
+            <h6 class="fw-bold mb-3">1. Как непривилегированный режим (Unprivileged Containers) в LXC/Incus защищает физический сервер при взломе root-пользователя в контейнере?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Благодаря User Namespaces root (UID 0) внутри контейнера транслируется ядром в непривилегированного пользователя на хосте (например UID 100000). Злоумышленник не имеет прав на файлы и процессы хоста.">
+                Через механизм User Namespaces: root (UID 0) контейнера транслируется в непривилегированного пользователя хоста (UID 100000)
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Ядро немедленно отключает сетевой кабель при обнаружении пользователя root
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Unprivileged контейнеры шифруют оперативную память одноразовым ключом
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          <!-- Вопрос 2 -->
+          <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q2">
+            <h6 class="fw-bold mb-3">2. Какая директива обязательна для запуска вложенного Docker-демона внутри системного контейнера LXC (Nesting)?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Опция security.nesting: true разрешает контейнеру создавать вложенные пространства имен cgroups и монтировать файловые системы, необходимые Docker и containerd.">
+                <code>security.nesting: true</code> (совместно с перехватом <code>security.syscalls.intercept.mknod: true</code>)
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                <code>docker.enable: true</code>
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                <code>kernel.hypervisor: kvm</code>
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          <!-- Вопрос 3 -->
+          <div class="quiz-question mb-3 p-3 rounded-3 border bg-body" data-question-id="q3">
+            <h6 class="fw-bold mb-3">3. С помощью какого типа виртуального устройства Incus видеокарта хоста пробрасывается в контейнер для PyTorch / CUDA задач?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Устройство типа gpu (incus config device add <ct> my-gpu gpu) предоставляет контейнеру прямой доступ к символьным устройствам /dev/nvidia* и библиотекам CUDA без оверхеда.">
+                С помощью устройства типа <code>gpu</code> (<code>incus config device add &lt;ct&gt; my-gpu gpu</code>)
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Через сетевой протокол VNC
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                С помощью эмуляции видеопамяти через QEMU Cirrus Logic
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
           {{else if or (eq .Lesson.Slug "01-permissions-and-systemd") (eq .Lesson.Slug "permissions-and-systemd")}}
           <!-- Вопрос 1 -->
           <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q1">

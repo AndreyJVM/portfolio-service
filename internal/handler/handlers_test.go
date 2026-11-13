@@ -62,6 +62,7 @@ func TestHandlers(t *testing.T) {
 		{"GET /courses/lxc/02-storage-pools-zfs-and-snapshots", "GET", "/courses/lxc/02-storage-pools-zfs-and-snapshots", http.StatusOK},
 		{"GET /courses/lxc/03-networking-bridge-macvlan-and-proxy", "GET", "/courses/lxc/03-networking-bridge-macvlan-and-proxy", http.StatusOK},
 		{"GET /courses/lxc/04-profiles-cgroups-and-autostart", "GET", "/courses/lxc/04-profiles-cgroups-and-autostart", http.StatusOK},
+		{"GET /courses/lxc/05-security-unprivileged-and-docker-nesting", "GET", "/courses/lxc/05-security-unprivileged-and-docker-nesting", http.StatusOK},
 		{"GET /courses/internals", "GET", "/courses/internals", http.StatusOK},
 		{"GET /courses/internals/01-namespaces-and-cgroups-v2", "GET", "/courses/internals/01-namespaces-and-cgroups-v2", http.StatusOK},
 		{"GET /projects", "GET", "/projects", http.StatusOK},
@@ -196,6 +197,7 @@ func TestSEOEndpoints(t *testing.T) {
 		"https://vorobevaqa.ru/courses/lxc/02-storage-pools-zfs-and-snapshots",
 		"https://vorobevaqa.ru/courses/lxc/03-networking-bridge-macvlan-and-proxy",
 		"https://vorobevaqa.ru/courses/lxc/04-profiles-cgroups-and-autostart",
+		"https://vorobevaqa.ru/courses/lxc/05-security-unprivileged-and-docker-nesting",
 		"https://vorobevaqa.ru/courses/internals/01-namespaces-and-cgroups-v2",
 	}
 
@@ -513,6 +515,15 @@ func TestLearningProgressUI(t *testing.T) {
 	tbodyLxc4 := wLxc4.Body.String()
 	if !strings.Contains(tbodyLxc4, "quiz-option-btn") {
 		t.Errorf("Страница урока LXC 04 не содержит вариантов ответов quiz-option-btn")
+	}
+
+	// 14. Проверяем интерактивный квиз на уроке LXC 05 (Security & Docker Nesting)
+	reqLxc5 := httptest.NewRequest("GET", "/courses/lxc/05-security-unprivileged-and-docker-nesting", nil)
+	wLxc5 := httptest.NewRecorder()
+	r.ServeHTTP(wLxc5, reqLxc5)
+	tbodyLxc5 := wLxc5.Body.String()
+	if !strings.Contains(tbodyLxc5, "quiz-option-btn") {
+		t.Errorf("Страница урока LXC 05 не содержит вариантов ответов quiz-option-btn")
 	}
 }
 
