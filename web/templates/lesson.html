@@ -499,6 +499,58 @@
             <div class="quiz-feedback d-none"></div>
           </div>
 
+          {{else if or (eq .Lesson.Slug "02-storage-pools-zfs-and-snapshots") (eq .Lesson.Slug "storage-pools-zfs-and-snapshots")}}
+          <!-- Вопрос 1 -->
+          <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q1">
+            <h6 class="fw-bold mb-3">1. Почему использование драйвера хранилища <code>dir</code> категорически не рекомендуется для продакшен-систем на базе LXC / Incus?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Драйвер dir не поддерживает Copy-on-Write: создание нового контейнера требует пофайлового копирования всей ОС через rsync, что занимает много времени и быстро забивает диск. В zfs/btrfs клонирование происходит мгновенно за 0.1 секунды.">
+                Драйвер <code>dir</code> не поддерживает аппаратный Copy-on-Write, требуя медленного пофайлового копирования всей ОС через rsync
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Драйвер <code>dir</code> запрещает установку веб-серверов Nginx и Apache
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                С драйвером <code>dir</code> контейнеры не могут получить IP-адрес по DHCP
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          <!-- Вопрос 2 -->
+          <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q2">
+            <h6 class="fw-bold mb-3">2. Сколько места на диске занимает только что созданный моментальный снимок (Snapshot) в ZFS или Btrfs пуле?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Снимки в CoW-файловых системах фиксируют указатели на существующие блоки данных. В момент создания снимок занимает ровно 0 байт и увеличивается только при перезаписи или удалении файлов в рабочей ФС.">
+                Ровно 0 байт: снимок фиксирует дерево метаданных и накапливает только дельту измененных блоков
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Ровно столько же, сколько весь текущий размер контейнера (полный дубликат)
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Фиксировано 512 МБ независимо от файловой системы
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          <!-- Вопрос 3 -->
+          <div class="quiz-question mb-3 p-3 rounded-3 border bg-body" data-question-id="q3">
+            <h6 class="fw-bold mb-3">3. Какая директива Incus отвечает за автоматическую ротацию (удаление старых снимков по истечении времени)?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Параметр snapshots.expiry задает время жизни снимков (например 14d или 1m), после чего встроенный планировщик Incus автоматически освобождает блоки данных.">
+                <code>snapshots.expiry</code> (например, <code>incus config set &lt;ct&gt; snapshots.expiry 14d</code>)
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                <code>storage.autoclean: true</code>
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                <code>system.purge.old: 30</code>
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
           {{else if or (eq .Lesson.Slug "01-permissions-and-systemd") (eq .Lesson.Slug "permissions-and-systemd")}}
           <!-- Вопрос 1 -->
           <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q1">
