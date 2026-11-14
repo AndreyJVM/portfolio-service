@@ -1,4 +1,4 @@
-﻿/* ===== БАЗОВЫЕ ПРАВИЛА И ГЛОБАЛЬНЫЕ СТИЛИ ===== */
+/* ===== БАЗОВЫЕ ПРАВИЛА И ГЛОБАЛЬНЫЕ СТИЛИ ===== */
 *, *::before, *::after {
   box-sizing: border-box;
 }
@@ -12,6 +12,9 @@ body {
   display: flex;
   flex-direction: column;
   transition: background-color 0.25s ease, color 0.25s ease;
+  overflow-x: hidden;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
 }
 
 main {
@@ -34,12 +37,22 @@ section[id], div[id] {
   background-color: var(--card-bg);
   border: 1px solid var(--card-border);
   color: var(--text-color);
-  border-radius: 12px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  border-radius: 14px;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .card:hover {
-  border-color: var(--accent-color);
+  border-color: var(--card-hover-border, var(--accent-color));
+}
+
+.bento-card {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, border-color 0.2s ease;
+}
+
+.bento-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04) !important;
+  border-color: rgba(var(--bs-primary-rgb), 0.35) !important;
 }
 
 /* Формы и поля ввода */
@@ -47,13 +60,14 @@ section[id], div[id] {
   background-color: var(--card-bg);
   border-color: var(--card-border);
   color: var(--text-color);
+  border-radius: 10px;
 }
 
 .form-control:focus {
   background-color: var(--card-bg);
   border-color: var(--accent-color);
   color: var(--text-color);
-  box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.25);
+  box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.2);
 }
 
 /* ===== ФУТЕР ===== */
@@ -73,7 +87,7 @@ footer {
   font-weight: 500;
   padding: 0.45rem 0.75rem;
   font-size: 0.85rem;
-  border-radius: 6px;
+  border-radius: 8px;
 }
 
 .tech-pill {
@@ -100,12 +114,14 @@ footer {
   color: var(--text-muted);
   transition: color 0.2s ease, transform 0.2s ease;
   display: inline-flex;
-  padding: 6px;
+  padding: 8px;
+  border-radius: 8px;
 }
 
 .social-link:hover {
   color: var(--accent-color);
   transform: translateY(-2px);
+  background-color: rgba(var(--bs-primary-rgb), 0.08);
 }
 
 /* ===== SCROLL REVEAL MICRO-ANIMATIONS ===== */
@@ -170,6 +186,7 @@ footer {
   transform: translateY(16px);
   transition: opacity 0.25s ease, visibility 0.25s ease, transform 0.25s ease, background-color 0.2s ease;
   border: none;
+  border-radius: 50%;
 }
 
 .back-to-top.show {
@@ -181,6 +198,206 @@ footer {
 .back-to-top:hover {
   transform: translateY(-3px);
   box-shadow: 0 6px 16px rgba(var(--bs-primary-rgb), 0.4) !important;
+}
+
+/* ===== ROADMAP & TIMELINE STYLES ===== */
+.roadmap-timeline {
+  position: relative;
+  padding-left: 2.25rem;
+}
+
+.roadmap-timeline::before {
+  content: '';
+  position: absolute;
+  top: 1rem;
+  bottom: 1rem;
+  left: 1rem;
+  width: 2px;
+  background: linear-gradient(180deg, var(--accent-color) 0%, rgba(var(--bs-primary-rgb), 0.15) 100%);
+  border-radius: 2px;
+}
+
+.roadmap-step {
+  position: relative;
+  margin-bottom: 2rem;
+}
+
+.roadmap-step:last-child {
+  margin-bottom: 0;
+}
+
+.roadmap-step-badge {
+  position: absolute;
+  left: -2.25rem;
+  top: 0.25rem;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background-color: var(--card-bg);
+  border: 2px solid var(--accent-color);
+  color: var(--accent-color);
+  font-weight: 700;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 4px var(--bg-color);
+  z-index: 2;
+}
+
+.roadmap-checklist {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.roadmap-checklist li {
+  position: relative;
+  padding-left: 1.5rem;
+  margin-bottom: 0.4rem;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+
+.roadmap-checklist li::before {
+  content: '\f00c';
+  font-family: 'Font Awesome 6 Free';
+  font-weight: 900;
+  position: absolute;
+  left: 0;
+  top: 0.1rem;
+  color: var(--accent-color);
+  font-size: 0.75rem;
+}
+
+/* ===== MARKDOWN RESPONSIVE STYLES ===== */
+.markdown-content {
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.markdown-content table {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-top: 1.25rem;
+  margin-bottom: 1.75rem;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+}
+
+.markdown-content th {
+  background-color: var(--table-header-bg);
+  font-weight: 600;
+  padding: 0.75rem 1rem;
+  border-bottom: 2px solid var(--card-border);
+  border-right: 1px solid var(--card-border);
+  white-space: nowrap;
+  font-size: 0.88rem;
+}
+
+.markdown-content th:last-child {
+  border-right: none;
+}
+
+.markdown-content td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--card-border);
+  border-right: 1px solid var(--card-border);
+  font-size: 0.9rem;
+  vertical-align: middle;
+}
+
+.markdown-content td:last-child {
+  border-right: none;
+}
+
+.markdown-content tr:last-child td {
+  border-bottom: none;
+}
+
+.markdown-content pre {
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  word-break: normal;
+  border-radius: 12px;
+}
+
+.markdown-content code {
+  word-break: break-word;
+}
+
+/* Кнопки квиза */
+.quiz-option-btn {
+  white-space: normal !important;
+  word-break: break-word;
+  text-align: left;
+  line-height: 1.45;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  font-size: 0.92rem;
+  transition: all 0.15s ease;
+}
+
+.quiz-option-btn:hover {
+  transform: translateX(3px);
+}
+
+/* ===== МОБИЛЬНАЯ АДАПТАЦИЯ (< 576px / < 768px) ===== */
+@media (max-width: 575.98px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  h1, .h1 {
+    font-size: 1.65rem !important;
+  }
+
+  h2, .h2 {
+    font-size: 1.4rem !important;
+  }
+
+  h3, .h3 {
+    font-size: 1.25rem !important;
+  }
+
+  .display-4 {
+    font-size: 2.2rem !important;
+  }
+
+  .lead {
+    font-size: 1rem !important;
+  }
+
+  .roadmap-timeline {
+    padding-left: 1.75rem;
+  }
+
+  .roadmap-step-badge {
+    left: -1.75rem;
+    width: 1.65rem;
+    height: 1.65rem;
+    font-size: 0.75rem;
+  }
+
+  .card {
+    border-radius: 12px;
+  }
+
+  .markdown-content pre {
+    padding: 0.875rem !important;
+    font-size: 0.82rem !important;
+  }
+
+  .breadcrumb {
+    font-size: 0.82rem;
+  }
 }
 
 /* ===== STYLES FOR PRINTING & PDF EXPORT ===== */

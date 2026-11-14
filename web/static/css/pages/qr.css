@@ -11,8 +11,14 @@
 
 @media (max-width: 767px) {
   .qr-tool {
-    grid-template-columns: 1fr;
+    grid-template-columns: 100%;
+    width: 100%;
+    gap: 1.5rem;
     justify-items: center;
+    margin-top: 1rem;
+  }
+  .qr-tool__panel {
+    padding: 1.25rem !important;
   }
 }
 

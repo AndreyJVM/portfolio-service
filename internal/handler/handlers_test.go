@@ -68,6 +68,7 @@ func TestHandlers(t *testing.T) {
 		{"GET /projects", "GET", "/projects", http.StatusOK},
 		{"GET /education", "GET", "/education", http.StatusOK},
 		{"GET /about redirect", "GET", "/about", http.StatusMovedPermanently},
+		{"GET /roadmap redirect", "GET", "/roadmap", http.StatusMovedPermanently},
 		{"GET /qr", "GET", "/qr", http.StatusOK},
 		{"GET /mustang", "GET", "/mustang", http.StatusOK},
 		{"GET /api/qr", "GET", "/api/qr?text=https://test.com", http.StatusOK},
@@ -392,12 +393,19 @@ func TestCleanPagesLayout(t *testing.T) {
 func TestLearningProgressUI(t *testing.T) {
 	r := setupTestRouter()
 
-	// 1. Проверяем наличие контейнера прогресса в каталоге курсов
+	// 1. Проверяем наличие контейнера прогресса и дорожной карты в каталоге курсов
 	reqCourses := httptest.NewRequest("GET", "/courses", nil)
 	wCourses := httptest.NewRecorder()
 	r.ServeHTTP(wCourses, reqCourses)
-	if !strings.Contains(wCourses.Body.String(), "data-course-progress") {
+	coursesBody := wCourses.Body.String()
+	if !strings.Contains(coursesBody, "data-course-progress") {
 		t.Errorf("/courses не содержит контейнеров прогресса data-course-progress")
+	}
+	if !strings.Contains(coursesBody, "roadmap-timeline") {
+		t.Errorf("/courses не содержит контейнера roadmap-timeline")
+	}
+	if !strings.Contains(coursesBody, "Дорожная карта") {
+		t.Errorf("/courses не содержит раздела Дорожная карта")
 	}
 
 	// 2. Проверяем наличие виджета прогресса и бейджей статусов на детальной странице курса

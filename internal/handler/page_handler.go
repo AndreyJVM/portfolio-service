@@ -88,6 +88,11 @@ func (h *Handler) RedirectAbout(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/education", http.StatusMovedPermanently)
 }
 
+// RoadmapRedirect: HTTP 301 Permanent Redirect на раздел дорожной карты
+func (h *Handler) RoadmapRedirect(w http.ResponseWriter, r *http.Request) {
+	http.Redirect(w, r, "/courses#roadmap", http.StatusMovedPermanently)
+}
+
 // Mustang: Страница сбора на Shelby GT500
 func (h *Handler) Mustang(w http.ResponseWriter, r *http.Request) {
 	data := struct {

@@ -3,18 +3,29 @@
   .markdown-content pre {
     background: #0f172a;
     color: #f8fafc;
-    padding: 1.25rem;
+    padding: 1.15rem;
     border-radius: 12px;
     overflow-x: auto;
-    font-size: 0.9rem;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    -webkit-overflow-scrolling: touch;
+    font-size: 0.88rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    margin-top: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  @media (max-width: 575.98px) {
+    .markdown-content pre {
+      padding: 0.85rem;
+      font-size: 0.8rem;
+      border-radius: 8px;
+    }
   }
   .markdown-content code {
     color: var(--bs-primary);
-    background: rgba(var(--bs-primary-rgb), 0.1);
+    background: rgba(var(--bs-primary-rgb), 0.08);
     padding: 0.2rem 0.4rem;
     border-radius: 6px;
     font-size: 0.88em;
+    word-break: break-word;
   }
   .markdown-content pre code {
     color: inherit;
@@ -26,15 +37,34 @@
     margin-top: 1.75rem;
     margin-bottom: 1rem;
   }
+  .markdown-content h1 { font-size: 1.65rem; }
+  .markdown-content h2 { font-size: 1.35rem; }
+  .markdown-content h3 { font-size: 1.15rem; }
+  @media (min-width: 768px) {
+    .markdown-content h1 { font-size: 1.9rem; }
+    .markdown-content h2 { font-size: 1.5rem; }
+    .markdown-content h3 { font-size: 1.25rem; }
+  }
   .markdown-content p {
     line-height: 1.7;
-    color: var(--bs-body-color);
+    color: var(--text-color);
   }
   .markdown-content blockquote {
-    border-left: 4px solid var(--bs-primary);
-    padding-left: 1rem;
-    color: var(--bs-secondary-color);
-    font-style: italic;
+    border-left: 4px solid var(--accent-color);
+    padding: 0.75rem 1rem;
+    margin: 1.25rem 0;
+    background: rgba(var(--bs-primary-rgb), 0.05);
+    border-radius: 0 8px 8px 0;
+    color: var(--text-color);
+    font-size: 0.95rem;
+  }
+  .markdown-content ul, .markdown-content ol {
+    padding-left: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+  .markdown-content li {
+    margin-bottom: 0.35rem;
+    line-height: 1.6;
   }
 </style>
 {{end}}
@@ -54,7 +84,7 @@
   <div class="row g-4">
     <!-- Основной контент урока -->
     <div class="col-lg-9 mx-auto">
-      <div class="card border rounded-4 p-4 p-md-5 shadow-sm bento-card mb-4">
+      <div class="card border rounded-4 p-3 p-sm-4 p-md-5 shadow-sm bento-card mb-4">
         <div class="d-flex align-items-center justify-content-between border-bottom pb-3 mb-4 flex-wrap gap-2">
           <div>
             <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-1 rounded-pill mb-2">
@@ -72,7 +102,7 @@
         </div>
 
         <!-- Интерактивный проверочный квиз -->
-        <div class="card border rounded-4 p-4 mt-5 lesson-quiz-card bg-body-tertiary">
+        <div class="card border rounded-4 p-3 p-sm-4 mt-5 lesson-quiz-card bg-body-tertiary">
           <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
             <div class="d-flex align-items-center gap-2">
               <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle px-3 py-2 rounded-pill">

@@ -93,6 +93,7 @@ func NewRouter(h *Handler, staticDir string) *chi.Mux {
 	r.Get("/projects", h.Projects)
 	r.Get("/education", h.Education)
 	r.Get("/about", h.RedirectAbout)
+	r.Get("/roadmap", h.RoadmapRedirect)
 	r.Get("/qr", h.QRPage)
 	r.Get("/mustang", h.Mustang)
 
