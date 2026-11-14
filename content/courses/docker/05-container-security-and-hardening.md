@@ -140,7 +140,7 @@ trivy config ./Dockerfile
 #### Встраивание в GitHub Actions (Security Gate):
 ```yaml
 - name: Scan Docker image with Trivy
-  uses: aquasecurity/trivy-action@v0.29.0
+  uses: aquasecurity/trivy-action@v0.36.0
   with:
     image-ref: 'andreyvorobevaqa/portfolio-service:${{ github.sha }}'
     format: 'table'
