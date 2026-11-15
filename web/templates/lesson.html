@@ -789,6 +789,58 @@
             <div class="quiz-feedback d-none"></div>
           </div>
 
+          {{else if or (eq .Lesson.Slug "02-podman-quadlet-and-systemd") (eq .Lesson.Slug "podman-quadlet-and-systemd")}}
+          <!-- Вопрос 1 -->
+          <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q1">
+            <h6 class="fw-bold mb-3">1. В чем главное преимущество генератора <strong>Quadlet</strong> перед устаревшей командой <code>podman generate systemd</code>?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Quadlet использует лаконичные декларативные *.container файлы. При вызове systemctl daemon-reload генератор podman-system-generator динамически компилирует их в актуальные сервисы systemd, устраняя расхождения конфигураций (drift).">
+                Декларативное описание в файлах <code>*.container</code> и автоматическая генерация актуальных юнитов systemd при <code>daemon-reload</code>
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Quadlet отключает протокол TCP и переводит трафик на Bluetooth
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Quadlet принудительно требует покупки платной лицензии Red Hat
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          <!-- Вопрос 2 -->
+          <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q2">
+            <h6 class="fw-bold mb-3">2. Зачем для пользователя включают режим <strong>Linger</strong> с помощью команды <code>loginctl enable-linger $USER</code>?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="По умолчанию systemd завершает все процессы пользователя при закрытии SSH-сессии (logout). Режим linger предписывает systemd запускать пользовательский инстанс при загрузке хоста и не останавливать контейнеры при выходе.">
+                Чтобы службы <code>systemd --user</code> и контейнеры продолжали работать круглосуточно в фоне после закрытия SSH-сессии пользователя
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Для автоматической очистки кэша оперативной памяти каждые 5 минут
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Для генерации SSL-сертификатов Let's Encrypt
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          <!-- Вопрос 3 -->
+          <div class="quiz-question mb-3 p-3 rounded-3 border bg-body" data-question-id="q3">
+            <h6 class="fw-bold mb-3">3. Что делает директива <code>AutoUpdate=registry</code> в секции <code>[Container]</code> файла Quadlet?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Директива AutoUpdate=registry инструктирует команду podman auto-update и таймер podman-auto-update.timer проверять свежие дайджесты в реестре и перезапускать сервис при обновлении образа с автоматическим откатом при сбое.">
+                Позволяет службе <code>podman-auto-update</code> автоматически скачивать новый образ из реестра и перезапускать контейнер без участия человека
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Каждые 10 секунд удаляет все логи контейнера из journald
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Переводит контейнер в приватный репозиторий GitHub
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
           {{else if or (eq .Lesson.Slug "01-permissions-and-systemd") (eq .Lesson.Slug "permissions-and-systemd")}}
           <!-- Вопрос 1 -->
           <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q1">
