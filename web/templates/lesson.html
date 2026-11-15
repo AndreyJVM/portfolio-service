@@ -945,6 +945,58 @@
             <div class="quiz-feedback d-none"></div>
           </div>
 
+          {{else if or (eq .Lesson.Slug "05-podman-compose-and-production-security") (eq .Lesson.Slug "podman-compose-and-production-security")}}
+          <!-- Вопрос 1 -->
+          <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q1">
+            <h6 class="fw-bold mb-3">1. Как запустить оригинальный CLI <code>docker compose</code> на сервере без Docker, используя Podman?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Podman эмулирует REST API Docker через Unix-сокет. Активировав podman.socket в systemd и направив переменную DOCKER_HOST на сокет, можно использовать стандартный docker compose без изменений файлов проекта.">
+                Активировать службу <code>systemctl --user enable --now podman.socket</code> и экспортировать <code>DOCKER_HOST="unix://$XDG_RUNTIME_DIR/podman/podman.sock"</code>
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Переименовать бинарник <code>podman</code> в <code>docker-compose.exe</code>
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Запустить эмулятор VirtualBox в фоновом режиме
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          <!-- Вопрос 2 -->
+          <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q2">
+            <h6 class="fw-bold mb-3">2. Почему хранение паролей через <code>podman secret</code> безопаснее передачи через переменные окружения (<code>-e PASSWORD=...</code>)?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Значения переменных окружения видны любому пользователю через podman inspect, дампы процессов в /proc/<PID>/environ и часто попадают в логи ошибок. Podman Secret безопасно монтируется в tmpfs как файл в оперативной памяти.">
+                Секреты монтируются в оперативную память (<code>tmpfs</code>) как файлы и не утекают в <code>podman inspect</code>, стек-трейсы или <code>/proc/environ</code>
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Podman secret удаляет пароль из базы данных сразу после старта
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Переменные окружения в Linux поддерживают только латинские буквы
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          <!-- Вопрос 3 -->
+          <div class="quiz-question mb-3 p-3 rounded-3 border bg-body" data-question-id="q3">
+            <h6 class="fw-bold mb-3">3. В чем главное преимущество сборки контейнеров через Rootless Podman в CI/CD (GitLab Runner / GitHub Actions) перед Docker-in-Docker?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Docker-in-Docker требует опасного флага --privileged, дающего полный доступ к ядру хоста раннера. Rootless Podman собирает образы от обычного непривилегированного пользователя без риска компрометации сборочного сервера.">
+                Сборка работает без флага <code>--privileged</code> от непривилегированного пользователя, исключая побег злоумышленника на хост сборочного раннера
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Podman собирает образы ровно в 100 раз быстрее любого физического компилятора
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                CI/CD пайплайны на Podman не потребляют трафик в сети Интернет
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
           {{else if or (eq .Lesson.Slug "01-permissions-and-systemd") (eq .Lesson.Slug "permissions-and-systemd")}}
           <!-- Вопрос 1 -->
           <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q1">
