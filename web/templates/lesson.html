@@ -1101,6 +1101,58 @@
             <div class="quiz-feedback d-none"></div>
           </div>
 
+          {{else if or (eq .Lesson.Slug "03-building-mini-container-runtime-in-go") (eq .Lesson.Slug "building-mini-container-runtime-in-go")}}
+          <!-- Вопрос 1 -->
+          <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q1">
+            <h6 class="fw-bold mb-3">1. Почему при разработке контейнерного рантайма на Go используется паттерн <strong>Self Re-Exec</strong> через запуск <code>/proc/self/exe</code>?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Go — многопоточный язык с M:N планировщиком горутин. Прямой вызов fork() копирует только текущий поток, оставляя внутренние мьютексы планировщика заблокированными (deadlock). Re-Exec через exec.Command порождает чистый процесс.">
+                Прямой вызов <code>fork()</code> из многопоточной программы Go приводит к взаимоблокировке (Deadlock) рантайма и планировщика горутин
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Язык Go запрещает запуск более одной функции в коде
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Для обхода лицензии GNU GPL
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          <!-- Вопрос 2 -->
+          <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q2">
+            <h6 class="fw-bold mb-3">2. Зачем внутри изолированного дочернего процесса контейнера необходимо перемонтировать <code>procfs</code> на каталог <code>/proc</code>?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Утилиты ps, top и kill читают дерево процессов из /proc. Без перемонтирования procfs утилиты продолжат видеть процессы хоста, даже если ядро создало новый PID Namespace.">
+                Чтобы системные утилиты <code>ps</code> и <code>top</code> отображали процессы только из нового <code>PID Namespace</code> контейнера
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Чтобы очистить кэш процессора Intel
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Для ускорения сетевого интерфейса Ethernet
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          <!-- Вопрос 3 -->
+          <div class="quiz-question mb-3 p-3 rounded-3 border bg-body" data-question-id="q3">
+            <h6 class="fw-bold mb-3">3. Как мини-рантайм на Go настраивает лимит оперативной памяти контейнера в Cgroups v2?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="В Cgroups v2 достаточно создать директорию в /sys/fs/cgroup/, записать лимит в байтах в файл memory.max и привязать PID процесса, записав его в cgroup.procs.">
+                Создает каталог в <code>/sys/fs/cgroup/</code>, записывает лимит в <code>memory.max</code> и привязывает PID через <code>cgroup.procs</code>
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Передает специальный параметр в микрокод BIOS материнской платы
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Удаляет физические планки памяти из сервера программным путем
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
           {{else if or (eq .Lesson.Slug "01-permissions-and-systemd") (eq .Lesson.Slug "permissions-and-systemd")}}
           <!-- Вопрос 1 -->
           <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q1">
