@@ -69,6 +69,7 @@ func TestHandlers(t *testing.T) {
 		{"GET /courses/lxc/05-security-unprivileged-and-docker-nesting", "GET", "/courses/lxc/05-security-unprivileged-and-docker-nesting", http.StatusOK},
 		{"GET /courses/internals", "GET", "/courses/internals", http.StatusOK},
 		{"GET /courses/internals/01-namespaces-and-cgroups-v2", "GET", "/courses/internals/01-namespaces-and-cgroups-v2", http.StatusOK},
+		{"GET /courses/internals/02-syscalls-clone-unshare-and-pivot-root", "GET", "/courses/internals/02-syscalls-clone-unshare-and-pivot-root", http.StatusOK},
 		{"GET /projects", "GET", "/projects", http.StatusOK},
 		{"GET /education", "GET", "/education", http.StatusOK},
 		{"GET /about redirect", "GET", "/about", http.StatusMovedPermanently},
@@ -208,6 +209,7 @@ func TestSEOEndpoints(t *testing.T) {
 		"https://vorobevaqa.ru/courses/lxc/04-profiles-cgroups-and-autostart",
 		"https://vorobevaqa.ru/courses/lxc/05-security-unprivileged-and-docker-nesting",
 		"https://vorobevaqa.ru/courses/internals/01-namespaces-and-cgroups-v2",
+		"https://vorobevaqa.ru/courses/internals/02-syscalls-clone-unshare-and-pivot-root",
 	}
 
 	for _, link := range expectedLinks {
@@ -594,6 +596,15 @@ func TestLearningProgressUI(t *testing.T) {
 	tbodyInternals1 := wInternals1.Body.String()
 	if !strings.Contains(tbodyInternals1, "quiz-option-btn") {
 		t.Errorf("Страница урока Internals 01 не содержит вариантов ответов quiz-option-btn")
+	}
+
+	// 21. Проверяем интерактивный квиз на уроке Internals 02 (Syscalls & Pivot Root)
+	reqInternals2 := httptest.NewRequest("GET", "/courses/internals/02-syscalls-clone-unshare-and-pivot-root", nil)
+	wInternals2 := httptest.NewRecorder()
+	r.ServeHTTP(wInternals2, reqInternals2)
+	tbodyInternals2 := wInternals2.Body.String()
+	if !strings.Contains(tbodyInternals2, "quiz-option-btn") {
+		t.Errorf("Страница урока Internals 02 не содержит вариантов ответов quiz-option-btn")
 	}
 }
 

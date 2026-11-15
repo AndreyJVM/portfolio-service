@@ -1049,6 +1049,58 @@
             <div class="quiz-feedback d-none"></div>
           </div>
 
+          {{else if or (eq .Lesson.Slug "02-syscalls-clone-unshare-and-pivot-root") (eq .Lesson.Slug "syscalls-clone-unshare-and-pivot-root")}}
+          <!-- Вопрос 1 -->
+          <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q1">
+            <h6 class="fw-bold mb-3">1. Почему системный вызов <code>chroot(2)</code> считается небезопасным для изоляции контейнеров?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="chroot меняет только указатель корня в структуре процесса, но не изолирует таблицу монтирования ядра. Рутовый процесс может сохранить дескриптор внешнего каталога и вырваться на хост через fchdir и chdir('..').">
+                Процесс с правами root может сохранить дескриптор каталога хоста и вырваться из chroot через цепочку <code>fchdir</code> и <code>chdir("..")</code>
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Системный вызов chroot поддерживается только на 32-битных процессорах
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                chroot принудительно удаляет все файлы в каталоге /etc
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          <!-- Вопрос 2 -->
+          <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q2">
+            <h6 class="fw-bold mb-3">2. Какой системный вызов ядра Linux лежит в основе работы команды <code>docker exec</code>?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Системный вызов setns(fd, nstype) принимает дескриптор файла из /proc/<PID>/ns/ и переключает текущий вызывающий поток в пространства имен работающего контейнера.">
+                <code>setns(2)</code> — подключает поток к существующим пространствам имен процесса по дескриптору <code>/proc/&lt;PID&gt;/ns/*</code>
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                <code>kill(2)</code> с сигналом SIGKILL
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                <code>ptrace(2)</code> для перехвата регистров CPU
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          <!-- Вопрос 3 -->
+          <div class="quiz-question mb-3 p-3 rounded-3 border bg-body" data-question-id="q3">
+            <h6 class="fw-bold mb-3">3. Почему системный вызов <code>pivot_root(2)</code> гарантирует надежную изоляцию файловой системы?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="pivot_root атомарно меняет точку монтирования корня VFS. Последующий вызов umount2 на старый корень хоста полностью удаляет родительскую файловую систему из таблицы монтирования контейнера.">
+                Он атомарно меняет корневую точку монтирования VFS, а отложенный <code>umount2</code> старого корня физически исключает доступ к хосту
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Он шифрует все файлы контейнера на лету
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Он форматирует раздел диска в файловую систему NTFS
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
           {{else if or (eq .Lesson.Slug "01-permissions-and-systemd") (eq .Lesson.Slug "permissions-and-systemd")}}
           <!-- Вопрос 1 -->
           <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q1">
