@@ -341,6 +341,14 @@ func TestLayoutIncludes(t *testing.T) {
 		t.Errorf("Заголовок страницы должен быть <title>Primary Cloud Lab</title>")
 	}
 
+	// OpenGraph и Twitter Card мета-теги
+	if !strings.Contains(body, `property="og:site_name" content="Primary Cloud Lab"`) {
+		t.Errorf("Страница не содержит тег og:site_name")
+	}
+	if !strings.Contains(body, `name="twitter:card" content="summary_large_image"`) {
+		t.Errorf("Страница не содержит тег twitter:card")
+	}
+
 	// Под логотипом отсутствует DEVOPS PLATFORM
 	if strings.Contains(body, "DEVOPS PLATFORM") {
 		t.Errorf("Подпись 'DEVOPS PLATFORM' под логотипом должна быть удалена")

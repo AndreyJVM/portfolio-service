@@ -14,11 +14,20 @@
   <meta name="author" content="Андрей Воробьев">
   <link rel="canonical" href="{{.Meta.CanonicalURL}}">
 
-  <meta property="og:title" content="{{.Meta.OGTitle}}">
+  <!-- OpenGraph Metadata (Telegram, WhatsApp, VK, Facebook) -->
+  <meta property="og:site_name" content="Primary Cloud Lab">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:title" content="{{if .Meta.OGTitle}}{{.Meta.OGTitle}}{{else}}{{.Meta.Title}}{{end}}">
   <meta property="og:description" content="{{.Meta.OGDescription}}">
   <meta property="og:image" content="{{.Meta.OGImage}}">
   <meta property="og:url" content="{{.Meta.OGURL}}">
   <meta property="og:type" content="website">
+
+  <!-- Twitter / Telegram Cards -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{if .Meta.OGTitle}}{{.Meta.OGTitle}}{{else}}{{.Meta.Title}}{{end}}">
+  <meta name="twitter:description" content="{{.Meta.OGDescription}}">
+  <meta name="twitter:image" content="{{.Meta.OGImage}}">
 
   <!-- Vendor CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
