@@ -997,6 +997,58 @@
             <div class="quiz-feedback d-none"></div>
           </div>
 
+          {{else if or (eq .Lesson.Slug "01-namespaces-and-cgroups-v2") (eq .Lesson.Slug "namespaces-and-cgroups-v2")}}
+          <!-- Вопрос 1 -->
+          <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q1">
+            <h6 class="fw-bold mb-3">1. Что в директории <code>/proc/&lt;PID&gt;/ns/</code> со 100% гарантией подтверждает, что два процесса делят общее пространство имен?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Каждое пространство имен идентифицируется ядром уникальным номером inode. Если у двух процессов ссылки в /proc/<PID>/ns/ указывают на один и тот же inode (например, net:[4026531992]), они находятся в общем пространстве имен.">
+                Одинаковый номер inode в квадратных скобках целевой ссылки (например, <code>net:[4026531992]</code>)
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Одинаковое время создания процессов в миллисекундах
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Одинаковый размер бинарного файла на диске
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          <!-- Вопрос 2 -->
+          <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q2">
+            <h6 class="fw-bold mb-3">2. Какая утилита позволяет подключиться к пространствам имен процесса напрямую через системный вызов ядра <code>setns(2)</code>?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Утилита nsenter принимает PID процесса на хосте и переключает текущий поток в его пространства имен (PID, NET, MNT, UTS, IPC), позволяя отлаживать упавшие контейнеры без демона docker/podman.">
+                <code>nsenter --target &lt;PID&gt; --mount --uts --ipc --net --pid /bin/bash</code>
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                <code>telnet localhost 2222</code>
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                <code>chroot /proc/sys/kernel</code>
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          <!-- Вопрос 3 -->
+          <div class="quiz-question mb-3 p-3 rounded-3 border bg-body" data-question-id="q3">
+            <h6 class="fw-bold mb-3">3. Какой контроллер Cgroups v2 защищает операционную систему от DoS-атак типа Fork-bomb?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Контроллер pids.max в иерархии Cgroups v2 устанавливает жесткий лимит на количество одновременно существующих потоков и процессов в группе, блокируя вызовы fork/clone при исчерпании лимита.">
+                <code>pids.max</code> в подкаталоге контрольной группы <code>/sys/fs/cgroup/</code>
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                <code>memory.swap.max</code>
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                <code>cpu.cfs_quota_us</code>
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
           {{else if or (eq .Lesson.Slug "01-permissions-and-systemd") (eq .Lesson.Slug "permissions-and-systemd")}}
           <!-- Вопрос 1 -->
           <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q1">

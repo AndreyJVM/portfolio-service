@@ -586,6 +586,15 @@ func TestLearningProgressUI(t *testing.T) {
 	if !strings.Contains(tbodyPodman5, "quiz-option-btn") {
 		t.Errorf("Страница урока Podman 05 не содержит вариантов ответов quiz-option-btn")
 	}
+
+	// 20. Проверяем интерактивный квиз на уроке Internals 01 (Namespaces & Cgroups v2)
+	reqInternals1 := httptest.NewRequest("GET", "/courses/internals/01-namespaces-and-cgroups-v2", nil)
+	wInternals1 := httptest.NewRecorder()
+	r.ServeHTTP(wInternals1, reqInternals1)
+	tbodyInternals1 := wInternals1.Body.String()
+	if !strings.Contains(tbodyInternals1, "quiz-option-btn") {
+		t.Errorf("Страница урока Internals 01 не содержит вариантов ответов quiz-option-btn")
+	}
 }
 
 func TestQRJsonEndpoint(t *testing.T) {
