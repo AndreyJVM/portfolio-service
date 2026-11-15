@@ -533,6 +533,15 @@ func TestLearningProgressUI(t *testing.T) {
 	if !strings.Contains(tbodyLxc5, "quiz-option-btn") {
 		t.Errorf("Страница урока LXC 05 не содержит вариантов ответов quiz-option-btn")
 	}
+
+	// 15. Проверяем интерактивный квиз на уроке Podman 01 (Rootless & Daemonless)
+	reqPodman1 := httptest.NewRequest("GET", "/courses/podman/01-podman-rootless-and-daemonless", nil)
+	wPodman1 := httptest.NewRecorder()
+	r.ServeHTTP(wPodman1, reqPodman1)
+	tbodyPodman1 := wPodman1.Body.String()
+	if !strings.Contains(tbodyPodman1, "quiz-option-btn") {
+		t.Errorf("Страница урока Podman 01 не содержит вариантов ответов quiz-option-btn")
+	}
 }
 
 func TestQRJsonEndpoint(t *testing.T) {

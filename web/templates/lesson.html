@@ -737,6 +737,58 @@
             <div class="quiz-feedback d-none"></div>
           </div>
 
+          {{else if or (eq .Lesson.Slug "01-podman-rootless-and-daemonless") (eq .Lesson.Slug "podman-rootless-and-daemonless")}}
+          <!-- Вопрос 1 -->
+          <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q1">
+            <h6 class="fw-bold mb-3">1. В чем главное архитектурное преимущество Daemonless-модели Podman по сравнению с демоном <code>dockerd</code>?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="В Podman нет центрального демона: контейнеры запускаются через Fork-Exec как дочерние процессы под супервизором conmon. Падение или обновление CLI не влияет на работу контейнеров, устраняя единую точку отказа (SPOF).">
+                Отсутствие единой точки отказа (SPOF): контейнеры работают независимо от CLI под управлением легковесного C-супервизора <code>conmon</code>
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Podman запрещает запуск более 5 контейнеров на одном физическом сервере
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Podman компилирует образы в машинный код BIOS материнской платы
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          <!-- Вопрос 2 -->
+          <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q2">
+            <h6 class="fw-bold mb-3">2. Какой параметр ядра Linux необходимо изменить, если непривилегированному пользователю требуется пробросить порт 80 (HTTP) или 443 (HTTPS) в контейнер?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="По умолчанию порты < 1024 считаются привилегированными. Параметр ядра sysctl net.ipv4.ip_unprivileged_port_start=80 снижает нижний порог, разрешая непривилегированным процессам открывать стандартные веб-порты.">
+                <code>net.ipv4.ip_unprivileged_port_start=80</code> в конфигурации <code>sysctl</code>
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                <code>kernel.rootless_admin = 1</code>
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                <code>fs.protected_fifos = 0</code>
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          <!-- Вопрос 3 -->
+          <div class="quiz-question mb-3 p-3 rounded-3 border bg-body" data-question-id="q3">
+            <h6 class="fw-bold mb-3">3. Что происходит с безопасностью хоста, если злоумышленник получает права <code>root</code> (UID 0) внутри Rootless-контейнера Podman?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Благодаря User Namespaces UID 0 внутри контейнера соответствует реальному непривилегированному UID пользователя хоста. При побеге злоумышленник не получает прав суперпользователя на хосте и не может модифицировать систему.">
+                Хост защищен: для ядра хоста процесс является обычным непривилегированным пользователем и не имеет root-прав на сервере
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Злоумышленник автоматически получает доступ ко всем файлам /etc/shadow на хосте
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Сервер немедленно форматирует жесткий диск для предотвращения утечки
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
           {{else if or (eq .Lesson.Slug "01-permissions-and-systemd") (eq .Lesson.Slug "permissions-and-systemd")}}
           <!-- Вопрос 1 -->
           <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q1">
