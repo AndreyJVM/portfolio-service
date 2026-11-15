@@ -1205,6 +1205,58 @@
             <div class="quiz-feedback d-none"></div>
           </div>
 
+          {{else if or (eq .Lesson.Slug "05-seccomp-capabilities-and-ebpf-tracing") (eq .Lesson.Slug "seccomp-capabilities-and-ebpf-tracing")}}
+          <!-- Вопрос 1 -->
+          <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q1">
+            <h6 class="fw-bold mb-3">1. Какая Linux Capability является наиболее опасной и фактически открывает путь к полному контролю над хостом?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="CAP_SYS_ADMIN — самая всеобъемлющая привилегия ядра (покрывает ~30% всех проверок). Она позволяет монтировать файловые системы, настраивать пространства имен и менять параметры ядра.">
+                <code>CAP_SYS_ADMIN</code> — разрешает монтирование файловых систем, манипуляции с пространствами имен и управление ядром
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                <code>CAP_CHOWN</code>
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                <code>CAP_NET_BIND_SERVICE</code>
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          <!-- Вопрос 2 -->
+          <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q2">
+            <h6 class="fw-bold mb-3">2. На каком уровне безопасности функционирует подсистема <strong>Seccomp BPF</strong>?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Seccomp работает на уровне перехвата каждого системного вызова ядра (Syscall). Если вызов не входит в белый список профиля, ядро блокирует его (SCMP_ACT_ERRNO) или убивает процесс (SCMP_ACT_KILL).">
+                Перехватывает и фильтрует каждый системный вызов (Syscall) процесса на входе в ядро по белому списку
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Фильтрует входящий трафик Wi-Fi роутера
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Проверяет орфографию в комментариях исходного кода
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          <!-- Вопрос 3 -->
+          <div class="quiz-question mb-3 p-3 rounded-3 border bg-body" data-question-id="q3">
+            <h6 class="fw-bold mb-3">3. Почему для продакшен-трассировки контейнеров используют <strong>eBPF</strong>, а не утилиту <code>strace</code>?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="strace через системный вызов ptrace останавливает поток приложения на каждом системном вызове, замедляя приложение на 80-95%. Программы eBPF работают прямо в ядре без остановок потоков с накладными расходами < 1% CPU.">
+                eBPF исполняется внутри ядра без остановки потоков процесса (&lt; 1% оверхеда), тогда как <code>strace</code> замедляет сервис на 80–95%
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Утилита strace была удалена из всех дистрибутивов Linux в 2005 году
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                eBPF требует обязательного подключения к облаку AWS
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
           {{else if or (eq .Lesson.Slug "01-permissions-and-systemd") (eq .Lesson.Slug "permissions-and-systemd")}}
           <!-- Вопрос 1 -->
           <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q1">

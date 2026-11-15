@@ -72,6 +72,7 @@ func TestHandlers(t *testing.T) {
 		{"GET /courses/internals/02-syscalls-clone-unshare-and-pivot-root", "GET", "/courses/internals/02-syscalls-clone-unshare-and-pivot-root", http.StatusOK},
 		{"GET /courses/internals/03-building-mini-container-runtime-in-go", "GET", "/courses/internals/03-building-mini-container-runtime-in-go", http.StatusOK},
 		{"GET /courses/internals/04-oci-spec-runc-and-crun", "GET", "/courses/internals/04-oci-spec-runc-and-crun", http.StatusOK},
+		{"GET /courses/internals/05-seccomp-capabilities-and-ebpf-tracing", "GET", "/courses/internals/05-seccomp-capabilities-and-ebpf-tracing", http.StatusOK},
 		{"GET /projects", "GET", "/projects", http.StatusOK},
 		{"GET /education", "GET", "/education", http.StatusOK},
 		{"GET /about redirect", "GET", "/about", http.StatusMovedPermanently},
@@ -214,6 +215,7 @@ func TestSEOEndpoints(t *testing.T) {
 		"https://vorobevaqa.ru/courses/internals/02-syscalls-clone-unshare-and-pivot-root",
 		"https://vorobevaqa.ru/courses/internals/03-building-mini-container-runtime-in-go",
 		"https://vorobevaqa.ru/courses/internals/04-oci-spec-runc-and-crun",
+		"https://vorobevaqa.ru/courses/internals/05-seccomp-capabilities-and-ebpf-tracing",
 	}
 
 	for _, link := range expectedLinks {
@@ -627,6 +629,15 @@ func TestLearningProgressUI(t *testing.T) {
 	tbodyInternals4 := wInternals4.Body.String()
 	if !strings.Contains(tbodyInternals4, "quiz-option-btn") {
 		t.Errorf("Страница урока Internals 04 не содержит вариантов ответов quiz-option-btn")
+	}
+
+	// 24. Проверяем интерактивный квиз на уроке Internals 05 (Seccomp & eBPF)
+	reqInternals5 := httptest.NewRequest("GET", "/courses/internals/05-seccomp-capabilities-and-ebpf-tracing", nil)
+	wInternals5 := httptest.NewRecorder()
+	r.ServeHTTP(wInternals5, reqInternals5)
+	tbodyInternals5 := wInternals5.Body.String()
+	if !strings.Contains(tbodyInternals5, "quiz-option-btn") {
+		t.Errorf("Страница урока Internals 05 не содержит вариантов ответов quiz-option-btn")
 	}
 }
 
