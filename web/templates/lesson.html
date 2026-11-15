@@ -841,6 +841,58 @@
             <div class="quiz-feedback d-none"></div>
           </div>
 
+          {{else if or (eq .Lesson.Slug "03-podman-pods-and-kube-generate") (eq .Lesson.Slug "podman-pods-and-kube-generate")}}
+          <!-- Вопрос 1 -->
+          <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q1">
+            <h6 class="fw-bold mb-3">1. За счет чего контейнеры внутри одного пода Podman могут обращаться друг к другу через <code>localhost</code> (<code>127.0.0.1</code>)?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Все контейнеры пода делят единый сетевой неймспейс (netns) и loopback-интерфейс, созданные для инфра-контейнера, что позволяет общаться по 127.0.0.1 без виртуального оверхеда.">
+                Они разделяют единый сетевой неймспейс (<code>netns</code>) и loopback-интерфейс, созданные для инфра-контейнера пода
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Podman принудительно перезаписывает системный файл <code>/etc/hosts</code> на физическом хосте
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Трафик между контейнерами проксируется через внешний DNS сервер в облаке
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          <!-- Вопрос 2 -->
+          <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q2">
+            <h6 class="fw-bold mb-3">2. Какая команда Podman позволяет запустить приложение прямо из манифеста Kubernetes YAML без установки кластера K8s?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Команда podman kube play читает Kubernetes YAML манифест и создает локальный под с контейнерами, томами и портами без необходимости запуска kubelet или api-server.">
+                <code>podman kube play &lt;manifest.yaml&gt;</code>
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                <code>podman run --kubernetes-cluster-mode &lt;manifest.yaml&gt;</code>
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                <code>podman minikube apply &lt;manifest.yaml&gt;</code>
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          <!-- Вопрос 3 -->
+          <div class="quiz-question mb-3 p-3 rounded-3 border bg-body" data-question-id="q3">
+            <h6 class="fw-bold mb-3">3. Какова основная архитектурная роль инфра-контейнера (<code>infra/pause</code>) внутри пода?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Инфра-контейнер удерживает пространства имен (netns, ipc) и проброшенные порты хоста открытыми. Благодаря этому контейнеры приложений в поде могут перезапускаться без сброса открытых сетевых сокетов.">
+                Он удерживает открытыми сетевые пространства имен и проброшенные порты хоста при перезапуске контейнеров приложений
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Он компилирует байткод Go в Java Virtual Machine
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Он шифрует жесткий диск хоста с помощью BitLocker
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
           {{else if or (eq .Lesson.Slug "01-permissions-and-systemd") (eq .Lesson.Slug "permissions-and-systemd")}}
           <!-- Вопрос 1 -->
           <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q1">

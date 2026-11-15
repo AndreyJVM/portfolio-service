@@ -58,6 +58,7 @@ func TestHandlers(t *testing.T) {
 		{"GET /courses/podman", "GET", "/courses/podman", http.StatusOK},
 		{"GET /courses/podman/01-podman-rootless-and-daemonless", "GET", "/courses/podman/01-podman-rootless-and-daemonless", http.StatusOK},
 		{"GET /courses/podman/02-podman-quadlet-and-systemd", "GET", "/courses/podman/02-podman-quadlet-and-systemd", http.StatusOK},
+		{"GET /courses/podman/03-podman-pods-and-kube-generate", "GET", "/courses/podman/03-podman-pods-and-kube-generate", http.StatusOK},
 		{"GET /courses/lxc", "GET", "/courses/lxc", http.StatusOK},
 		{"GET /courses/lxc/01-lxc-and-system-containers", "GET", "/courses/lxc/01-lxc-and-system-containers", http.StatusOK},
 		{"GET /courses/lxc/02-storage-pools-zfs-and-snapshots", "GET", "/courses/lxc/02-storage-pools-zfs-and-snapshots", http.StatusOK},
@@ -196,6 +197,7 @@ func TestSEOEndpoints(t *testing.T) {
 		"https://vorobevaqa.ru/courses/docker/07-multiarch-buildx-and-cicd",
 		"https://vorobevaqa.ru/courses/podman/01-podman-rootless-and-daemonless",
 		"https://vorobevaqa.ru/courses/podman/02-podman-quadlet-and-systemd",
+		"https://vorobevaqa.ru/courses/podman/03-podman-pods-and-kube-generate",
 		"https://vorobevaqa.ru/courses/lxc/01-lxc-and-system-containers",
 		"https://vorobevaqa.ru/courses/lxc/02-storage-pools-zfs-and-snapshots",
 		"https://vorobevaqa.ru/courses/lxc/03-networking-bridge-macvlan-and-proxy",
@@ -552,6 +554,15 @@ func TestLearningProgressUI(t *testing.T) {
 	tbodyPodman2 := wPodman2.Body.String()
 	if !strings.Contains(tbodyPodman2, "quiz-option-btn") {
 		t.Errorf("Страница урока Podman 02 не содержит вариантов ответов quiz-option-btn")
+	}
+
+	// 17. Проверяем интерактивный квиз на уроке Podman 03 (Pods & Kube Play)
+	reqPodman3 := httptest.NewRequest("GET", "/courses/podman/03-podman-pods-and-kube-generate", nil)
+	wPodman3 := httptest.NewRecorder()
+	r.ServeHTTP(wPodman3, reqPodman3)
+	tbodyPodman3 := wPodman3.Body.String()
+	if !strings.Contains(tbodyPodman3, "quiz-option-btn") {
+		t.Errorf("Страница урока Podman 03 не содержит вариантов ответов quiz-option-btn")
 	}
 }
 
