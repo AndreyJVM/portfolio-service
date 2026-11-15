@@ -59,6 +59,7 @@ func TestHandlers(t *testing.T) {
 		{"GET /courses/podman/01-podman-rootless-and-daemonless", "GET", "/courses/podman/01-podman-rootless-and-daemonless", http.StatusOK},
 		{"GET /courses/podman/02-podman-quadlet-and-systemd", "GET", "/courses/podman/02-podman-quadlet-and-systemd", http.StatusOK},
 		{"GET /courses/podman/03-podman-pods-and-kube-generate", "GET", "/courses/podman/03-podman-pods-and-kube-generate", http.StatusOK},
+		{"GET /courses/podman/04-podman-storage-volumes-and-userns", "GET", "/courses/podman/04-podman-storage-volumes-and-userns", http.StatusOK},
 		{"GET /courses/lxc", "GET", "/courses/lxc", http.StatusOK},
 		{"GET /courses/lxc/01-lxc-and-system-containers", "GET", "/courses/lxc/01-lxc-and-system-containers", http.StatusOK},
 		{"GET /courses/lxc/02-storage-pools-zfs-and-snapshots", "GET", "/courses/lxc/02-storage-pools-zfs-and-snapshots", http.StatusOK},
@@ -198,6 +199,7 @@ func TestSEOEndpoints(t *testing.T) {
 		"https://vorobevaqa.ru/courses/podman/01-podman-rootless-and-daemonless",
 		"https://vorobevaqa.ru/courses/podman/02-podman-quadlet-and-systemd",
 		"https://vorobevaqa.ru/courses/podman/03-podman-pods-and-kube-generate",
+		"https://vorobevaqa.ru/courses/podman/04-podman-storage-volumes-and-userns",
 		"https://vorobevaqa.ru/courses/lxc/01-lxc-and-system-containers",
 		"https://vorobevaqa.ru/courses/lxc/02-storage-pools-zfs-and-snapshots",
 		"https://vorobevaqa.ru/courses/lxc/03-networking-bridge-macvlan-and-proxy",
@@ -563,6 +565,15 @@ func TestLearningProgressUI(t *testing.T) {
 	tbodyPodman3 := wPodman3.Body.String()
 	if !strings.Contains(tbodyPodman3, "quiz-option-btn") {
 		t.Errorf("Страница урока Podman 03 не содержит вариантов ответов quiz-option-btn")
+	}
+
+	// 18. Проверяем интерактивный квиз на уроке Podman 04 (Storage, Volumes & UserNS)
+	reqPodman4 := httptest.NewRequest("GET", "/courses/podman/04-podman-storage-volumes-and-userns", nil)
+	wPodman4 := httptest.NewRecorder()
+	r.ServeHTTP(wPodman4, reqPodman4)
+	tbodyPodman4 := wPodman4.Body.String()
+	if !strings.Contains(tbodyPodman4, "quiz-option-btn") {
+		t.Errorf("Страница урока Podman 04 не содержит вариантов ответов quiz-option-btn")
 	}
 }
 

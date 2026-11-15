@@ -893,6 +893,58 @@
             <div class="quiz-feedback d-none"></div>
           </div>
 
+          {{else if or (eq .Lesson.Slug "04-podman-storage-volumes-and-userns") (eq .Lesson.Slug "podman-storage-volumes-and-userns")}}
+          <!-- Вопрос 1 -->
+          <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q1">
+            <h6 class="fw-bold mb-3">1. Что делает флаг монтирования <code>:U</code> (например, <code>-v ./pgdata:/var/lib/postgresql/data:U</code>)?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Флаг :U указывает Podman автоматически рекурсивно изменить владельца файлов (chown) в монтируемом каталоге на хосте под UID и GID, от которых работает процесс внутри контейнера.">
+                Автоматически рекурсивно меняет владельца каталога на хосте (<code>chown</code>) под UID/GID процесса внутри контейнера
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Шифрует файлы каталога алгоритмом RSA-4096
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Удаляет каталог с диска при завершении работы контейнера
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          <!-- Вопрос 2 -->
+          <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q2">
+            <h6 class="fw-bold mb-3">2. Какова главная цель использования флага <code>--userns=keep-id</code> при разработке?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Режим keep-id проецирует реальный UID пользователя хоста (например, 1000) в тот же самый UID 1000 внутри контейнера. Благодаря этому все созданные компилятором файлы принадлежат разработчику на хосте.">
+                Проецировать реальный UID пользователя хоста в тот же самый UID внутри контейнера, чтобы созданные файлы не требовали root-прав для редактирования на хосте
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Сохранять пароль пользователя в оперативной памяти ядра
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Запретить контейнеру доступ к оперативной памяти
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          <!-- Вопрос 3 -->
+          <div class="quiz-question mb-3 p-3 rounded-3 border bg-body" data-question-id="q3">
+            <h6 class="fw-bold mb-3">3. В чем различие флагов безопасности SELinux <code>:z</code> и <code>:Z</code> при монтировании томов?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Флаг :z устанавливает общий (shared) контекст container_file_t, позволяя нескольким контейнерам читать и писать в том. Флаг :Z устанавливает уникальный приватный (unshared) контекст категории, открывая доступ только этому контейнеру.">
+                <code>:z</code> задает общий (shared) контекст для нескольких контейнеров, а <code>:Z</code> — уникальный приватный (unshared) контекст для одного контейнера
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                <code>:z</code> сжимает данные архиватором gzip, а <code>:Z</code> архиватором zip
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Флаг <code>:Z</code> предназначен только для операционной системы Windows
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
           {{else if or (eq .Lesson.Slug "01-permissions-and-systemd") (eq .Lesson.Slug "permissions-and-systemd")}}
           <!-- Вопрос 1 -->
           <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q1">
