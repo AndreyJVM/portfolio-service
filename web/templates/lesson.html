@@ -1153,6 +1153,58 @@
             <div class="quiz-feedback d-none"></div>
           </div>
 
+          {{else if or (eq .Lesson.Slug "04-oci-spec-runc-and-crun") (eq .Lesson.Slug "oci-spec-runc-and-crun")}}
+          <!-- Вопрос 1 -->
+          <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q1">
+            <h6 class="fw-bold mb-3">1. Из каких двух компонентов состоит стандартизированный каталог <strong>OCI Runtime Bundle</strong>?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="По спецификации OCI Bundle состоит из каталога rootfs (файлы приложения) и манифеста config.json (описание пространств имен, cgroups, монтирований и процесса).">
+                Файл декларации <code>config.json</code> и корневая файловая система <code>rootfs/</code>
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Файлы <code>Dockerfile</code> и <code>docker-compose.yml</code>
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Архив ZIP и файл базы данных SQLite
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          <!-- Вопрос 2 -->
+          <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q2">
+            <h6 class="fw-bold mb-3">2. Какова основная роль процессов <code>conmon</code> (в Podman) и <code>containerd-shim</code> (в Docker)?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="Низкоуровневые рантаймы (runc/crun) завершаются сразу после запуска. Супервизор conmon/shim удерживает открытыми дескрипторы stdin/stdout/stderr, логирует вывод и ловит код завершения (Exit code) при падении процесса.">
+                Удерживать открытыми дескрипторы ввода-вывода (<code>stdout/stderr</code>) и сохранять код завершения процесса (Exit Code) после выхода рантайма
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Печатать чеки на кассовом аппарате сервера
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                Шифровать трафик протоколом HTTPS для браузеров
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
+          <!-- Вопрос 3 -->
+          <div class="quiz-question mb-3 p-3 rounded-3 border bg-body" data-question-id="q3">
+            <h6 class="fw-bold mb-3">3. В чем главное эксплуатационное преимущество рантайма <code>crun</code> (на языке Си) перед <code>runc</code> (на Go)?</h6>
+            <div class="d-flex flex-column gap-2">
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="true" data-explanation="crun написан на чистом Си и не имеет накладных расходов планировщика Go. Он запускается в 5–8 раз быстрее (миллисекунды) и потребляет менее 1 МБ памяти (против 15-20 МБ у runc).">
+                Сверхбыстрый холодный старт (в 5–8 раз быстрее) и минимальное потребление RAM (&lt; 1 МБ против ~15 МБ у Go-рантайма)
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                crun поддерживает запуск контейнеров на перфокартах
+              </button>
+              <button type="button" class="btn btn-outline-secondary text-start quiz-option-btn" data-correct="false">
+                crun полностью отключает брандмауэр Linux
+              </button>
+            </div>
+            <div class="quiz-feedback d-none"></div>
+          </div>
+
           {{else if or (eq .Lesson.Slug "01-permissions-and-systemd") (eq .Lesson.Slug "permissions-and-systemd")}}
           <!-- Вопрос 1 -->
           <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="q1">
