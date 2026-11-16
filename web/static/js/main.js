@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Основной скрипт глобальной инициализации приложения:
  * - Инициализация компонентов Bootstrap (тултипы, поповеры)
  * - Глобальная система Toast-уведомлений (window.showToast)
@@ -19,6 +19,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 4. Индикатор прогресса чтения и кнопка "Наверх"
   initScrollControls();
+
+  // 5. Кнопки копирования кода и терминальная стилизация
+  initCodeCopyButtons();
+
+  // 6. Улучшения мобильной навигации
+  initMobileNavEnhancements();
 });
 
 /**
@@ -141,3 +147,114 @@ function initScrollControls() {
 
   onScroll();
 }
+
+/**
+ * Оборачивает блоки <pre> в карточки с терминальной шапкой и кнопкой быстрого копирования кода.
+ */
+function initCodeCopyButtons() {
+  const preElements = document.querySelectorAll('.markdown-content pre');
+  preElements.forEach((pre) => {
+    if (pre.closest('.code-block-wrapper')) return;
+
+    // Создаем контейнер-обертку
+    const wrapper = document.createElement('div');
+    wrapper.className = 'code-block-wrapper';
+
+    // Создаем шапку
+    const header = document.createElement('div');
+    header.className = 'code-block-header';
+
+    const dots = document.createElement('div');
+    dots.className = 'code-block-dots';
+    dots.innerHTML = '<span class="code-block-dot dot-red"></span><span class="code-block-dot dot-yellow"></span><span class="code-block-dot dot-green"></span>';
+
+    // Определяем язык/подпись из class="language-bash" или подобного
+    const codeEl = pre.querySelector('code');
+    let lang = 'Terminal / Code';
+    if (codeEl) {
+      const match = codeEl.className.match(/language-([a-zA-Z0-9_-]+)/);
+      if (match) {
+        lang = match[1].toUpperCase();
+      }
+    }
+
+    const titleSpan = document.createElement('span');
+    titleSpan.className = 'small fw-medium text-muted font-monospace';
+    titleSpan.textContent = lang;
+
+    const copyBtn = document.createElement('button');
+    copyBtn.type = 'button';
+    copyBtn.className = 'code-copy-btn';
+    copyBtn.setAttribute('aria-label', 'Скопировать код');
+    copyBtn.innerHTML = '<i class="far fa-copy"></i><span>Копировать</span>';
+
+    copyBtn.addEventListener('click', async () => {
+      const textToCopy = (codeEl || pre).innerText.trim();
+      let success = false;
+
+      if (navigator.clipboard && window.isSecureContext) {
+        try {
+          await navigator.clipboard.writeText(textToCopy);
+          success = true;
+        } catch (e) {
+          success = false;
+        }
+      }
+
+      if (!success) {
+        // Fallback через скрытый textarea
+        const textArea = document.createElement('textarea');
+        textArea.value = textToCopy;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-9999px';
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+          success = document.execCommand('copy');
+        } catch (e) {
+          success = false;
+        }
+        document.body.removeChild(textArea);
+      }
+
+      if (success) {
+        copyBtn.classList.add('copied');
+        copyBtn.innerHTML = '<i class="fas fa-check"></i><span>Скопировано!</span>';
+        setTimeout(() => {
+          copyBtn.classList.remove('copied');
+          copyBtn.innerHTML = '<i class="far fa-copy"></i><span>Копировать</span>';
+        }, 2000);
+      }
+    });
+
+    const headerRight = document.createElement('div');
+    headerRight.className = 'd-flex align-items-center gap-2';
+    headerRight.appendChild(titleSpan);
+    headerRight.appendChild(copyBtn);
+
+    header.appendChild(dots);
+    header.appendChild(headerRight);
+
+    pre.parentNode.insertBefore(wrapper, pre);
+    wrapper.appendChild(header);
+    wrapper.appendChild(pre);
+  });
+}
+
+/**
+ * Автоматическое закрытие мобильного offcanvas-сайдбара при переходе по ссылке.
+ */
+function initMobileNavEnhancements() {
+  const sidebarNav = document.getElementById('sidebarNav');
+  if (!sidebarNav) return;
+
+  sidebarNav.querySelectorAll('.nav-link').forEach((link) => {
+    link.addEventListener('click', () => {
+      const bsOffcanvas = bootstrap.Offcanvas.getInstance(sidebarNav);
+      if (bsOffcanvas) {
+        bsOffcanvas.hide();
+      }
+    });
+  });
+}
+

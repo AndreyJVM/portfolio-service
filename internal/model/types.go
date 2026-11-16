@@ -1,5 +1,7 @@
 package model
 
+import "html/template"
+
 // MetaData содержит SEO и метаинформацию для страниц.
 type MetaData struct {
 	Title         string
@@ -53,12 +55,33 @@ type SearchItem struct {
 	Snippet     string   `json:"snippet"`     // Очищенный текстовый сниппет
 }
 
-// Quiz представляет интерактивный тест к уроку для самопроверки.
+// Quiz представляет интерактивный проверочный тест к уроку для самопроверки.
 type Quiz struct {
-	Question    string   `json:"question"`
-	Options     []string `json:"options"`
-	CorrectIdx  int      `json:"correctIndex"`
-	Explanation string   `json:"explanation"`
+	Questions []QuizQuestion `json:"questions"`
+}
+
+// QuizQuestion представляет отдельный вопрос проверочного квиза.
+type QuizQuestion struct {
+	ID      string       `json:"id"`
+	Title   string       `json:"title"`
+	Options []QuizOption `json:"options"`
+}
+
+// TitleHTML возвращает безопасный HTML заголовка вопроса (с тегами <code> и т.д.).
+func (q QuizQuestion) TitleHTML() template.HTML {
+	return template.HTML(q.Title)
+}
+
+// QuizOption представляет вариант ответа на вопрос квиза.
+type QuizOption struct {
+	Text        string `json:"text"`
+	IsCorrect   bool   `json:"isCorrect"`
+	Explanation string `json:"explanation,omitempty"`
+}
+
+// TextHTML возвращает безопасный HTML варианта ответа (с тегами <code> и т.д.).
+func (o QuizOption) TextHTML() template.HTML {
+	return template.HTML(o.Text)
 }
 
 // GitHubRepoDto представляет репозиторий GitHub.

@@ -1,0 +1,297 @@
+/* ===== СТИЛИ СТРАНИЦЫ УРОКА И MARKDOWN-КОНТЕНТА ===== */
+
+/* Базовые параметры markdown-контента */
+.markdown-content {
+  font-size: 1.025rem;
+  line-height: 1.75;
+  color: var(--text-color);
+  word-wrap: break-word;
+}
+
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3,
+.markdown-content h4 {
+  font-weight: 700;
+  color: var(--text-color);
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  line-height: 1.35;
+}
+
+.markdown-content h1 { font-size: 1.75rem; }
+.markdown-content h2 { font-size: 1.45rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; }
+.markdown-content h3 { font-size: 1.25rem; }
+.markdown-content h4 { font-size: 1.1rem; }
+
+@media (min-width: 768px) {
+  .markdown-content h1 { font-size: 2rem; }
+  .markdown-content h2 { font-size: 1.55rem; }
+  .markdown-content h3 { font-size: 1.3rem; }
+}
+
+.markdown-content p {
+  margin-bottom: 1.25rem;
+  color: var(--text-color);
+}
+
+.markdown-content strong {
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.markdown-content a {
+  color: var(--accent-color);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.15s ease;
+}
+
+.markdown-content a:hover {
+  color: var(--accent-hover);
+}
+
+.markdown-content ul,
+.markdown-content ol {
+  padding-left: 1.4rem;
+  margin-bottom: 1.4rem;
+}
+
+.markdown-content li {
+  margin-bottom: 0.4rem;
+  line-height: 1.65;
+}
+
+/* Цитаты и заметки */
+.markdown-content blockquote {
+  border-left: 4px solid var(--accent-color);
+  padding: 0.85rem 1.15rem;
+  margin: 1.5rem 0;
+  background: rgba(var(--bs-primary-rgb), 0.05);
+  border-radius: 0 10px 10px 0;
+  color: var(--text-color);
+  font-size: 0.95rem;
+}
+
+.markdown-content blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+/* Инлайн-код */
+.markdown-content code {
+  color: var(--bs-primary);
+  background: rgba(var(--bs-primary-rgb), 0.08);
+  padding: 0.2rem 0.45rem;
+  border-radius: 6px;
+  font-size: 0.88em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  word-break: break-word;
+}
+
+/* Блоки предварительно отформатированного кода (PRE) */
+.code-block-wrapper {
+  position: relative;
+  margin-top: 1.25rem;
+  margin-bottom: 1.75rem;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #0f172a;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.15);
+}
+
+.code-block-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.45rem 1rem;
+  background: #1e293b;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 0.75rem;
+  color: #94a3b8;
+  user-select: none;
+}
+
+.code-block-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.code-block-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.dot-red { background-color: #ef4444; }
+.dot-yellow { background-color: #f59e0b; }
+.dot-green { background-color: #10b981; }
+
+.code-copy-btn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #94a3b8;
+  font-size: 0.75rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.code-copy-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #f8fafc;
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.code-copy-btn.copied {
+  background: rgba(16, 185, 129, 0.2);
+  color: #34d399;
+  border-color: #10b981;
+}
+
+.markdown-content pre {
+  background: #0f172a;
+  color: #f8fafc;
+  padding: 1.15rem;
+  border-radius: 12px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  font-size: 0.88rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.code-block-wrapper pre {
+  margin: 0;
+  border: none;
+  border-radius: 0;
+}
+
+.markdown-content pre code {
+  color: inherit;
+  background: transparent;
+  padding: 0;
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+
+/* Таблицы в markdown */
+.table-responsive-wrapper {
+  position: relative;
+  margin-top: 1.25rem;
+  margin-bottom: 1.75rem;
+}
+
+.markdown-content table {
+  width: 100%;
+  display: block;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  font-size: 0.9rem;
+}
+
+.markdown-content th {
+  background-color: var(--table-header-bg);
+  color: var(--text-color);
+  font-weight: 600;
+  padding: 0.75rem 1rem;
+  border-bottom: 2px solid var(--card-border);
+  border-right: 1px solid var(--card-border);
+  white-space: nowrap;
+}
+
+.markdown-content td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--card-border);
+  border-right: 1px solid var(--card-border);
+  vertical-align: middle;
+}
+
+.markdown-content th:last-child,
+.markdown-content td:last-child {
+  border-right: none;
+}
+
+.markdown-content tr:last-child td {
+  border-bottom: none;
+}
+
+.markdown-content tbody tr:hover {
+  background-color: rgba(var(--bs-primary-rgb), 0.03);
+}
+
+/* Карточка квиза */
+.lesson-quiz-card {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.quiz-question {
+  transition: border-color 0.2s ease;
+}
+
+.quiz-option-btn {
+  white-space: normal !important;
+  word-break: break-word;
+  text-align: left;
+  line-height: 1.45;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  font-size: 0.92rem;
+  transition: all 0.15s ease;
+}
+
+.quiz-option-btn:hover {
+  transform: translateX(3px);
+}
+
+/* Навигация между уроками */
+.lesson-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.25rem;
+  border-radius: 50rem;
+  font-weight: 500;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  max-width: 100%;
+}
+
+.lesson-nav-btn:hover {
+  transform: translateY(-2px);
+}
+
+/* Мобильная адаптация */
+@media (max-width: 575.98px) {
+  .markdown-content {
+    font-size: 0.96rem;
+  }
+
+  .markdown-content pre {
+    padding: 0.85rem;
+    font-size: 0.8rem;
+    border-radius: 8px;
+  }
+
+  .quiz-option-btn {
+    font-size: 0.86rem;
+    padding: 0.65rem 0.85rem;
+  }
+
+  .lesson-nav-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

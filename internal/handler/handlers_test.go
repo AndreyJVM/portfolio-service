@@ -265,6 +265,7 @@ func TestStaticAssets(t *testing.T) {
 		{"Main CSS", "/css/main.css", "text/css"},
 		{"Navbar CSS", "/css/navbar.css", "text/css"},
 		{"Themes CSS", "/css/themes.css", "text/css"},
+		{"Lesson CSS", "/css/pages/lesson.css", "text/css"},
 		{"Theme toggle JS", "/js/theme-toggle.js", "javascript"},
 		{"Learning progress JS", "/js/learning-progress.js", "javascript"},
 		{"Search JS", "/js/search.js", "javascript"},
@@ -646,6 +647,36 @@ func TestLearningProgressUI(t *testing.T) {
 	tbodyInternals5 := wInternals5.Body.String()
 	if !strings.Contains(tbodyInternals5, "quiz-option-btn") {
 		t.Errorf("Страница урока Internals 05 не содержит вариантов ответов quiz-option-btn")
+	}
+}
+
+func TestLesson_PrevNextNavigation(t *testing.T) {
+	r := setupTestRouter()
+
+	// Первый урок: должен содержать только "Следующий урок"
+	reqFirst := httptest.NewRequest("GET", "/courses/docker/01-architecture-and-first-dockerfile", nil)
+	wFirst := httptest.NewRecorder()
+	r.ServeHTTP(wFirst, reqFirst)
+	bodyFirst := wFirst.Body.String()
+
+	if !strings.Contains(bodyFirst, "Следующий урок") {
+		t.Errorf("Первый урок курса должен содержать ссылку на следующий урок")
+	}
+	if strings.Contains(bodyFirst, "Предыдущий урок") {
+		t.Errorf("Первый урок курса не должен содержать ссылку на предыдущий урок")
+	}
+
+	// Второй урок: должен содержать и "Предыдущий урок", и "Следующий урок"
+	reqMid := httptest.NewRequest("GET", "/courses/docker/02-multistage-and-cgroups", nil)
+	wMid := httptest.NewRecorder()
+	r.ServeHTTP(wMid, reqMid)
+	bodyMid := wMid.Body.String()
+
+	if !strings.Contains(bodyMid, "Следующий урок") {
+		t.Errorf("Промежуточный урок должен содержать ссылку на следующий урок")
+	}
+	if !strings.Contains(bodyMid, "Предыдущий урок") {
+		t.Errorf("Промежуточный урок должен содержать ссылку на предыдущий урок")
 	}
 }
 

@@ -75,11 +75,26 @@ func (h *Handler) Lesson(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	var prevLesson, nextLesson *model.Lesson
+	for i, l := range course.Lessons {
+		if l.Slug == lessonSlug || l.Slug == lesson.Slug {
+			if i > 0 {
+				prevLesson = &course.Lessons[i-1]
+			}
+			if i+1 < len(course.Lessons) {
+				nextLesson = &course.Lessons[i+1]
+			}
+			break
+		}
+	}
+
 	data := struct {
 		Meta              model.MetaData
 		Course            *model.Course
 		Lesson            *model.Lesson
 		LessonContentSafe template.HTML
+		PrevLesson        *model.Lesson
+		NextLesson        *model.Lesson
 	}{
 		Meta: model.MetaData{
 			Title:         lesson.Title + " • " + course.Title,
@@ -95,6 +110,8 @@ func (h *Handler) Lesson(w http.ResponseWriter, r *http.Request) {
 		Course:            course,
 		Lesson:            lesson,
 		LessonContentSafe: template.HTML(lesson.ContentHTML),
+		PrevLesson:        prevLesson,
+		NextLesson:        nextLesson,
 	}
 
 	h.renderTemplate(w, "lesson.html", data)
