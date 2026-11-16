@@ -73,7 +73,7 @@ func TestHandlers(t *testing.T) {
 		{"GET /courses/internals/03-building-mini-container-runtime-in-go", "GET", "/courses/internals/03-building-mini-container-runtime-in-go", http.StatusOK},
 		{"GET /courses/internals/04-oci-spec-runc-and-crun", "GET", "/courses/internals/04-oci-spec-runc-and-crun", http.StatusOK},
 		{"GET /courses/internals/05-seccomp-capabilities-and-ebpf-tracing", "GET", "/courses/internals/05-seccomp-capabilities-and-ebpf-tracing", http.StatusOK},
-		{"GET /projects", "GET", "/projects", http.StatusOK},
+		{"GET /projects redirect", "GET", "/projects", http.StatusMovedPermanently},
 		{"GET /education", "GET", "/education", http.StatusOK},
 		{"GET /about redirect", "GET", "/about", http.StatusMovedPermanently},
 		{"GET /roadmap redirect", "GET", "/roadmap", http.StatusMovedPermanently},
@@ -186,7 +186,6 @@ func TestSEOEndpoints(t *testing.T) {
 	expectedLinks := []string{
 		"https://vorobevaqa.ru/",
 		"https://vorobevaqa.ru/courses",
-		"https://vorobevaqa.ru/projects",
 		"https://vorobevaqa.ru/education",
 		"https://vorobevaqa.ru/qr",
 		"https://vorobevaqa.ru/mustang",
@@ -387,7 +386,7 @@ func TestCleanPagesLayout(t *testing.T) {
 	r := setupTestRouter()
 
 	// 1. Проверяем, что во вкладке браузера всех страниц строго <title>Primary Cloud Lab</title>
-	for _, path := range []string{"/", "/courses", "/projects", "/education", "/qr", "/mustang"} {
+	for _, path := range []string{"/", "/courses", "/education", "/qr", "/mustang"} {
 		req := httptest.NewRequest("GET", path, nil)
 		w := httptest.NewRecorder()
 		r.ServeHTTP(w, req)
@@ -398,12 +397,15 @@ func TestCleanPagesLayout(t *testing.T) {
 		}
 	}
 
-	// 2. Страница проектов не должна содержать лишнюю плашку курсов
+	// 2. Страница проектов перенаправляет на секцию проектов главной страницы (301)
 	reqProj := httptest.NewRequest("GET", "/projects", nil)
 	wProj := httptest.NewRecorder()
 	r.ServeHTTP(wProj, reqProj)
-	if strings.Contains(wProj.Body.String(), "Курсы DevOps") {
-		t.Errorf("/projects не должна содержать плашку 'Курсы DevOps'")
+	if wProj.Code != http.StatusMovedPermanently {
+		t.Errorf("Ожидался статус 301 для /projects, получен %d", wProj.Code)
+	}
+	if loc := wProj.Header().Get("Location"); loc != "/#projects" {
+		t.Errorf("Ожидался редирект на /#projects, получен %s", loc)
 	}
 
 	// 3. Страница QR не должна содержать лишнюю плашку курсов
@@ -677,6 +679,39 @@ func TestLesson_PrevNextNavigation(t *testing.T) {
 	}
 	if !strings.Contains(bodyMid, "Предыдущий урок") {
 		t.Errorf("Промежуточный урок должен содержать ссылку на предыдущий урок")
+	}
+}
+
+func TestIndexPage_ContainsCoursesAndProjects(t *testing.T) {
+	r := setupTestRouter()
+
+	req := httptest.NewRequest("GET", "/", nil)
+	w := httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("Ожидался статус 200 для /, получен %d", w.Code)
+	}
+
+	body := w.Body.String()
+	expectedSubstrings := []string{
+		"id=\"courses\"",
+		"id=\"projects\"",
+		"Обучение Контейнеризации и Linux",
+		"Архитектура Инфраструктуры Платформы",
+		"Linux VDS & Сеть",
+		"OCI & Рантаймы",
+		"Nginx Gateway",
+		"Zero-Downtime CI/CD",
+		"Docker Hub",
+		"GitHub",
+		"Ansible",
+	}
+
+	for _, sub := range expectedSubstrings {
+		if !strings.Contains(body, sub) {
+			t.Errorf("Объединенная главная страница должна содержать '%s'", sub)
+		}
 	}
 }
 
@@ -1001,7 +1036,7 @@ func TestConcurrency_HighLoad(t *testing.T) {
 
 				r.ServeHTTP(w, req)
 
-				if w.Code != http.StatusOK {
+				if w.Code != http.StatusOK && w.Code != http.StatusMovedPermanently {
 					t.Errorf("Ошибка конкурентного рендеринга %s: статус %d", url, w.Code)
 				}
 			}(i)

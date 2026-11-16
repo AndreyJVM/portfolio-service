@@ -31,7 +31,6 @@ func (h *Handler) SitemapXML(w http.ResponseWriter, r *http.Request) {
 		URLs: []sitemapURL{
 			{Loc: h.baseURL + "/", LastMod: today, ChangeFreq: "weekly", Priority: "1.0"},
 			{Loc: h.baseURL + "/courses", LastMod: today, ChangeFreq: "weekly", Priority: "0.9"},
-			{Loc: h.baseURL + "/projects", LastMod: today, ChangeFreq: "weekly", Priority: "0.8"},
 			{Loc: h.baseURL + "/education", LastMod: today, ChangeFreq: "monthly", Priority: "0.8"},
 			{Loc: h.baseURL + "/qr", LastMod: today, ChangeFreq: "monthly", Priority: "0.7"},
 			{Loc: h.baseURL + "/mustang", LastMod: today, ChangeFreq: "monthly", Priority: "0.7"},

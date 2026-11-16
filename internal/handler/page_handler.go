@@ -6,60 +6,37 @@ import (
 	"ru.vorobevaqa/devops-platform/internal/model"
 )
 
-// Index: Главная страница с превью обучающих треков
+// Index: Главная страница образовательной платформы и проектов инфраструктуры
 func (h *Handler) Index(w http.ResponseWriter, r *http.Request) {
 	courses := h.courseService.GetAllCourses()
-	var featured []model.Course
-	if len(courses) > 2 {
-		featured = courses[:2]
-	} else {
-		featured = courses
-	}
+	projectsData := h.integrationsService.GetProjectsData()
 
 	data := struct {
-		Meta            model.MetaData
-		FeaturedCourses []model.Course
+		Meta    model.MetaData
+		Courses []model.Course
+		Data    model.ProjectsPageData
 	}{
 		Meta: model.MetaData{
 			Title:         "Главная • Платформа по Контейнеризации",
-			Description:   "Специализированная база знаний и практические курсы по Docker, Podman, LXC и изоляции в ядре Linux от Андрея Воробьева.",
-			Keywords:      "контейнеризация, Docker, Podman, LXC, Incus, Cgroups, Namespaces, уроки, курсы",
-			OGTitle:       "Андрей Воробьев • Containerization & Infrastructure Engineer",
-			OGDescription: "Глубокие практические руководства по Docker, Podman, LXC и низкоуровневой изоляции в Linux.",
+			Description:   "Специализированная база знаний, курсы по Docker, Podman, LXC, ядру Linux и открытая инфраструктура от Андрея Воробьева.",
+			Keywords:      "контейнеризация, Docker, Podman, LXC, Incus, Cgroups, Namespaces, уроки, курсы, инфраструктура, DevOps",
+			OGTitle:       "Андрей Воробьев • Primary Cloud Lab | Обучение & Инфраструктура",
+			OGDescription: "Глубокие практические руководства по Docker, Podman, LXC и защищенная инфраструктура на Linux.",
 			OGImage:       h.baseURL + "/images/og-main.png",
 			OGURL:         h.baseURL + "/",
 			ActiveTab:     "home",
 			CanonicalURL:  h.baseURL + "/",
 		},
-		FeaturedCourses: featured,
+		Courses: courses,
+		Data:    projectsData,
 	}
 
 	h.renderTemplate(w, "index.html", data)
 }
 
-// Projects: Страница проектов с интеграцией GitHub, DockerHub, Ansible Galaxy
+// Projects: постоянный редирект (HTTP 301) на секцию проектов главной страницы
 func (h *Handler) Projects(w http.ResponseWriter, r *http.Request) {
-	projectsData := h.integrationsService.GetProjectsData()
-
-	data := struct {
-		Meta model.MetaData
-		Data model.ProjectsPageData
-	}{
-		Meta: model.MetaData{
-			Title:         "Проекты и Инфраструктура",
-			Description:   "Архитектура продакшн-окружения: Linux VDS, OCI-рантаймы (Docker, Podman, LXC), Nginx Gateway, Ansible и CI/CD.",
-			Keywords:      "проекты, архитектура, Linux, Docker, Podman, LXC, Ansible, Nginx, CI/CD, DevOps",
-			OGTitle:       "Проекты и Инфраструктура | Андрей Воробьев",
-			OGDescription: "Защищенная инфраструктура, OCI-рантаймы, Ansible-роли и открытый исходный код.",
-			OGImage:       h.baseURL + "/images/og-projects.png",
-			OGURL:         h.baseURL + "/projects",
-			ActiveTab:     "projects",
-			CanonicalURL:  h.baseURL + "/projects",
-		},
-		Data: projectsData,
-	}
-
-	h.renderTemplate(w, "projects.html", data)
+	http.Redirect(w, r, "/#projects", http.StatusMovedPermanently)
 }
 
 // Education: Квалификация и сертификаты
