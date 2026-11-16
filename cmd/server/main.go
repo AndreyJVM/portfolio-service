@@ -42,6 +42,7 @@ func main() {
 	// Инициализация сервисного слоя
 	courseService := service.NewCourseService(cfg.ContentDir)
 	integrationsService := service.NewIntegrationsService(cfg.GitHubUser, cfg.DockerUser)
+	integrationsService.PreloadDefaults() // Мгновенный холодный старт без задержек на внешние API
 
 	// Инициализация контроллеров и роутера
 	h := handler.NewHandler(courseService, integrationsService, cfg.TemplatesDir, cfg.StaticDir, cfg.AppBaseURL)

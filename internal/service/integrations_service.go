@@ -30,25 +30,47 @@ func NewIntegrationsService(githubUser, dockerUser string) *IntegrationsService 
 	}
 }
 
-// GetProjectsData параллельно запрашивает GitHub, DockerHub и отдает кэшированный результат (TTL: 10 минут).
-// Защищен от Thundering Herd (двойная проверка блокировки).
+// PreloadDefaults мгновенно предзаполняет кэш проверенными статическими данными
+// для гарантированно мгновенного ответа сервера (0ms cold start)
+// и запускает асинхронное фоновое обновление данных из API.
+func (s *IntegrationsService) PreloadDefaults() {
+	s.cacheMutex.Lock()
+	data := model.ProjectsPageData{
+		GitHubRepos:  s.fallbackGitHubRepos(),
+		DockerRepos:  s.fallbackDockerHubRepos(),
+		AnsibleRoles: s.getStaticAnsibleRoles(),
+	}
+	s.cachedData = &data
+	s.cacheUntil = time.Now().Add(10 * time.Minute)
+	s.cacheMutex.Unlock()
+
+	// Запуск фонового обновления без блокировки основного потока
+	go s.Refresh()
+}
+
+// GetProjectsData отдает кэшированный результат O(1) из памяти без сетевых задержек.
+// При истечении TTL запускает фоновое обновление (Stale-While-Revalidate), не задерживая пользователя.
 func (s *IntegrationsService) GetProjectsData() model.ProjectsPageData {
 	s.cacheMutex.RLock()
-	if s.cachedData != nil && time.Now().Before(s.cacheUntil) {
+	if s.cachedData != nil {
 		data := *s.cachedData
+		isExpired := time.Now().After(s.cacheUntil)
 		s.cacheMutex.RUnlock()
+
+		if isExpired {
+			// Фоновое обновление: отдаем старые данные мгновенно, а обновление делаем асинхронно
+			go s.Refresh()
+		}
 		return data
 	}
 	s.cacheMutex.RUnlock()
 
-	s.cacheMutex.Lock()
-	defer s.cacheMutex.Unlock()
+	// Если кэш еще не инициализирован (например, в модульных тестах), выполняем синхронное наполнение
+	return s.Refresh()
+}
 
-	// Double-Checked Locking: проверяем, не успела ли другая горутина обновить кэш
-	if s.cachedData != nil && time.Now().Before(s.cacheUntil) {
-		return *s.cachedData
-	}
-
+// Refresh параллельно запрашивает GitHub, DockerHub и обновляет кэш памяти.
+func (s *IntegrationsService) Refresh() model.ProjectsPageData {
 	var wg sync.WaitGroup
 	var ghRepos []model.GitHubRepoDto
 	var dhRepos []model.DockerHubRepoDto
@@ -79,8 +101,10 @@ func (s *IntegrationsService) GetProjectsData() model.ProjectsPageData {
 		AnsibleRoles: ansibleRoles,
 	}
 
+	s.cacheMutex.Lock()
 	s.cachedData = &data
-	s.cacheUntil = time.Now().Add(10 * time.Minute)
+	s.cacheUntil = time.Now().Add(15 * time.Minute)
+	s.cacheMutex.Unlock()
 
 	return data
 }

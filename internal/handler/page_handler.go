@@ -39,17 +39,17 @@ func (h *Handler) Projects(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/#projects", http.StatusMovedPermanently)
 }
 
-// Education: Квалификация и сертификаты
+// Education: Страница об авторе, опыте и квалификации
 func (h *Handler) Education(w http.ResponseWriter, r *http.Request) {
 	data := struct {
 		Meta model.MetaData
 	}{
 		Meta: model.MetaData{
-			Title:         "Квалификация и Сертификации",
-			Description:   "Квалификация Андрея Воробьева: системное администрирование Linux (Слёрм), Docker, Podman, LXC, CI/CD, диплом гос. образца.",
-			Keywords:      "DevOps, Linux, Слёрм, Docker, Podman, LXC, Ansible, сертификаты, квалификация",
-			OGTitle:       "Квалификация и Сертификации | Андрей Воробьев",
-			OGDescription: "Дипломы государственного образца, профессиональные сертификации Слёрм и подтвержденные инженерные компетенции.",
+			Title:         "Об авторе • Андрей Воробьев | Primary Cloud Lab",
+			Description:   "Об авторе платформы Primary Cloud Lab Андрее Воробьеве: инженерный опыт, системное администрирование Linux (Слёрм), Docker, Podman, LXC, CI/CD, дипломы гос. образца.",
+			Keywords:      "Андрей Воробьев, об авторе, DevOps, Linux, Слёрм, Docker, Podman, LXC, Ansible, сертификаты, квалификация",
+			OGTitle:       "Об авторе • Андрей Воробьев | Primary Cloud Lab",
+			OGDescription: "Создатель Primary Cloud Lab. Профессиональные сертификации Слёрм, дипломы государственного образца и подтвержденные компетенции.",
 			OGImage:       h.baseURL + "/images/og-about.png",
 			OGURL:         h.baseURL + "/education",
 			ActiveTab:     "education",
