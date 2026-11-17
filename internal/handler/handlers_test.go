@@ -594,11 +594,6 @@ func TestIndexPage_ContainsCoursesAndProjects(t *testing.T) {
 		"id=\"docker-activity\"",
 		"id=\"ansible-activity\"",
 		"id=\"github-activity\"",
-		"Архитектура Инфраструктуры Платформы",
-		"Linux VDS & Сеть",
-		"OCI & Рантаймы",
-		"Nginx Gateway",
-		"Zero-Downtime CI/CD",
 		"Docker Hub",
 		"GitHub",
 		"Ansible",
@@ -609,6 +604,11 @@ func TestIndexPage_ContainsCoursesAndProjects(t *testing.T) {
 		if !strings.Contains(bodyEdu, sub) {
 			t.Errorf("Страница 'Об авторе' должна содержать '%s'", sub)
 		}
+	}
+
+	// Блок архитектуры инфраструктуры удален с вкладки "Об авторе"
+	if strings.Contains(bodyEdu, "Архитектура Инфраструктуры Платформы") {
+		t.Errorf("Блок 'Архитектура Инфраструктуры Платформы' должен быть удален с вкладки 'Об авторе'")
 	}
 }
 

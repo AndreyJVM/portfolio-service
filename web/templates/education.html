@@ -50,7 +50,7 @@
           <i class="fab fa-github me-1"></i>GitHub
         </a>
         <a href="#projects" class="btn btn-outline-secondary btn-lg px-3 rounded-pill">
-          <i class="fas fa-network-wired me-1"></i>Инфраструктура
+          <i class="fas fa-boxes-stacked me-1"></i>Проекты
         </a>
       </div>
     </div>
@@ -150,117 +150,9 @@
   </section>
 
   <!-- ========================================== -->
-  <!-- 3. АРХИТЕКТУРА ИНФРАСТРУКТУРЫ              -->
+  <!-- 3. OPEN-SOURCE ПРОЕКТЫ И РЕПОЗИТОРИИ       -->
   <!-- ========================================== -->
   <section class="mb-5 reveal pt-2" id="projects">
-    <div class="d-flex align-items-center mb-4">
-      <div class="p-2 rounded-3 bg-primary-subtle text-primary me-3">
-        <i class="fas fa-network-wired fa-xl"></i>
-      </div>
-      <div>
-        <h3 class="fw-bold mb-0">Архитектура Инфраструктуры Платформы</h3>
-        <small class="text-body-secondary">Реальное боевое окружение Primary Cloud Lab: Linux хост, OCI-рантаймы, Nginx Gateway и CI/CD</small>
-      </div>
-    </div>
-
-    <div class="row g-4 mb-5">
-      <!-- Уровень 1: Хост и Сеть -->
-      <div class="col-lg-3 col-md-6">
-        <div class="card h-100 border-0 shadow-sm rounded-4 p-4 project-card">
-          <div class="d-flex align-items-center mb-3">
-            <div class="project-icon-box me-3">
-              <i class="fab fa-linux fa-2x text-primary"></i>
-            </div>
-            <div>
-              <h5 class="fw-bold mb-0">Linux VDS & Сеть</h5>
-              <small class="text-body-secondary">Ubuntu 24.04 LTS</small>
-            </div>
-          </div>
-          <p class="text-body-secondary small flex-grow-1">
-            Защищенный выделенный хост: SSH по ed25519-ключам, сетевой экран UFW (80, 443, ограниченный SSH), Fail2ban от брутфорса, cgroups v2 и ротация journald.
-          </p>
-          <div class="pt-3 border-top d-flex flex-wrap gap-1">
-            <span class="badge tech-pill">Ubuntu 24.04</span>
-            <span class="badge tech-pill">UFW</span>
-            <span class="badge tech-pill">Fail2ban</span>
-            <span class="badge tech-pill">systemd</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Уровень 2: Контейнеризация и OCI -->
-      <div class="col-lg-3 col-md-6">
-        <div class="card h-100 border-0 shadow-sm rounded-4 p-4 project-card">
-          <div class="d-flex align-items-center mb-3">
-            <div class="project-icon-box me-3">
-              <i class="fas fa-boxes-stacked fa-2x text-primary"></i>
-            </div>
-            <div>
-              <h5 class="fw-bold mb-0">OCI & Рантаймы</h5>
-              <small class="text-body-secondary">Docker, Podman, LXC</small>
-            </div>
-          </div>
-          <p class="text-body-secondary small flex-grow-1">
-            Многоуровневая контейнеризация: легковесные микросервисы в Docker, Rootless-службы в Podman Quadlet, системные контейнеры LXC/Incus и контроль лимитов в Cgroups v2.
-          </p>
-          <div class="pt-3 border-top d-flex flex-wrap gap-1">
-            <span class="badge tech-pill">Docker</span>
-            <span class="badge tech-pill">Podman</span>
-            <span class="badge tech-pill">LXC / Incus</span>
-            <span class="badge tech-pill">Cgroups v2</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Уровень 3: Nginx Gateway & SSL -->
-      <div class="col-lg-3 col-md-6">
-        <div class="card h-100 border-0 shadow-sm rounded-4 p-4 project-card">
-          <div class="d-flex align-items-center mb-3">
-            <div class="project-icon-box me-3">
-              <i class="fas fa-shield-halved fa-2x text-success"></i>
-            </div>
-            <div>
-              <h5 class="fw-bold mb-0">Nginx Gateway</h5>
-              <small class="text-body-secondary">Reverse Proxy & SSL</small>
-            </div>
-          </div>
-          <p class="text-body-secondary small flex-grow-1">
-            Nginx в Docker: сертификаты Let's Encrypt TLSv1.3, HTTP/2, Gzip сжатие, upstream proxy микросервисов и строгие заголовки безопасности (HSTS, CSP, X-Frame-Options).
-          </p>
-          <div class="pt-3 border-top d-flex flex-wrap gap-1">
-            <span class="badge tech-pill">Nginx</span>
-            <span class="badge tech-pill">Let's Encrypt</span>
-            <span class="badge tech-pill">TLSv1.3</span>
-            <span class="badge tech-pill">HTTP/2</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Уровень 4: CI/CD Pipeline -->
-      <div class="col-lg-3 col-md-6">
-        <div class="card h-100 border-0 shadow-sm rounded-4 p-4 project-card">
-          <div class="d-flex align-items-center mb-3">
-            <div class="project-icon-box me-3">
-              <i class="fas fa-repeat fa-2x text-info"></i>
-            </div>
-            <div>
-              <h5 class="fw-bold mb-0">Zero-Downtime CI/CD</h5>
-              <small class="text-body-secondary">GitHub Actions & Security</small>
-            </div>
-          </div>
-          <p class="text-body-secondary small flex-grow-1">
-            Blue-Green деплой: сборка multi-stage образов, запуск инстанса рядом с рабочим, проверка healthcheck, сканирование уязвимостей через Trivy и автооткат.
-          </p>
-          <div class="pt-3 border-top d-flex flex-wrap gap-1">
-            <span class="badge tech-pill">GitHub Actions</span>
-            <span class="badge tech-pill">Blue-Green</span>
-            <span class="badge tech-pill">Trivy</span>
-            <span class="badge tech-pill">Rollback</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <!-- Docker Hub Repositories -->
     <div class="mb-5" id="docker-activity">
       <div class="d-flex align-items-center mb-4">
