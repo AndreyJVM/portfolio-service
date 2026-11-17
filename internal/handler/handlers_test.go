@@ -11,6 +11,7 @@ import (
 	"strings"
 	"sync"
 	"testing"
+	"time"
 	"unicode/utf8"
 
 	"github.com/go-chi/chi/v5"
@@ -1151,4 +1152,112 @@ func TestStaticAssets_SecurityChecks(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestQRHandler_EdgeCases(t *testing.T) {
+	r := setupTestRouter()
+
+	t.Run("Text exceeds 2048 characters returns 400", func(t *testing.T) {
+		hugeText := strings.Repeat("A", 2049)
+		req := httptest.NewRequest("GET", "/api/qr?text="+hugeText, nil)
+		w := httptest.NewRecorder()
+		r.ServeHTTP(w, req)
+
+		if w.Code != http.StatusBadRequest {
+			t.Errorf("Ожидался статус 400 при превышении лимита 2048 символов, получен %d", w.Code)
+		}
+	})
+
+	t.Run("POST with empty json falls back to baseURL", func(t *testing.T) {
+		req := httptest.NewRequest("POST", "/api/qr", strings.NewReader(`{}`))
+		req.Header.Set("Content-Type", "application/json")
+		w := httptest.NewRecorder()
+		r.ServeHTTP(w, req)
+
+		if w.Code != http.StatusOK {
+			t.Errorf("Ожидался статус 200, получен %d", w.Code)
+		}
+	})
+
+	t.Run("POST with invalid json body falls back to baseURL", func(t *testing.T) {
+		req := httptest.NewRequest("POST", "/api/qr", strings.NewReader(`invalid-json-body`))
+		req.Header.Set("Content-Type", "application/json")
+		w := httptest.NewRecorder()
+		r.ServeHTTP(w, req)
+
+		if w.Code != http.StatusOK {
+			t.Errorf("Ожидался статус 200, получен %d", w.Code)
+		}
+	})
+}
+
+func TestSearchAPI_CacheRebuildAndTagMatch(t *testing.T) {
+	r := setupTestRouter()
+
+	t.Run("Cache rebuild when expired", func(t *testing.T) {
+		searchIndexMu.Lock()
+		lastIndexBuild = time.Now().Add(-2 * time.Hour)
+		searchIndexMu.Unlock()
+
+		req := httptest.NewRequest("GET", "/api/search", nil)
+		w := httptest.NewRecorder()
+		r.ServeHTTP(w, req)
+
+		if w.Code != http.StatusOK {
+			t.Errorf("Ожидался статус 200 при пересчете кэша, получен %d", w.Code)
+		}
+	})
+
+	t.Run("Search by tag", func(t *testing.T) {
+		req := httptest.NewRequest("GET", "/api/search?q=cgroups", nil)
+		w := httptest.NewRecorder()
+		r.ServeHTTP(w, req)
+
+		if w.Code != http.StatusOK {
+			t.Errorf("Ожидался статус 200 при поиске по тегу, получен %d", w.Code)
+		}
+		var results []model.SearchItem
+		if err := json.Unmarshal(w.Body.Bytes(), &results); err != nil {
+			t.Fatalf("Ошибка парсинга JSON: %v", err)
+		}
+		if len(results) == 0 {
+			t.Errorf("Ожидались результаты поиска по тегу cgroups")
+		}
+	})
+}
+
+func TestNoDirListingFS_DirectUnit(t *testing.T) {
+	tempDir := t.TempDir()
+	subDir := filepath.Join(tempDir, "sub")
+	if err := os.MkdirAll(subDir, 0755); err != nil {
+		t.Fatalf("Ошибка создания каталога: %v", err)
+	}
+	sampleFile := filepath.Join(tempDir, "sample.txt")
+	if err := os.WriteFile(sampleFile, []byte("sample"), 0644); err != nil {
+		t.Fatalf("Ошибка создания файла: %v", err)
+	}
+
+	fs := noDirListingFS{fs: http.Dir(tempDir)}
+
+	t.Run("Opening directory returns os.ErrNotExist", func(t *testing.T) {
+		_, err := fs.Open("/sub")
+		if err != os.ErrNotExist {
+			t.Errorf("Ожидалась ошибка os.ErrNotExist для каталога, получено: %v", err)
+		}
+	})
+
+	t.Run("Opening regular file succeeds", func(t *testing.T) {
+		f, err := fs.Open("/sample.txt")
+		if err != nil {
+			t.Fatalf("Ожидалось успешное открытие файла, получена ошибка: %v", err)
+		}
+		_ = f.Close()
+	})
+
+	t.Run("Opening missing file returns error", func(t *testing.T) {
+		_, err := fs.Open("/missing.txt")
+		if err == nil {
+			t.Errorf("Ожидалась ошибка при открытии несуществующего файла")
+		}
+	})
 }

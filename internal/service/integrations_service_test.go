@@ -48,6 +48,63 @@ func TestIntegrationsService_Cache(t *testing.T) {
 	}
 }
 
+func TestIntegrationsService_PreloadDefaults(t *testing.T) {
+	svc := NewIntegrationsService("test-user", "test-user")
+	// Перехватываем клиентские вызовы, чтобы фоновый refresh не падал
+	svc.client.Transport = mockRoundTripper(func(req *http.Request) (*http.Response, error) {
+		return nil, errors.New("prevent external network call")
+	})
+
+	svc.PreloadDefaults()
+
+	data := svc.GetProjectsData()
+	if len(data.GitHubRepos) == 0 {
+		t.Errorf("PreloadDefaults должен заполнять fallback список репозиториев GitHub")
+	}
+	if len(data.DockerRepos) == 0 {
+		t.Errorf("PreloadDefaults должен заполнять fallback список репозиториев Docker")
+	}
+	if len(data.AnsibleRoles) == 0 {
+		t.Errorf("PreloadDefaults должен заполнять роли Ansible")
+	}
+}
+
+func TestIntegrationsService_StaleWhileRevalidate(t *testing.T) {
+	svc := NewIntegrationsService("test-user", "test-user")
+
+	refreshed := make(chan bool, 1)
+	svc.client.Transport = mockRoundTripper(func(req *http.Request) (*http.Response, error) {
+		select {
+		case refreshed <- true:
+		default:
+		}
+		return nil, errors.New("network error")
+	})
+
+	// Устанавливаем протухший кэш (время в прошлом)
+	staleData := model.ProjectsPageData{
+		GitHubRepos: []model.GitHubRepoDto{{Name: "stale-repo"}},
+	}
+	svc.cacheMutex.Lock()
+	svc.cachedData = &staleData
+	svc.cacheUntil = time.Now().Add(-1 * time.Minute)
+	svc.cacheMutex.Unlock()
+
+	// Вызов должен мгновенно вернуть staleData
+	returned := svc.GetProjectsData()
+	if len(returned.GitHubRepos) != 1 || returned.GitHubRepos[0].Name != "stale-repo" {
+		t.Errorf("Ожидался мгновенный возврат устаревших данных, получено: %+v", returned)
+	}
+
+	// И должна запуститься фоновая горутина Refresh
+	select {
+	case <-refreshed:
+		// Успешно вызвано фоновое обновление
+	case <-time.After(500 * time.Millisecond):
+		t.Errorf("Фоновое обновление не было запущено при истечении TTL")
+	}
+}
+
 func TestIntegrationsService_MockAPIs_Success(t *testing.T) {
 	svc := NewIntegrationsService("test-gh", "test-dh")
 

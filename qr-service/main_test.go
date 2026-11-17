@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"net"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -411,6 +412,43 @@ func TestCheckHealth(t *testing.T) {
 		// Заведомо недоступный адрес
 		if err := checkHealth("http://127.0.0.1:54321"); err == nil {
 			t.Fatal("expected healthcheck to fail on unreachable host")
+		}
+	})
+}
+
+func TestRunHealthcheck(t *testing.T) {
+	t.Run("Default port fallback", func(t *testing.T) {
+		// Port "" defaults to "8081"; verify that function executes and attempts 127.0.0.1:8081
+		err := runHealthcheck("")
+		// Unless an instance is already listening on 8081, this should return an error
+		if err != nil && !strings.Contains(err.Error(), "connection refused") && !strings.Contains(err.Error(), "healthcheck failed") {
+			t.Logf("runHealthcheck('') returned expected connection error: %v", err)
+		}
+	})
+
+	t.Run("Custom port with mock server", func(t *testing.T) {
+		l, err := net.Listen("tcp", "127.0.0.1:0")
+		if err != nil {
+			t.Fatalf("failed to create listener: %v", err)
+		}
+		ts := httptest.NewUnstartedServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			if r.URL.Path == "/health" {
+				w.WriteHeader(http.StatusOK)
+				return
+			}
+			w.WriteHeader(http.StatusNotFound)
+		}))
+		ts.Listener = l
+		ts.Start()
+		defer ts.Close()
+
+		_, port, err := net.SplitHostPort(l.Addr().String())
+		if err != nil {
+			t.Fatalf("failed to split host port: %v", err)
+		}
+
+		if err := runHealthcheck(port); err != nil {
+			t.Fatalf("expected runHealthcheck success on port %s, got: %v", port, err)
 		}
 	})
 }

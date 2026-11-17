@@ -101,13 +101,15 @@ func checkHealth(baseURL string) error {
 	return nil
 }
 
-func runHealthcheckCli() {
-	port := os.Getenv("PORT")
+func runHealthcheck(port string) error {
 	if port == "" {
 		port = "8081"
 	}
+	return checkHealth(fmt.Sprintf("http://127.0.0.1:%s", port))
+}
 
-	if err := checkHealth(fmt.Sprintf("http://127.0.0.1:%s", port)); err != nil {
+func runHealthcheckCli() {
+	if err := runHealthcheck(os.Getenv("PORT")); err != nil {
 		log.Printf("Healthcheck failed: %v", err)
 		os.Exit(1)
 	}
