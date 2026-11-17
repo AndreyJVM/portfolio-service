@@ -2,82 +2,8 @@ package model
 
 import (
 	"encoding/json"
-	"html/template"
 	"testing"
 )
-
-func TestQuizQuestion_TitleHTML(t *testing.T) {
-	q := QuizQuestion{
-		ID:    "q1",
-		Title: "Вопрос с <code>CMD [\"./app\"]</code> и <b>жирным текстом</b>",
-	}
-
-	expected := template.HTML("Вопрос с <code>CMD [\"./app\"]</code> и <b>жирным текстом</b>")
-	if q.TitleHTML() != expected {
-		t.Errorf("Ожидалось %v, получено %v", expected, q.TitleHTML())
-	}
-}
-
-func TestQuizOption_TextHTML(t *testing.T) {
-	opt := QuizOption{
-		Text:        "Вариант ответа с <code>type=gha</code>",
-		IsCorrect:   true,
-		Explanation: "Пояснение",
-	}
-
-	expected := template.HTML("Вариант ответа с <code>type=gha</code>")
-	if opt.TextHTML() != expected {
-		t.Errorf("Ожидалось %v, получено %v", expected, opt.TextHTML())
-	}
-}
-
-func TestModelJSONSerialization(t *testing.T) {
-	quiz := Quiz{
-		Questions: []QuizQuestion{
-			{
-				ID:    "q1",
-				Title: "Test question",
-				Options: []QuizOption{
-					{
-						Text:        "Option 1",
-						IsCorrect:   true,
-						Explanation: "Explanation 1",
-					},
-					{
-						Text:      "Option 2",
-						IsCorrect: false,
-					},
-				},
-			},
-		},
-	}
-
-	data, err := json.Marshal(quiz)
-	if err != nil {
-		t.Fatalf("Ошибка сериализации Quiz в JSON: %v", err)
-	}
-
-	var deserialized Quiz
-	if err := json.Unmarshal(data, &deserialized); err != nil {
-		t.Fatalf("Ошибка десериализации Quiz из JSON: %v", err)
-	}
-
-	if len(deserialized.Questions) != 1 {
-		t.Fatalf("Ожидался 1 вопрос, получено %d", len(deserialized.Questions))
-	}
-	if deserialized.Questions[0].ID != "q1" {
-		t.Errorf("Ожидался ID 'q1', получено '%s'", deserialized.Questions[0].ID)
-	}
-	if len(deserialized.Questions[0].Options) != 2 {
-		t.Errorf("Ожидалось 2 варианта ответа, получено %d", len(deserialized.Questions[0].Options))
-	}
-	if !deserialized.Questions[0].Options[0].IsCorrect {
-		t.Errorf("Первый вариант должен быть правильным")
-	}
-	if deserialized.Questions[0].Options[1].IsCorrect {
-		t.Errorf("Второй вариант должен быть неправильным")
-	}
-}
 
 func TestCourseAndLessonJSONSerialization(t *testing.T) {
 	lesson := Lesson{
@@ -119,5 +45,43 @@ func TestCourseAndLessonJSONSerialization(t *testing.T) {
 	}
 	if parsed.Lessons[0].Title != "Введение" {
 		t.Errorf("Некорректный заголовок урока: %s", parsed.Lessons[0].Title)
+	}
+}
+
+func TestSearchItemAndMetaData(t *testing.T) {
+	item := SearchItem{
+		Type:        "lesson",
+		Title:       "Namespaces",
+		CourseTitle: "Internals",
+		CourseSlug:  "internals",
+		LessonSlug:  "01-namespaces",
+		URL:         "/courses/internals/01-namespaces",
+		Description: "Анатомия пространств имен",
+		Tags:        []string{"Linux", "Kernel"},
+		Snippet:     "Фрагмент текста",
+	}
+
+	data, err := json.Marshal(item)
+	if err != nil {
+		t.Fatalf("Ошибка сериализации SearchItem: %v", err)
+	}
+
+	var parsed SearchItem
+	if err := json.Unmarshal(data, &parsed); err != nil {
+		t.Fatalf("Ошибка десериализации SearchItem: %v", err)
+	}
+
+	if parsed.Title != "Namespaces" || parsed.CourseSlug != "internals" {
+		t.Errorf("Некорректная десериализация SearchItem: %+v", parsed)
+	}
+
+	meta := MetaData{
+		Title:        "Title",
+		ActiveTab:    "courses",
+		ActiveCourse: "docker",
+		CanonicalURL: "https://vorobevaqa.ru/",
+	}
+	if meta.ActiveCourse != "docker" || meta.ActiveTab != "courses" {
+		t.Errorf("Некорректная MetaData: %+v", meta)
 	}
 }

@@ -20,7 +20,7 @@ func (h *Handler) Index(w http.ResponseWriter, r *http.Request) {
 			Keywords:      "контейнеризация, Docker, Podman, LXC, Incus, Cgroups, Namespaces, уроки, курсы, Linux, DevOps",
 			OGTitle:       "Курсы по Контейнеризации и Linux • Primary Cloud Lab",
 			OGDescription: "Глубокая практическая программа: от первого контейнера до изоляции на уровне ядра Linux.",
-			OGImage:       h.baseURL + "/images/og-courses.png",
+			OGImage:       h.baseURL + "/images/og-main.png",
 			OGURL:         h.baseURL + "/",
 			ActiveTab:     "courses",
 			CanonicalURL:  h.baseURL + "/",

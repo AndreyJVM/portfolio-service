@@ -27,7 +27,7 @@
 
 **Primary Cloud Lab** is an open-source interactive education platform focused on **DevOps engineering, Linux system administration, Docker containerization, Ansible automation, and resilient CI/CD pipelines**.
 
-The platform is designed around a lightweight micro-service architecture in **Go (Golang 1.26.8)**, featuring non-root container security (UID 10001), instant full-text search, interactive quizzes with local progress persistence, and zero-downtime Blue-Green deployments.
+The platform is designed around a lightweight micro-service architecture in **Go (Golang 1.26.8)**, featuring non-root container security (UID 10001), instant full-text search, local learning progress persistence, and zero-downtime Blue-Green deployments.
 
 **Production:** [https://vorobevaqa.ru](https://vorobevaqa.ru) · **Docker Hub:** [`andreyvorobevaqa`](https://hub.docker.com/repositories/andreyvorobevaqa) · **Ansible Galaxy:** [Author Roles](https://galaxy.ansible.com/ui/standalone/namespaces/24255/)
 
@@ -47,7 +47,7 @@ The platform is designed around a lightweight micro-service architecture in **Go
 flowchart TD
     Client["Client Browser"] -->|HTTPS :443 / HTTP :80| Host["Linux VDS (Ubuntu 24.04 LTS)<br/>UFW Firewall • SSH ed25519 • Fail2ban • logrotate"]
     Host --> Nginx["Nginx Reverse Proxy & API Gateway<br/>SSL Let's Encrypt • HTTP/2 • Gzip • High Availability Fallback"]
-    Nginx -->|/courses, /, /projects, /mustang| GoApp["Go Primary Cloud Lab (:8080)<br/>Chi Router • Goldmark Markdown • Non-root UID 10001"]
+    Nginx -->|/, /courses, /education, /mustang| GoApp["Go Primary Cloud Lab (:8080)<br/>Chi Router • Goldmark Markdown • Non-root UID 10001"]
     Nginx -->|/api/qr primary| GoQR["Go QR Microservice (:8081)<br/>Scratch Image ~10MB • Graceful Shutdown • Non-root UID 10001"]
     Nginx -.->|/api/qr fallback| GoApp
 ```
@@ -67,18 +67,27 @@ flowchart TD
 
 ### Educational Tracks & Labs
 
-The platform hosts comprehensive, production-ready modules:
+The platform hosts 7 comprehensive, production-ready modules (31 practical lessons):
 
-1. 🐧 **Linux System Administration** (`/courses/linux`):
+1. 🐧 **Linux: System Administration & Kernel** (`/courses/linux`):
    - DAC permission model (POSIX, SUID, SGID, Sticky bit), systemd services, timers, and unit lifecycle;
    - Linux networking stack (`iproute2`, `ss`, `iptables`, `ufw`), socket debugging, and routing table analysis.
-2. 🐳 **Containerization & Docker** (`/courses/docker`):
-   - Multi-stage builds, Linux cgroups v2 resource quotas, and kernel namespaces (PID/NET/MNT);
+2. 🐳 **Docker: From Architecture to Production** (`/courses/docker`):
+   - Multi-stage builds, BuildKit cache, cgroups v2 resource quotas, and kernel namespaces (PID/NET/MNT);
    - Docker Compose v2 architecture, bridge networks, and internal DNS service discovery.
-3. ⚙️ **Ansible & Infrastructure as Code (IaC)** (`/courses/ansible`):
+3. 🦭 **Podman & Quadlet: Daemonless Containers** (`/courses/podman`):
+   - Rootless containerization, user namespaces mapping, and systemd integration via Quadlet;
+   - `podman kube generate` for Kubernetes-ready pods and production security hardening.
+4. 📦 **LXC / Incus: System Containers** (`/courses/lxc`):
+   - Lightweight alternative to KVM VMs, ZFS/Btrfs storage pools, and CoW snapshots;
+   - Macvlan and bridge networking, CPU/RAM limits, and unprivileged system container security.
+5. 🔬 **Container Internals: Kernel & Isolation** (`/courses/internals`):
+   - Low-level container anatomy: 8 Linux namespaces, Cgroups v2 controllers, `clone`, `unshare`, `pivot_root`;
+   - OCI runtime specification, `runc` and `crun`, Seccomp BPF filters, and Linux capabilities.
+6. ⚙️ **Ansible: Infrastructure as Code (IaC)** (`/courses/ansible`):
    - Agentless architecture, inventory management, and idempotent playbook design;
    - Modular roles, secret encryption with Ansible Vault, and publishing to Ansible Galaxy.
-4. 🔄 **CI/CD: GitHub Actions & GitLab** (`/courses/cicd`):
+7. 🔄 **CI/CD: GitHub Actions & Zero-Downtime Deploy** (`/courses/cicd`):
    - Production pipeline design, BuildKit layer caching (`type=gha`), artifact handling;
    - Blue-Green zero-downtime deployment strategy via Docker Compose scaling and automatic rollbacks.
 
@@ -89,15 +98,14 @@ The platform hosts comprehensive, production-ready modules:
 - **Full-Text In-Memory Search:**
   - Real-time client-side search across all course descriptions and lesson materials via `/api/search`;
   - Modal overlay accessible anywhere on the platform via keyboard shortcuts (`Ctrl+K` or `/`);
-  - Dynamic result highlighting with category badges (Linux, Docker, Ansible, CI/CD).
+  - Dynamic result highlighting with category badges (Linux, Docker, Podman, LXC, Ansible, CI/CD).
 - **Client-Side Progress Tracking:**
   - Completed lessons are instantly persisted in browser `LocalStorage`;
   - Progress percentages are dynamically calculated and rendered in course dashboards and navigation.
-- **Self-Check Quizzes:**
-  - Interactive knowledge-check quizzes embedded at the end of every lesson;
-  - Immediate answer feedback with detailed architectural explanations and auto-completion checkmarks.
-- **Responsive Clean Navigation:**
-  - Desktop ($\ge 992\text{px}$): fixed sidebar with concise, icon-free links;
+- **Hands-on Terminal Practice:**
+  - Deep technical guides, production-grade configurations, and real terminal troubleshooting scenarios.
+- **Responsive Navigation with Course Subnav:**
+  - Desktop ($\ge 992\text{px}$): fixed sidebar with quick-access subitems for each course topic;
   - Mobile & tablet ($< 992\text{px}$): compact top bar and smooth offcanvas navigation drawer.
 
 ---
@@ -200,7 +208,7 @@ portfolio/
 flowchart TD
     Client["Внешний клиент / Студент"] -->|HTTPS :443 / HTTP :80| Host["Linux VDS (Ubuntu 24.04 LTS)<br/>UFW Firewall • SSH ed25519 • Fail2ban • logrotate"]
     Host --> Nginx["Nginx Reverse Proxy & API Gateway<br/>Терминация SSL • HTTP/2 • Gzip • High Availability Fallback"]
-    Nginx -->|/courses, /, /projects, /mustang| GoApp["Go Primary Cloud Lab (:8080)<br/>Chi Router • Goldmark Markdown • Non-root UID 10001"]
+    Nginx -->|/, /courses, /education, /mustang| GoApp["Go Primary Cloud Lab (:8080)<br/>Chi Router • Goldmark Markdown • Non-root UID 10001"]
     Nginx -->|/api/qr первичный| GoQR["Go QR Microservice (:8081)<br/>Scratch-образ ~10MB • Graceful Shutdown • Non-root UID 10001"]
     Nginx -.->|/api/qr аварийный fallback| GoApp
 ```
@@ -220,18 +228,27 @@ flowchart TD
 
 ### Образовательные треки и Лабораторные
 
-Каталог платформы включает структурированные практические курсы:
+Каталог платформы включает 7 структурированных практических курсов (31 урок):
 
-1. 🐧 **Системное администрирование Linux** (`/courses/linux`):
+1. 🐧 **Системное администрирование Linux и ядро** (`/courses/linux`):
    - Модель прав доступа DAC (POSIX, SUID, SGID, Sticky bit), управление юнитами и таймерами systemd;
    - Сетевой стек Linux (`iproute2`, `ss`, `iptables`, `ufw`), анализ трафика и сокетов.
-2. 🐳 **Контейнеризация и Docker** (`/courses/docker`):
+2. 🐳 **Docker: От архитектуры до Production** (`/courses/docker`):
    - Многоэтапные сборки (Multi-stage), Linux cgroups v2 квоты, неймспейсы (PID/NET/MNT);
    - Docker Compose v2, внутренняя DNS-маршрутизация и изоляция bridge-сетей.
-3. ⚙️ **Ansible & Инфраструктура как код (IaC)** (`/courses/ansible`):
+3. 🦭 **Podman & Quadlet: Daemonless-контейнеры** (`/courses/podman`):
+   - Rootless контейнеризация без root-прав, сопоставление user namespaces, systemd Quadlet;
+   - `podman kube generate` для генерации Pod-манифестов и харденинг безопасности.
+4. 📦 **LXC / Incus: Системные контейнеры** (`/courses/lxc`):
+   - Легковесная замена KVM, пулы хранения ZFS/Btrfs и мгновенные CoW-снапшоты;
+   - Macvlan и bridge сети, лимиты CPU/RAM и непривилегированные системные контейнеры.
+5. 🔬 **Container Internals: Ядро и изоляция** (`/courses/internals`):
+   - Анатомия контейнеризации: 8 пространств имен Linux, контроллеры Cgroups v2, вызовы `clone`, `unshare`, `pivot_root`;
+   - Спецификация OCI, рантаймы `runc` и `crun`, фильтры Seccomp BPF и Linux capabilities.
+6. ⚙️ **Ansible: Инфраструктура как код (IaC)** (`/courses/ansible`):
    - Архитектура Agentless, инвентарь, написание идемпотентных плейбуков;
    - Модульные роли, шифрование секретов с Ansible Vault и публикация в Ansible Galaxy.
-4. 🔄 **CI/CD: GitHub Actions & GitLab** (`/courses/cicd`):
+7. 🔄 **CI/CD: GitHub Actions & Zero-Downtime Деплой** (`/courses/cicd`):
    - Проектирование production-пайплайнов, кэширование слоев сборки Docker (BuildKit `type=gha`);
    - Стратегия Zero-Downtime деплоя Blue-Green с Docker Compose scale и мгновенным авто-откатом (Rollback).
 
@@ -246,11 +263,10 @@ flowchart TD
 - **Сохранение прогресса в LocalStorage:**
   - Каждый пройденный урок мгновенно фиксируется в браузере студента;
   - В каталоге и на странице модулей динамически рассчитывается процент завершения курса.
-- **Проверочные мини-квизы:**
-  - В конце уроков встроен интерактивный блок самопроверки с мгновенной валидацией ответов и подробным объяснением архитектуры;
-  - При успешном решении всех вопросов квиза урок автоматически отмечается как пройденный.
-- **Адаптивная навигация (Sidebar):**
-  - Десктоп ($\ge 992\text{px}$): фиксированная панель слева со строгим текстовым меню;
+- **Практические терминальные сценарии:**
+  - Глубокие руководства с боевыми конфигурациями, архитектурными тонкостями и решением проблем в терминале.
+- **Адаптивная навигация с подпунктами тем:**
+  - Десктоп ($\ge 992\text{px}$): фиксированная панель слева с прямым быстрым переходом к каждой из 7 тем курсов;
   - Планшеты и смартфоны ($< 992\text{px}$): компактный верхний бар и адаптивное выдвижное меню (Bootstrap 5.3 Offcanvas).
 
 ---

@@ -71,20 +71,5 @@
 {{end}}
 
 {{define "scripts_extra"}}
-<script>
-  function generateQR() {
-    const input = document.getElementById('url-input').value.trim();
-    if (!input) return;
-    const qrUrl = '/api/qr?text=' + encodeURIComponent(input);
-    document.getElementById('qr-image').src = qrUrl;
-    document.getElementById('download-btn').href = qrUrl;
-  }
-
-  document.querySelectorAll('.qr-preset-pill').forEach(btn => {
-    btn.addEventListener('click', function() {
-      document.getElementById('url-input').value = this.getAttribute('data-preset');
-      generateQR();
-    });
-  });
-</script>
+<script src="/js/pages/qr.js" defer></script>
 {{end}}

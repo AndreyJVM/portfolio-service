@@ -21,7 +21,7 @@ func (h *Handler) QRPage(w http.ResponseWriter, r *http.Request) {
 			Keywords:      "QR code generator, golang, qrcode",
 			OGTitle:       "QR Code Playground",
 			OGDescription: "Интерактивный генератор QR-кодов на Go.",
-			OGImage:       "/images/og-qr.png",
+			OGImage:       h.baseURL + "/images/og-main.png",
 			OGURL:         h.baseURL + "/qr",
 			ActiveTab:     "qr",
 			CanonicalURL:  h.baseURL + "/qr",
