@@ -337,13 +337,11 @@ func TestLayoutIncludes(t *testing.T) {
 		"/css/themes.css",          // Стили ночной и дневной темы
 		"/css/main.css",            // Основные стили
 		"liveToast",                // Контейнер уведомлений Toast
-		"/images/avatar.jpg",       // Аватарка в Hero
 		"navbar-brand",             // Бренд платформы
 		"Primary Cloud Lab",        // Название бренда
 		"app-sidebar",              // Боковая панель навигации слева
 		"sidebar-nav",              // Список навигационных ссылок
-		">Главная<",                // Ссылка Главная без иконок
-		">Курсы<",                  // Ссылка Курсы без иконок
+		">Курсы<",                  // Ссылка Курсы без иконок (главная страница)
 		">Об авторе<",              // Ссылка Об авторе без иконок
 		">QR-генератор<",           // Ссылка QR-генератор без иконок
 		">Shelby<",                 // Ссылка Shelby без иконок
@@ -353,6 +351,14 @@ func TestLayoutIncludes(t *testing.T) {
 		if !strings.Contains(body, snippet) {
 			t.Errorf("Главная страница не содержит обязательный элемент: '%s'", snippet)
 		}
+	}
+
+	// Страница Об авторе содержит аватарку в Hero
+	reqEdu := httptest.NewRequest("GET", "/education", nil)
+	wEdu := httptest.NewRecorder()
+	r.ServeHTTP(wEdu, reqEdu)
+	if !strings.Contains(wEdu.Body.String(), "/images/avatar.jpg") {
+		t.Errorf("Страница 'Об авторе' должна содержать '/images/avatar.jpg'")
 	}
 
 	// Заголовок браузера строго Primary Cloud Lab
@@ -416,15 +422,15 @@ func TestCleanPagesLayout(t *testing.T) {
 		}
 	}
 
-	// 2. Страница проектов перенаправляет на секцию проектов главной страницы (301)
+	// 2. Страница проектов перенаправляет на секцию проектов страницы Об авторе (301)
 	reqProj := httptest.NewRequest("GET", "/projects", nil)
 	wProj := httptest.NewRecorder()
 	r.ServeHTTP(wProj, reqProj)
 	if wProj.Code != http.StatusMovedPermanently {
 		t.Errorf("Ожидался статус 301 для /projects, получен %d", wProj.Code)
 	}
-	if loc := wProj.Header().Get("Location"); loc != "/#projects" {
-		t.Errorf("Ожидался редирект на /#projects, получен %s", loc)
+	if loc := wProj.Header().Get("Location"); loc != "/education#projects" {
+		t.Errorf("Ожидался редирект на /education#projects, получен %s", loc)
 	}
 
 	// 3. Страница QR не должна содержать лишнюю плашку курсов
@@ -546,6 +552,7 @@ func TestLesson_PrevNextNavigation(t *testing.T) {
 func TestIndexPage_ContainsCoursesAndProjects(t *testing.T) {
 	r := setupTestRouter()
 
+	// 1. Главная страница (/) — это "Курсы"
 	req := httptest.NewRequest("GET", "/", nil)
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
@@ -555,10 +562,38 @@ func TestIndexPage_ContainsCoursesAndProjects(t *testing.T) {
 	}
 
 	body := w.Body.String()
-	expectedSubstrings := []string{
-		"id=\"courses\"",
+	expectedCoursesSubstrings := []string{
+		"id=\"catalog\"",
+		"id=\"guide\"",
+		"id=\"roadmap\"",
+		"Каталог направлений",
+		"Дорожная карта",
+		"data-course-progress",
+		"Linux: Системное администрирование и ядро",
+		"Docker: От архитектуры до Production-практик",
+	}
+
+	for _, sub := range expectedCoursesSubstrings {
+		if !strings.Contains(body, sub) {
+			t.Errorf("Главная страница (Курсы) должна содержать '%s'", sub)
+		}
+	}
+
+	// 2. Страница Об авторе (/education) — содержит профиль, архитектуру и open-source проекты
+	reqEdu := httptest.NewRequest("GET", "/education", nil)
+	wEdu := httptest.NewRecorder()
+	r.ServeHTTP(wEdu, reqEdu)
+
+	if wEdu.Code != http.StatusOK {
+		t.Fatalf("Ожидался статус 200 для /education, получен %d", wEdu.Code)
+	}
+
+	bodyEdu := wEdu.Body.String()
+	expectedAuthorSubstrings := []string{
 		"id=\"projects\"",
-		"Обучение Контейнеризации и Linux",
+		"id=\"docker-activity\"",
+		"id=\"ansible-activity\"",
+		"id=\"github-activity\"",
 		"Архитектура Инфраструктуры Платформы",
 		"Linux VDS & Сеть",
 		"OCI & Рантаймы",
@@ -567,11 +602,12 @@ func TestIndexPage_ContainsCoursesAndProjects(t *testing.T) {
 		"Docker Hub",
 		"GitHub",
 		"Ansible",
+		"/images/avatar.jpg",
 	}
 
-	for _, sub := range expectedSubstrings {
-		if !strings.Contains(body, sub) {
-			t.Errorf("Объединенная главная страница должна содержать '%s'", sub)
+	for _, sub := range expectedAuthorSubstrings {
+		if !strings.Contains(bodyEdu, sub) {
+			t.Errorf("Страница 'Об авторе' должна содержать '%s'", sub)
 		}
 	}
 }

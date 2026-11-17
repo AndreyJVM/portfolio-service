@@ -6,55 +6,56 @@ import (
 	"ru.vorobevaqa/devops-platform/internal/model"
 )
 
-// Index: Главная страница образовательной платформы и проектов инфраструктуры
+// Index: Главная страница образовательной платформы — каталог курсов и дорожная карта обучения
 func (h *Handler) Index(w http.ResponseWriter, r *http.Request) {
 	courses := h.courseService.GetAllCourses()
-	projectsData := h.integrationsService.GetProjectsData()
 
 	data := struct {
 		Meta    model.MetaData
 		Courses []model.Course
-		Data    model.ProjectsPageData
 	}{
 		Meta: model.MetaData{
-			Title:         "Главная • Платформа по Контейнеризации",
-			Description:   "Специализированная база знаний, курсы по Docker, Podman, LXC, ядру Linux и открытая инфраструктура от Андрея Воробьева.",
-			Keywords:      "контейнеризация, Docker, Podman, LXC, Incus, Cgroups, Namespaces, уроки, курсы, инфраструктура, DevOps",
-			OGTitle:       "Андрей Воробьев • Primary Cloud Lab | Обучение & Инфраструктура",
-			OGDescription: "Глубокие практические руководства по Docker, Podman, LXC и защищенная инфраструктура на Linux.",
-			OGImage:       h.baseURL + "/images/og-main.png",
+			Title:         "Курсы • Обучение Контейнеризации и Linux",
+			Description:   "Специализированная программа обучения: Docker, Podman, LXC, Cgroups, Namespaces и Zero-Downtime деплой на платформе Primary Cloud Lab.",
+			Keywords:      "контейнеризация, Docker, Podman, LXC, Incus, Cgroups, Namespaces, уроки, курсы, Linux, DevOps",
+			OGTitle:       "Курсы по Контейнеризации и Linux • Primary Cloud Lab",
+			OGDescription: "Глубокая практическая программа: от первого контейнера до изоляции на уровне ядра Linux.",
+			OGImage:       h.baseURL + "/images/og-courses.png",
 			OGURL:         h.baseURL + "/",
-			ActiveTab:     "home",
+			ActiveTab:     "courses",
 			CanonicalURL:  h.baseURL + "/",
 		},
 		Courses: courses,
-		Data:    projectsData,
 	}
 
-	h.renderTemplate(w, "index.html", data)
+	h.renderTemplate(w, "courses.html", data)
 }
 
-// Projects: постоянный редирект (HTTP 301) на секцию проектов главной страницы
+// Projects: постоянный редирект (HTTP 301) на секцию проектов и инфраструктуры на странице "Об авторе"
 func (h *Handler) Projects(w http.ResponseWriter, r *http.Request) {
-	http.Redirect(w, r, "/#projects", http.StatusMovedPermanently)
+	http.Redirect(w, r, "/education#projects", http.StatusMovedPermanently)
 }
 
-// Education: Страница об авторе, опыте и квалификации
+// Education: Страница об авторе, опыте, проектах и квалификации
 func (h *Handler) Education(w http.ResponseWriter, r *http.Request) {
+	projectsData := h.integrationsService.GetProjectsData()
+
 	data := struct {
 		Meta model.MetaData
+		Data model.ProjectsPageData
 	}{
 		Meta: model.MetaData{
 			Title:         "Об авторе • Андрей Воробьев | Primary Cloud Lab",
-			Description:   "Об авторе платформы Primary Cloud Lab Андрее Воробьеве: инженерный опыт, системное администрирование Linux (Слёрм), Docker, Podman, LXC, CI/CD, дипломы гос. образца.",
-			Keywords:      "Андрей Воробьев, об авторе, DevOps, Linux, Слёрм, Docker, Podman, LXC, Ansible, сертификаты, квалификация",
+			Description:   "Об авторе платформы Primary Cloud Lab Андрее Воробьеве: инженерный опыт, системное администрирование Linux (Слёрм), Docker, Podman, LXC, CI/CD, репозитории и квалификация.",
+			Keywords:      "Андрей Воробьев, об авторе, DevOps, Linux, Слёрм, Docker, Podman, LXC, Ansible, сертификаты, квалификация, инфраструктура",
 			OGTitle:       "Об авторе • Андрей Воробьев | Primary Cloud Lab",
-			OGDescription: "Создатель Primary Cloud Lab. Профессиональные сертификации Слёрм, дипломы государственного образца и подтвержденные компетенции.",
+			OGDescription: "Создатель Primary Cloud Lab. Архитектура инфраструктуры, open-source репозитории, профессиональные сертификации Слёрм и дипломы.",
 			OGImage:       h.baseURL + "/images/og-about.png",
 			OGURL:         h.baseURL + "/education",
 			ActiveTab:     "education",
 			CanonicalURL:  h.baseURL + "/education",
 		},
+		Data: projectsData,
 	}
 
 	h.renderTemplate(w, "education.html", data)
@@ -67,7 +68,7 @@ func (h *Handler) RedirectAbout(w http.ResponseWriter, r *http.Request) {
 
 // RoadmapRedirect: HTTP 301 Permanent Redirect на раздел дорожной карты
 func (h *Handler) RoadmapRedirect(w http.ResponseWriter, r *http.Request) {
-	http.Redirect(w, r, "/courses#roadmap", http.StatusMovedPermanently)
+	http.Redirect(w, r, "/#roadmap", http.StatusMovedPermanently)
 }
 
 // Mustang: Страница сбора на Shelby GT500

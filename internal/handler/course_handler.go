@@ -9,29 +9,9 @@ import (
 	"ru.vorobevaqa/devops-platform/internal/model"
 )
 
-// CoursesList: Каталог обучающих треков
+// CoursesList: Каталог обучающих треков (алиас главной страницы)
 func (h *Handler) CoursesList(w http.ResponseWriter, r *http.Request) {
-	courses := h.courseService.GetAllCourses()
-
-	data := struct {
-		Meta    model.MetaData
-		Courses []model.Course
-	}{
-		Meta: model.MetaData{
-			Title:         "Курсы по Контейнеризации: Docker, Podman, LXC",
-			Description:   "Глубокие практические уроки по Docker, Podman, Quadlet, системным контейнерам LXC и архитектуре ядра.",
-			Keywords:      "курсы docker, podman обучение, lxc контейнеры, cgroups v2, namespaces, container security",
-			OGTitle:       "Курсы по Контейнеризации • Docker, Podman, LXC",
-			OGDescription: "Изучайте архитектуру контейнеров и изоляцию в Linux бесплатно на реальных production-примерах.",
-			OGImage:       h.baseURL + "/images/og-main.png",
-			OGURL:         h.baseURL + "/courses",
-			ActiveTab:     "courses",
-			CanonicalURL:  h.baseURL + "/courses",
-		},
-		Courses: courses,
-	}
-
-	h.renderTemplate(w, "courses.html", data)
+	h.Index(w, r)
 }
 
 // CourseDetail: Страница конкретного курса со списком уроков

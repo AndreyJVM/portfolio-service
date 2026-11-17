@@ -1,26 +1,55 @@
+{{define "head_extra"}}
+<link rel="stylesheet" href="/css/pages/index.css">
+{{end}}
+
 {{define "content"}}
 <div class="container py-4">
-  <!-- Заголовок страницы и быстрые фильтры -->
-  <div class="max-w-750 mx-auto text-center mb-5">
-    <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill bg-primary-subtle text-primary border border-primary-subtle mb-3 small fw-semibold">
-      <i class="fas fa-route"></i> Специализированная программа обучения
-    </div>
-    <h1 class="h2 fw-bold mb-3">Обучение Контейнеризации в Linux</h1>
-    <p class="text-body-secondary lead mb-4" style="font-size: 1.05rem;">
-      От первого Dockerfile до глубокого понимания системных вызовов ядра, ZFS пулов и Rootless Quadlet. Выберите свой уровень или следуйте сквозной дорожной карте.
-    </p>
+  <!-- ========================================== -->
+  <!-- HERO SECTION: PRIMARY CLOUD LAB            -->
+  <!-- ========================================== -->
+  <div class="row align-items-center py-5 mb-5 reveal position-relative">
+    <div class="hero-blob hero-blob-1"></div>
+    <div class="hero-blob hero-blob-2"></div>
 
-    <!-- Быстрая навигация между каталогом и роудмапом -->
-    <div class="d-inline-flex p-1 rounded-pill bg-body-tertiary border shadow-sm flex-wrap justify-content-center">
-      <a href="#catalog" class="btn btn-sm btn-outline-secondary border-0 rounded-pill px-3 py-1 fw-medium">
-        <i class="fas fa-boxes-stacked me-1"></i>Каталог треков
-      </a>
-      <a href="#guide" class="btn btn-sm btn-outline-secondary border-0 rounded-pill px-3 py-1 fw-medium">
-        <i class="fas fa-compass me-1"></i>С чего начать?
-      </a>
-      <a href="#roadmap" class="btn btn-sm btn-primary rounded-pill px-3 py-1 fw-semibold shadow-sm">
-        <i class="fas fa-map-location-dot me-1"></i>Дорожная карта (Roadmap)
-      </a>
+    <div class="col-lg-12 text-center position-relative z-1">
+      <div class="d-inline-flex align-items-center gap-2 px-3 py-2 rounded-pill bg-primary-subtle text-primary border border-primary-subtle mb-3 small fw-semibold">
+        <i class="fas fa-graduation-cap"></i> Открытая образовательная платформа
+      </div>
+
+      <h1 class="display-4 fw-bold mb-3">
+        Обучение <span class="text-gradient">Контейнеризации &amp; Linux</span>
+      </h1>
+      <p class="lead text-body-secondary mx-auto mb-4" style="max-width: 760px;">
+        Практическая база знаний и системные курсы: от первого Dockerfile и multi-stage сборок до изоляции в ядре (Cgroups v2, Namespaces), Podman Quadlet, системных контейнеров LXC/Incus и Zero-Downtime деплоя.
+      </p>
+
+      <div class="d-flex flex-wrap gap-2 justify-content-center mb-4">
+        <span class="badge bg-body-tertiary text-body-secondary border px-3 py-2 rounded-pill">
+          <i class="fas fa-layer-group text-primary me-1"></i>7 треков
+        </span>
+        <span class="badge bg-body-tertiary text-body-secondary border px-3 py-2 rounded-pill">
+          <i class="fas fa-book-open text-primary me-1"></i>31 практический урок
+        </span>
+        <span class="badge bg-body-tertiary text-body-secondary border px-3 py-2 rounded-pill">
+          <i class="fas fa-route text-primary me-1"></i>Индивидуальные траектории
+        </span>
+        <span class="badge bg-body-tertiary text-body-secondary border px-3 py-2 rounded-pill">
+          <i class="fas fa-lock-open text-success me-1"></i>100% бесплатно
+        </span>
+      </div>
+
+      <!-- Быстрая навигация между каталогом и роудмапом -->
+      <div class="d-inline-flex p-1 rounded-pill bg-body-tertiary border shadow-sm flex-wrap justify-content-center">
+        <a href="#catalog" class="btn btn-sm btn-outline-secondary border-0 rounded-pill px-3 py-2 fw-medium">
+          <i class="fas fa-boxes-stacked me-1"></i>Каталог треков
+        </a>
+        <a href="#guide" class="btn btn-sm btn-outline-secondary border-0 rounded-pill px-3 py-2 fw-medium">
+          <i class="fas fa-compass me-1"></i>С чего начать?
+        </a>
+        <a href="#roadmap" class="btn btn-sm btn-primary rounded-pill px-4 py-2 fw-semibold shadow-sm">
+          <i class="fas fa-map-location-dot me-1"></i>Дорожная карта (Roadmap)
+        </a>
+      </div>
     </div>
   </div>
 

@@ -87,10 +87,7 @@
     <div class="sidebar-body flex-grow-1 p-3 overflow-y-auto">
       <ul class="nav nav-pills flex-column gap-1 sidebar-nav w-100">
         <li class="nav-item">
-          <a class="nav-link {{if eq .Meta.ActiveTab "home"}}active{{end}}" href="/">Главная</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link {{if eq .Meta.ActiveTab "courses"}}active{{end}}" href="/courses">Курсы</a>
+          <a class="nav-link {{if or (eq .Meta.ActiveTab "courses") (eq .Meta.ActiveTab "home")}}active{{end}}" href="/">Курсы</a>
         </li>
         <li class="nav-item">
           <a class="nav-link {{if eq .Meta.ActiveTab "education"}}active{{end}}" href="/education">Об авторе</a>
