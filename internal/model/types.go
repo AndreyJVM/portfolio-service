@@ -12,6 +12,7 @@ type MetaData struct {
 	OGImage       string
 	OGURL         string
 	ActiveTab     string
+	ActiveCourse  string
 	CanonicalURL  string
 }
 

@@ -342,6 +342,14 @@ func TestLayoutIncludes(t *testing.T) {
 		"app-sidebar",              // Боковая панель навигации слева
 		"sidebar-nav",              // Список навигационных ссылок
 		">Курсы<",                  // Ссылка Курсы без иконок (главная страница)
+		"sidebar-subnav",           // Подменю курсов и тем
+		"/courses/linux",           // Быстрый переход: Linux & Ядро
+		"/courses/docker",          // Быстрый переход: Docker
+		"/courses/podman",          // Быстрый переход: Podman & Quadlet
+		"/courses/lxc",             // Быстрый переход: LXC / Incus
+		"/courses/internals",       // Быстрый переход: Container Internals
+		"/courses/ansible",         // Быстрый переход: Ansible
+		"/courses/cicd",            // Быстрый переход: CI/CD
 		">Об авторе<",              // Ссылка Об авторе без иконок
 		">QR-генератор<",           // Ссылка QR-генератор без иконок
 		">Shelby<",                 // Ссылка Shelby без иконок
@@ -351,6 +359,14 @@ func TestLayoutIncludes(t *testing.T) {
 		if !strings.Contains(body, snippet) {
 			t.Errorf("Главная страница не содержит обязательный элемент: '%s'", snippet)
 		}
+	}
+
+	// Проверяем подсветку активного курса в подменю при переходе на страницу курса
+	reqCourse := httptest.NewRequest("GET", "/courses/docker", nil)
+	wCourse := httptest.NewRecorder()
+	r.ServeHTTP(wCourse, reqCourse)
+	if !strings.Contains(wCourse.Body.String(), `href="/courses/docker"`) || !strings.Contains(wCourse.Body.String(), `active`) {
+		t.Errorf("Страница /courses/docker должна содержать активную ссылку на курс")
 	}
 
 	// Страница Об авторе содержит аватарку в Hero
