@@ -466,208 +466,50 @@ func TestLearningProgressUI(t *testing.T) {
 		t.Errorf("/courses/docker не содержит бейджей lesson-status-badge")
 	}
 
-	// 3. Проверяем наличие интерактивного квиза и кнопки фиксации прогресса на странице урока
-	reqLesson := httptest.NewRequest("GET", "/courses/docker/01-architecture-and-first-dockerfile", nil)
-	wLesson := httptest.NewRecorder()
-	r.ServeHTTP(wLesson, reqLesson)
-	tbodyLesson := wLesson.Body.String()
-	if !strings.Contains(tbodyLesson, "lesson-quiz-card") {
-		t.Errorf("Страница урока не содержит блока проверочного квиза lesson-quiz-card")
-	}
-	if !strings.Contains(tbodyLesson, "completeLessonBtn") {
-		t.Errorf("Страница урока не содержит кнопки completeLessonBtn")
-	}
-	if !strings.Contains(tbodyLesson, "quiz-option-btn") {
-		t.Errorf("Страница урока не содержит вариантов ответов quiz-option-btn")
-	}
-
-	// 4. Проверяем интерактивный квиз на уроке 02 (Multi-stage)
-	reqLesson2 := httptest.NewRequest("GET", "/courses/docker/02-multistage-and-cgroups", nil)
-	wLesson2 := httptest.NewRecorder()
-	r.ServeHTTP(wLesson2, reqLesson2)
-	tbodyLesson2 := wLesson2.Body.String()
-	if !strings.Contains(tbodyLesson2, "quiz-option-btn") {
-		t.Errorf("Страница урока 02 не содержит вариантов ответов quiz-option-btn")
-	}
-
-	// 5. Проверяем интерактивный квиз на уроке 03 (Compose & Networks)
-	reqLesson3 := httptest.NewRequest("GET", "/courses/docker/03-docker-compose-and-networking", nil)
-	wLesson3 := httptest.NewRecorder()
-	r.ServeHTTP(wLesson3, reqLesson3)
-	tbodyLesson3 := wLesson3.Body.String()
-	if !strings.Contains(tbodyLesson3, "quiz-option-btn") {
-		t.Errorf("Страница урока 03 не содержит вариантов ответов quiz-option-btn")
+	// 3. Проверяем наличие контента и кнопки фиксации прогресса на странице урока
+	lessonPaths := []string{
+		"/courses/docker/01-architecture-and-first-dockerfile",
+		"/courses/docker/02-multistage-and-cgroups",
+		"/courses/docker/03-docker-compose-and-networking",
+		"/courses/docker/04-volumes-and-data-persistence",
+		"/courses/docker/05-container-security-and-hardening",
+		"/courses/docker/06-logging-diagnostics-and-daemon-tuning",
+		"/courses/docker/07-multiarch-buildx-and-cicd",
+		"/courses/lxc/01-lxc-and-system-containers",
+		"/courses/lxc/02-storage-pools-zfs-and-snapshots",
+		"/courses/lxc/03-networking-bridge-macvlan-and-proxy",
+		"/courses/lxc/04-profiles-cgroups-and-autostart",
+		"/courses/lxc/05-security-unprivileged-and-docker-nesting",
+		"/courses/podman/01-podman-rootless-and-daemonless",
+		"/courses/podman/02-podman-quadlet-and-systemd",
+		"/courses/podman/03-podman-pods-and-kube-generate",
+		"/courses/podman/04-podman-storage-volumes-and-userns",
+		"/courses/podman/05-podman-compose-and-production-security",
+		"/courses/internals/01-namespaces-and-cgroups-v2",
+		"/courses/internals/02-syscalls-clone-unshare-and-pivot-root",
+		"/courses/internals/03-building-mini-container-runtime-in-go",
+		"/courses/internals/04-oci-spec-runc-and-crun",
+		"/courses/internals/05-seccomp-capabilities-and-ebpf-tracing",
+		"/courses/linux/01-permissions-and-systemd",
+		"/courses/ansible/01-ansible-basics-and-playbooks",
+		"/courses/cicd/01-github-actions-pipeline",
 	}
 
-	// 6. Проверяем интерактивный квиз на уроке 04 (Volumes & Persistence)
-	reqLesson4 := httptest.NewRequest("GET", "/courses/docker/04-volumes-and-data-persistence", nil)
-	wLesson4 := httptest.NewRecorder()
-	r.ServeHTTP(wLesson4, reqLesson4)
-	tbodyLesson4 := wLesson4.Body.String()
-	if !strings.Contains(tbodyLesson4, "quiz-option-btn") {
-		t.Errorf("Страница урока 04 не содержит вариантов ответов quiz-option-btn")
-	}
+	for _, path := range lessonPaths {
+		req := httptest.NewRequest("GET", path, nil)
+		w := httptest.NewRecorder()
+		r.ServeHTTP(w, req)
 
-	// 7. Проверяем интерактивный квиз на уроке 05 (Security & Hardening)
-	reqLesson5 := httptest.NewRequest("GET", "/courses/docker/05-container-security-and-hardening", nil)
-	wLesson5 := httptest.NewRecorder()
-	r.ServeHTTP(wLesson5, reqLesson5)
-	tbodyLesson5 := wLesson5.Body.String()
-	if !strings.Contains(tbodyLesson5, "quiz-option-btn") {
-		t.Errorf("Страница урока 05 не содержит вариантов ответов quiz-option-btn")
-	}
-
-	// 8. Проверяем интерактивный квиз на уроке 06 (Logging & Diagnostics)
-	reqLesson6 := httptest.NewRequest("GET", "/courses/docker/06-logging-diagnostics-and-daemon-tuning", nil)
-	wLesson6 := httptest.NewRecorder()
-	r.ServeHTTP(wLesson6, reqLesson6)
-	tbodyLesson6 := wLesson6.Body.String()
-	if !strings.Contains(tbodyLesson6, "quiz-option-btn") {
-		t.Errorf("Страница урока 06 не содержит вариантов ответов quiz-option-btn")
-	}
-
-	// 9. Проверяем интерактивный квиз на уроке 07 (Multi-arch & CI/CD)
-	reqLesson7 := httptest.NewRequest("GET", "/courses/docker/07-multiarch-buildx-and-cicd", nil)
-	wLesson7 := httptest.NewRecorder()
-	r.ServeHTTP(wLesson7, reqLesson7)
-	tbodyLesson7 := wLesson7.Body.String()
-	if !strings.Contains(tbodyLesson7, "quiz-option-btn") {
-		t.Errorf("Страница урока 07 не содержит вариантов ответов quiz-option-btn")
-	}
-
-	// 10. Проверяем интерактивный квиз на уроке LXC 01
-	reqLxc1 := httptest.NewRequest("GET", "/courses/lxc/01-lxc-and-system-containers", nil)
-	wLxc1 := httptest.NewRecorder()
-	r.ServeHTTP(wLxc1, reqLxc1)
-	tbodyLxc1 := wLxc1.Body.String()
-	if !strings.Contains(tbodyLxc1, "quiz-option-btn") {
-		t.Errorf("Страница урока LXC 01 не содержит вариантов ответов quiz-option-btn")
-	}
-
-	// 11. Проверяем интерактивный квиз на уроке LXC 02 (Storage Pools & Snapshots)
-	reqLxc2 := httptest.NewRequest("GET", "/courses/lxc/02-storage-pools-zfs-and-snapshots", nil)
-	wLxc2 := httptest.NewRecorder()
-	r.ServeHTTP(wLxc2, reqLxc2)
-	tbodyLxc2 := wLxc2.Body.String()
-	if !strings.Contains(tbodyLxc2, "quiz-option-btn") {
-		t.Errorf("Страница урока LXC 02 не содержит вариантов ответов quiz-option-btn")
-	}
-
-	// 12. Проверяем интерактивный квиз на уроке LXC 03 (Networking & Proxy)
-	reqLxc3 := httptest.NewRequest("GET", "/courses/lxc/03-networking-bridge-macvlan-and-proxy", nil)
-	wLxc3 := httptest.NewRecorder()
-	r.ServeHTTP(wLxc3, reqLxc3)
-	tbodyLxc3 := wLxc3.Body.String()
-	if !strings.Contains(tbodyLxc3, "quiz-option-btn") {
-		t.Errorf("Страница урока LXC 03 не содержит вариантов ответов quiz-option-btn")
-	}
-
-	// 13. Проверяем интерактивный квиз на уроке LXC 04 (Profiles & Cgroups)
-	reqLxc4 := httptest.NewRequest("GET", "/courses/lxc/04-profiles-cgroups-and-autostart", nil)
-	wLxc4 := httptest.NewRecorder()
-	r.ServeHTTP(wLxc4, reqLxc4)
-	tbodyLxc4 := wLxc4.Body.String()
-	if !strings.Contains(tbodyLxc4, "quiz-option-btn") {
-		t.Errorf("Страница урока LXC 04 не содержит вариантов ответов quiz-option-btn")
-	}
-
-	// 14. Проверяем интерактивный квиз на уроке LXC 05 (Security & Docker Nesting)
-	reqLxc5 := httptest.NewRequest("GET", "/courses/lxc/05-security-unprivileged-and-docker-nesting", nil)
-	wLxc5 := httptest.NewRecorder()
-	r.ServeHTTP(wLxc5, reqLxc5)
-	tbodyLxc5 := wLxc5.Body.String()
-	if !strings.Contains(tbodyLxc5, "quiz-option-btn") {
-		t.Errorf("Страница урока LXC 05 не содержит вариантов ответов quiz-option-btn")
-	}
-
-	// 15. Проверяем интерактивный квиз на уроке Podman 01 (Rootless & Daemonless)
-	reqPodman1 := httptest.NewRequest("GET", "/courses/podman/01-podman-rootless-and-daemonless", nil)
-	wPodman1 := httptest.NewRecorder()
-	r.ServeHTTP(wPodman1, reqPodman1)
-	tbodyPodman1 := wPodman1.Body.String()
-	if !strings.Contains(tbodyPodman1, "quiz-option-btn") {
-		t.Errorf("Страница урока Podman 01 не содержит вариантов ответов quiz-option-btn")
-	}
-
-	// 16. Проверяем интерактивный квиз на уроке Podman 02 (Quadlet & Systemd)
-	reqPodman2 := httptest.NewRequest("GET", "/courses/podman/02-podman-quadlet-and-systemd", nil)
-	wPodman2 := httptest.NewRecorder()
-	r.ServeHTTP(wPodman2, reqPodman2)
-	tbodyPodman2 := wPodman2.Body.String()
-	if !strings.Contains(tbodyPodman2, "quiz-option-btn") {
-		t.Errorf("Страница урока Podman 02 не содержит вариантов ответов quiz-option-btn")
-	}
-
-	// 17. Проверяем интерактивный квиз на уроке Podman 03 (Pods & Kube Play)
-	reqPodman3 := httptest.NewRequest("GET", "/courses/podman/03-podman-pods-and-kube-generate", nil)
-	wPodman3 := httptest.NewRecorder()
-	r.ServeHTTP(wPodman3, reqPodman3)
-	tbodyPodman3 := wPodman3.Body.String()
-	if !strings.Contains(tbodyPodman3, "quiz-option-btn") {
-		t.Errorf("Страница урока Podman 03 не содержит вариантов ответов quiz-option-btn")
-	}
-
-	// 18. Проверяем интерактивный квиз на уроке Podman 04 (Storage, Volumes & UserNS)
-	reqPodman4 := httptest.NewRequest("GET", "/courses/podman/04-podman-storage-volumes-and-userns", nil)
-	wPodman4 := httptest.NewRecorder()
-	r.ServeHTTP(wPodman4, reqPodman4)
-	tbodyPodman4 := wPodman4.Body.String()
-	if !strings.Contains(tbodyPodman4, "quiz-option-btn") {
-		t.Errorf("Страница урока Podman 04 не содержит вариантов ответов quiz-option-btn")
-	}
-
-	// 19. Проверяем интерактивный квиз на уроке Podman 05 (Compose & Production Security)
-	reqPodman5 := httptest.NewRequest("GET", "/courses/podman/05-podman-compose-and-production-security", nil)
-	wPodman5 := httptest.NewRecorder()
-	r.ServeHTTP(wPodman5, reqPodman5)
-	tbodyPodman5 := wPodman5.Body.String()
-	if !strings.Contains(tbodyPodman5, "quiz-option-btn") {
-		t.Errorf("Страница урока Podman 05 не содержит вариантов ответов quiz-option-btn")
-	}
-
-	// 20. Проверяем интерактивный квиз на уроке Internals 01 (Namespaces & Cgroups v2)
-	reqInternals1 := httptest.NewRequest("GET", "/courses/internals/01-namespaces-and-cgroups-v2", nil)
-	wInternals1 := httptest.NewRecorder()
-	r.ServeHTTP(wInternals1, reqInternals1)
-	tbodyInternals1 := wInternals1.Body.String()
-	if !strings.Contains(tbodyInternals1, "quiz-option-btn") {
-		t.Errorf("Страница урока Internals 01 не содержит вариантов ответов quiz-option-btn")
-	}
-
-	// 21. Проверяем интерактивный квиз на уроке Internals 02 (Syscalls & Pivot Root)
-	reqInternals2 := httptest.NewRequest("GET", "/courses/internals/02-syscalls-clone-unshare-and-pivot-root", nil)
-	wInternals2 := httptest.NewRecorder()
-	r.ServeHTTP(wInternals2, reqInternals2)
-	tbodyInternals2 := wInternals2.Body.String()
-	if !strings.Contains(tbodyInternals2, "quiz-option-btn") {
-		t.Errorf("Страница урока Internals 02 не содержит вариантов ответов quiz-option-btn")
-	}
-
-	// 22. Проверяем интерактивный квиз на уроке Internals 03 (Mini Container Runtime in Go)
-	reqInternals3 := httptest.NewRequest("GET", "/courses/internals/03-building-mini-container-runtime-in-go", nil)
-	wInternals3 := httptest.NewRecorder()
-	r.ServeHTTP(wInternals3, reqInternals3)
-	tbodyInternals3 := wInternals3.Body.String()
-	if !strings.Contains(tbodyInternals3, "quiz-option-btn") {
-		t.Errorf("Страница урока Internals 03 не содержит вариантов ответов quiz-option-btn")
-	}
-
-	// 23. Проверяем интерактивный квиз на уроке Internals 04 (OCI Spec & Runtimes)
-	reqInternals4 := httptest.NewRequest("GET", "/courses/internals/04-oci-spec-runc-and-crun", nil)
-	wInternals4 := httptest.NewRecorder()
-	r.ServeHTTP(wInternals4, reqInternals4)
-	tbodyInternals4 := wInternals4.Body.String()
-	if !strings.Contains(tbodyInternals4, "quiz-option-btn") {
-		t.Errorf("Страница урока Internals 04 не содержит вариантов ответов quiz-option-btn")
-	}
-
-	// 24. Проверяем интерактивный квиз на уроке Internals 05 (Seccomp & eBPF)
-	reqInternals5 := httptest.NewRequest("GET", "/courses/internals/05-seccomp-capabilities-and-ebpf-tracing", nil)
-	wInternals5 := httptest.NewRecorder()
-	r.ServeHTTP(wInternals5, reqInternals5)
-	tbodyInternals5 := wInternals5.Body.String()
-	if !strings.Contains(tbodyInternals5, "quiz-option-btn") {
-		t.Errorf("Страница урока Internals 05 не содержит вариантов ответов quiz-option-btn")
+		if w.Code != http.StatusOK {
+			t.Errorf("Урок %s вернул статус %d, ожидался 200", path, w.Code)
+		}
+		body := w.Body.String()
+		if !strings.Contains(body, "completeLessonBtn") {
+			t.Errorf("Страница урока %s не содержит кнопки completeLessonBtn", path)
+		}
+		if !strings.Contains(body, "markdown-content") {
+			t.Errorf("Страница урока %s не содержит контейнера markdown-content", path)
+		}
 	}
 }
 

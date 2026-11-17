@@ -199,7 +199,6 @@ func (s *CourseService) GetLesson(courseSlug, lessonSlug string) (*model.Course,
 		Duration:    "15-20 мин",
 		Description: "Практическое руководство и лабораторная работа",
 		ContentHTML: buf.String(),
-		Quiz:        GetQuizForLesson(lessonSlug),
 	}
 
 	s.lessonMu.Lock()
