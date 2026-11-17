@@ -60,8 +60,10 @@ When modifying any part of this repository, agents **MUST** strictly adhere to t
 
 ```
 .
+├── .agents/
+│   └── lesson-creator/
+│       └── SKILL.md           # Modular playbook for authoring courses & interactive labs
 ├── AGENTS.md                  # Operational directives for AI coding agents
-├── SKILL.md                   # Agentic skill definition: Lesson Content & Lab Creator
 ├── README.md                  # Project overview, architecture diagrams, and quickstart (EN/RU)
 ├── cmd/
 │   └── server/
