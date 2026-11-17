@@ -3768,4 +3768,168 @@ var quizzesRegistry = map[string]*model.Quiz{
 			},
 		},
 	},
+	"02-roles-and-galaxy": &model.Quiz{
+		Questions: []model.QuizQuestion{
+			{
+				ID:    "q1",
+				Title: "1. В каком каталоге структуры роли Ansible размещаются переменные по умолчанию с наименьшим приоритетом?",
+				Options: []model.QuizOption{
+					{
+						Text:        "<code>defaults/</code> (файл <code>defaults/main.yml</code>)",
+						IsCorrect:   true,
+						Explanation: "В defaults/main.yml задаются дефолтные значения переменных, которые легко переопределяются инвентарем, переменными группы или параметрами запуска плейбука.",
+					},
+					{
+						Text:        "<code>vars/</code> (файл <code>vars/main.yml</code>)",
+						IsCorrect:   false,
+						Explanation: "",
+					},
+					{
+						Text:        "<code>meta/</code> (файл <code>meta/main.yml</code>)",
+						IsCorrect:   false,
+						Explanation: "",
+					},
+				},
+			},
+			{
+				ID:    "q2",
+				Title: "2. Какая поддиректория роли предназначена для хранения шаблонов Jinja2 (<code>*.j2</code>)?",
+				Options: []model.QuizOption{
+					{
+						Text:        "<code>templates/</code>",
+						IsCorrect:   true,
+						Explanation: "Шаблоны с расширением .j2 размещаются в директории templates/ и рендерятся модулем ansible.builtin.template.",
+					},
+					{
+						Text:        "<code>files/</code>",
+						IsCorrect:   false,
+						Explanation: "",
+					},
+					{
+						Text:        "<code>handlers/</code>",
+						IsCorrect:   false,
+						Explanation: "",
+					},
+				},
+			},
+		},
+	},
+	"roles-and-galaxy": &model.Quiz{
+		Questions: []model.QuizQuestion{
+			{
+				ID:    "q1",
+				Title: "1. В каком каталоге структуры роли Ansible размещаются переменные по умолчанию с наименьшим приоритетом?",
+				Options: []model.QuizOption{
+					{
+						Text:        "<code>defaults/</code> (файл <code>defaults/main.yml</code>)",
+						IsCorrect:   true,
+						Explanation: "В defaults/main.yml задаются дефолтные значения переменных, которые легко переопределяются инвентарем, переменными группы или параметрами запуска плейбука.",
+					},
+					{
+						Text:        "<code>vars/</code> (файл <code>vars/main.yml</code>)",
+						IsCorrect:   false,
+						Explanation: "",
+					},
+				},
+			},
+			{
+				ID:    "q2",
+				Title: "2. Какая поддиректория роли предназначена для хранения шаблонов Jinja2 (<code>*.j2</code>)?",
+				Options: []model.QuizOption{
+					{
+						Text:        "<code>templates/</code>",
+						IsCorrect:   true,
+						Explanation: "Шаблоны с расширением .j2 размещаются в директории templates/ и рендерятся модулем ansible.builtin.template.",
+					},
+					{
+						Text:        "<code>files/</code>",
+						IsCorrect:   false,
+						Explanation: "",
+					},
+				},
+			},
+		},
+	},
+	"02-zero-downtime-and-blue-green": &model.Quiz{
+		Questions: []model.QuizQuestion{
+			{
+				ID:    "q1",
+				Title: "1. Какая команда Docker Compose запускает параллельный экземпляр сервиса без простоя и пересоздания текущего контейнера?",
+				Options: []model.QuizOption{
+					{
+						Text:        "<code>docker compose up -d --scale app=2 --no-recreate</code>",
+						IsCorrect:   true,
+						Explanation: "Параметр --scale app=2 поднимает второй инстанс параллельно старому, а --no-recreate предотвращает перезапуск работающего первого контейнера до проверки здоровья.",
+					},
+					{
+						Text:        "<code>docker compose down && docker compose up -d</code>",
+						IsCorrect:   false,
+						Explanation: "",
+					},
+					{
+						Text:        "<code>docker compose restart app</code>",
+						IsCorrect:   false,
+						Explanation: "",
+					},
+				},
+			},
+			{
+				ID:    "q2",
+				Title: "2. Какой POSIX-сигнал отправляется Nginx для бесшовного применения новой конфигурации без разрыва активных соединений клиентов?",
+				Options: []model.QuizOption{
+					{
+						Text:        "<code>SIGHUP</code> (или <code>nginx -s reload</code>)",
+						IsCorrect:   true,
+						Explanation: "Сигнал SIGHUP инициирует плавный reload: мастер-процесс запускает новые воркеры со свежей конфигурацией, а старые воркеры дожидаются завершения текущих запросов.",
+					},
+					{
+						Text:        "<code>SIGKILL</code>",
+						IsCorrect:   false,
+						Explanation: "",
+					},
+					{
+						Text:        "<code>SIGTERM</code>",
+						IsCorrect:   false,
+						Explanation: "",
+					},
+				},
+			},
+		},
+	},
+	"zero-downtime-and-blue-green": &model.Quiz{
+		Questions: []model.QuizQuestion{
+			{
+				ID:    "q1",
+				Title: "1. Какая команда Docker Compose запускает параллельный экземпляр сервиса без простоя и пересоздания текущего контейнера?",
+				Options: []model.QuizOption{
+					{
+						Text:        "<code>docker compose up -d --scale app=2 --no-recreate</code>",
+						IsCorrect:   true,
+						Explanation: "Параметр --scale app=2 поднимает второй инстанс параллельно старому, а --no-recreate предотвращает перезапуск работающего первого контейнера до проверки здоровья.",
+					},
+					{
+						Text:        "<code>docker compose down && docker compose up -d</code>",
+						IsCorrect:   false,
+						Explanation: "",
+					},
+				},
+			},
+			{
+				ID:    "q2",
+				Title: "2. Какой POSIX-сигнал отправляется Nginx для бесшовного применения новой конфигурации без разрыва активных соединений клиентов?",
+				Options: []model.QuizOption{
+					{
+						Text:        "<code>SIGHUP</code> (или <code>nginx -s reload</code>)",
+						IsCorrect:   true,
+						Explanation: "Сигнал SIGHUP инициирует плавный reload: мастер-процесс запускает новые воркеры со свежей конфигурацией, а старые воркеры дожидаются завершения текущих запросов.",
+					},
+					{
+						Text:        "<code>SIGKILL</code>",
+						IsCorrect:   false,
+						Explanation: "",
+					},
+				},
+			},
+		},
+	},
 }

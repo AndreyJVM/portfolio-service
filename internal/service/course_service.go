@@ -50,6 +50,16 @@ func NewCourseService(contentDir string) *CourseService {
 func (s *CourseService) GetAllCourses() []model.Course {
 	courses := []model.Course{
 		{
+			ID:          "linux",
+			Slug:        "linux",
+			Title:       "Linux: Системное администрирование",
+			Icon:        "fab fa-linux",
+			Color:       "#ea580c",
+			Level:       "Базовый → Middle",
+			Description: "Фундамент системной инженерии: права доступа (DAC), управление юнитами systemd, сети и iptables/nftables, процессы, память, Bash-скрипты и дисковая подсистема LVM.",
+			Tags:        []string{"Linux", "systemd", "Networking", "Bash", "LVM", "Security"},
+		},
+		{
 			ID:          "docker",
 			Slug:        "docker",
 			Title:       "Docker: От основ до Production",
@@ -88,6 +98,26 @@ func (s *CourseService) GetAllCourses() []model.Course {
 			Level:       "Senior",
 			Description: "Низкоуровневая анатомия контейнеризации: Namespaces (PID, NET, MNT, USER), Cgroups v2, runc, crun, seccomp и AppArmor.",
 			Tags:        []string{"Namespaces", "Cgroups v2", "runc", "crun", "Kernel"},
+		},
+		{
+			ID:          "ansible",
+			Slug:        "ansible",
+			Title:       "Ansible: Автоматизация инфраструктуры",
+			Icon:        "fas fa-gears",
+			Color:       "#dc2626",
+			Level:       "Middle",
+			Description: "Управление конфигурациями и IaC: написание Playbooks, Jinja2 шаблоны, создание модульных переиспользуемых ролей и публикация в Ansible Galaxy.",
+			Tags:        []string{"Ansible", "IaC", "Automation", "Galaxy", "Playbooks", "Jinja2"},
+		},
+		{
+			ID:          "cicd",
+			Slug:        "cicd",
+			Title:       "CI/CD: GitHub Actions & Zero-Downtime",
+			Icon:        "fas fa-code-branch",
+			Color:       "#06b6d4",
+			Level:       "Middle → Senior",
+			Description: "Автоматизация сборки и непрерывной доставки: конвейеры GitHub Actions, кэширование BuildKit, Blue-Green деплой и бесшовный откат (Rollback).",
+			Tags:        []string{"CI/CD", "GitHub Actions", "Zero-Downtime", "Blue-Green", "Rollback"},
 		},
 	}
 

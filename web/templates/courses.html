@@ -34,7 +34,7 @@
         <p class="text-body-secondary small mb-0">Каждый трек содержит практические руководства, проверочные квизы и лабораторные работы.</p>
       </div>
       <span class="badge bg-body-tertiary text-body-secondary border px-3 py-2 rounded-pill">
-        4 направления • Все материалы бесплатны
+        7 направлений • 31 урок • Все материалы бесплатны
       </span>
     </div>
 
@@ -196,6 +196,61 @@
     </div>
 
     <div class="roadmap-timeline">
+      <!-- ЭТАП 0: LINUX -->
+      <div class="roadmap-step">
+        <div class="roadmap-step-badge">0</div>
+        <div class="card border rounded-4 p-3 p-sm-4 bg-body shadow-sm bento-card">
+          <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+            <div>
+              <div class="d-flex align-items-center gap-2 mb-1">
+                <span class="badge bg-danger-subtle text-danger-emphasis border border-danger-subtle rounded-pill">
+                  Шаг 0 • Системный фундамент (Базовый → Middle)
+                </span>
+                <span class="badge bg-body-tertiary text-body-secondary border">5 уроков с квизами</span>
+              </div>
+              <h4 class="fw-bold mb-0">Linux: Системное администрирование и ядро</h4>
+            </div>
+            <a href="/courses/linux" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 shadow-sm">
+              Изучать трек <i class="fas fa-arrow-right ms-1"></i>
+            </a>
+          </div>
+
+          <p class="text-body-secondary small mb-3">
+            Основа всех облачных технологий. Понимание модели прав DAC, управление службами systemd, настройка сетей и маршрутизации, мониторинг процессов и дисковая подсистема LVM.
+          </p>
+
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <h6 class="small fw-bold text-body-secondary text-uppercase mb-2">Что вы освоите:</h6>
+              <ul class="roadmap-checklist">
+                <li>Модель прав доступа DAC: <code>chmod</code>, <code>chown</code>, SUID/SGID и Sticky Bit</li>
+                <li>Анатомия <strong>systemd</strong>: создание unit-файлов сервисов, таймеры и автозапуск</li>
+                <li>Сетевой стек: утилита <code>ip</code>, маршруты, порты и файрволы (iptables, nftables)</li>
+                <li>Диагностика процессов: сигналы POSIX, procfs, лимиты <code>ulimit</code> и память</li>
+              </ul>
+            </div>
+            <div class="col-md-6">
+              <h6 class="small fw-bold text-body-secondary text-uppercase mb-2">Production-стандарты:</h6>
+              <ul class="roadmap-checklist">
+                <li>Автоматизация на Bash: строгий режим <code>set -Eeuo pipefail</code> и обработка ошибок</li>
+                <li>Управление дисками: логические тома <strong>LVM</strong> (PV, VG, LV) и расширение на лету</li>
+                <li>Диагностика узких мест сервера (CPU, Memory, Disk I/O bottlenecks)</li>
+                <li>Основы харденинга Linux: безопасный SSH, отключение рута и файрвол</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="p-2 px-3 rounded-3 bg-body-tertiary border d-flex align-items-center justify-content-between flex-wrap gap-2 small">
+            <span class="text-body-secondary">
+              <i class="fas fa-flag-checkered text-success me-1"></i><strong>Результат:</strong> Полное отсутствие страха перед черным экраном терминала Linux и готовность к контейнерам.
+            </span>
+            <a href="/courses/linux" class="text-primary fw-medium text-decoration-none">
+              Открыть уроки трека (1–5) &rarr;
+            </a>
+          </div>
+        </div>
+      </div>
+
       <!-- ЭТАП 1: DOCKER -->
       <div class="roadmap-step">
         <div class="roadmap-step-badge">1</div>
@@ -411,6 +466,116 @@
             </span>
             <a href="/courses/internals" class="text-primary fw-medium text-decoration-none">
               Открыть уроки трека (1–5) &rarr;
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ЭТАП 5: ANSIBLE -->
+      <div class="roadmap-step">
+        <div class="roadmap-step-badge">5</div>
+        <div class="card border rounded-4 p-3 p-sm-4 bg-body shadow-sm bento-card">
+          <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+            <div>
+              <div class="d-flex align-items-center gap-2 mb-1">
+                <span class="badge bg-danger-subtle text-danger-emphasis border border-danger-subtle rounded-pill">
+                  Шаг 5 • Infrastructure as Code (Middle)
+                </span>
+                <span class="badge bg-body-tertiary text-body-secondary border">2 урока с квизами</span>
+              </div>
+              <h4 class="fw-bold mb-0">Ansible: Автоматизация инфраструктуры и хостов</h4>
+            </div>
+            <a href="/courses/ansible" class="btn btn-sm btn-outline-danger rounded-pill px-3 py-1 shadow-sm">
+              Изучать трек <i class="fas fa-arrow-right ms-1"></i>
+            </a>
+          </div>
+
+          <p class="text-body-secondary small mb-3">
+            Переход от ручной настройки к коду инфраструктуры (IaC). Подготовка хостов для Docker и Podman, шаблонизация конфигов демонов и создание переиспользуемых ролей.
+          </p>
+
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <h6 class="small fw-bold text-body-secondary text-uppercase mb-2">Что вы освоите:</h6>
+              <ul class="roadmap-checklist">
+                <li>Декларативные плейбуки YAML: инвентарь (Inventory), переменные и факты хостов</li>
+                <li>Шаблоны <strong>Jinja2</strong>: генерация <code>daemon.json</code>, конфигов Nginx и systemd</li>
+                <li>Идемпотентность модулей <code>apt</code>, <code>systemd</code>, <code>template</code>, <code>file</code></li>
+                <li>Обработчики событий (Handlers) и директива <code>notify</code></li>
+              </ul>
+            </div>
+            <div class="col-md-6">
+              <h6 class="small fw-bold text-body-secondary text-uppercase mb-2">Production-стандарты:</h6>
+              <ul class="roadmap-checklist">
+                <li>Модульная структура роли: <code>tasks</code>, <code>handlers</code>, <code>defaults</code>, <code>vars</code></li>
+                <li>Инициализация и публикация через <strong>Ansible Galaxy</strong></li>
+                <li>Безопасность секретов с помощью <code>ansible-vault</code></li>
+                <li>Харденинг хостов и автоматический деплой Docker-окружения</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="p-2 px-3 rounded-3 bg-body-tertiary border d-flex align-items-center justify-content-between flex-wrap gap-2 small">
+            <span class="text-body-secondary">
+              <i class="fas fa-flag-checkered text-success me-1"></i><strong>Результат:</strong> Возможность развернуть готовый продакшн-сервер с контейнерами одной командой за 2 минуты.
+            </span>
+            <a href="/courses/ansible" class="text-primary fw-medium text-decoration-none">
+              Открыть уроки трека (1–2) &rarr;
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ЭТАП 6: CI/CD & ZERO-DOWNTIME -->
+      <div class="roadmap-step">
+        <div class="roadmap-step-badge">6</div>
+        <div class="card border rounded-4 p-3 p-sm-4 bg-body shadow-sm bento-card">
+          <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+            <div>
+              <div class="d-flex align-items-center gap-2 mb-1">
+                <span class="badge bg-info-subtle text-info-emphasis border border-info-subtle rounded-pill">
+                  Шаг 6 • Непрерывная доставка (Middle → Senior)
+                </span>
+                <span class="badge bg-body-tertiary text-body-secondary border">2 урока с квизами</span>
+              </div>
+              <h4 class="fw-bold mb-0">CI/CD: GitHub Actions & Zero-Downtime Деплой</h4>
+            </div>
+            <a href="/courses/cicd" class="btn btn-sm btn-outline-info rounded-pill px-3 py-1 shadow-sm">
+              Изучать трек <i class="fas fa-arrow-right ms-1"></i>
+            </a>
+          </div>
+
+          <p class="text-body-secondary small mb-3">
+            Полный цикл автоматизации поставки ПО: от коммита разработчика до продакшн-сервера без единой миллисекунды простоя для пользователей.
+          </p>
+
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <h6 class="small fw-bold text-body-secondary text-uppercase mb-2">Что вы освоите:</h6>
+              <ul class="roadmap-checklist">
+                <li>Пайплайны <strong>GitHub Actions</strong>: триггеры, переменные, секреты и матрицы</li>
+                <li>Сборка образов и кэширование слоев в Registry через BuildKit <code>type=gha</code></li>
+                <li>Автоматический запуск тестов с проверкой состояния гонки (<code>-race</code>)</li>
+                <li>Безопасная доставка образов в Docker Hub / GitHub Container Registry</li>
+              </ul>
+            </div>
+            <div class="col-md-6">
+              <h6 class="small fw-bold text-body-secondary text-uppercase mb-2">Production-стандарты:</h6>
+              <ul class="roadmap-checklist">
+                <li>Стратегия <strong>Blue-Green</strong> деплоя с помощью Docker Compose и масштабирования</li>
+                <li>Проверка готовности (Healthcheck-пробы) перед переключением клиентского трафика</li>
+                <li>Плавный reload Nginx через <code>SIGHUP</code> без разрыва активных соединений</li>
+                <li>Автоматический откат (Rollback) к предыдущей версии при сбое проверки здоровья</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="p-2 px-3 rounded-3 bg-body-tertiary border d-flex align-items-center justify-content-between flex-wrap gap-2 small">
+            <span class="text-body-secondary">
+              <i class="fas fa-flag-checkered text-success me-1"></i><strong>Результат:</strong> Завершенный сквозной цикл разработки и эксплуатации современных веб-сервисов.
+            </span>
+            <a href="/courses/cicd" class="text-primary fw-medium text-decoration-none">
+              Открыть уроки трека (1–2) &rarr;
             </a>
           </div>
         </div>

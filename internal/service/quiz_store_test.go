@@ -16,6 +16,8 @@ func TestGetQuizForLesson_Found(t *testing.T) {
 		{"01-podman-rootless-and-daemonless", 3},
 		{"01-namespaces-and-cgroups-v2", 3},
 		{"01-permissions-and-systemd", 2},
+		{"02-roles-and-galaxy", 2},
+		{"02-zero-downtime-and-blue-green", 2},
 	}
 
 	for _, tc := range testCases {
