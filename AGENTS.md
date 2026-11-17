@@ -13,7 +13,7 @@
 * **Content Engine (`internal/service/course_service.go`)**: GFM-compliant markdown-to-HTML pipeline using `goldmark`, backed by thread-safe in-memory caching (`sync.RWMutex`) and automated full-text search indexing.
 * **Microservices Ecosystem (`qr-service/`)**: Standalone, decoupled Go microservice responsible for real-time QR code generation and image serving.
 * **Frontend Philosophy**: Server-Side Rendering (Go `html/template`), vanilla JavaScript (ES6+), modern CSS variables, and Bootstrap 5 for grid layout. **No heavy client-side frameworks** (React/Vue/Angular) and **no Node.js build steps**.
-* **Edge & Ingress Gateway (`deploy/nginx/`)**: Nginx reverse proxy with TLS/SSL termination, HTTP/2, strict Content Security Policy (CSP), rate limiting, and gzip/brotli compression.
+* **Edge & Ingress Gateway (`nginx/`)**: Nginx reverse proxy with TLS/SSL termination, HTTP/2, strict Content Security Policy (CSP), rate limiting, and gzip/brotli compression.
 
 ---
 
@@ -70,9 +70,8 @@ When modifying any part of this repository, agents **MUST** strictly adhere to t
 │       └── main.go            # Monolith entrypoint (flags, router assembly, graceful shutdown)
 ├── content/
 │   └── courses/               # Educational Markdown tracks (linux, docker, podman, lxc, internals, ansible, cicd)
-├── deploy/
-│   ├── nginx/                 # Production Nginx reverse proxy configuration & TLS
-│   └── systemd/               # Systemd unit files for production service isolation
+├── nginx/                     # Production Nginx reverse proxy configuration & TLS
+├── scripts/                   # Deployment and SSL lifecycle management scripts
 ├── internal/
 │   ├── config/                # Environment variable parsing and application config
 │   ├── handler/               # HTTP handlers (courses, pages, search, SEO, QR integration)
