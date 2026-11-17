@@ -1,4 +1,5 @@
 # === Go Build & Binaries ===
+bin/
 devops-platform
 /server
 qr-service/qr-service
@@ -14,20 +15,12 @@ qr-service/qr-service
 *.log
 deploy.log
 *.pid
+*.tmp
 
-# === IDE ===
+# === IDE & Editors ===
 .idea/
 *.iml
 .vscode/
-.settings/
-.classpath
-.project
-.apt_generated
-.factorypath
-.springBeans
-.sts4-cache
-.kotlin
-/nbproject/private/
 .cache/
 
 # === OS & Environment ===

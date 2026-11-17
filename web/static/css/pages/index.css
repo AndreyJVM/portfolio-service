@@ -83,38 +83,6 @@
   100% { transform: scale(1.2) translate(20px, -20px); }
 }
 
-/* Обновленный Focus Banner */
-.focus-banner {
-  background: linear-gradient(135deg, rgba(var(--bs-primary-rgb), 0.08), var(--card-bg));
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(var(--bs-primary-rgb), 0.2);
-  border-left: 5px solid var(--accent-color);
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-.focus-banner::before {
-  content: '\f135'; /* fa-rocket */
-  font-family: 'Font Awesome 6 Free';
-  font-weight: 900;
-  position: absolute;
-  right: -20px;
-  top: -20px;
-  font-size: 150px;
-  color: rgba(var(--bs-primary-rgb), 0.05);
-  transform: rotate(-15deg);
-  transition: transform 0.5s ease;
-}
-
-.focus-banner:hover::before {
-  transform: rotate(0deg) scale(1.1);
-}
-
-.focus-banner:hover {
-  box-shadow: 0 15px 35px rgba(var(--bs-primary-rgb), 0.15);
-  transform: translateY(-3px);
-}
 
 /* Обновленный Bento Grid */
 .bento-card {

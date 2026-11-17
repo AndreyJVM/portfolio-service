@@ -58,11 +58,13 @@
   transform: translateY(-50%) scale(1.1);
 }
 
-.cert-nav-btn--prev {
+.cert-nav-btn--prev,
+.cert-nav-prev {
   left: 12px;
 }
 
-.cert-nav-btn--next {
+.cert-nav-btn--next,
+.cert-nav-next {
   right: 12px;
 }
 

@@ -2,20 +2,31 @@
 .git
 .gitignore
 
-# Build outputs & temporary files
-target/
-build/
-*.class
+# Go Build outputs & temporary files
+bin/
+devops-platform
+*.exe
+*.test
+*.out
+*.log
+*.tmp
+
+# Environment & Secrets
+.env
+.env.*
+!.env.example
+
+# AI Agents & Skills specifications
+.agents/
+AGENTS.md
 
 # IDE & Editor files
 .idea/
 *.iml
 .vscode/
 .DS_Store
-*.log
-*.tmp
 
-# Sub-services (built in their own isolated contexts)
+# Sub-services (built in their own isolated Docker contexts)
 qr-service/
 
 # Repository documentation & CI/CD configs
@@ -23,7 +34,7 @@ README.md
 LICENSE
 .github/
 scripts/
-docker-stack.yml
+nginx/
 
 # Ensure Markdown course lessons are included
 !content/**/*.md
