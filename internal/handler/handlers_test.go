@@ -62,6 +62,7 @@ func TestHandlers(t *testing.T) {
 		{"GET /courses/docker/05-container-security-and-hardening", "GET", "/courses/docker/05-container-security-and-hardening", http.StatusOK},
 		{"GET /courses/docker/06-logging-diagnostics-and-daemon-tuning", "GET", "/courses/docker/06-logging-diagnostics-and-daemon-tuning", http.StatusOK},
 		{"GET /courses/docker/07-multiarch-buildx-and-cicd", "GET", "/courses/docker/07-multiarch-buildx-and-cicd", http.StatusOK},
+		{"GET /courses/docker/08-storage-drivers-and-cow", "GET", "/courses/docker/08-storage-drivers-and-cow", http.StatusOK},
 		{"GET /courses/podman", "GET", "/courses/podman", http.StatusOK},
 		{"GET /courses/podman/01-podman-rootless-and-daemonless", "GET", "/courses/podman/01-podman-rootless-and-daemonless", http.StatusOK},
 		{"GET /courses/podman/02-podman-quadlet-and-systemd", "GET", "/courses/podman/02-podman-quadlet-and-systemd", http.StatusOK},

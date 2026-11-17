@@ -67,13 +67,13 @@ flowchart TD
 
 ### Educational Tracks & Labs
 
-The platform hosts 7 comprehensive, production-ready modules (31 practical lessons):
+The platform hosts 7 comprehensive, production-ready modules (32 practical lessons):
 
 1. 🐧 **Linux: System Administration & Kernel** (`/courses/linux`):
    - DAC permission model (POSIX, SUID, SGID, Sticky bit), systemd services, timers, and unit lifecycle;
    - Linux networking stack (`iproute2`, `ss`, `iptables`, `ufw`), socket debugging, and routing table analysis.
 2. 🐳 **Docker: From Architecture to Production** (`/courses/docker`):
-   - Multi-stage builds, BuildKit cache, cgroups v2 resource quotas, and kernel namespaces (PID/NET/MNT);
+   - Multi-stage builds, BuildKit cache, storage drivers (`overlay2`, CoW, `d_type`), cgroups v2 quotas;
    - Docker Compose v2 architecture, bridge networks, and internal DNS service discovery.
 3. 🦭 **Podman & Quadlet: Daemonless Containers** (`/courses/podman`):
    - Rootless containerization, user namespaces mapping, and systemd integration via Quadlet;
@@ -228,13 +228,13 @@ flowchart TD
 
 ### Образовательные треки и Лабораторные
 
-Каталог платформы включает 7 структурированных практических курсов (31 урок):
+Каталог платформы включает 7 структурированных практических курсов (32 урока):
 
 1. 🐧 **Системное администрирование Linux и ядро** (`/courses/linux`):
    - Модель прав доступа DAC (POSIX, SUID, SGID, Sticky bit), управление юнитами и таймерами systemd;
    - Сетевой стек Linux (`iproute2`, `ss`, `iptables`, `ufw`), анализ трафика и сокетов.
 2. 🐳 **Docker: От архитектуры до Production** (`/courses/docker`):
-   - Многоэтапные сборки (Multi-stage), Linux cgroups v2 квоты, неймспейсы (PID/NET/MNT);
+   - Многоэтапные сборки (Multi-stage), драйверы хранилища (`overlay2`, CoW, `d_type`), cgroups v2;
    - Docker Compose v2, внутренняя DNS-маршрутизация и изоляция bridge-сетей.
 3. 🦭 **Podman & Quadlet: Daemonless-контейнеры** (`/courses/podman`):
    - Rootless контейнеризация без root-прав, сопоставление user namespaces, systemd Quadlet;
