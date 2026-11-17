@@ -1,4 +1,5 @@
 {{define "head_extra"}}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
 <link rel="stylesheet" href="/css/pages/lesson.css">
 {{end}}
 
@@ -16,8 +17,9 @@
 
   <div class="row g-4">
     <!-- Основной контент урока -->
-    <div class="col-lg-9 mx-auto">
+    <div class="col-lg-8 col-xl-9">
       <div class="card border rounded-4 p-3 p-sm-4 p-md-5 shadow-sm bento-card mb-4">
+        <!-- Шапка урока -->
         <div class="d-flex align-items-center justify-content-between border-bottom pb-3 mb-4 flex-wrap gap-2">
           <div>
             <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-1 rounded-pill mb-2">
@@ -25,11 +27,59 @@
             </span>
             <h1 class="fw-bold mb-0">{{.Lesson.Title}}</h1>
           </div>
-          <span class="badge bg-body-secondary text-body-secondary border px-3 py-2 rounded-pill">
-            <i class="far fa-clock me-1"></i>{{.Lesson.Duration}}
-          </span>
+          <div class="d-flex align-items-center gap-2">
+            <span class="badge bg-body-secondary text-body-secondary border px-3 py-2 rounded-pill" id="lessonDurationBadge">
+              <i class="far fa-clock me-1"></i>{{.Lesson.Duration}}
+            </span>
+          </div>
         </div>
 
+        <!-- Панель инструментов чтения (Reading Toolbar) -->
+        <div class="lesson-reading-toolbar d-flex align-items-center justify-content-between flex-wrap gap-2 mb-4">
+          <div class="d-flex align-items-center gap-2">
+            <span class="small text-muted d-none d-sm-inline">Размер шрифта:</span>
+            <div class="btn-group btn-group-sm" role="group" aria-label="Размер шрифта статьи">
+              <button type="button" class="btn btn-outline-secondary font-size-btn" data-font-size="sm" title="Компактный шрифт">A-</button>
+              <button type="button" class="btn btn-outline-secondary font-size-btn" data-font-size="md" title="Стандартный шрифт">A</button>
+              <button type="button" class="btn btn-outline-secondary font-size-btn" data-font-size="lg" title="Увеличенный шрифт">A+</button>
+            </div>
+            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3" id="copyLessonLinkBtn" title="Скопировать ссылку на урок">
+              <i class="far fa-copy me-1"></i><span class="d-none d-md-inline">Поделиться</span>
+            </button>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <span class="badge bg-body-secondary text-body-secondary border px-3 py-2 rounded-pill" id="lessonToolbarStatus">
+              <i class="far fa-circle me-1"></i>К изучению
+            </span>
+            <button type="button" class="btn btn-sm btn-outline-success rounded-pill px-3 d-none d-sm-inline-flex align-items-center" id="toolbarCompleteBtn">
+              <i class="far fa-check-circle me-1"></i>Завершить
+            </button>
+          </div>
+        </div>
+
+        <!-- Мобильное оглавление (сворачиваемый аккордеон) -->
+        <div class="d-lg-none mb-4" id="mobileTocWrapper">
+          <div class="card border rounded-3 bg-body-tertiary">
+            <div class="card-header bg-transparent border-0 p-2 px-3 d-flex align-items-center justify-content-between" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#mobileTocCollapse" aria-expanded="false" aria-controls="mobileTocCollapse">
+              <span class="small fw-semibold text-body">
+                <i class="fas fa-list-ul me-2 text-primary"></i>Содержание урока
+              </span>
+              <div class="d-flex align-items-center gap-2">
+                <span class="badge bg-body-secondary text-body-secondary" id="mobileTocCountBadge">Разделы</span>
+                <i class="fas fa-chevron-down small text-muted"></i>
+              </div>
+            </div>
+            <div class="collapse" id="mobileTocCollapse">
+              <div class="card-body pt-0 px-3 pb-3 border-top">
+                <ul class="list-unstyled mb-0 pt-2 lesson-toc-nav" id="mobileTocList">
+                  <!-- Заполняется динамически JS -->
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Тело урока в формате Markdown -->
         <div class="markdown-content">
           {{.LessonContentSafe}}
         </div>
@@ -37,7 +87,7 @@
         <!-- Интерактивный проверочный квиз -->
         {{if .Lesson.Quiz}}
         <div class="card border rounded-4 p-3 p-sm-4 mt-5 lesson-quiz-card bg-body-tertiary">
-          <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
+          <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2 flex-wrap gap-2">
             <div class="d-flex align-items-center gap-2">
               <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle px-3 py-2 rounded-pill">
                 <i class="fas fa-circle-question me-1"></i> Проверочный квиз
@@ -49,6 +99,9 @@
 
           {{range $q := .Lesson.Quiz.Questions}}
           <div class="quiz-question mb-4 p-3 rounded-3 border bg-body" data-question-id="{{$q.ID}}">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+              <span class="badge bg-primary-subtle text-primary border border-primary-subtle quiz-q-number">Вопрос</span>
+            </div>
             <h6 class="fw-bold mb-3">{{$q.TitleHTML}}</h6>
             <div class="d-flex flex-column gap-2">
               {{range $opt := $q.Options}}
@@ -87,16 +140,22 @@
           <div class="row g-3 pt-3 border-top">
             <div class="col-sm-6 text-start">
               {{if .PrevLesson}}
-              <a href="/courses/{{$.Course.Slug}}/{{.PrevLesson.Slug}}" class="btn btn-outline-secondary w-100 p-3 rounded-3 text-start d-flex flex-column gap-1">
-                <span class="small text-muted"><i class="fas fa-chevron-left me-1"></i> Предыдущий урок</span>
+              <a href="/courses/{{$.Course.Slug}}/{{.PrevLesson.Slug}}" class="btn btn-outline-secondary w-100 p-3 rounded-3 text-start d-flex flex-column gap-1 prev-lesson-btn">
+                <span class="small text-muted d-flex align-items-center justify-content-between">
+                  <span><i class="fas fa-chevron-left me-1"></i> Предыдущий урок</span>
+                  <kbd class="bg-body-secondary border px-1 small opacity-75">Alt + ←</kbd>
+                </span>
                 <span class="fw-semibold text-truncate w-100 text-body">{{.PrevLesson.Title}}</span>
               </a>
               {{end}}
             </div>
             <div class="col-sm-6 text-end">
               {{if .NextLesson}}
-              <a href="/courses/{{$.Course.Slug}}/{{.NextLesson.Slug}}" class="btn btn-outline-primary w-100 p-3 rounded-3 text-end d-flex flex-column gap-1">
-                <span class="small text-primary">Следующий урок <i class="fas fa-chevron-right ms-1"></i></span>
+              <a href="/courses/{{$.Course.Slug}}/{{.NextLesson.Slug}}" class="btn btn-outline-primary w-100 p-3 rounded-3 text-end d-flex flex-column gap-1 next-lesson-btn">
+                <span class="small text-primary d-flex align-items-center justify-content-between">
+                  <kbd class="bg-body-secondary border px-1 small opacity-75">Alt + →</kbd>
+                  <span>Следующий урок <i class="fas fa-chevron-right ms-1"></i></span>
+                </span>
                 <span class="fw-semibold text-truncate w-100 text-body">{{.NextLesson.Title}}</span>
               </a>
               {{end}}
@@ -106,6 +165,64 @@
         </div>
       </div>
     </div>
+
+    <!-- Боковая панель (Desktop): Интерактивное Оглавление + Виджет курса -->
+    <div class="col-lg-4 col-xl-3 d-none d-lg-block">
+      <div class="sticky-top" style="top: 80px; z-index: 10;">
+        <!-- Карточка оглавления -->
+        <div class="card border rounded-4 p-3 shadow-sm bento-card mb-3" id="desktopTocContainer">
+          <div class="d-flex align-items-center justify-content-between pb-2 mb-2 border-bottom">
+            <span class="small fw-bold text-uppercase text-body-secondary" style="font-size: 0.75rem; letter-spacing: 0.05em;">
+              <i class="fas fa-list-ul me-1 text-primary"></i> Содержание
+            </span>
+            <span class="badge bg-body-secondary text-body-secondary" id="tocCountBadge">Разделы</span>
+          </div>
+          <nav id="desktopTocNav" class="lesson-toc-nav">
+            <ul class="list-unstyled mb-0" id="desktopTocList">
+              <!-- Заполняется динамически JS -->
+            </ul>
+          </nav>
+        </div>
+
+        <!-- Виджет прогресса по текущему курсу -->
+        <div class="card border rounded-4 p-3 shadow-sm bento-card bg-body-tertiary">
+          <div class="d-flex align-items-center gap-2 mb-3">
+            <div class="d-flex align-items-center justify-content-center rounded-3 text-white shadow-sm flex-shrink-0" style="width: 36px; height: 36px; background-color: {{.Course.Color}};">
+              <i class="{{.Course.Icon}}"></i>
+            </div>
+            <div class="text-truncate">
+              <div class="fw-bold text-truncate small">{{.Course.Title}}</div>
+              <div class="small text-muted" style="font-size: 0.75rem;">
+                Урок {{.Lesson.Order}} из {{.Course.LessonCount}}
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-2">
+            <div class="d-flex justify-content-between align-items-center mb-1 small text-muted" style="font-size: 0.75rem;">
+              <span>Прогресс курса:</span>
+              <span class="fw-bold text-primary" id="sidebarCourseProgressPercent">0%</span>
+            </div>
+            <div class="progress" style="height: 6px; background-color: rgba(var(--bs-primary-rgb), 0.1);">
+              <div class="progress-bar bg-success transition-all" id="sidebarCourseProgressBar" data-total-lessons="{{.Course.LessonCount}}" style="width: 0%"></div>
+            </div>
+            <div class="small text-muted mt-1 text-end" style="font-size: 0.72rem;" id="sidebarCourseProgressCount">0 из {{.Course.LessonCount}}</div>
+          </div>
+
+          <div class="pt-2 border-top">
+            <a href="/courses/{{.Course.Slug}}" class="btn btn-sm btn-outline-primary rounded-pill w-100 py-1">
+              <i class="fas fa-bars-staggered me-1"></i> Программа курса
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
+{{end}}
+
+{{define "scripts_extra"}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+<script src="/js/pages/lesson.js" defer></script>
 {{end}}

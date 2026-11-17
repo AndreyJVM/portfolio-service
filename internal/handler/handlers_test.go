@@ -273,6 +273,7 @@ func TestStaticAssets(t *testing.T) {
 		{"About JS", "/js/pages/about.js", "javascript"},
 		{"Mustang JS", "/js/pages/mustang.js", "javascript"},
 		{"QR JS", "/js/pages/qr.js", "javascript"},
+		{"Lesson JS", "/js/pages/lesson.js", "javascript"},
 	}
 
 	for _, tt := range tests {

@@ -170,17 +170,47 @@ function initCodeCopyButtons() {
 
     // Определяем язык/подпись из class="language-bash" или подобного
     const codeEl = pre.querySelector('code');
-    let lang = 'Terminal / Code';
+    let lang = 'TERMINAL';
+    let lineCount = 0;
+
+    const rawText = (codeEl || pre).innerText.trim();
+    if (rawText) {
+      lineCount = rawText.split('\n').length;
+    }
+
     if (codeEl) {
       const match = codeEl.className.match(/language-([a-zA-Z0-9_-]+)/);
       if (match) {
-        lang = match[1].toUpperCase();
+        const rawLang = match[1].toLowerCase();
+        const langMap = {
+          bash: 'BASH / SHELL',
+          sh: 'SHELL',
+          dockerfile: 'DOCKERFILE',
+          docker: 'DOCKERFILE',
+          yaml: 'YAML',
+          yml: 'YAML',
+          go: 'GO',
+          golang: 'GO',
+          json: 'JSON',
+          ini: 'SYSTEMD / INI',
+          systemd: 'SYSTEMD',
+          c: 'C',
+          mermaid: 'DIAGRAM',
+          text: 'TEXT'
+        };
+        lang = langMap[rawLang] || rawLang.toUpperCase();
       }
     }
 
     const titleSpan = document.createElement('span');
-    titleSpan.className = 'small fw-medium text-muted font-monospace';
+    titleSpan.className = 'small fw-medium text-muted font-monospace code-lang-tag';
     titleSpan.textContent = lang;
+
+    const linesSpan = document.createElement('span');
+    linesSpan.className = 'small text-muted font-monospace d-none d-sm-inline code-line-count';
+    linesSpan.style.fontSize = '0.7rem';
+    linesSpan.style.opacity = '0.7';
+    linesSpan.textContent = lineCount > 1 ? `${lineCount} строк` : '';
 
     const copyBtn = document.createElement('button');
     copyBtn.type = 'button';
@@ -229,6 +259,9 @@ function initCodeCopyButtons() {
 
     const headerRight = document.createElement('div');
     headerRight.className = 'd-flex align-items-center gap-2';
+    if (linesSpan.textContent) {
+      headerRight.appendChild(linesSpan);
+    }
     headerRight.appendChild(titleSpan);
     headerRight.appendChild(copyBtn);
 

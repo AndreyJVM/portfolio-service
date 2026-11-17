@@ -17,6 +17,7 @@
   margin-top: 2rem;
   margin-bottom: 1rem;
   line-height: 1.35;
+  scroll-margin-top: 85px;
 }
 
 .markdown-content h1 { font-size: 1.75rem; }
@@ -294,4 +295,174 @@
     width: 100%;
     justify-content: center;
   }
+}
+
+/* ===== ОГЛАВЛЕНИЕ УРОКА (TABLE OF CONTENTS) ===== */
+.lesson-toc-nav {
+  max-height: calc(100vh - 300px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.lesson-toc-nav::-webkit-scrollbar {
+  width: 4px;
+}
+
+.lesson-toc-nav::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.3);
+  border-radius: 4px;
+}
+
+.toc-item {
+  margin-bottom: 0.2rem;
+}
+
+.toc-link {
+  display: block;
+  padding: 0.35rem 0.65rem;
+  border-radius: 8px;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.84rem;
+  line-height: 1.4;
+  border-left: 2px solid transparent;
+  transition: all 0.15s ease;
+  white-space: normal;
+  word-break: break-word;
+}
+
+.toc-link:hover {
+  color: var(--text-color);
+  background: rgba(var(--bs-primary-rgb), 0.06);
+  border-left-color: rgba(var(--bs-primary-rgb), 0.5);
+}
+
+.toc-link.active {
+  color: var(--bs-primary);
+  font-weight: 600;
+  background: rgba(var(--bs-primary-rgb), 0.1);
+  border-left-color: var(--bs-primary);
+}
+
+.toc-sublink {
+  padding-left: 1.25rem;
+  font-size: 0.79rem;
+  opacity: 0.9;
+}
+
+/* ===== ПАНЕЛЬ УПРАВЛЕНИЯ ЧТЕНИЕМ (READING TOOLBAR) ===== */
+.lesson-reading-toolbar {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 0.6rem 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.font-size-btn {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.8rem;
+  border-radius: 6px;
+  transition: all 0.15s ease;
+}
+
+.font-size-btn.active {
+  background-color: var(--bs-primary);
+  color: #fff;
+  border-color: var(--bs-primary);
+}
+
+/* Модификаторы размера шрифта контента */
+.markdown-content.font-size-sm {
+  font-size: 0.94rem;
+  line-height: 1.65;
+}
+
+.markdown-content.font-size-md {
+  font-size: 1.025rem;
+  line-height: 1.75;
+}
+
+.markdown-content.font-size-lg {
+  font-size: 1.15rem;
+  line-height: 1.85;
+}
+
+/* ===== PRISM СИНТАКСИЧЕСКИЕ ТОКЕНЫ (DARK TERMINAL) ===== */
+.markdown-content pre code[class*="language-"] {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.88rem;
+  line-height: 1.65;
+  text-shadow: none;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  color: #64748b;
+  font-style: italic;
+}
+
+.token.punctuation {
+  color: #94a3b8;
+}
+
+.token.property,
+.token.tag,
+.token.boolean,
+.token.number,
+.token.constant,
+.token.symbol {
+  color: #38bdf8;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin {
+  color: #4ade80;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string {
+  color: #f472b6;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.keyword {
+  color: #a78bfa;
+  font-weight: 600;
+}
+
+.token.function,
+.token.class-name {
+  color: #fbbf24;
+}
+
+.token.regex,
+.token.important,
+.token.variable {
+  color: #f87171;
+}
+
+/* ===== СТИЛИЗАЦИЯ ИНТЕРАКТИВНОГО КВИЗА ===== */
+.quiz-q-number {
+  font-size: 0.75rem;
+  letter-spacing: 0.02em;
+}
+
+.quiz-option-btn:active {
+  transform: scale(0.99);
 }
