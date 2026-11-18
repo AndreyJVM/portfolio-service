@@ -1,11 +1,10 @@
 {{define "layout"}}
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" data-bs-theme="dark" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-  <script src="/js/theme-toggle.js"></script>
 
   <title>Primary Cloud Lab</title>
   <meta name="description" content="{{.Meta.Description}}">
@@ -56,12 +55,9 @@
         <span class="ms-2 fw-bold text-gradient">Primary Cloud Lab</span>
       </a>
     </div>
-    <div class="d-flex align-items-center gap-1">
+    <div class="d-flex align-items-center">
       <button class="btn btn-outline-secondary btn-sm rounded-circle" id="searchTriggerMobile" aria-label="Поиск" title="Поиск (Ctrl+K)">
         <i class="fas fa-search"></i>
-      </button>
-      <button class="theme-toggle" id="themeToggleMobile" aria-label="Переключить тему">
-        <i class="fas fa-moon theme-icon" id="themeIconMobile"></i>
       </button>
     </div>
   </header>
@@ -108,15 +104,6 @@
           <a class="nav-link {{if eq .Meta.ActiveTab "mustang"}}active{{end}}" href="/mustang">Shelby</a>
         </li>
       </ul>
-    </div>
-
-    <div class="sidebar-footer p-3 border-top mt-auto">
-      <div class="d-flex align-items-center">
-        <button class="theme-toggle me-2" id="themeToggle" aria-label="Переключить тему">
-          <i class="fas fa-moon" id="themeIcon"></i>
-        </button>
-        <span class="small text-muted">Тема</span>
-      </div>
     </div>
   </nav>
 

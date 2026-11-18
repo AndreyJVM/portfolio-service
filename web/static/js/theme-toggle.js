@@ -1,49 +1,8 @@
 /**
- * Управление темой оформления (Light / Dark).
- * Синхронизирует кастомные CSS-переменные и Bootstrap 5.3 (data-bs-theme).
+ * Primary Cloud Lab operates exclusively in dark theme (Eye-friendly & high-contrast).
  */
 (function () {
-    const STORAGE_KEY = 'theme';
-    const THEME_DARK = 'dark';
-    const THEME_LIGHT = 'light';
-
-    function getPreferredTheme() {
-        const savedTheme = localStorage.getItem(STORAGE_KEY);
-        if (savedTheme) {
-            return savedTheme;
-        }
-        return window.matchMedia('(prefers-color-scheme: dark)').matches ? THEME_DARK : THEME_LIGHT;
-    }
-
-    function applyTheme(theme) {
-        document.documentElement.setAttribute('data-bs-theme', theme);
-        document.documentElement.setAttribute('data-theme', theme);
-
-        const icons = document.querySelectorAll('.theme-icon, #themeIcon, #themeIconMobile');
-        icons.forEach(icon => {
-            icon.className = theme === THEME_DARK ? 'fas fa-sun' : 'fas fa-moon';
-        });
-    }
-
-    // Применяем тему немедленно при разборе <head>, чтобы избежать белого мерцания
-    const initialTheme = getPreferredTheme();
-    applyTheme(initialTheme);
-
-    // Подключаем обработчик клика после построения DOM-дерева
-    document.addEventListener('DOMContentLoaded', function () {
-        applyTheme(getPreferredTheme());
-
-        function toggleTheme() {
-            const currentTheme = document.documentElement.getAttribute('data-bs-theme') || THEME_LIGHT;
-            const nextTheme = currentTheme === THEME_DARK ? THEME_LIGHT : THEME_DARK;
-
-            localStorage.setItem(STORAGE_KEY, nextTheme);
-            applyTheme(nextTheme);
-        }
-
-        const toggleBtns = document.querySelectorAll('.theme-toggle, #themeToggle, #themeToggleMobile');
-        toggleBtns.forEach(btn => {
-            btn.addEventListener('click', toggleTheme);
-        });
-    });
+  'use strict';
+  document.documentElement.setAttribute('data-bs-theme', 'dark');
+  document.documentElement.setAttribute('data-theme', 'dark');
 })();

@@ -1,54 +1,67 @@
-/* ===== CSS-Темы (LIGHT / DARK) - MODERN DEVELOPER PALETTE ===== */
-:root {
-  --bg-color: #f8fafc;
-  --text-color: #0f172a;
-  --text-muted: #64748b;
-  --card-bg: #ffffff;
-  --card-border: #e2e8f0;
-  --card-hover-border: #cbd5e1;
-  --navbar-bg: rgba(255, 255, 255, 0.88);
-  --navbar-border: #e2e8f0;
-  --accent-color: #10b981;
-  --accent-hover: #059669;
-  --accent-gradient: linear-gradient(135deg, #10b981 0%, #047857 100%);
-  --table-header-bg: rgba(16, 185, 129, 0.05);
+/* ===== PRIMARY CLOUD LAB — FOCUSED DARK PALETTE (EYE-FRIENDLY & HIGH-CONTRAST) ===== */
+/* Engineered specifically for night coding and reading: zero glare, deep slate contrast. */
 
-  /* Bootstrap overrides */
-  --bs-primary: #10b981;
-  --bs-primary-rgb: 16, 185, 129;
-  --bs-link-color: #10b981;
-  --bs-link-hover-color: #059669;
-}
-
+:root,
 [data-bs-theme="dark"],
 [data-theme="dark"] {
-  --bg-color: #0b0f19;
-  --text-color: #f1f5f9;
-  --text-muted: #94a3b8;
-  --card-bg: #111827;
-  --card-border: #1e293b;
-  --card-hover-border: #334155;
-  --navbar-bg: rgba(11, 15, 25, 0.88);
-  --navbar-border: #1e293b;
-  --accent-color: #22c55e;
-  --accent-hover: #4ade80;
-  --accent-gradient: linear-gradient(135deg, #22c55e 0%, #10b981 100%);
-  --table-header-bg: rgba(34, 197, 94, 0.08);
+  /* Базовые цвета поверхностей */
+  --bg-color: #0d1117;          /* Глубокий матовый фон (GitHub Dark Dimmed style) */
+  --text-color: #e6edf3;        /* Мягкий молочно-белый текст, не слепит глаза */
+  --text-muted: #8b949e;        /* Приглушенный вторичный текст с комфортной читаемостью */
 
-  /* Bootstrap overrides */
-  --bs-primary: #22c55e;
-  --bs-primary-rgb: 34, 197, 94;
-  --bs-link-color: #22c55e;
-  --bs-link-hover-color: #4ade80;
+  /* Карточки и блоки */
+  --card-bg: #161b22;           /* Приподнятый фон карточек */
+  --card-border: #30363d;       /* Четкая окантовка карточек без шума */
+  --card-hover-border: #58a6ff; /* Подсветка активных карточек при наведении */
+
+  /* Навигация и сайдбар */
+  --navbar-bg: rgba(13, 17, 23, 0.92);
+  --navbar-border: #21262d;
+
+  /* Акцентный цвет (Terminal Emerald) */
+  --accent-color: #2ea043;
+  --accent-hover: #3fb950;
+  --accent-gradient: linear-gradient(135deg, #238636 0%, #2ea043 100%);
+  --table-header-bg: rgba(56, 139, 253, 0.08);
+
+  /* Bootstrap 5.3 Dark Overrides */
+  --bs-body-bg: #0d1117;
+  --bs-body-color: #e6edf3;
+  --bs-body-color-rgb: 230, 237, 243;
+  --bs-secondary-color: #8b949e;
+  --bs-tertiary-bg: #161b22;
+  --bs-border-color: #30363d;
+  --bs-primary: #238636;
+  --bs-primary-rgb: 35, 134, 54;
+  --bs-link-color: #58a6ff;
+  --bs-link-hover-color: #79c0ff;
 }
 
-/* Принудительное переопределение для muted текста в темной теме */
-[data-bs-theme="dark"] .text-muted,
-[data-theme="dark"] .text-muted {
+/* Глобальная нормализация читаемости текста */
+.text-muted,
+.text-body-secondary {
   color: var(--text-muted) !important;
 }
 
-[data-bs-theme="dark"] .text-body-secondary,
-[data-theme="dark"] .text-body-secondary {
-  color: var(--text-muted) !important;
+.text-body {
+  color: var(--text-color) !important;
+}
+
+/* Приятный для глаз скроллбар */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0d1117;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #30363d;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #484f58;
 }

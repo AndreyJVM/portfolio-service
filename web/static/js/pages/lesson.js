@@ -282,12 +282,9 @@
     const mermaidElements = document.querySelectorAll('.markdown-content code.language-mermaid');
     if (!mermaidElements.length || !window.mermaid) return;
 
-    const isDarkMode = document.documentElement.getAttribute('data-bs-theme') === 'dark' ||
-                       document.documentElement.getAttribute('data-theme') === 'dark';
-
     window.mermaid.initialize({
       startOnLoad: false,
-      theme: isDarkMode ? 'dark' : 'neutral',
+      theme: 'dark',
       securityLevel: 'loose',
       fontFamily: 'Inter, system-ui, sans-serif'
     });

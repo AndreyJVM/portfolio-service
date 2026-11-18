@@ -329,14 +329,14 @@ func TestLayoutIncludes(t *testing.T) {
 	body := w.Body.String()
 
 	requiredSnippets := []string{
-		"themeToggle",              // Theme toggle button
-		"/js/theme-toggle.js",      // Theme toggle script
+		"data-bs-theme=\"dark\"",   // Permanent dark theme attribute
+		"data-theme=\"dark\"",      // Custom dark theme attribute
 		"/js/learning-progress.js", // Learning progress tracking script
 		"/js/search.js",            // Search script
 		"searchModal",              // Search modal
 		"searchTriggerSidebar",     // Sidebar search button
 		"/css/navbar.css",          // Sidebar and top navbar styles
-		"/css/themes.css",          // Dark and light theme styles
+		"/css/themes.css",          // Permanent focused dark theme styles
 		"/css/main.css",            // Main styles
 		"liveToast",                // Toast notifications container
 		"navbar-brand",             // Platform brand
