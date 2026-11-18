@@ -155,6 +155,7 @@ function initCodeCopyButtons() {
   const preElements = document.querySelectorAll('.markdown-content pre');
   preElements.forEach((pre) => {
     if (pre.closest('.code-block-wrapper')) return;
+    if (pre.querySelector('code.language-mermaid')) return;
 
     // Создаем контейнер-обертку
     const wrapper = document.createElement('div');

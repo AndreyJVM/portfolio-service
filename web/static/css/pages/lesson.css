@@ -155,6 +155,18 @@
   border-color: #10b981;
 }
 
+/* Контейнер интерактивных диаграмм Mermaid */
+.mermaid-chart-container {
+  max-width: 100%;
+  transition: all 0.25s ease;
+}
+
+.mermaid-chart-container svg {
+  max-width: 100%;
+  height: auto;
+  display: inline-block;
+}
+
 .markdown-content pre {
   background: #0f172a;
   color: #f8fafc;

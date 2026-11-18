@@ -10,26 +10,23 @@
 
 Docker поддерживает 3 основных типа монтирования:
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                      Хост-система Linux                         │
-│                                                                 │
-│  [ Файловая система хоста (/var/lib/docker/volumes/...) ]        │
-│                           │                                     │
-│                           │ Именованный том (Volume)            │
-│                           ▼                                     │
-│            ┌─────────────────────────────┐                      │
-│            │      Контейнер Docker       │                      │
-│            │                             │                      │
-│            │  /var/lib/postgresql/data   │                      │
-│            └─────────────────────────────┘                      │
-│                           ▲                                     │
-│                           │ Bind Mount                          │
-│                           │                                     │
-│  [ Любой каталог хоста (/opt/app/config или ./nginx.conf) ]     │
-│                                                                 │
-│  [ Оперативная память хоста (tmpfs / RAM) ] ──────── tmpfs mount│
-└─────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    subgraph Host["Хост-система Linux"]
+        direction TB
+        VolDir["Файловая система хоста<br/>/var/lib/docker/volumes/<name>/_data"]
+        BindDir["Произвольный каталог хоста<br/>./nginx.conf или /opt/app/data"]
+        TmpfsRAM["Оперативная память хоста (RAM / tmpfs)"]
+    end
+
+    subgraph Container["Контейнер Docker"]
+        direction TB
+        TargetDir["Целевая директория монтирования<br/>/var/lib/postgresql/data или /etc/nginx/conf.d"]
+    end
+
+    VolDir -->|"1. Именованный том (Volume)<br/>Управляется Docker, авто-копирование"| TargetDir
+    BindDir -->|"2. Прямое монтирование (Bind Mount)<br/>Прямой доступ, маскирует данные образа"| TargetDir
+    TmpfsRAM -->|"3. Память (tmpfs mount)<br/>Не пишется на диск, очищается при остановке"| TargetDir
 ```
 
 | Параметр | Именованный том (Volume) | Прямое монтирование (Bind Mount) | Память (tmpfs mount) |

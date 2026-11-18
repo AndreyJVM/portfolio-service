@@ -12,20 +12,26 @@
 
 > **Ключевой принцип:** Контейнер — это самый обычный изолированный Linux-процесс на хосте, пространство видимости которого ограничено механизмом ядра **Namespaces**, а потребление ресурсов зажато с помощью **Control Groups (cgroups)**.
 
-```
-┌──────────────────────────────────────┐     ┌──────────────────────────────────────┐
-│       Виртуальная машина (VM)        │     │              Контейнер               │
-├──────────────────────────────────────┤     ├──────────────────────────────────────┤
-│ Приложение (App) + Зависимости       │     │ Приложение (App) + Зависимости       │
-├──────────────────────────────────────┤     ├──────────────────────────────────────┤
-│ Полная гостевая ОС (Debian/Ubuntu)   │     │ Изоляция (Namespaces + Cgroups)     │
-├──────────────────────────────────────┤     ├──────────────────────────────────────┤
-│ Гостевое ядро Linux (Kernel)         │     │                                      │
-├──────────────────────────────────────┤     │ Общее ядро хоста (Host Linux Kernel) │
-│ Гипервизор (KVM / QEMU / Hyper-V)    │     │                                      │
-├──────────────────────────────────────┤     ├──────────────────────────────────────┤
-│ Физическое железо хоста (Host OS/HW) │     │ Физическое железо хоста (Host HW)    │
-└──────────────────────────────────────┘     └──────────────────────────────────────┘
+```mermaid
+flowchart LR
+    subgraph VM["Виртуальная машина (VM)"]
+        direction TB
+        AppVM["Приложение + Зависимости"]
+        GuestOS["Полная гостевая ОС"]
+        GuestKernel["Гостевое ядро Linux"]
+        Hypervisor["Гипервизор (KVM / QEMU)"]
+        HostHW_VM["Физическое железо хоста"]
+        AppVM --> GuestOS --> GuestKernel --> Hypervisor --> HostHW_VM
+    end
+
+    subgraph Container["Контейнер (Docker)"]
+        direction TB
+        AppCont["Приложение + Зависимости"]
+        Isolation["Изоляция (Namespaces + Cgroups)"]
+        HostKernel["Общее ядро хоста (Host Kernel)"]
+        HostHW_Cont["Физическое железо хоста"]
+        AppCont --> Isolation --> HostKernel --> HostHW_Cont
+    end
 ```
 
 | Параметр | Виртуальная машина | Контейнер (Docker) |
@@ -41,23 +47,20 @@
 
 Docker не запускает процессы сам. Это модульный стек компонентов:
 
-```
-[ Docker CLI (docker) ]
-          │  REST API / UNIX Socket (/var/run/docker.sock)
-          ▼
-[ Docker Daemon (dockerd) ]  ──► Управление образами, сетями, томами, логами
-          │  gRPC API
-          ▼
-[ containerd ]               ──► Жизненный цикл контейнеров, супервизор
-          │
-          ▼
-[ containerd-shim ]          ──► Удержание stdout/stderr и дескрипторов при рестарте dockerd
-          │
-          ▼
-[ runc (OCI Runtime) ]       ──► Настройка Namespaces, Cgroups и запуск процесса (exit)
-          │
-          ▼
-  [ Твой процесс (PID) ]
+```mermaid
+flowchart TD
+    CLI["Docker CLI (docker)"]
+    Daemon["Docker Daemon (dockerd)<br/>Управление образами, сетями, томами"]
+    Containerd["containerd<br/>Супервизор жизненного цикла"]
+    Shim["containerd-shim<br/>Удержание stdout/stderr и дескрипторов"]
+    Runc["runc (OCI Runtime)<br/>Конфигурация Namespaces/Cgroups и запуск"]
+    Process["Твой процесс приложения (PID)"]
+
+    CLI -->|"REST API / UNIX Socket (/var/run/docker.sock)"| Daemon
+    Daemon -->|"gRPC API"| Containerd
+    Containerd --> Shim
+    Shim --> Runc
+    Runc -->|"exec"| Process
 ```
 
 1. **Docker CLI (`docker`)**: Консольная утилита, принимающая команды пользователя и отправляющая JSON-запросы в сокет.

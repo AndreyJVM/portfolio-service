@@ -15,6 +15,7 @@
     initReadingToolbar();
     initKeyboardNavigation();
     initCodeHighlighting();
+    initMermaidDiagrams();
   });
 
   /**
@@ -272,5 +273,48 @@
       }
       window.Prism.highlightAll();
     }
+  }
+
+  /**
+   * 5. Интерактивная векторная отрисовка диаграмм Mermaid
+   */
+  function initMermaidDiagrams() {
+    const mermaidElements = document.querySelectorAll('.markdown-content code.language-mermaid');
+    if (!mermaidElements.length || !window.mermaid) return;
+
+    const isDarkMode = document.documentElement.getAttribute('data-bs-theme') === 'dark' ||
+                       document.documentElement.getAttribute('data-theme') === 'dark';
+
+    window.mermaid.initialize({
+      startOnLoad: false,
+      theme: isDarkMode ? 'dark' : 'neutral',
+      securityLevel: 'loose',
+      fontFamily: 'Inter, system-ui, sans-serif'
+    });
+
+    mermaidElements.forEach((codeEl, index) => {
+      const preEl = codeEl.closest('pre');
+      if (!preEl) return;
+
+      const graphDefinition = codeEl.textContent.trim();
+      const container = document.createElement('div');
+      container.className = 'mermaid-chart-container text-center my-4 p-3 rounded-4 border bg-body-tertiary shadow-sm overflow-x-auto';
+      container.id = 'mermaid-chart-' + (index + 1);
+
+      preEl.parentNode.insertBefore(container, preEl);
+      preEl.remove();
+
+      try {
+        window.mermaid.render('mermaid-svg-' + (index + 1), graphDefinition).then(({ svg }) => {
+          container.innerHTML = svg;
+        }).catch((err) => {
+          console.warn('Ошибка рендеринга Mermaid:', err);
+          container.innerHTML = '<pre class="text-danger small">' + graphDefinition + '</pre>';
+        });
+      } catch (err) {
+        console.warn('Ошибка вызова Mermaid:', err);
+        container.innerHTML = '<pre class="text-danger small">' + graphDefinition + '</pre>';
+      }
+    });
   }
 })();
