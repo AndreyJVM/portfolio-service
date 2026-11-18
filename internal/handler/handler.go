@@ -8,12 +8,14 @@ import (
 	"path/filepath"
 	"sync"
 
+	"ru.vorobevaqa/devops-platform/internal/model"
 	"ru.vorobevaqa/devops-platform/internal/service"
 )
 
 type Handler struct {
 	courseService       *service.CourseService
 	integrationsService *service.IntegrationsService
+	pageService         *service.PageService
 	templatesDir        string
 	staticDir           string
 	baseURL             string
@@ -25,18 +27,31 @@ type Handler struct {
 func NewHandler(
 	cs *service.CourseService,
 	is *service.IntegrationsService,
+	ps *service.PageService,
 	templatesDir string,
 	staticDir string,
 	baseURL string,
 ) *Handler {
+	if ps == nil {
+		ps = service.NewPageService("")
+	}
 	return &Handler{
 		courseService:       cs,
 		integrationsService: is,
+		pageService:         ps,
 		templatesDir:        templatesDir,
 		staticDir:           staticDir,
 		baseURL:             baseURL,
 		templateCache:       make(map[string]*template.Template),
 	}
+}
+
+// getMeta builds model.MetaData for a page using PageService and the base URL.
+func (h *Handler) getMeta(pageKey, path string) model.MetaData {
+	if h.pageService == nil {
+		return model.MetaData{}
+	}
+	return h.pageService.GetMetaData(pageKey, path, h.baseURL)
 }
 
 // getTemplate returns a compiled template from a thread-safe in-memory cache,

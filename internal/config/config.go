@@ -10,6 +10,7 @@ type Config struct {
 	GitHubUser   string
 	DockerUser   string
 	ContentDir   string
+	PagesFile    string
 	TemplatesDir string
 	StaticDir    string
 }
@@ -28,6 +29,7 @@ func Load() *Config {
 		GitHubUser:   getEnvOrDefault("GITHUB_USER", "AndreyJVM"),
 		DockerUser:   getEnvOrDefault("DOCKER_USER", "andreyvorobevaqa"),
 		ContentDir:   getEnvOrDefault("CONTENT_DIR", "content/courses"),
+		PagesFile:    getEnvOrDefault("PAGES_FILE", "content/pages.json"),
 		TemplatesDir: getEnvOrDefault("TEMPLATES_DIR", "web/templates"),
 		StaticDir:    getEnvOrDefault("STATIC_DIR", "web/static"),
 	}

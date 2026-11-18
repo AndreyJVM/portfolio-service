@@ -43,9 +43,10 @@ func main() {
 	courseService := service.NewCourseService(cfg.ContentDir)
 	integrationsService := service.NewIntegrationsService(cfg.GitHubUser, cfg.DockerUser)
 	integrationsService.PreloadDefaults() // Instant cold start without external API delays
+	pageService := service.NewPageService(cfg.PagesFile)
 
 	// Initialize handlers and router
-	h := handler.NewHandler(courseService, integrationsService, cfg.TemplatesDir, cfg.StaticDir, cfg.AppBaseURL)
+	h := handler.NewHandler(courseService, integrationsService, pageService, cfg.TemplatesDir, cfg.StaticDir, cfg.AppBaseURL)
 	router := handler.NewRouter(h, cfg.StaticDir)
 
 	server := &http.Server{

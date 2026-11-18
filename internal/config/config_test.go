@@ -7,7 +7,7 @@ import (
 
 func TestConfig_DefaultValues(t *testing.T) {
 	// Clear environment variables to check defaults
-	keys := []string{"PORT", "APP_BASE_URL", "GITHUB_USER", "DOCKER_USER", "CONTENT_DIR", "TEMPLATES_DIR", "STATIC_DIR"}
+	keys := []string{"PORT", "APP_BASE_URL", "GITHUB_USER", "DOCKER_USER", "CONTENT_DIR", "PAGES_FILE", "TEMPLATES_DIR", "STATIC_DIR"}
 	for _, k := range keys {
 		_ = os.Unsetenv(k)
 	}
@@ -29,6 +29,9 @@ func TestConfig_DefaultValues(t *testing.T) {
 	if cfg.ContentDir != "content/courses" {
 		t.Errorf("Ожидался ContentDir 'content/courses', получен '%s'", cfg.ContentDir)
 	}
+	if cfg.PagesFile != "content/pages.json" {
+		t.Errorf("Ожидался PagesFile 'content/pages.json', получен '%s'", cfg.PagesFile)
+	}
 	if cfg.TemplatesDir != "web/templates" {
 		t.Errorf("Ожидался TemplatesDir 'web/templates', получен '%s'", cfg.TemplatesDir)
 	}
@@ -43,11 +46,12 @@ func TestConfig_CustomEnvValues(t *testing.T) {
 	_ = os.Setenv("GITHUB_USER", "CustomUser")
 	_ = os.Setenv("DOCKER_USER", "customdocker")
 	_ = os.Setenv("CONTENT_DIR", "/custom/content")
+	_ = os.Setenv("PAGES_FILE", "/custom/pages.json")
 	_ = os.Setenv("TEMPLATES_DIR", "/custom/templates")
 	_ = os.Setenv("STATIC_DIR", "/custom/static")
 
 	defer func() {
-		keys := []string{"PORT", "APP_BASE_URL", "GITHUB_USER", "DOCKER_USER", "CONTENT_DIR", "TEMPLATES_DIR", "STATIC_DIR"}
+		keys := []string{"PORT", "APP_BASE_URL", "GITHUB_USER", "DOCKER_USER", "CONTENT_DIR", "PAGES_FILE", "TEMPLATES_DIR", "STATIC_DIR"}
 		for _, k := range keys {
 			_ = os.Unsetenv(k)
 		}
@@ -69,6 +73,9 @@ func TestConfig_CustomEnvValues(t *testing.T) {
 	}
 	if cfg.ContentDir != "/custom/content" {
 		t.Errorf("Ожидался ContentDir '/custom/content', получен '%s'", cfg.ContentDir)
+	}
+	if cfg.PagesFile != "/custom/pages.json" {
+		t.Errorf("Ожидался PagesFile '/custom/pages.json', получен '%s'", cfg.PagesFile)
 	}
 	if cfg.TemplatesDir != "/custom/templates" {
 		t.Errorf("Ожидался TemplatesDir '/custom/templates', получен '%s'", cfg.TemplatesDir)

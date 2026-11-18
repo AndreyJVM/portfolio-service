@@ -22,8 +22,9 @@ import (
 func setupTestRouter() *chi.Mux {
 	cs := service.NewCourseService("../../content/courses")
 	is := service.NewIntegrationsService("AndreyJVM", "andreyvorobevaqa")
+	ps := service.NewPageService("../../content/pages.json")
 	staticDir := "../../web/static"
-	h := NewHandler(cs, is, "../../web/templates", staticDir, "https://vorobevaqa.ru")
+	h := NewHandler(cs, is, ps, "../../web/templates", staticDir, "https://vorobevaqa.ru")
 	return NewRouter(h, staticDir)
 }
 
@@ -683,7 +684,7 @@ func TestResumePDF_MissingFile(t *testing.T) {
 	cs := service.NewCourseService("../../content/courses")
 	is := service.NewIntegrationsService("AndreyJVM", "andreyvorobevaqa")
 	// Pass non-existent static directory to trigger os.Stat error branch
-	h := NewHandler(cs, is, "../../web/templates", "/tmp/non-existent-static-dir-12345", "https://vorobevaqa.ru")
+	h := NewHandler(cs, is, nil, "../../web/templates", "/tmp/non-existent-static-dir-12345", "https://vorobevaqa.ru")
 
 	req := httptest.NewRequest("GET", "/api/pdf/resume", nil)
 	w := httptest.NewRecorder()
@@ -698,7 +699,7 @@ func TestTemplateErrors(t *testing.T) {
 	cs := service.NewCourseService("../../content/courses")
 	is := service.NewIntegrationsService("AndreyJVM", "andreyvorobevaqa")
 	// Pass invalid templates directory to check template compilation error branch
-	h := NewHandler(cs, is, "/tmp/non-existent-templates-dir-12345", "../../web/static", "https://vorobevaqa.ru")
+	h := NewHandler(cs, is, nil, "/tmp/non-existent-templates-dir-12345", "../../web/static", "https://vorobevaqa.ru")
 
 	req := httptest.NewRequest("GET", "/", nil)
 	w := httptest.NewRecorder()
@@ -1011,7 +1012,7 @@ func TestRenderTemplate_BufferSafety(t *testing.T) {
 
 	cs := service.NewCourseService("../../content/courses")
 	is := service.NewIntegrationsService("AndreyJVM", "andreyvorobevaqa")
-	h := NewHandler(cs, is, tempDir, "../../web/static", "https://vorobevaqa.ru")
+	h := NewHandler(cs, is, nil, tempDir, "../../web/static", "https://vorobevaqa.ru")
 
 	w := httptest.NewRecorder()
 	// Pass struct without InvalidField to trigger ExecuteTemplate execution error

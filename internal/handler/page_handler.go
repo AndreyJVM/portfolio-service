@@ -14,17 +14,7 @@ func (h *Handler) Index(w http.ResponseWriter, r *http.Request) {
 		Meta    model.MetaData
 		Courses []model.Course
 	}{
-		Meta: model.MetaData{
-			Title:         "Курсы • Обучение Контейнеризации и Linux",
-			Description:   "Специализированная программа обучения: Docker, Podman, LXC, Cgroups, Namespaces и Zero-Downtime деплой на платформе Primary Cloud Lab.",
-			Keywords:      "контейнеризация, Docker, Podman, LXC, Incus, Cgroups, Namespaces, уроки, курсы, Linux, DevOps",
-			OGTitle:       "Курсы по Контейнеризации и Linux • Primary Cloud Lab",
-			OGDescription: "Глубокая практическая программа: от первого контейнера до изоляции на уровне ядра Linux.",
-			OGImage:       h.baseURL + "/images/og-main.png",
-			OGURL:         h.baseURL + "/",
-			ActiveTab:     "courses",
-			CanonicalURL:  h.baseURL + "/",
-		},
+		Meta:    h.getMeta("index", "/"),
 		Courses: courses,
 	}
 
@@ -44,17 +34,7 @@ func (h *Handler) Education(w http.ResponseWriter, r *http.Request) {
 		Meta model.MetaData
 		Data model.ProjectsPageData
 	}{
-		Meta: model.MetaData{
-			Title:         "Об авторе • Андрей Воробьев | Primary Cloud Lab",
-			Description:   "Об авторе платформы Primary Cloud Lab Андрее Воробьеве: инженерный опыт, системное администрирование Linux (Слёрм), Docker, Podman, LXC, CI/CD, репозитории и квалификация.",
-			Keywords:      "Андрей Воробьев, об авторе, DevOps, Linux, Слёрм, Docker, Podman, LXC, Ansible, сертификаты, квалификация, инфраструктура",
-			OGTitle:       "Об авторе • Андрей Воробьев | Primary Cloud Lab",
-			OGDescription: "Создатель Primary Cloud Lab. Архитектура инфраструктуры, open-source репозитории, профессиональные сертификации Слёрм и дипломы.",
-			OGImage:       h.baseURL + "/images/og-about.png",
-			OGURL:         h.baseURL + "/education",
-			ActiveTab:     "education",
-			CanonicalURL:  h.baseURL + "/education",
-		},
+		Meta: h.getMeta("education", "/education"),
 		Data: projectsData,
 	}
 
@@ -76,17 +56,7 @@ func (h *Handler) Mustang(w http.ResponseWriter, r *http.Request) {
 	data := struct {
 		Meta model.MetaData
 	}{
-		Meta: model.MetaData{
-			Title:         "Ford Mustang Shelby GT500 • Мечта DevOps-инженера",
-			Description:   "Фонд спасения от рутины: краудфандинг на Ford Mustang Shelby GT500.",
-			Keywords:      "Ford Mustang, Shelby GT500, краудфандинг, V8",
-			OGTitle:       "Ford Mustang Shelby GT500 • Фонд мечты инженера",
-			OGDescription: "Осталось закрыть единственный критический баг — отсутствие 760 л.с. в гараже.",
-			OGImage:       h.baseURL + "/images/avatar.jpg",
-			OGURL:         h.baseURL + "/mustang",
-			ActiveTab:     "mustang",
-			CanonicalURL:  h.baseURL + "/mustang",
-		},
+		Meta: h.getMeta("mustang", "/mustang"),
 	}
 
 	h.renderTemplate(w, "mustang.html", data)
