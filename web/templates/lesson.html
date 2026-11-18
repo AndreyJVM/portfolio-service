@@ -89,16 +89,16 @@
 
         <!-- Навигация и завершение урока -->
         <div class="pt-4 mt-5 border-top">
-          <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
-            <div class="d-flex align-items-center gap-2">
-              <a href="/courses/{{.Course.Slug}}" class="btn btn-outline-secondary rounded-pill px-4">
+          <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 gap-sm-3 mb-4">
+            <div class="d-flex align-items-center gap-2 flex-wrap w-100-mobile">
+              <a href="/courses/{{.Course.Slug}}" class="btn btn-outline-secondary rounded-pill px-3 px-sm-4 w-100-mobile text-center">
                 <i class="fas fa-arrow-left me-1"></i> К программе курса
               </a>
-              <a href="https://github.com/AndreyJVM/portfolio-service/edit/master/content/courses/{{.Course.Slug}}/{{.Lesson.Slug}}.md" target="_blank" rel="noopener noreferrer" class="btn btn-outline-secondary rounded-pill px-3" title="Предложить исправление на GitHub">
+              <a href="https://github.com/AndreyJVM/portfolio-service/edit/master/content/courses/{{.Course.Slug}}/{{.Lesson.Slug}}.md" target="_blank" rel="noopener noreferrer" class="btn btn-outline-secondary rounded-pill px-3 w-100-mobile text-center" title="Предложить исправление на GitHub">
                 <i class="fab fa-github me-1"></i> Нашли неточность?
               </a>
             </div>
-            <button type="button" class="btn btn-outline-success rounded-pill px-4" id="completeLessonBtn" data-course-slug="{{.Course.Slug}}" data-lesson-slug="{{.Lesson.Slug}}">
+            <button type="button" class="btn btn-outline-success rounded-pill px-4 w-100-mobile text-center mt-2 mt-md-0" id="completeLessonBtn" data-course-slug="{{.Course.Slug}}" data-lesson-slug="{{.Lesson.Slug}}">
               <i class="far fa-check-circle me-1"></i> Отметить как пройденный
             </button>
           </div>
@@ -111,7 +111,7 @@
               <a href="/courses/{{$.Course.Slug}}/{{.PrevLesson.Slug}}" class="btn btn-outline-secondary w-100 p-3 rounded-3 text-start d-flex flex-column gap-1 prev-lesson-btn">
                 <span class="small text-muted d-flex align-items-center justify-content-between">
                   <span><i class="fas fa-chevron-left me-1"></i> Предыдущий урок</span>
-                  <kbd class="bg-body-secondary border px-1 small opacity-75">Alt + ←</kbd>
+                  <kbd class="bg-body-secondary border px-1 small opacity-75 d-none d-sm-inline-block">Alt + ←</kbd>
                 </span>
                 <span class="fw-semibold text-truncate w-100 text-body">{{.PrevLesson.Title}}</span>
               </a>
@@ -121,7 +121,7 @@
               {{if .NextLesson}}
               <a href="/courses/{{$.Course.Slug}}/{{.NextLesson.Slug}}" class="btn btn-outline-primary w-100 p-3 rounded-3 text-end d-flex flex-column gap-1 next-lesson-btn">
                 <span class="small text-primary d-flex align-items-center justify-content-between">
-                  <kbd class="bg-body-secondary border px-1 small opacity-75">Alt + →</kbd>
+                  <kbd class="bg-body-secondary border px-1 small opacity-75 d-none d-sm-inline-block">Alt + →</kbd>
                   <span>Следующий урок <i class="fas fa-chevron-right ms-1"></i></span>
                 </span>
                 <span class="fw-semibold text-truncate w-100 text-body">{{.NextLesson.Title}}</span>

@@ -58,28 +58,32 @@
       <div class="d-flex flex-column gap-3">
         {{range .Course.Lessons}}
         <div class="lesson-card-item card border rounded-4 p-3 shadow-sm bento-card" data-course-slug="{{$.Course.Slug}}" data-lesson-slug="{{.Slug}}">
-          <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
-            <div class="d-flex align-items-center gap-3">
-              <span class="badge bg-primary rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
-                {{.Order}}
-              </span>
-              <div>
-                <h6 class="fw-bold mb-1">
-                  <a href="/courses/{{$.Course.Slug}}/{{.Slug}}" class="text-decoration-none text-body">
-                    {{.Title}}
-                  </a>
-                </h6>
-                <div class="d-flex align-items-center gap-2">
-                  <small class="text-muted"><i class="far fa-clock me-1"></i>{{.Duration}}</small>
-                  <span class="badge lesson-status-badge bg-body-secondary text-body-secondary border">
-                    <i class="far fa-circle me-1"></i>К изучению
-                  </span>
+          <div class="row align-items-center g-2 g-sm-3">
+            <div class="col">
+              <div class="d-flex align-items-center gap-3">
+                <span class="badge bg-primary rounded-circle p-2 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 32px; height: 32px;">
+                  {{.Order}}
+                </span>
+                <div class="min-w-0">
+                  <h6 class="fw-bold mb-1 text-break">
+                    <a href="/courses/{{$.Course.Slug}}/{{.Slug}}" class="text-decoration-none text-body">
+                      {{.Title}}
+                    </a>
+                  </h6>
+                  <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <small class="text-muted"><i class="far fa-clock me-1"></i>{{.Duration}}</small>
+                    <span class="badge lesson-status-badge bg-body-secondary text-body-secondary border">
+                      <i class="far fa-circle me-1"></i>К изучению
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
-            <a href="/courses/{{$.Course.Slug}}/{{.Slug}}" class="btn btn-sm btn-outline-primary rounded-pill px-3">
-              Открыть урок <i class="fas fa-chevron-right ms-1"></i>
-            </a>
+            <div class="col-12 col-sm-auto text-end">
+              <a href="/courses/{{$.Course.Slug}}/{{.Slug}}" class="btn btn-sm btn-outline-primary rounded-pill px-3 w-100-mobile text-nowrap">
+                Открыть урок <i class="fas fa-chevron-right ms-1"></i>
+              </a>
+            </div>
           </div>
         </div>
         {{end}}

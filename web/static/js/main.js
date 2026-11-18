@@ -251,6 +251,9 @@ function initCodeCopyButtons() {
       if (success) {
         copyBtn.classList.add('copied');
         copyBtn.innerHTML = '<i class="fas fa-check"></i><span>Скопировано!</span>';
+        if (typeof window.showToast === 'function') {
+          window.showToast('Код скопирован в буфер обмена', 'success');
+        }
         setTimeout(() => {
           copyBtn.classList.remove('copied');
           copyBtn.innerHTML = '<i class="far fa-copy"></i><span>Копировать</span>';

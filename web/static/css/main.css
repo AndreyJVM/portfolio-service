@@ -374,6 +374,16 @@ footer {
     border-radius: 12px;
   }
 
+  .w-100-mobile {
+    width: 100% !important;
+  }
+
+  .roadmap-step .badge {
+    white-space: normal;
+    text-align: left;
+    line-height: 1.35;
+  }
+
   .markdown-content pre {
     padding: 0.875rem !important;
     font-size: 0.82rem !important;
