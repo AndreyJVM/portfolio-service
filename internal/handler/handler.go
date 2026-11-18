@@ -39,8 +39,8 @@ func NewHandler(
 	}
 }
 
-// getTemplate возвращает скомпилированный шаблон из потокобезопасного кэша памяти,
-// исключая дисковый ввод-вывод (I/O) на каждом HTTP-запросе.
+// getTemplate returns a compiled template from a thread-safe in-memory cache,
+// eliminating disk I/O on every HTTP request.
 func (h *Handler) getTemplate(templateName string) (*template.Template, error) {
 	h.templateMu.RLock()
 	if tmpl, ok := h.templateCache[templateName]; ok {
@@ -69,8 +69,8 @@ func (h *Handler) getTemplate(templateName string) (*template.Template, error) {
 	return parsedTmpl, nil
 }
 
-// renderTemplate выполняет рендеринг кэшированного шаблона через буфер,
-// предотвращая частичную отдачу поврежденного HTML при ошибках исполнения.
+// renderTemplate renders a cached template via a buffer,
+// preventing partial delivery of malformed HTML on execution errors.
 func (h *Handler) renderTemplate(w http.ResponseWriter, templateName string, data interface{}) {
 	tmpl, err := h.getTemplate(templateName)
 	if err != nil {
@@ -89,7 +89,7 @@ func (h *Handler) renderTemplate(w http.ResponseWriter, templateName string, dat
 	_, _ = buf.WriteTo(w)
 }
 
-// Health возвращает статус здоровья сервиса для healthcheck (Docker, Nginx, K8s).
+// Health returns the service health status for health checks (Docker, Nginx, K8s).
 func (h *Handler) Health(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)

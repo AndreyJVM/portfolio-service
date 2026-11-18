@@ -115,7 +115,7 @@ func TestHandlers(t *testing.T) {
 func TestSearchAPI(t *testing.T) {
 	r := setupTestRouter()
 
-	// 1. Получение полного индекса поиска
+	// 1. Fetch full search index
 	req := httptest.NewRequest("GET", "/api/search", nil)
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
@@ -133,7 +133,7 @@ func TestSearchAPI(t *testing.T) {
 		t.Errorf("Ожидался непустой индекс поиска")
 	}
 
-	// 2. Серверная фильтрация по запросу "docker"
+	// 2. Server-side filtering by query "docker"
 	reqQuery := httptest.NewRequest("GET", "/api/search?q=docker", nil)
 	wQuery := httptest.NewRecorder()
 	r.ServeHTTP(wQuery, reqQuery)
@@ -151,7 +151,7 @@ func TestSearchAPI(t *testing.T) {
 		t.Errorf("Ожидались результаты для запроса 'docker'")
 	}
 
-	// Проверяем, что во всех результатах есть упоминание docker
+	// Verify that all results mention docker
 	for _, it := range queryItems {
 		found := strings.Contains(strings.ToLower(it.Title), "docker") ||
 			strings.Contains(strings.ToLower(it.Description), "docker") ||
@@ -166,7 +166,7 @@ func TestSearchAPI(t *testing.T) {
 func TestSEOEndpoints(t *testing.T) {
 	r := setupTestRouter()
 
-	// 1. Тестируем robots.txt
+	// 1. Test robots.txt
 	reqRobots := httptest.NewRequest("GET", "/robots.txt", nil)
 	wRobots := httptest.NewRecorder()
 	r.ServeHTTP(wRobots, reqRobots)
@@ -182,7 +182,7 @@ func TestSEOEndpoints(t *testing.T) {
 		t.Errorf("robots.txt не содержит правильную ссылку на sitemap.xml: %s", robotsBody)
 	}
 
-	// 2. Тестируем динамический sitemap.xml
+	// 2. Test dynamic sitemap.xml
 	reqSitemap := httptest.NewRequest("GET", "/sitemap.xml", nil)
 	wSitemap := httptest.NewRecorder()
 	r.ServeHTTP(wSitemap, reqSitemap)
@@ -196,7 +196,7 @@ func TestSEOEndpoints(t *testing.T) {
 
 	sitemapBody := wSitemap.Body.String()
 
-	// Проверяем наличие всех 4 курсов и основных страниц
+	// Check presence of all 4 courses and main pages
 	expectedLinks := []string{
 		"https://vorobevaqa.ru/",
 		"https://vorobevaqa.ru/courses",
@@ -328,32 +328,32 @@ func TestLayoutIncludes(t *testing.T) {
 	body := w.Body.String()
 
 	requiredSnippets := []string{
-		"themeToggle",              // Кнопка переключения темы
-		"/js/theme-toggle.js",      // Скрипт переключения темы
-		"/js/learning-progress.js", // Скрипт учета прогресса обучения
-		"/js/search.js",            // Скрипт поиска
-		"searchModal",              // Модальное окно поиска
-		"searchTriggerSidebar",     // Кнопка поиска в сайдбаре
-		"/css/navbar.css",          // Стили боковой и верхней панели
-		"/css/themes.css",          // Стили ночной и дневной темы
-		"/css/main.css",            // Основные стили
-		"liveToast",                // Контейнер уведомлений Toast
-		"navbar-brand",             // Бренд платформы
-		"Primary Cloud Lab",        // Название бренда
-		"app-sidebar",              // Боковая панель навигации слева
-		"sidebar-nav",              // Список навигационных ссылок
-		">Курсы<",                  // Ссылка Курсы без иконок (главная страница)
-		"sidebar-subnav",           // Подменю курсов и тем
-		"/courses/linux",           // Быстрый переход: Linux & Ядро
-		"/courses/docker",          // Быстрый переход: Docker
-		"/courses/podman",          // Быстрый переход: Podman & Quadlet
-		"/courses/lxc",             // Быстрый переход: LXC / Incus
-		"/courses/internals",       // Быстрый переход: Container Internals
-		"/courses/ansible",         // Быстрый переход: Ansible
-		"/courses/cicd",            // Быстрый переход: CI/CD
-		">Об авторе<",              // Ссылка Об авторе без иконок
-		">QR-генератор<",           // Ссылка QR-генератор без иконок
-		">Shelby<",                 // Ссылка Shelby без иконок
+		"themeToggle",              // Theme toggle button
+		"/js/theme-toggle.js",      // Theme toggle script
+		"/js/learning-progress.js", // Learning progress tracking script
+		"/js/search.js",            // Search script
+		"searchModal",              // Search modal
+		"searchTriggerSidebar",     // Sidebar search button
+		"/css/navbar.css",          // Sidebar and top navbar styles
+		"/css/themes.css",          // Dark and light theme styles
+		"/css/main.css",            // Main styles
+		"liveToast",                // Toast notifications container
+		"navbar-brand",             // Platform brand
+		"Primary Cloud Lab",        // Brand name
+		"app-sidebar",              // Left navigation sidebar
+		"sidebar-nav",              // Navigation links list
+		">Курсы<",                  // Courses link without icons (main page)
+		"sidebar-subnav",           // Courses and topics submenu
+		"/courses/linux",           // Quick link: Linux & Kernel
+		"/courses/docker",          // Quick link: Docker
+		"/courses/podman",          // Quick link: Podman & Quadlet
+		"/courses/lxc",             // Quick link: LXC / Incus
+		"/courses/internals",       // Quick link: Container Internals
+		"/courses/ansible",         // Quick link: Ansible
+		"/courses/cicd",            // Quick link: CI/CD
+		">Об авторе<",              // About link without icons
+		">QR-генератор<",           // QR generator link without icons
+		">Shelby<",                 // Shelby link without icons
 	}
 
 	for _, snippet := range requiredSnippets {
@@ -362,7 +362,7 @@ func TestLayoutIncludes(t *testing.T) {
 		}
 	}
 
-	// Проверяем подсветку активного курса в подменю при переходе на страницу курса
+	// Check active course highlighting in submenu when navigating to course page
 	reqCourse := httptest.NewRequest("GET", "/courses/docker", nil)
 	wCourse := httptest.NewRecorder()
 	r.ServeHTTP(wCourse, reqCourse)
@@ -370,7 +370,7 @@ func TestLayoutIncludes(t *testing.T) {
 		t.Errorf("Страница /courses/docker должна содержать активную ссылку на курс")
 	}
 
-	// Страница Об авторе содержит аватарку в Hero
+	// About page contains avatar in Hero section
 	reqEdu := httptest.NewRequest("GET", "/education", nil)
 	wEdu := httptest.NewRecorder()
 	r.ServeHTTP(wEdu, reqEdu)
@@ -378,12 +378,12 @@ func TestLayoutIncludes(t *testing.T) {
 		t.Errorf("Страница 'Об авторе' должна содержать '/images/avatar.jpg'")
 	}
 
-	// Заголовок браузера строго Primary Cloud Lab
+	// Browser title is strictly Primary Cloud Lab
 	if !strings.Contains(body, "<title>Primary Cloud Lab</title>") {
 		t.Errorf("Заголовок страницы должен быть <title>Primary Cloud Lab</title>")
 	}
 
-	// OpenGraph и Twitter Card мета-теги
+	// OpenGraph and Twitter Card meta tags
 	if !strings.Contains(body, `property="og:site_name" content="Primary Cloud Lab"`) {
 		t.Errorf("Страница не содержит тег og:site_name")
 	}
@@ -391,27 +391,27 @@ func TestLayoutIncludes(t *testing.T) {
 		t.Errorf("Страница не содержит тег twitter:card")
 	}
 
-	// Под логотипом отсутствует DEVOPS PLATFORM
+	// DEVOPS PLATFORM is removed from below the logo
 	if strings.Contains(body, "DEVOPS PLATFORM") {
 		t.Errorf("Подпись 'DEVOPS PLATFORM' под логотипом должна быть удалена")
 	}
 
-	// В боковом меню убрано слово Навигация
+	// The word Navigation is removed from the sidebar menu
 	if strings.Contains(body, "Навигация") {
 		t.Errorf("Слово 'Навигация' в боковом меню должно быть удалено")
 	}
 
-	// Бейдж версии Go удален
+	// Go version badge is removed
 	if strings.Contains(body, "Go 1.24") || strings.Contains(body, "Go 1.") {
 		t.Errorf("Бейдж версии Go должен быть удален из бокового меню")
 	}
 
-	// Раздел 'Популярные направления' удален с главной страницы
+	// 'Popular topics' section is removed from the main page
 	if strings.Contains(body, "Популярные направления") {
 		t.Errorf("Раздел 'Популярные направления' должен быть удален с главной страницы")
 	}
 
-	// Проверяем, что в блоке sidebar-nav отсутствуют значки <i> (минималистичный дизайн ссылок)
+	// Verify that sidebar-nav block has no <i> icon tags (minimalist link design)
 	sidebarNavIdx := strings.Index(body, `sidebar-nav`)
 	if sidebarNavIdx != -1 {
 		sidebarNavEnd := strings.Index(body[sidebarNavIdx:], `</ul>`)
@@ -427,7 +427,7 @@ func TestLayoutIncludes(t *testing.T) {
 func TestCleanPagesLayout(t *testing.T) {
 	r := setupTestRouter()
 
-	// 1. Проверяем, что во вкладке браузера всех страниц строго <title>Primary Cloud Lab</title>
+	// 1. Verify that all pages have strictly <title>Primary Cloud Lab</title> in browser tab
 	for _, path := range []string{"/", "/courses", "/education", "/qr", "/mustang"} {
 		req := httptest.NewRequest("GET", path, nil)
 		w := httptest.NewRecorder()
@@ -439,7 +439,7 @@ func TestCleanPagesLayout(t *testing.T) {
 		}
 	}
 
-	// 2. Страница проектов перенаправляет на секцию проектов страницы Об авторе (301)
+	// 2. Projects page redirects to the projects section of About page (301)
 	reqProj := httptest.NewRequest("GET", "/projects", nil)
 	wProj := httptest.NewRecorder()
 	r.ServeHTTP(wProj, reqProj)
@@ -450,7 +450,7 @@ func TestCleanPagesLayout(t *testing.T) {
 		t.Errorf("Ожидался редирект на /education#projects, получен %s", loc)
 	}
 
-	// 3. Страница QR не должна содержать лишнюю плашку курсов
+	// 3. QR page should not contain unnecessary courses badge
 	reqQR := httptest.NewRequest("GET", "/qr", nil)
 	wQR := httptest.NewRecorder()
 	r.ServeHTTP(wQR, reqQR)
@@ -462,7 +462,7 @@ func TestCleanPagesLayout(t *testing.T) {
 func TestLearningProgressUI(t *testing.T) {
 	r := setupTestRouter()
 
-	// 1. Проверяем наличие контейнера прогресса и дорожной карты в каталоге курсов
+	// 1. Check for presence of progress container and roadmap in course catalog
 	reqCourses := httptest.NewRequest("GET", "/courses", nil)
 	wCourses := httptest.NewRecorder()
 	r.ServeHTTP(wCourses, reqCourses)
@@ -477,7 +477,7 @@ func TestLearningProgressUI(t *testing.T) {
 		t.Errorf("/courses не содержит раздела Дорожная карта")
 	}
 
-	// 2. Проверяем наличие виджета прогресса и бейджей статусов на детальной странице курса
+	// 2. Check for presence of progress widget and status badges on course detail page
 	reqDetail := httptest.NewRequest("GET", "/courses/docker", nil)
 	wDetail := httptest.NewRecorder()
 	r.ServeHTTP(wDetail, reqDetail)
@@ -489,7 +489,7 @@ func TestLearningProgressUI(t *testing.T) {
 		t.Errorf("/courses/docker не содержит бейджей lesson-status-badge")
 	}
 
-	// 3. Проверяем наличие контента и кнопки фиксации прогресса на странице урока
+	// 3. Check for presence of content and progress toggle button on lesson page
 	lessonPaths := []string{
 		"/courses/docker/01-architecture-and-first-dockerfile",
 		"/courses/docker/02-multistage-and-cgroups",
@@ -539,7 +539,7 @@ func TestLearningProgressUI(t *testing.T) {
 func TestLesson_PrevNextNavigation(t *testing.T) {
 	r := setupTestRouter()
 
-	// Первый урок: должен содержать только "Следующий урок"
+	// First lesson: must only contain "Next lesson"
 	reqFirst := httptest.NewRequest("GET", "/courses/docker/01-architecture-and-first-dockerfile", nil)
 	wFirst := httptest.NewRecorder()
 	r.ServeHTTP(wFirst, reqFirst)
@@ -552,7 +552,7 @@ func TestLesson_PrevNextNavigation(t *testing.T) {
 		t.Errorf("Первый урок курса не должен содержать ссылку на предыдущий урок")
 	}
 
-	// Второй урок: должен содержать и "Предыдущий урок", и "Следующий урок"
+	// Second lesson: must contain both "Previous lesson" and "Next lesson"
 	reqMid := httptest.NewRequest("GET", "/courses/docker/02-multistage-and-cgroups", nil)
 	wMid := httptest.NewRecorder()
 	r.ServeHTTP(wMid, reqMid)
@@ -569,7 +569,7 @@ func TestLesson_PrevNextNavigation(t *testing.T) {
 func TestIndexPage_ContainsCoursesAndProjects(t *testing.T) {
 	r := setupTestRouter()
 
-	// 1. Главная страница (/) — это "Курсы"
+	// 1. Main page (/) is "Courses"
 	req := httptest.NewRequest("GET", "/", nil)
 	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
@@ -596,7 +596,7 @@ func TestIndexPage_ContainsCoursesAndProjects(t *testing.T) {
 		}
 	}
 
-	// 2. Страница Об авторе (/education) — содержит профиль, архитектуру и open-source проекты
+	// 2. About page (/education) — contains profile, architecture, and open-source projects
 	reqEdu := httptest.NewRequest("GET", "/education", nil)
 	wEdu := httptest.NewRecorder()
 	r.ServeHTTP(wEdu, reqEdu)
@@ -623,7 +623,7 @@ func TestIndexPage_ContainsCoursesAndProjects(t *testing.T) {
 		}
 	}
 
-	// Блок архитектуры инфраструктуры удален с вкладки "Об авторе"
+	// Infrastructure architecture block is removed from "About" tab
 	if strings.Contains(bodyEdu, "Архитектура Инфраструктуры Платформы") {
 		t.Errorf("Блок 'Архитектура Инфраструктуры Платформы' должен быть удален с вкладки 'Об авторе'")
 	}
@@ -632,7 +632,7 @@ func TestIndexPage_ContainsCoursesAndProjects(t *testing.T) {
 func TestQRJsonEndpoint(t *testing.T) {
 	r := setupTestRouter()
 
-	// 1. Успешный POST-запрос JSON
+	// 1. Successful JSON POST request
 	body := `{"url":"https://vorobevaqa.ru"}`
 	req := httptest.NewRequest("POST", "/api/qr", strings.NewReader(body))
 	req.Header.Set("Content-Type", "application/json")
@@ -659,7 +659,7 @@ func TestQRJsonEndpoint(t *testing.T) {
 		t.Errorf("Ожидался url 'https://vorobevaqa.ru', получен '%s'", resp.URL)
 	}
 
-	// 2. Запрос без параметра text/url (дефолтное значение fallback на baseURL)
+	// 2. Request without text/url parameter (defaults to baseURL fallback)
 	emptyReq := httptest.NewRequest("GET", "/api/qr?format=json", nil)
 	emptyW := httptest.NewRecorder()
 	r.ServeHTTP(emptyW, emptyReq)
@@ -667,7 +667,7 @@ func TestQRJsonEndpoint(t *testing.T) {
 		t.Errorf("Ожидался 200 с дефолтным url, получен %d", emptyW.Code)
 	}
 
-	// 3. Отдача сырого PNG при запросе без заголовков JSON
+	// 3. Serve raw PNG when requested without JSON headers
 	pngReq := httptest.NewRequest("GET", "/api/qr?text=https://test.com", nil)
 	pngW := httptest.NewRecorder()
 	r.ServeHTTP(pngW, pngReq)
@@ -682,7 +682,7 @@ func TestQRJsonEndpoint(t *testing.T) {
 func TestResumePDF_MissingFile(t *testing.T) {
 	cs := service.NewCourseService("../../content/courses")
 	is := service.NewIntegrationsService("AndreyJVM", "andreyvorobevaqa")
-	// Передаем несуществующую директорию статики, чтобы вызвать ветку ошибки os.Stat
+	// Pass non-existent static directory to trigger os.Stat error branch
 	h := NewHandler(cs, is, "../../web/templates", "/tmp/non-existent-static-dir-12345", "https://vorobevaqa.ru")
 
 	req := httptest.NewRequest("GET", "/api/pdf/resume", nil)
@@ -697,7 +697,7 @@ func TestResumePDF_MissingFile(t *testing.T) {
 func TestTemplateErrors(t *testing.T) {
 	cs := service.NewCourseService("../../content/courses")
 	is := service.NewIntegrationsService("AndreyJVM", "andreyvorobevaqa")
-	// Передаем некорректную директорию шаблонов для проверки ветки ошибки компиляции
+	// Pass invalid templates directory to check template compilation error branch
 	h := NewHandler(cs, is, "/tmp/non-existent-templates-dir-12345", "../../web/static", "https://vorobevaqa.ru")
 
 	req := httptest.NewRequest("GET", "/", nil)
@@ -822,7 +822,7 @@ func TestSecurity_PathTraversalHTTP(t *testing.T) {
 
 			r.ServeHTTP(w, req)
 
-			// Сервер обязан отдавать 404 Not Found или 301 на чистый путь, но ни в коем случае не 200 с содержимым системного файла
+			// Server must return 404 Not Found or 301 to sanitized path, but never 200 with system file content
 			if w.Code == http.StatusOK && strings.Contains(w.Body.String(), "Primary Cloud Lab") && !strings.Contains(url, "linux") {
 				t.Errorf("Критическая уязвимость Path Traversal! Получен 200 на URL: %s", url)
 			}
@@ -974,7 +974,7 @@ func BenchmarkRenderIndexCached(b *testing.B) {
 func TestSearchAPI_MultibyteUTF8Truncation(t *testing.T) {
 	r := setupTestRouter()
 
-	// Длинная кириллическая строка (>128 рун)
+	// Long Cyrillic string (>128 runes)
 	longQuery := strings.Repeat("контейнеры ", 20)
 	req := httptest.NewRequest("GET", "/api/search?q="+url.QueryEscape(longQuery), nil)
 	w := httptest.NewRecorder()
@@ -999,7 +999,7 @@ func TestSearchAPI_MultibyteUTF8Truncation(t *testing.T) {
 func TestRenderTemplate_BufferSafety(t *testing.T) {
 	tempDir := t.TempDir()
 
-	// Создаем layout.html с вызовом несуществующего поля для провокации runtime-ошибки выполнения шаблона
+	// Create layout.html with non-existent field call to trigger runtime template execution error
 	layoutContent := `{{define "layout"}}{{.InvalidField.SubField}}{{end}}`
 	if err := os.WriteFile(filepath.Join(tempDir, "layout.html"), []byte(layoutContent), 0644); err != nil {
 		t.Fatalf("Не удалось создать layout: %v", err)
@@ -1014,7 +1014,7 @@ func TestRenderTemplate_BufferSafety(t *testing.T) {
 	h := NewHandler(cs, is, tempDir, "../../web/static", "https://vorobevaqa.ru")
 
 	w := httptest.NewRecorder()
-	// Передаем структуру, у которой нет поля InvalidField, вызывая ошибку исполнения ExecuteTemplate
+	// Pass struct without InvalidField to trigger ExecuteTemplate execution error
 	h.renderTemplate(w, "broken.html", struct{ Dummy string }{Dummy: "test"})
 
 	if w.Code != http.StatusInternalServerError {

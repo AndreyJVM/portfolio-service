@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 )
 
-// ResumePDF отдает PDF-файл резюме
+// ResumePDF serves the resume PDF file
 func (h *Handler) ResumePDF(w http.ResponseWriter, r *http.Request) {
 	pdfPath := filepath.Join(h.staticDir, "pdf", "resume.pdf")
 	if _, err := os.Stat(pdfPath); os.IsNotExist(err) {
@@ -26,7 +26,7 @@ func (h *Handler) ResumePDF(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, pdfPath)
 }
 
-// PdfHealth проверяет статус PDF сервиса
+// PdfHealth checks the status of the PDF service
 func (h *Handler) PdfHealth(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)

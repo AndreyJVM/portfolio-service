@@ -50,7 +50,7 @@ func TestIntegrationsService_Cache(t *testing.T) {
 
 func TestIntegrationsService_PreloadDefaults(t *testing.T) {
 	svc := NewIntegrationsService("test-user", "test-user")
-	// Перехватываем клиентские вызовы, чтобы фоновый refresh не падал
+	// Intercept client calls so the background refresh does not fail
 	svc.client.Transport = mockRoundTripper(func(req *http.Request) (*http.Response, error) {
 		return nil, errors.New("prevent external network call")
 	})
@@ -81,7 +81,7 @@ func TestIntegrationsService_StaleWhileRevalidate(t *testing.T) {
 		return nil, errors.New("network error")
 	})
 
-	// Устанавливаем протухший кэш (время в прошлом)
+	// Set expired cache (time in the past)
 	staleData := model.ProjectsPageData{
 		GitHubRepos: []model.GitHubRepoDto{{Name: "stale-repo"}},
 	}
@@ -90,16 +90,16 @@ func TestIntegrationsService_StaleWhileRevalidate(t *testing.T) {
 	svc.cacheUntil = time.Now().Add(-1 * time.Minute)
 	svc.cacheMutex.Unlock()
 
-	// Вызов должен мгновенно вернуть staleData
+	// Call should return staleData immediately
 	returned := svc.GetProjectsData()
 	if len(returned.GitHubRepos) != 1 || returned.GitHubRepos[0].Name != "stale-repo" {
 		t.Errorf("Ожидался мгновенный возврат устаревших данных, получено: %+v", returned)
 	}
 
-	// И должна запуститься фоновая горутина Refresh
+	// And background Refresh goroutine should be launched
 	select {
 	case <-refreshed:
-		// Успешно вызвано фоновое обновление
+		// Background refresh successfully triggered
 	case <-time.After(500 * time.Millisecond):
 		t.Errorf("Фоновое обновление не было запущено при истечении TTL")
 	}
@@ -169,7 +169,7 @@ func TestIntegrationsService_MockAPIs_Success(t *testing.T) {
 func TestIntegrationsService_APIErrors_Fallback(t *testing.T) {
 	svc := NewIntegrationsService("test-gh", "test-dh")
 
-	// Мокаем ответ с кодом 500 Internal Server Error
+	// Mock 500 Internal Server Error response
 	svc.client.Transport = mockRoundTripper(func(req *http.Request) (*http.Response, error) {
 		return &http.Response{
 			StatusCode: http.StatusInternalServerError,
@@ -180,7 +180,7 @@ func TestIntegrationsService_APIErrors_Fallback(t *testing.T) {
 
 	data := svc.GetProjectsData()
 
-	// При ошибке сервера должен сработать fallback
+	// On server error fallback should be used
 	if len(data.GitHubRepos) == 0 {
 		t.Errorf("Ожидался fallback список репозиториев GitHub")
 	}
@@ -192,7 +192,7 @@ func TestIntegrationsService_APIErrors_Fallback(t *testing.T) {
 func TestIntegrationsService_NetworkError_Fallback(t *testing.T) {
 	svc := NewIntegrationsService("test-gh", "test-dh")
 
-	// Мокаем сетевой сбой клиента
+	// Mock client network failure
 	svc.client.Transport = mockRoundTripper(func(req *http.Request) (*http.Response, error) {
 		return nil, errors.New("connection timeout or network unreachable")
 	})
@@ -210,7 +210,7 @@ func TestIntegrationsService_NetworkError_Fallback(t *testing.T) {
 func TestIntegrationsService_MalformedJSON_And_Empty(t *testing.T) {
 	svc := NewIntegrationsService("test-gh", "test-dh")
 
-	// Мокаем ответы 200 OK, но с поврежденным JSON
+	// Mock 200 OK responses, but with malformed JSON
 	svc.client.Transport = mockRoundTripper(func(req *http.Request) (*http.Response, error) {
 		if strings.Contains(req.URL.Host, "api.github.com") {
 			return &http.Response{

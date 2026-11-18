@@ -6,7 +6,7 @@ import (
 )
 
 func TestConfig_DefaultValues(t *testing.T) {
-	// Очищаем переменные окружения для проверки дефолтов
+	// Clear environment variables to check defaults
 	keys := []string{"PORT", "APP_BASE_URL", "GITHUB_USER", "DOCKER_USER", "CONTENT_DIR", "TEMPLATES_DIR", "STATIC_DIR"}
 	for _, k := range keys {
 		_ = os.Unsetenv(k)
@@ -96,13 +96,13 @@ func TestGetEnvOrDefaults(t *testing.T) {
 }
 
 func TestGetEnvOrDefault_TableDriven(t *testing.T) {
-	// 1. Описываем колонки и строки нашей таблицы проверок
+	// 1. Define columns and rows for our test table
 	tests := []struct {
-		name        string // Описание тест-кейса
-		envKey      string // Ключ переменной
-		envVal      string // Значение (если пустое — не устанавливаем)
-		fallbackVal string // Дефолтное значение
-		expected    string // Что должна вернуть функция
+		name        string // Test case description
+		envKey      string // Environment variable key
+		envVal      string // Value (do not set if empty)
+		fallbackVal string // Default value
+		expected    string // Expected return value of the function
 	}{
 		{
 			name:        "returns fallback when env var does not exist",
@@ -127,7 +127,7 @@ func TestGetEnvOrDefault_TableDriven(t *testing.T) {
 		},
 	}
 
-	// 2. Итерируемся по таблице и запускаем каждый кейс как подтест
+	// 2. Iterate through the table and run each case as a subtest
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.envVal != "" {

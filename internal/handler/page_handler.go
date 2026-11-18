@@ -6,7 +6,7 @@ import (
 	"ru.vorobevaqa/devops-platform/internal/model"
 )
 
-// Index: Главная страница образовательной платформы — каталог курсов и дорожная карта обучения
+// Index: Main page of the learning platform — course catalog and learning roadmap
 func (h *Handler) Index(w http.ResponseWriter, r *http.Request) {
 	courses := h.courseService.GetAllCourses()
 
@@ -31,12 +31,12 @@ func (h *Handler) Index(w http.ResponseWriter, r *http.Request) {
 	h.renderTemplate(w, "courses.html", data)
 }
 
-// Projects: постоянный редирект (HTTP 301) на секцию проектов и инфраструктуры на странице "Об авторе"
+// Projects: permanent redirect (HTTP 301) to the projects and infrastructure section on the "About" page
 func (h *Handler) Projects(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/education#projects", http.StatusMovedPermanently)
 }
 
-// Education: Страница об авторе, опыте, проектах и квалификации
+// Education: Page about the author, experience, projects, and qualifications
 func (h *Handler) Education(w http.ResponseWriter, r *http.Request) {
 	projectsData := h.integrationsService.GetProjectsData()
 
@@ -66,12 +66,12 @@ func (h *Handler) RedirectAbout(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/education", http.StatusMovedPermanently)
 }
 
-// RoadmapRedirect: HTTP 301 Permanent Redirect на раздел дорожной карты
+// RoadmapRedirect: HTTP 301 Permanent Redirect to the roadmap section
 func (h *Handler) RoadmapRedirect(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/#roadmap", http.StatusMovedPermanently)
 }
 
-// Mustang: Страница сбора на Shelby GT500
+// Mustang: Crowdfunding page for Shelby GT500
 func (h *Handler) Mustang(w http.ResponseWriter, r *http.Request) {
 	data := struct {
 		Meta model.MetaData

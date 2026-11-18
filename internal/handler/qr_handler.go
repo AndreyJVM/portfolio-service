@@ -10,7 +10,7 @@ import (
 	"ru.vorobevaqa/devops-platform/internal/model"
 )
 
-// QRPage: QR Code Playground страница
+// QRPage: QR Code Playground page
 func (h *Handler) QRPage(w http.ResponseWriter, r *http.Request) {
 	data := struct {
 		Meta model.MetaData
@@ -32,7 +32,7 @@ func (h *Handler) QRPage(w http.ResponseWriter, r *http.Request) {
 }
 
 // GenerateQREndpoint: Native Go QR Code generation (PNG or JSON).
-// Защищен от DoS ограничением размера payload (64 КБ).
+// Protected against DoS with a 64 KB payload size limit.
 func (h *Handler) GenerateQREndpoint(w http.ResponseWriter, r *http.Request) {
 	text := r.URL.Query().Get("text")
 	if text == "" {
@@ -40,7 +40,7 @@ func (h *Handler) GenerateQREndpoint(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Method == http.MethodPost {
-		// Ограничиваем размер входящего тела 64 КБ
+		// Limit incoming request body size to 64 KB
 		r.Body = http.MaxBytesReader(w, r.Body, 64*1024)
 
 		var body struct {

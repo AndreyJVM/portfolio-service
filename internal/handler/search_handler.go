@@ -16,12 +16,12 @@ var (
 	lastIndexBuild   time.Time
 )
 
-// SearchAPI возвращает JSON-индекс уроков и курсов для мгновенного поиска в браузере.
-// Поддерживает как отдачу полного индекса (для быстрого client-side fuzzy поиска),
-// так и server-side фильтрацию через параметр ?q=.
+// SearchAPI returns a JSON index of lessons and courses for instant in-browser search.
+// Supports both returning the full index (for fast client-side fuzzy search)
+// and server-side filtering via the ?q= parameter.
 func (h *Handler) SearchAPI(w http.ResponseWriter, r *http.Request) {
 	searchIndexMu.RLock()
-	// Кэшируем индекс на 1 час или отдаем из памяти
+	// Cache the index for 1 hour or serve from memory
 	if len(searchIndexCache) > 0 && time.Since(lastIndexBuild) < 1*time.Hour {
 		items := searchIndexCache
 		searchIndexMu.RUnlock()
@@ -31,7 +31,7 @@ func (h *Handler) SearchAPI(w http.ResponseWriter, r *http.Request) {
 	searchIndexMu.RUnlock()
 
 	searchIndexMu.Lock()
-	// Double-Checked Locking: проверяем, не построил ли индекс другой параллельный запрос
+	// Double-Checked Locking: check if another concurrent request already built the index
 	if len(searchIndexCache) > 0 && time.Since(lastIndexBuild) < 1*time.Hour {
 		items := searchIndexCache
 		searchIndexMu.Unlock()
@@ -49,7 +49,7 @@ func (h *Handler) SearchAPI(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handler) respondSearch(w http.ResponseWriter, r *http.Request, items []model.SearchItem) {
 	query := strings.TrimSpace(strings.ToLower(r.URL.Query().Get("q")))
-	// Ограничиваем длину поискового запроса по рунам для защиты от CPU exhaustion и сохранения валидности UTF-8
+	// Limit search query length by runes to prevent CPU exhaustion and maintain valid UTF-8
 	runes := []rune(query)
 	if len(runes) > 128 {
 		query = string(runes[:128])

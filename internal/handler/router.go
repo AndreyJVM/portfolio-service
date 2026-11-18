@@ -11,7 +11,7 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 )
 
-// noDirListingFS оборачивает http.FileSystem, блокируя листинг содержимого директорий.
+// noDirListingFS wraps http.FileSystem, blocking directory listing.
 type noDirListingFS struct {
 	fs http.FileSystem
 }
@@ -33,11 +33,11 @@ func (nfs noDirListingFS) Open(path string) (http.File, error) {
 	return f, nil
 }
 
-// NewRouter инициализирует маршрутизатор chi со всеми middleware, защитой статики и эндпоинтами.
+// NewRouter initializes the chi router with all middleware, static file protection, and endpoints.
 func NewRouter(h *Handler, staticDir string) *chi.Mux {
 	r := chi.NewRouter()
 
-	// Middleware стек
+	// Middleware stack
 	r.Use(middleware.RequestID)
 	r.Use(middleware.RealIP)
 	r.Use(middleware.Logger)
@@ -46,7 +46,7 @@ func NewRouter(h *Handler, staticDir string) *chi.Mux {
 	r.Use(middleware.GetHead)
 	r.Use(middleware.Timeout(15 * time.Second))
 
-	// Заголовки безопасности
+	// Security headers
 	r.Use(func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("X-Content-Type-Options", "nosniff")
@@ -56,12 +56,12 @@ func NewRouter(h *Handler, staticDir string) *chi.Mux {
 		})
 	})
 
-	// Безопасная раздача статических файлов (CSS, JS, Favicon, Сертификаты, Резюме)
+	// Secure static file serving (CSS, JS, Favicon, Certificates, Resume)
 	fileServer := http.FileServer(noDirListingFS{fs: http.Dir(staticDir)})
 	for _, prefix := range []string{"/css", "/js", "/images", "/pdf"} {
 		prefixPattern := prefix + "/*"
 		r.Handle(prefixPattern, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			// Дополнительная проверка на завершающий слэш для запрета обращения к директориям
+			// Additional trailing slash check to prevent access to directories
 			if strings.HasSuffix(r.URL.Path, "/") {
 				http.NotFound(w, r)
 				return
@@ -76,15 +76,15 @@ func NewRouter(h *Handler, staticDir string) *chi.Mux {
 		http.ServeFile(w, r, filepath.Join(staticDir, "favicon.svg"))
 	})
 
-	// Healthcheck для Docker, docker-compose и Kubernetes/Nginx
+	// Health check for Docker, docker-compose, and Kubernetes/Nginx
 	r.Get("/health", h.Health)
 	r.Get("/api/health", h.Health)
 
-	// Динамические SEO-эндпоинты
+	// Dynamic SEO endpoints
 	r.Get("/robots.txt", h.RobotsTxt)
 	r.Get("/sitemap.xml", h.SitemapXML)
 
-	// Страницы платформы
+	// Platform pages
 	r.Get("/", h.Index)
 	r.Get("/courses", h.CoursesList)
 	r.Get("/courses/{courseSlug}", h.CourseDetail)
@@ -97,14 +97,14 @@ func NewRouter(h *Handler, staticDir string) *chi.Mux {
 	r.Get("/qr", h.QRPage)
 	r.Get("/mustang", h.Mustang)
 
-	// Полнотекстовый поиск по материалам и урокам
+	// Full-text search across materials and lessons
 	r.Get("/api/search", h.SearchAPI)
 
-	// API генерации QR-кодов (Go native engine)
+	// QR code generation API (Go native engine)
 	r.Get("/api/qr", h.GenerateQREndpoint)
 	r.Post("/api/qr", h.GenerateQREndpoint)
 
-	// API PDF резюме
+	// PDF resume API
 	r.Get("/api/pdf/resume", h.ResumePDF)
 	r.Get("/api/pdf/health", h.PdfHealth)
 

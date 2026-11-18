@@ -22,6 +22,7 @@ deploy.log
 *.iml
 .vscode/
 .cache/
+skills/
 
 # === OS & Environment ===
 .DS_Store

@@ -9,12 +9,12 @@ import (
 	"ru.vorobevaqa/devops-platform/internal/model"
 )
 
-// CoursesList: Каталог обучающих треков (алиас главной страницы)
+// CoursesList: Catalog of learning tracks (alias to the main page)
 func (h *Handler) CoursesList(w http.ResponseWriter, r *http.Request) {
 	h.Index(w, r)
 }
 
-// CourseDetail: Страница конкретного курса со списком уроков
+// CourseDetail: Page for a specific course with a list of lessons
 func (h *Handler) CourseDetail(w http.ResponseWriter, r *http.Request) {
 	slug := chi.URLParam(r, "courseSlug")
 	course, err := h.courseService.GetCourseBySlug(slug)
@@ -45,7 +45,7 @@ func (h *Handler) CourseDetail(w http.ResponseWriter, r *http.Request) {
 	h.renderTemplate(w, "course_detail.html", data)
 }
 
-// Lesson: Страница просмотра и изучения отдельного урока
+// Lesson: Page for viewing and studying an individual lesson
 func (h *Handler) Lesson(w http.ResponseWriter, r *http.Request) {
 	courseSlug := chi.URLParam(r, "courseSlug")
 	lessonSlug := chi.URLParam(r, "lessonSlug")

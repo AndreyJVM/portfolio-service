@@ -32,7 +32,7 @@ type ErrorResponse struct {
 
 var urlProtocolRegex = regexp.MustCompile(`^(http|https)://.+$`)
 
-// setupRouter конфигурирует маршруты и middleware микросервиса QR
+// setupRouter configures routes and middleware for the QR microservice
 func setupRouter() http.Handler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /health", handleHealth)
@@ -61,7 +61,7 @@ func main() {
 		IdleTimeout:  120 * time.Second,
 	}
 
-	// Graceful shutdown по сигналам SIGINT и SIGTERM
+	// Graceful shutdown on SIGINT and SIGTERM signals
 	serverCtx, serverStopCtx := context.WithCancel(context.Background())
 	sig := make(chan os.Signal, 1)
 	signal.Notify(sig, syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
@@ -134,7 +134,7 @@ func handleGenerateQr(w http.ResponseWriter, r *http.Request) {
 			inputURL = r.URL.Query().Get("text")
 		}
 	} else if r.Method == http.MethodPost {
-		// Защита от DoS: ограничиваем размер входящего тела 64 КБ
+		// DoS protection: limit incoming request body size to 64 KB
 		r.Body = http.MaxBytesReader(w, r.Body, 64*1024)
 
 		var req QrRequest

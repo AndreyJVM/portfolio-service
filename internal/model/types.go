@@ -1,6 +1,6 @@
 package model
 
-// MetaData содержит SEO и метаинформацию для страниц.
+// MetaData contains SEO and meta information for pages.
 type MetaData struct {
 	Title         string
 	Description   string
@@ -14,7 +14,7 @@ type MetaData struct {
 	CanonicalURL  string
 }
 
-// Course представляет образовательный трек (например, Linux, Docker).
+// Course represents an educational track (e.g., Linux, Docker).
 type Course struct {
 	ID          string   `json:"id"`
 	Title       string   `json:"title"`
@@ -28,7 +28,7 @@ type Course struct {
 	Lessons     []Lesson `json:"lessons,omitempty"`
 }
 
-// Lesson представляет отдельный урок курса.
+// Lesson represents an individual course lesson.
 type Lesson struct {
 	ID          string `json:"id"`
 	CourseSlug  string `json:"courseSlug"`
@@ -40,20 +40,20 @@ type Lesson struct {
 	ContentHTML string `json:"contentHtml,omitempty"`
 }
 
-// SearchItem представляет элемент поискового индекса для быстрого поиска.
+// SearchItem represents a search index item for fast lookup.
 type SearchItem struct {
-	Type        string   `json:"type"`        // "course" или "lesson"
-	Title       string   `json:"title"`       // Заголовок урока или курса
-	CourseTitle string   `json:"courseTitle"` // Название курса (для уроков)
-	CourseSlug  string   `json:"courseSlug"`  // Слаг курса
-	LessonSlug  string   `json:"lessonSlug"`  // Слаг урока (пустой для курса)
-	URL         string   `json:"url"`         // Относительный URL для перехода
-	Description string   `json:"description"` // Краткое описание или фрагмент текста
-	Tags        []string `json:"tags"`        // Теги технологий
-	Snippet     string   `json:"snippet"`     // Очищенный текстовый сниппет
+	Type        string   `json:"type"`        // "course" or "lesson"
+	Title       string   `json:"title"`       // Lesson or course title
+	CourseTitle string   `json:"courseTitle"` // Course title (for lessons)
+	CourseSlug  string   `json:"courseSlug"`  // Course slug
+	LessonSlug  string   `json:"lessonSlug"`  // Lesson slug (empty for course)
+	URL         string   `json:"url"`         // Relative URL for navigation
+	Description string   `json:"description"` // Short description or text snippet
+	Tags        []string `json:"tags"`        // Technology tags
+	Snippet     string   `json:"snippet"`     // Sanitized text snippet
 }
 
-// GitHubRepoDto представляет репозиторий GitHub.
+// GitHubRepoDto represents a GitHub repository.
 type GitHubRepoDto struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
@@ -63,7 +63,7 @@ type GitHubRepoDto struct {
 	Forks       int    `json:"forks_count"`
 }
 
-// DockerHubRepoDto представляет образ в Docker Hub.
+// DockerHubRepoDto represents a Docker Hub image.
 type DockerHubRepoDto struct {
 	Name        string `json:"name"`
 	Namespace   string `json:"namespace"`
@@ -72,7 +72,7 @@ type DockerHubRepoDto struct {
 	StarCount   int    `json:"star_count"`
 }
 
-// AnsibleRoleDto представляет роль Ansible Galaxy.
+// AnsibleRoleDto represents an Ansible Galaxy role.
 type AnsibleRoleDto struct {
 	Name          string `json:"name"`
 	Description   string `json:"description"`
@@ -81,7 +81,7 @@ type AnsibleRoleDto struct {
 	URL           string `json:"url"`
 }
 
-// ProjectsPageData объединяет все внешние интеграции.
+// ProjectsPageData aggregates all external integrations.
 type ProjectsPageData struct {
 	GitHubRepos  []GitHubRepoDto
 	DockerRepos  []DockerHubRepoDto

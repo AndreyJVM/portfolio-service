@@ -30,9 +30,9 @@ func NewIntegrationsService(githubUser, dockerUser string) *IntegrationsService 
 	}
 }
 
-// PreloadDefaults мгновенно предзаполняет кэш проверенными статическими данными
-// для гарантированно мгновенного ответа сервера (0ms cold start)
-// и запускает асинхронное фоновое обновление данных из API.
+// PreloadDefaults immediately pre-populates the cache with verified static data
+// for a guaranteed instantaneous server response (0ms cold start)
+// and triggers an asynchronous background update from APIs.
 func (s *IntegrationsService) PreloadDefaults() {
 	s.cacheMutex.Lock()
 	data := model.ProjectsPageData{
@@ -44,12 +44,12 @@ func (s *IntegrationsService) PreloadDefaults() {
 	s.cacheUntil = time.Now().Add(10 * time.Minute)
 	s.cacheMutex.Unlock()
 
-	// Запуск фонового обновления без блокировки основного потока
+	// Launch background refresh without blocking the main goroutine
 	go s.Refresh()
 }
 
-// GetProjectsData отдает кэшированный результат O(1) из памяти без сетевых задержек.
-// При истечении TTL запускает фоновое обновление (Stale-While-Revalidate), не задерживая пользователя.
+// GetProjectsData serves the cached O(1) result from memory without network latency.
+// When TTL expires, it triggers a background refresh (Stale-While-Revalidate) without delaying the user.
 func (s *IntegrationsService) GetProjectsData() model.ProjectsPageData {
 	s.cacheMutex.RLock()
 	if s.cachedData != nil {
@@ -58,18 +58,18 @@ func (s *IntegrationsService) GetProjectsData() model.ProjectsPageData {
 		s.cacheMutex.RUnlock()
 
 		if isExpired {
-			// Фоновое обновление: отдаем старые данные мгновенно, а обновление делаем асинхронно
+			// Background refresh: return stale data instantly and perform update asynchronously
 			go s.Refresh()
 		}
 		return data
 	}
 	s.cacheMutex.RUnlock()
 
-	// Если кэш еще не инициализирован (например, в модульных тестах), выполняем синхронное наполнение
+	// If cache is not yet initialized (e.g. in unit tests), perform synchronous population
 	return s.Refresh()
 }
 
-// Refresh параллельно запрашивает GitHub, DockerHub и обновляет кэш памяти.
+// Refresh queries GitHub and DockerHub in parallel and updates the in-memory cache.
 func (s *IntegrationsService) Refresh() model.ProjectsPageData {
 	var wg sync.WaitGroup
 	var ghRepos []model.GitHubRepoDto

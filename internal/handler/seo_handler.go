@@ -21,8 +21,8 @@ type sitemapURLSet struct {
 	URLs    []sitemapURL `xml:"url"`
 }
 
-// SitemapXML генерирует динамическую карту сайта sitemap.xml со всеми статическими
-// разделами, курсами и уроками базы знаний.
+// SitemapXML generates a dynamic sitemap.xml containing all static
+// sections, courses, and knowledge base lessons.
 func (h *Handler) SitemapXML(w http.ResponseWriter, r *http.Request) {
 	today := time.Now().Format("2006-01-02")
 
@@ -37,10 +37,10 @@ func (h *Handler) SitemapXML(w http.ResponseWriter, r *http.Request) {
 		},
 	}
 
-	// Динамически обходим курсы и их уроки
+	// Dynamically traverse courses and their lessons
 	courses := h.courseService.GetAllCourses()
 	for _, c := range courses {
-		// Добавляем страницу курса
+		// Add course page
 		urlSet.URLs = append(urlSet.URLs, sitemapURL{
 			Loc:        fmt.Sprintf("%s/courses/%s", h.baseURL, c.Slug),
 			LastMod:    today,
@@ -48,7 +48,7 @@ func (h *Handler) SitemapXML(w http.ResponseWriter, r *http.Request) {
 			Priority:   "0.8",
 		})
 
-		// Загружаем уроки курса
+		// Load course lessons
 		courseWithLessons, err := h.courseService.GetCourseBySlug(c.Slug)
 		if err == nil && courseWithLessons != nil {
 			for _, lesson := range courseWithLessons.Lessons {
@@ -70,7 +70,7 @@ func (h *Handler) SitemapXML(w http.ResponseWriter, r *http.Request) {
 	_ = xml.NewEncoder(w).Encode(urlSet)
 }
 
-// RobotsTxt отдает динамический файл robots.txt с абсолютной ссылкой на sitemap.xml.
+// RobotsTxt serves dynamic robots.txt file with an absolute URL to sitemap.xml.
 func (h *Handler) RobotsTxt(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 	w.Header().Set("Cache-Control", "public, max-age=86400")

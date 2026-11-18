@@ -10,7 +10,7 @@ import (
 )
 
 func TestCourseService(t *testing.T) {
-	// Создаем временную директорию с курсом для тестов
+	// Create temporary directory with a course for tests
 	tempDir := t.TempDir()
 	dockerDir := filepath.Join(tempDir, "docker")
 	if err := os.MkdirAll(dockerDir, 0755); err != nil {
@@ -29,7 +29,7 @@ func TestCourseService(t *testing.T) {
 		if len(courses) == 0 {
 			t.Errorf("Ожидался непустой список курсов")
 		}
-		// Проверяем, что для docker количество уроков подсчитано верно (1)
+		// Verify that lesson count is calculated correctly for docker (1)
 		var foundDocker bool
 		for _, c := range courses {
 			if c.Slug == "docker" {
@@ -85,7 +85,7 @@ func TestCourseService(t *testing.T) {
 			t.Errorf("Ожидался отрендеренный HTML контент урока")
 		}
 
-		// Повторный вызов должен возвращать закэшированный экземпляр
+		// Repeated call must return the cached instance
 		course2, lesson2, err2 := cs.GetLesson("docker", "01-test-lesson")
 		if err2 != nil || course2 == nil || lesson2 != lesson {
 			t.Errorf("Ожидалось получение того же инстанса из кэша")
@@ -223,7 +223,7 @@ func TestPathTraversal_Attacks(t *testing.T) {
 		t.Fatalf("Не удалось создать тестовую папку: %v", err)
 	}
 
-	// Создаем секретный файл вне каталога курса
+	// Create secret file outside course directory
 	secretFile := filepath.Join(tempDir, "secret.md")
 	if err := os.WriteFile(secretFile, []byte("# SECRET TOKEN"), 0644); err != nil {
 		t.Fatalf("Не удалось записать secret.md: %v", err)
@@ -273,7 +273,7 @@ func TestBuildSearchIndex_MultibyteUTF8(t *testing.T) {
 		t.Fatalf("Не удалось создать папку курса: %v", err)
 	}
 
-	// Создаем длинный русский текст (>200 рун), где байтовая граница на 200 байте попадает внутрь двухбайтовой кириллической руны
+	// Create long Russian text (>200 runes) where 200th byte boundary falls inside a two-byte Cyrillic rune
 	longRussianText := "# Управление памятью и процессами в контейнерах Docker\n" +
 		strings.Repeat("Операционная система распределяет оперативную память виртуальными страницами через cgroups. ", 10)
 
@@ -306,7 +306,7 @@ func TestBuildSearchIndex_MultibyteUTF8(t *testing.T) {
 	}
 
 	runes := []rune(snippet)
-	// Должно быть 200 рун + 3 символа точки
+	// Must be 200 runes + 3 dot characters
 	if len(runes) != 203 {
 		t.Errorf("Ожидалось 203 руны (200 + ...), получено: %d", len(runes))
 	}
@@ -328,7 +328,7 @@ func TestCourseService_NegativeAndConcurrency(t *testing.T) {
 		if len(courses) == 0 {
 			t.Errorf("GetAllCourses должен возвращать каталог курсов даже при пустой contentDir")
 		}
-		// Все курсы должны иметь 0 уроков
+		// All courses should have 0 lessons
 		for _, c := range courses {
 			if c.LessonCount != 0 {
 				t.Errorf("Курс %s должен иметь 0 уроков, получено %d", c.Slug, c.LessonCount)

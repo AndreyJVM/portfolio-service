@@ -46,7 +46,7 @@ func NewCourseService(contentDir string) *CourseService {
 	}
 }
 
-// GetAllCourses возвращает список всех доступных курсов.
+// GetAllCourses returns a list of all available courses.
 func (s *CourseService) GetAllCourses() []model.Course {
 	courses := []model.Course{
 		{
@@ -128,7 +128,7 @@ func (s *CourseService) GetAllCourses() []model.Course {
 	return courses
 }
 
-// GetCourseBySlug находит курс по слагу и загружает уроки из каталога content/courses/<slug>.
+// GetCourseBySlug finds a course by its slug and loads lessons from content/courses/<slug>.
 func (s *CourseService) GetCourseBySlug(slug string) (*model.Course, error) {
 	if strings.Contains(slug, "..") || strings.ContainsAny(slug, `/\`) {
 		return nil, fmt.Errorf("недопустимый идентификатор курса: %s", slug)
@@ -155,7 +155,7 @@ func (s *CourseService) GetCourseBySlug(slug string) (*model.Course, error) {
 	return foundCourse, nil
 }
 
-// GetLesson загружает конкретный урок курса и парсит Markdown в HTML с кэшированием в памяти.
+// GetLesson loads a specific course lesson and parses Markdown to HTML with in-memory caching.
 func (s *CourseService) GetLesson(courseSlug, lessonSlug string) (*model.Course, *model.Lesson, error) {
 	if strings.Contains(lessonSlug, "..") || strings.ContainsAny(lessonSlug, `/\`) {
 		return nil, nil, fmt.Errorf("недопустимый идентификатор урока: %s", lessonSlug)
@@ -208,13 +208,13 @@ func (s *CourseService) GetLesson(courseSlug, lessonSlug string) (*model.Course,
 	return course, lesson, nil
 }
 
-// BuildSearchIndex создает плоский поисковый индекс по всем курсам и урокам базы знаний.
+// BuildSearchIndex creates a flat search index across all knowledge base courses and lessons.
 func (s *CourseService) BuildSearchIndex() []model.SearchItem {
 	var index []model.SearchItem
 
 	courses := s.GetAllCourses()
 	for _, c := range courses {
-		// Добавляем карточку самого курса
+		// Add course card itself
 		index = append(index, model.SearchItem{
 			Type:        "course",
 			Title:       c.Title,
@@ -226,7 +226,7 @@ func (s *CourseService) BuildSearchIndex() []model.SearchItem {
 			Snippet:     c.Description,
 		})
 
-		// Загружаем все уроки курса
+		// Load all course lessons
 		lessons, err := s.loadLessonsForCourse(c.Slug)
 		if err != nil {
 			continue
@@ -311,7 +311,7 @@ func (s *CourseService) loadLessonsForCourse(courseSlug string) ([]model.Lesson,
 	return lessons, nil
 }
 
-// extractTitle извлекает заголовок h1 из первой строки markdown или форматирует slug.
+// extractTitle extracts the h1 title from the first markdown line or formats the fallback slug.
 func extractTitle(content []byte, fallbackSlug string) string {
 	lines := strings.Split(string(content), "\n")
 	for _, line := range lines {
@@ -331,7 +331,7 @@ func extractTitle(content []byte, fallbackSlug string) string {
 	return titleCase(title)
 }
 
-// titleCase переводит первую букву каждого слова в верхний регистр (замена устаревшего strings.Title).
+// titleCase capitalizes the first letter of each word (replacement for deprecated strings.Title).
 func titleCase(s string) string {
 	words := strings.Fields(s)
 	for i, w := range words {

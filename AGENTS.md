@@ -28,12 +28,13 @@ When modifying any part of this repository, agents **MUST** strictly adhere to t
   ```
 * Under **no circumstances** should dynamic page titles, lesson names, or suffixes be injected into the browser tab `<title>`. Dynamic page context is communicated via on-page breadcrumbs and `<h1>` headings.
 
-### 2. Code Formatting & Style
+### 2. Code Formatting, Style & Comments
 * Every Go file must strictly conform to official `gofmt` specifications before any commit:
   ```bash
   gofmt -l cmd/ internal/ qr-service/
   ```
 * Avoid unnecessary external dependencies. Always favor the Go standard library (`net/http`, `sync`, `os`, `context`, `regexp`).
+* **English Only for Code Comments**: All code comments, docstrings, and inline annotations across all programming languages in the project must be written exclusively in English.
 
 ### 3. Test Suite & Concurrency Verification
 * All code changes must pass tests with the Go race detector enabled. Zero regressions allowed:
@@ -61,6 +62,8 @@ When modifying any part of this repository, agents **MUST** strictly adhere to t
 ```
 .
 ├── .agents/
+│   ├── english-code-comments/
+│   │   └── SKILL.md           # Standardized rule for English-only code comments
 │   └── lesson-creator/
 │       └── SKILL.md           # Modular playbook for authoring courses & interactive labs
 ├── AGENTS.md                  # Operational directives for AI coding agents

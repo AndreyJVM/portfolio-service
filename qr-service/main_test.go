@@ -172,7 +172,7 @@ func TestHandleGenerateQr_InvalidJson(t *testing.T) {
 }
 
 func TestHandleGenerateQr_PayloadTooLarge(t *testing.T) {
-	// Создаем тело запроса больше 64 КБ
+	// Create request body larger than 64 KB
 	largeURL := "https://example.com/" + strings.Repeat("a", 70*1024)
 	reqBody, _ := json.Marshal(map[string]string{"url": largeURL})
 	req := httptest.NewRequest(http.MethodPost, "/api/qr", bytes.NewBuffer(reqBody))
@@ -191,7 +191,7 @@ func TestMiddlewares(t *testing.T) {
 		_, _ = w.Write([]byte("OK"))
 	})
 
-	// 1. Тестируем corsMiddleware (OPTIONS запрос)
+	// 1. Test corsMiddleware (OPTIONS request)
 	cors := corsMiddleware(testHandler)
 	reqOptions := httptest.NewRequest(http.MethodOptions, "/api/qr", nil)
 	rrOptions := httptest.NewRecorder()
@@ -204,7 +204,7 @@ func TestMiddlewares(t *testing.T) {
 		t.Errorf("Access-Control-Allow-Origin header missing or invalid")
 	}
 
-	// 2. Тестируем loggingMiddleware + corsMiddleware для обычного GET
+	// 2. Test loggingMiddleware + corsMiddleware for standard GET
 	handler := loggingMiddleware(cors)
 	reqGet := httptest.NewRequest(http.MethodGet, "/health", nil)
 	rrGet := httptest.NewRecorder()
@@ -219,26 +219,26 @@ func TestMiddlewares(t *testing.T) {
 }
 
 func TestHandleHealth_Detailed(t *testing.T) {
-	// 1. Виртуальный GET запрос к /health
+	// 1. Virtual GET request to /health
 	req := httptest.NewRequest(http.MethodGet, "/health", nil)
 	rr := httptest.NewRecorder()
 
-	// 2. Вызов хендлера
+	// 2. Call handler
 	handleHealth(rr, req)
 
-	// 3. Проверка HTTP статус-кода
+	// 3. Check HTTP status code
 	if rr.Code != http.StatusOK {
 		t.Errorf("expected status code %d, got %d", http.StatusOK, rr.Code)
 	}
 
-	// 4. Проверка заголовка Content-Type
+	// 4. Check Content-Type header
 	contentType := rr.Header().Get("Content-Type")
 	expectedContentType := "application/json"
 	if contentType != expectedContentType {
 		t.Errorf("expected Content-Type '%s', got '%s'", expectedContentType, contentType)
 	}
 
-	// 5. Парсинг JSON-ответа
+	// 5. Parse JSON response
 	var responseBody struct {
 		Service string `json:"service"`
 		Status  string `json:"status"`
@@ -249,7 +249,7 @@ func TestHandleHealth_Detailed(t *testing.T) {
 		t.Fatalf("failed to parse JSON response: %v", err)
 	}
 
-	// 6. Проверка полей распарсенного JSON
+	// 6. Check parsed JSON fields
 	if responseBody.Status != "UP" {
 		t.Errorf("expected status 'UP', got '%s'", responseBody.Status)
 	}
@@ -259,7 +259,7 @@ func TestHandleHealth_Detailed(t *testing.T) {
 }
 
 func TestHandleGenerateQr_PostSuccess_Detailed(t *testing.T) {
-	// Список различных валидных URL, которые должен поддерживать генератор
+	// List of various valid URLs that the generator must support
 	testCases := []struct {
 		name string
 		url  string
@@ -276,26 +276,26 @@ func TestHandleGenerateQr_PostSuccess_Detailed(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			// 1. Формируем тело запроса безопасно через json.Marshal
+			// 1. Construct request body safely via json.Marshal
 			reqDto := map[string]string{"url": tc.url}
 			jsonBytes, err := json.Marshal(reqDto)
 			if err != nil {
 				t.Fatalf("failed to marshal request: %v", err)
 			}
 
-			// 2. Создаем HTTP POST запрос
+			// 2. Create HTTP POST request
 			req := httptest.NewRequest(http.MethodPost, "/api/qr", bytes.NewBuffer(jsonBytes))
 			req.Header.Set("Content-Type", "application/json")
 
 			rr := httptest.NewRecorder()
 			handleGenerateQr(rr, req)
 
-			// 3. Проверяем HTTP статус 200 OK
+			// 3. Check HTTP status 200 OK
 			if rr.Code != http.StatusOK {
 				t.Fatalf("expected status 200, got %d. Response: %s", rr.Code, rr.Body.String())
 			}
 
-			// 4. Парсим JSON ответ
+			// 4. Parse JSON response
 			var resp struct {
 				URL    string `json:"url"`
 				QRCode string `json:"qrCode"`
@@ -305,12 +305,12 @@ func TestHandleGenerateQr_PostSuccess_Detailed(t *testing.T) {
 				t.Fatalf("failed to decode JSON response: %v", err)
 			}
 
-			// 5. Проверяем, что url в ответе совпадает с переданным tc.url
+			// 5. Check that url in response matches passed tc.url
 			if resp.URL != tc.url {
 				t.Errorf("expected url '%s', got '%s'", tc.url, resp.URL)
 			}
 
-			// 6. Проверяем, что картинка сгенерирована
+			// 6. Check that image was generated
 			if len(resp.QRCode) == 0 {
 				t.Errorf("expected non-empty qrCode for url '%s'", tc.url)
 			}
@@ -319,7 +319,7 @@ func TestHandleGenerateQr_PostSuccess_Detailed(t *testing.T) {
 }
 
 func TestHandleGenerateQr_UrlLengthLimit(t *testing.T) {
-	// 1. URL с длиной более 2048 символов должен вернуть 400 Bad Request
+	// 1. URL with length greater than 2048 characters should return 400 Bad Request
 	oversizedURL := "https://example.com/" + strings.Repeat("a", 2050)
 	req := httptest.NewRequest(http.MethodGet, "/api/qr?url="+oversizedURL, nil)
 	rr := httptest.NewRecorder()
@@ -339,7 +339,7 @@ func TestHandleGenerateQr_UrlLengthLimit(t *testing.T) {
 		t.Errorf("expected 2048 limit message, got %s", errResp.Error)
 	}
 
-	// 2. Валидный URL длиной ровно 500 символов должен отрабатывать без ошибок
+	// 2. Valid URL of exactly 500 characters should succeed without errors
 	validLongURL := "https://example.com/" + strings.Repeat("b", 450)
 	req2 := httptest.NewRequest(http.MethodGet, "/api/qr?url="+validLongURL, nil)
 	rr2 := httptest.NewRecorder()
@@ -354,7 +354,7 @@ func TestHandleGenerateQr_UrlLengthLimit(t *testing.T) {
 func TestHandleGenerateQr_AcceptHeaderVariations(t *testing.T) {
 	targetURL := "https://vorobevaqa.ru"
 
-	// 1. Accept: image/png -> бинарный PNG поток
+	// 1. Accept: image/png -> binary PNG stream
 	reqPng := httptest.NewRequest(http.MethodGet, "/api/qr?url="+targetURL, nil)
 	reqPng.Header.Set("Accept", "image/png,image/*;q=0.9")
 	rrPng := httptest.NewRecorder()
@@ -367,7 +367,7 @@ func TestHandleGenerateQr_AcceptHeaderVariations(t *testing.T) {
 		t.Errorf("expected Content-Type image/png, got %s", rrPng.Header().Get("Content-Type"))
 	}
 
-	// 2. Accept: application/json -> JSON с Base64
+	// 2. Accept: application/json -> JSON with Base64
 	reqJson := httptest.NewRequest(http.MethodGet, "/api/qr?url="+targetURL, nil)
 	reqJson.Header.Set("Accept", "application/json")
 	rrJson := httptest.NewRecorder()
@@ -409,7 +409,7 @@ func TestCheckHealth(t *testing.T) {
 	})
 
 	t.Run("Healthcheck Network Failure", func(t *testing.T) {
-		// Заведомо недоступный адрес
+		// Intentionally unreachable address
 		if err := checkHealth("http://127.0.0.1:54321"); err == nil {
 			t.Fatal("expected healthcheck to fail on unreachable host")
 		}

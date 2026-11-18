@@ -17,7 +17,7 @@ import (
 	"ru.vorobevaqa/devops-platform/internal/service"
 )
 
-// validateDirs проверяет наличие обязательных директорий ресурсов при старте сервиса.
+// validateDirs checks for the presence of required resource directories at service startup.
 func validateDirs(dirs ...string) error {
 	for _, dir := range dirs {
 		info, err := os.Stat(dir)
@@ -34,17 +34,17 @@ func validateDirs(dirs ...string) error {
 func main() {
 	cfg := config.Load()
 
-	// Валидация существования необходимых ресурсов
+	// Validate the existence of required resources
 	if err := validateDirs(cfg.ContentDir, cfg.TemplatesDir, cfg.StaticDir); err != nil {
 		log.Printf("⚠️ Предупреждение о путях конфигурации: %v", err)
 	}
 
-	// Инициализация сервисного слоя
+	// Initialize service layer
 	courseService := service.NewCourseService(cfg.ContentDir)
 	integrationsService := service.NewIntegrationsService(cfg.GitHubUser, cfg.DockerUser)
-	integrationsService.PreloadDefaults() // Мгновенный холодный старт без задержек на внешние API
+	integrationsService.PreloadDefaults() // Instant cold start without external API delays
 
-	// Инициализация контроллеров и роутера
+	// Initialize handlers and router
 	h := handler.NewHandler(courseService, integrationsService, cfg.TemplatesDir, cfg.StaticDir, cfg.AppBaseURL)
 	router := handler.NewRouter(h, cfg.StaticDir)
 
@@ -57,7 +57,7 @@ func main() {
 		IdleTimeout:       60 * time.Second,
 	}
 
-	// Graceful shutdown на базе signal.NotifyContext
+	// Graceful shutdown based on signal.NotifyContext
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM, syscall.SIGQUIT)
 	defer stop()
 
@@ -76,7 +76,7 @@ func main() {
 		log.Println("🛑 Получен сигнал завершения, плавная остановка сервера Go...")
 	}
 
-	// Ожидание завершения активных соединений (grace period 10 секунд)
+	// Wait for active connections to finish (grace period 10 seconds)
 	shutdownCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
