@@ -125,11 +125,10 @@ Execute the verification commands to ensure zero regressions:
 
 ```bash
 # 1. Verify Go syntax and format
-gofmt -l cmd/ internal/ qr-service/
+gofmt -l cmd/ internal/
 
 # 2. Run race-detector unit and integration tests
 go test -count=1 -race ./...
-(cd qr-service && go test -count=1 -race ./...)
 
 # 3. Ensure the browser title invariant is preserved
 grep -rn "<title>" web/templates/

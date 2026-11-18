@@ -18,22 +18,13 @@
     "activeTab": "education"
   },
   "mustang": {
-    "title": "Ford Mustang Shelby GT500 • Мечта DevOps-инженера",
-    "description": "Фонд спасения от рутины: краудфандинг на Ford Mustang Shelby GT500.",
-    "keywords": "Ford Mustang, Shelby GT500, краудфандинг, V8",
-    "ogTitle": "Ford Mustang Shelby GT500 • Фонд мечты инженера",
+    "title": "На мечту • Ford Mustang Shelby GT500",
+    "description": "Фонд спасения от рутины: краудфандинг на мечту — Ford Mustang Shelby GT500.",
+    "keywords": "На мечту, Ford Mustang, Shelby GT500, краудфандинг, V8",
+    "ogTitle": "На мечту • Ford Mustang Shelby GT500",
     "ogDescription": "Осталось закрыть единственный критический баг — отсутствие 760 л.с. в гараже.",
     "ogImage": "/images/avatar.jpg",
     "activeTab": "mustang"
-  },
-  "qr": {
-    "title": "QR Code Playground",
-    "description": "Генератор QR-кодов на легковесном нативном Go движке.",
-    "keywords": "QR code generator, golang, qrcode",
-    "ogTitle": "QR Code Playground",
-    "ogDescription": "Интерактивный генератор QR-кодов на Go.",
-    "ogImage": "/images/og-main.png",
-    "activeTab": "qr"
   },
   "404": {
     "title": "404 • Страница не найдена",

@@ -116,17 +116,12 @@ func NewRouter(h *Handler) *chi.Mux {
 	r.Get("/education", h.Education)
 	r.Get("/about", h.RedirectAbout)
 	r.Get("/roadmap", h.RoadmapRedirect)
-	r.Get("/qr", h.QRPage)
 	r.Get("/mustang", h.Mustang)
 
 	// Grouped API routes
 	r.Route("/api", func(api chi.Router) {
 		api.Get("/health", h.Health)
 		api.Get("/search", h.SearchAPI)
-
-		// QR code generation API
-		api.Get("/qr", h.GenerateQREndpoint)
-		api.Post("/qr", h.GenerateQREndpoint)
 
 		// PDF resume API
 		api.Route("/pdf", func(pdf chi.Router) {

@@ -25,7 +25,7 @@ jobs:
 
       - name: Verify Code Style (gofmt)
         run: |
-          UNFORMATTED=$(gofmt -l cmd/ internal/ qr-service/*.go)
+          UNFORMATTED=$(gofmt -l cmd/ internal/)
           if [ -n "$UNFORMATTED" ]; then
             echo "❌ The following files are not formatted with gofmt:"
             echo "$UNFORMATTED"
@@ -34,18 +34,7 @@ jobs:
           echo "✅ All Go files conform to gofmt standards."
 
       - name: Run go vet
-        run: |
-          go vet ./...
-          (cd qr-service && go vet ./...)
+        run: go vet ./...
 
       - name: Run Platform Tests
         run: go test -v -race ./...
-
-      - name: Set up Go for QR Service
-        uses: actions/setup-go@v5
-        with:
-          go-version-file: 'qr-service/go.mod'
-          cache-dependency-path: qr-service/go.sum
-
-      - name: Run QR Service Tests
-        run: cd qr-service && go test -v -race ./...

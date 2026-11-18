@@ -166,4 +166,3 @@ func (h *Handler) MethodNotAllowed(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusMethodNotAllowed)
 	_, _ = w.Write([]byte("405 Method Not Allowed\n"))
 }
-

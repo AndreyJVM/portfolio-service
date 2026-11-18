@@ -26,9 +26,6 @@ AGENTS.md
 .vscode/
 .DS_Store
 
-# Sub-services (built in their own isolated Docker contexts)
-qr-service/
-
 # Repository documentation & CI/CD configs
 README.md
 LICENSE

@@ -23,28 +23,7 @@ updates:
         patterns:
           - "*"
 
-  # 2. Зависимости микросервиса QR (Go modules)
-  - package-ecosystem: "gomod"
-    directory: "/qr-service"
-    schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "06:00"
-      timezone: "Europe/Moscow"
-    open-pull-requests-limit: 5
-    labels:
-      - "dependencies"
-      - "go"
-      - "qr-service"
-    commit-message:
-      prefix: "chore(deps)"
-      include: "scope"
-    groups:
-      qr-dependencies:
-        patterns:
-          - "*"
-
-  # 3. Обновление версий GitHub Actions workflows
+  # 2. Обновление версий GitHub Actions workflows
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
@@ -64,7 +43,7 @@ updates:
         patterns:
           - "*"
 
-  # 4. Базовые образы Dockerfile основного сервиса
+  # 3. Базовые образы Dockerfile основного сервиса
   - package-ecosystem: "docker"
     directory: "/"
     schedule:
@@ -80,19 +59,3 @@ updates:
       prefix: "build(deps)"
       include: "scope"
 
-  # 5. Базовые образы Dockerfile микросервиса QR
-  - package-ecosystem: "docker"
-    directory: "/qr-service"
-    schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "06:00"
-      timezone: "Europe/Moscow"
-    open-pull-requests-limit: 5
-    labels:
-      - "dependencies"
-      - "docker"
-      - "qr-service"
-    commit-message:
-      prefix: "build(deps)"
-      include: "scope"

@@ -49,22 +49,13 @@ var defaultPages = map[string]PageMeta{
 		ActiveTab:     "education",
 	},
 	"mustang": {
-		Title:         "Ford Mustang Shelby GT500 • Мечта DevOps-инженера",
-		Description:   "Фонд спасения от рутины: краудфандинг на Ford Mustang Shelby GT500.",
-		Keywords:      "Ford Mustang, Shelby GT500, краудфандинг, V8",
-		OGTitle:       "Ford Mustang Shelby GT500 • Фонд мечты инженера",
+		Title:         "На мечту • Ford Mustang Shelby GT500",
+		Description:   "Фонд спасения от рутины: краудфандинг на мечту — Ford Mustang Shelby GT500.",
+		Keywords:      "На мечту, Ford Mustang, Shelby GT500, краудфандинг, V8",
+		OGTitle:       "На мечту • Ford Mustang Shelby GT500",
 		OGDescription: "Осталось закрыть единственный критический баг — отсутствие 760 л.с. в гараже.",
 		OGImage:       "/images/avatar.jpg",
 		ActiveTab:     "mustang",
-	},
-	"qr": {
-		Title:         "QR Code Playground",
-		Description:   "Генератор QR-кодов на легковесном нативном Go движке.",
-		Keywords:      "QR code generator, golang, qrcode",
-		OGTitle:       "QR Code Playground",
-		OGDescription: "Интерактивный генератор QR-кодов на Go.",
-		OGImage:       "/images/og-main.png",
-		ActiveTab:     "qr",
 	},
 }
 

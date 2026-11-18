@@ -134,19 +134,16 @@ flowchart LR
 ### Local Development & Testing
 
 ```bash
-# 1. Run unit tests with race detection for main platform
+# 1. Run unit tests with race detection
 go test -v -race ./...
 
-# 2. Run unit tests with race detection for QR microservice
-cd qr-service && go test -v -race ./...
+# 2. Verify Go formatting and static analysis
+test -z "$(gofmt -l cmd/ internal/)" && go vet ./...
 
-# 3. Verify Go formatting and static analysis
-test -z "$(gofmt -l cmd/ internal/ qr-service/*.go)" && go vet ./...
-
-# 4. Run the web platform locally
+# 3. Run the web platform locally
 go run cmd/server/main.go
 
-# 5. Build and run Docker containers locally
+# 4. Build and run Docker containers locally
 docker compose up -d --build
 ```
 
@@ -165,8 +162,7 @@ portfolio/
 │   └── service/             # Catalog service and external integrations (GitHub, Docker Hub)
 ├── web/
 │   ├── static/              # CSS (themes, navbar, animations), JS (search, progress, quizzes), images
-│   └── templates/           # Go HTML templates (layout, index, courses, course_detail, lesson, qr)
-├── qr-service/              # Standalone Go microservice for QR-code generation (scratch image)
+│   └── templates/           # Go HTML templates (layout, index, courses, course_detail, lesson)
 ├── nginx/
 │   ├── nginx.conf           # Reverse Proxy, SSL Let's Encrypt configuration, and HA routing
 │   └── 50x.html             # Custom error pages
@@ -298,16 +294,13 @@ flowchart LR
 # 1. Запуск unit-тестов платформы с детектором гонок
 go test -v -race ./...
 
-# 2. Запуск unit-тестов QR-сервиса с детектором гонок
-cd qr-service && go test -v -race ./...
+# 2. Проверка форматирования и статический анализ
+test -z "$(gofmt -l cmd/ internal/)" && go vet ./...
 
-# 3. Проверка форматирования и статический анализ
-test -z "$(gofmt -l cmd/ internal/ qr-service/*.go)" && go vet ./...
-
-# 4. Локальный запуск платформы
+# 3. Локальный запуск платформы
 go run cmd/server/main.go
 
-# 5. Локальная сборка и запуск в Docker Compose
+# 4. Локальная сборка и запуск в Docker Compose
 docker compose up -d --build
 ```
 
@@ -326,8 +319,7 @@ portfolio/
 │   └── service/             # Сервисный слой каталога и интеграций (GitHub, Docker Hub)
 ├── web/
 │   ├── static/              # CSS (темы, сайдбар, анимации), JS (поиск, прогресс, квизы), сертификаты
-│   └── templates/           # HTML-шаблоны Go (layout, index, courses, course_detail, lesson, qr)
-├── qr-service/              # Независимый Go микросервис генерации QR-кодов (scratch образ)
+│   └── templates/           # HTML-шаблоны Go (layout, index, courses, course_detail, lesson)
 ├── nginx/
 │   ├── nginx.conf           # Конфигурация Reverse Proxy, SSL Let's Encrypt и HA роутинга
 │   └── 50x.html             # Кастомная страница аварийных ошибок

@@ -2,7 +2,6 @@
 bin/
 devops-platform
 /server
-qr-service/qr-service
 *.exe
 *.exe~
 *.dll

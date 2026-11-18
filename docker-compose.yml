@@ -30,37 +30,6 @@ services:
       retries: 4
       start_period: 3s
 
-  # ========== GO QR-CODE MICROSERVICE ==========
-  qr-service:
-    image: andreyvorobevaqa/qr-service:latest
-    container_name: qr-microservice
-    restart: unless-stopped
-    security_opt:
-      - no-new-privileges:true
-    environment:
-      PORT: "8081"
-    deploy:
-      resources:
-        limits:
-          cpus: "0.5"
-          memory: 64M
-        reservations:
-          cpus: "0.05"
-          memory: 16M
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
-    networks:
-      - app-network
-    healthcheck:
-      test: [ "CMD", "/app/qr-service", "healthcheck" ]
-      interval: 5s
-      timeout: 2s
-      retries: 3
-      start_period: 2s
-
   # ========== NGINX (REVERSE PROXY / API GATEWAY) ==========
   nginx:
     image: nginx:alpine
@@ -91,8 +60,6 @@ services:
       - ./certbot/www:/var/www/certbot:ro
     depends_on:
       app:
-        condition: service_healthy
-      qr-service:
         condition: service_healthy
     networks:
       - app-network

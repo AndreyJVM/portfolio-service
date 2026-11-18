@@ -1,8 +1,0 @@
-# Git & Version Control
-.git
-.gitignore
-
-# Go temporary & test artifacts
-*.log
-*.tmp
-*.out

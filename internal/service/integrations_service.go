@@ -156,9 +156,9 @@ func (s *IntegrationsService) fallbackGitHubRepos() []model.GitHubRepoDto {
 			Forks:       1,
 		},
 		{
-			Name:        "qr-microservice",
-			Description: "Высокопроизводительный микросервис генерации QR-кодов на Go (Alpine/Scratch, RAM ~8MB).",
-			HTMLURL:     "https://github.com/AndreyJVM/portfolio-service/tree/master/qr-service",
+			Name:        "linux-kernel-labs",
+			Description: "Практические сценарии и скрипты настройки cgroups v2, namespaces и eBPF трассировки.",
+			HTMLURL:     "https://github.com/AndreyJVM/portfolio-service",
 			Language:    "Go",
 			Stargazers:  5,
 			Forks:       0,
@@ -217,10 +217,10 @@ func (s *IntegrationsService) fallbackDockerHubRepos() []model.DockerHubRepoDto 
 			StarCount:   3,
 		},
 		{
-			Name:        "qr-service",
+			Name:        "linux-lab-box",
 			Namespace:   s.dockerUser,
-			Description: "Go Scratch QR generator microservice с in-binary healthcheck.",
-			PullCount:   120,
+			Description: "Инструментальный контейнер для лабораторных работ по Linux ядрам, сети и трассировке.",
+			PullCount:   75,
 			StarCount:   2,
 		},
 	}

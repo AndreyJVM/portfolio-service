@@ -11,7 +11,6 @@
 ### Architectural Blueprint
 * **Core Web Server (`cmd/server`)**: High-performance HTTP application written in idiomatic Go standard library (`net/http`) without heavy external web frameworks.
 * **Content Engine (`internal/service/course_service.go`)**: GFM-compliant markdown-to-HTML pipeline using `goldmark`, backed by thread-safe in-memory caching (`sync.RWMutex`) and automated full-text search indexing.
-* **Microservices Ecosystem (`qr-service/`)**: Standalone, decoupled Go microservice responsible for real-time QR code generation and image serving.
 * **Frontend Philosophy**: Server-Side Rendering (Go `html/template`), vanilla JavaScript (ES6+), modern CSS variables, and Bootstrap 5 for grid layout. **No heavy client-side frameworks** (React/Vue/Angular) and **no Node.js build steps**.
 * **Edge & Ingress Gateway (`nginx/`)**: Nginx reverse proxy with TLS/SSL termination, HTTP/2, strict Content Security Policy (CSP), rate limiting, and gzip/brotli compression.
 
@@ -31,7 +30,7 @@ When modifying any part of this repository, agents **MUST** strictly adhere to t
 ### 2. Code Formatting, Style & Comments
 * Every Go file must strictly conform to official `gofmt` specifications before any commit:
   ```bash
-  gofmt -l cmd/ internal/ qr-service/
+  gofmt -l cmd/ internal/
   ```
 * Avoid unnecessary external dependencies. Always favor the Go standard library (`net/http`, `sync`, `os`, `context`, `regexp`).
 * **English Only for Code Comments**: All code comments, docstrings, and inline annotations across all programming languages in the project must be written exclusively in English.
@@ -39,11 +38,7 @@ When modifying any part of this repository, agents **MUST** strictly adhere to t
 ### 3. Test Suite & Concurrency Verification
 * All code changes must pass tests with the Go race detector enabled. Zero regressions allowed:
   ```bash
-  # Root service
   go test -count=1 -race ./...
-
-  # QR microservice
-  cd qr-service && go test -count=1 -race ./...
   ```
 * Thread safety: Any shared mutable state (e.g. caches, metrics) must use explicit synchronization (`sync.RWMutex` or `sync.Mutex`). Never introduce data races.
 
@@ -77,10 +72,9 @@ When modifying any part of this repository, agents **MUST** strictly adhere to t
 ├── scripts/                   # Deployment and SSL lifecycle management scripts
 ├── internal/
 │   ├── config/                # Environment variable parsing and application config
-│   ├── handler/               # HTTP handlers (courses, pages, search, SEO, QR integration)
+│   ├── handler/               # HTTP handlers (courses, pages, search, SEO)
 │   ├── model/                 # Shared data structures (Course, Lesson, SearchItem, MetaData)
 │   └── service/               # Core domain logic (course loading, search indexing, integrations)
-├── qr-service/                # Independent microservice with its own go.mod and test suite
 ├── web/
 │   ├── static/                # Static assets (CSS, modular JS, SVG icons, images)
 │   └── templates/             # Go html/template layouts, pages, and components
@@ -95,15 +89,13 @@ Agents must use the following standard commands when building, testing, and veri
 
 ```bash
 # 1. Format check
-gofmt -l cmd/ internal/ qr-service/
+gofmt -l cmd/ internal/
 
 # 2. Run unit and integration tests with Race Detector
 go test -count=1 -race ./...
-cd qr-service && go test -count=1 -race ./... && cd ..
 
-# 3. Build binaries locally
+# 3. Build binary locally
 go build -v -o bin/server ./cmd/server
-(cd qr-service && go build -v -o ../bin/qr-service .)
 
 # 4. Run application locally
 ./bin/server -port=8080 -content=./content/courses -templates=./web/templates -static=./web/static

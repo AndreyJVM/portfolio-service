@@ -93,9 +93,7 @@ func TestHandlers(t *testing.T) {
 		{"GET /education", "GET", "/education", http.StatusOK},
 		{"GET /about redirect", "GET", "/about", http.StatusMovedPermanently},
 		{"GET /roadmap redirect", "GET", "/roadmap", http.StatusMovedPermanently},
-		{"GET /qr", "GET", "/qr", http.StatusOK},
 		{"GET /mustang", "GET", "/mustang", http.StatusOK},
-		{"GET /api/qr", "GET", "/api/qr?text=https://test.com", http.StatusOK},
 		{"GET /api/pdf/resume", "GET", "/api/pdf/resume", http.StatusOK},
 		{"GET /api/pdf/health", "GET", "/api/pdf/health", http.StatusOK},
 	}
@@ -203,7 +201,6 @@ func TestSEOEndpoints(t *testing.T) {
 		"https://vorobevaqa.ru/",
 		"https://vorobevaqa.ru/courses",
 		"https://vorobevaqa.ru/education",
-		"https://vorobevaqa.ru/qr",
 		"https://vorobevaqa.ru/mustang",
 		"https://vorobevaqa.ru/courses/linux",
 		"https://vorobevaqa.ru/courses/docker",
@@ -293,7 +290,6 @@ func TestStaticAssets(t *testing.T) {
 		{"Main JS", "/js/main.js", "javascript"},
 		{"About JS", "/js/pages/about.js", "javascript"},
 		{"Mustang JS", "/js/pages/mustang.js", "javascript"},
-		{"QR JS", "/js/pages/qr.js", "javascript"},
 		{"Lesson JS", "/js/pages/lesson.js", "javascript"},
 	}
 
@@ -354,8 +350,7 @@ func TestLayoutIncludes(t *testing.T) {
 		"/courses/ansible",         // Quick link: Ansible
 		"/courses/cicd",            // Quick link: CI/CD
 		">Об авторе<",              // About link without icons
-		">QR-генератор<",           // QR generator link without icons
-		">Shelby<",                 // Shelby link without icons
+		">На мечту<",               // "На мечту" link without icons
 	}
 
 	for _, snippet := range requiredSnippets {
@@ -430,7 +425,7 @@ func TestCleanPagesLayout(t *testing.T) {
 	r := setupTestRouter()
 
 	// 1. Verify that all pages have strictly <title>Primary Cloud Lab</title> in browser tab
-	for _, path := range []string{"/", "/courses", "/education", "/qr", "/mustang"} {
+	for _, path := range []string{"/", "/courses", "/education", "/mustang"} {
 		req := httptest.NewRequest("GET", path, nil)
 		w := httptest.NewRecorder()
 		r.ServeHTTP(w, req)
@@ -450,14 +445,6 @@ func TestCleanPagesLayout(t *testing.T) {
 	}
 	if loc := wProj.Header().Get("Location"); loc != "/education#projects" {
 		t.Errorf("Ожидался редирект на /education#projects, получен %s", loc)
-	}
-
-	// 3. QR page should not contain unnecessary courses badge
-	reqQR := httptest.NewRequest("GET", "/qr", nil)
-	wQR := httptest.NewRecorder()
-	r.ServeHTTP(wQR, reqQR)
-	if strings.Contains(wQR.Body.String(), "Курсы DevOps") {
-		t.Errorf("/qr не должна содержать плашку 'Курсы DevOps'")
 	}
 }
 
@@ -631,56 +618,6 @@ func TestIndexPage_ContainsCoursesAndProjects(t *testing.T) {
 	}
 }
 
-func TestQRJsonEndpoint(t *testing.T) {
-	r := setupTestRouter()
-
-	// 1. Successful JSON POST request
-	body := `{"url":"https://vorobevaqa.ru"}`
-	req := httptest.NewRequest("POST", "/api/qr", strings.NewReader(body))
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Accept", "application/json")
-	w := httptest.NewRecorder()
-
-	r.ServeHTTP(w, req)
-
-	if w.Code != http.StatusOK {
-		t.Fatalf("Ожидался статус 200, получен %d", w.Code)
-	}
-
-	var resp struct {
-		QRCode string `json:"qrCode"`
-		URL    string `json:"url"`
-	}
-	if err := json.NewDecoder(w.Body).Decode(&resp); err != nil {
-		t.Fatalf("Ошибка парсинга JSON: %v", err)
-	}
-	if resp.QRCode == "" {
-		t.Errorf("Ожидался base64 qrCode, получена пустая строка")
-	}
-	if resp.URL != "https://vorobevaqa.ru" {
-		t.Errorf("Ожидался url 'https://vorobevaqa.ru', получен '%s'", resp.URL)
-	}
-
-	// 2. Request without text/url parameter (defaults to baseURL fallback)
-	emptyReq := httptest.NewRequest("GET", "/api/qr?format=json", nil)
-	emptyW := httptest.NewRecorder()
-	r.ServeHTTP(emptyW, emptyReq)
-	if emptyW.Code != http.StatusOK {
-		t.Errorf("Ожидался 200 с дефолтным url, получен %d", emptyW.Code)
-	}
-
-	// 3. Serve raw PNG when requested without JSON headers
-	pngReq := httptest.NewRequest("GET", "/api/qr?text=https://test.com", nil)
-	pngW := httptest.NewRecorder()
-	r.ServeHTTP(pngW, pngReq)
-	if pngW.Code != http.StatusOK {
-		t.Errorf("Ожидался 200 для PNG, получен %d", pngW.Code)
-	}
-	if pngW.Header().Get("Content-Type") != "image/png" {
-		t.Errorf("Ожидался Content-Type image/png, получен %s", pngW.Header().Get("Content-Type"))
-	}
-}
-
 func TestResumePDF_MissingFile(t *testing.T) {
 	cs := service.NewCourseService("../../content/courses")
 	is := service.NewIntegrationsService("AndreyJVM", "andreyvorobevaqa")
@@ -772,41 +709,6 @@ func TestNoDirListingFS(t *testing.T) {
 	})
 }
 
-func TestQRGeneration_FallbackDefault(t *testing.T) {
-	r := setupTestRouter()
-
-	t.Run("GET without text param falls back to baseURL", func(t *testing.T) {
-		req := httptest.NewRequest("GET", "/api/qr?format=json", nil)
-		w := httptest.NewRecorder()
-
-		r.ServeHTTP(w, req)
-
-		if w.Code != http.StatusOK {
-			t.Fatalf("Ожидался статус 200, получен %d", w.Code)
-		}
-
-		var resp map[string]interface{}
-		if err := json.Unmarshal(w.Body.Bytes(), &resp); err != nil {
-			t.Fatalf("Ошибка декодирования JSON: %v", err)
-		}
-		if resp["url"] != "https://vorobevaqa.ru" {
-			t.Errorf("Ожидался fallback URL https://vorobevaqa.ru, получено: %v", resp["url"])
-		}
-	})
-
-	t.Run("POST with invalid JSON falls back to baseURL", func(t *testing.T) {
-		req := httptest.NewRequest("POST", "/api/qr", strings.NewReader("invalid-json-body"))
-		req.Header.Set("Content-Type", "application/json")
-		w := httptest.NewRecorder()
-
-		r.ServeHTTP(w, req)
-
-		if w.Code != http.StatusOK {
-			t.Fatalf("Ожидался статус 200, получен %d", w.Code)
-		}
-	})
-}
-
 func TestSecurity_PathTraversalHTTP(t *testing.T) {
 	r := setupTestRouter()
 
@@ -882,22 +784,6 @@ func TestSecurity_SearchEdgeCases(t *testing.T) {
 	})
 }
 
-func TestSecurity_QRMaximumLength(t *testing.T) {
-	r := setupTestRouter()
-
-	t.Run("Excessively long text returns 400 Bad Request", func(t *testing.T) {
-		tooLongText := strings.Repeat("A", 3000)
-		req := httptest.NewRequest("GET", "/api/qr?text="+tooLongText, nil)
-		w := httptest.NewRecorder()
-
-		r.ServeHTTP(w, req)
-
-		if w.Code != http.StatusBadRequest {
-			t.Errorf("Ожидался статус 400 Bad Request для 3000 символов, получен %d", w.Code)
-		}
-	})
-}
-
 func TestConcurrency_HighLoad(t *testing.T) {
 	r := setupTestRouter()
 	const workers = 50
@@ -936,7 +822,6 @@ func TestConcurrency_HighLoad(t *testing.T) {
 			"/courses/podman",
 			"/projects",
 			"/education",
-			"/qr",
 			"/mustang",
 		}
 
@@ -1068,43 +953,6 @@ func TestStaticAssets_SecurityChecks(t *testing.T) {
 			}
 		})
 	}
-}
-
-func TestQRHandler_EdgeCases(t *testing.T) {
-	r := setupTestRouter()
-
-	t.Run("Text exceeds 2048 characters returns 400", func(t *testing.T) {
-		hugeText := strings.Repeat("A", 2049)
-		req := httptest.NewRequest("GET", "/api/qr?text="+hugeText, nil)
-		w := httptest.NewRecorder()
-		r.ServeHTTP(w, req)
-
-		if w.Code != http.StatusBadRequest {
-			t.Errorf("Ожидался статус 400 при превышении лимита 2048 символов, получен %d", w.Code)
-		}
-	})
-
-	t.Run("POST with empty json falls back to baseURL", func(t *testing.T) {
-		req := httptest.NewRequest("POST", "/api/qr", strings.NewReader(`{}`))
-		req.Header.Set("Content-Type", "application/json")
-		w := httptest.NewRecorder()
-		r.ServeHTTP(w, req)
-
-		if w.Code != http.StatusOK {
-			t.Errorf("Ожидался статус 200, получен %d", w.Code)
-		}
-	})
-
-	t.Run("POST with invalid json body falls back to baseURL", func(t *testing.T) {
-		req := httptest.NewRequest("POST", "/api/qr", strings.NewReader(`invalid-json-body`))
-		req.Header.Set("Content-Type", "application/json")
-		w := httptest.NewRecorder()
-		r.ServeHTTP(w, req)
-
-		if w.Code != http.StatusOK {
-			t.Errorf("Ожидался статус 200, получен %d", w.Code)
-		}
-	})
 }
 
 func TestSearchAPI_CacheRebuildAndTagMatch(t *testing.T) {
@@ -1248,4 +1096,3 @@ func TestCustomErrorHandlers(t *testing.T) {
 		}
 	})
 }
-
