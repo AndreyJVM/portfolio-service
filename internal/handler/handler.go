@@ -6,6 +6,7 @@ import (
 	"html/template"
 	"net/http"
 	"path/filepath"
+	"strings"
 	"sync"
 
 	"ru.vorobevaqa/devops-platform/internal/model"
@@ -110,3 +111,59 @@ func (h *Handler) Health(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	_, _ = w.Write([]byte(`{"status":"UP","service":"portfolio-service"}`))
 }
+
+// NotFound serves a clean 404 response (JSON for API, HTML for web browsers).
+func (h *Handler) NotFound(w http.ResponseWriter, r *http.Request) {
+	if strings.HasPrefix(r.URL.Path, "/api/") || strings.Contains(r.Header.Get("Accept"), "application/json") {
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(http.StatusNotFound)
+		_, _ = w.Write([]byte(`{"error":"not_found","message":"Requested resource not found"}`))
+		return
+	}
+
+	meta := h.getMeta("404", r.URL.Path)
+	if meta.Title == "" {
+		meta = model.MetaData{
+			Title:        "404 • Страница не найдена",
+			Description:  "Запрошенная страница не найдена на платформе Primary Cloud Lab.",
+			CanonicalURL: h.baseURL + r.URL.Path,
+		}
+	}
+
+	tmpl, err := h.getTemplate("404.html")
+	if err != nil {
+		http.NotFound(w, r)
+		return
+	}
+
+	var buf bytes.Buffer
+	data := struct {
+		Meta model.MetaData
+	}{
+		Meta: meta,
+	}
+
+	if err := tmpl.ExecuteTemplate(&buf, "layout", data); err != nil {
+		http.NotFound(w, r)
+		return
+	}
+
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.WriteHeader(http.StatusNotFound)
+	_, _ = buf.WriteTo(w)
+}
+
+// MethodNotAllowed serves a 405 response (JSON for API, plain text for web browsers).
+func (h *Handler) MethodNotAllowed(w http.ResponseWriter, r *http.Request) {
+	if strings.HasPrefix(r.URL.Path, "/api/") || strings.Contains(r.Header.Get("Accept"), "application/json") {
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		_, _ = w.Write([]byte(`{"error":"method_not_allowed","message":"HTTP method not allowed"}`))
+		return
+	}
+
+	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+	w.WriteHeader(http.StatusMethodNotAllowed)
+	_, _ = w.Write([]byte("405 Method Not Allowed\n"))
+}
+

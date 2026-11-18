@@ -34,5 +34,14 @@
     "ogDescription": "Интерактивный генератор QR-кодов на Go.",
     "ogImage": "/images/og-main.png",
     "activeTab": "qr"
+  },
+  "404": {
+    "title": "404 • Страница не найдена",
+    "description": "Запрошенная страница не найдена на платформе Primary Cloud Lab.",
+    "keywords": "404, страница не найдена, devops, linux",
+    "ogTitle": "404 • Страница не найдена",
+    "ogDescription": "Запрошенная страница не найдена на платформе Primary Cloud Lab.",
+    "ogImage": "/images/og-main.png",
+    "activeTab": ""
   }
 }

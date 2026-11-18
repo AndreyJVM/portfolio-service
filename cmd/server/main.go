@@ -33,6 +33,9 @@ func validateDirs(dirs ...string) error {
 
 func main() {
 	cfg := config.Load()
+	if err := cfg.Validate(); err != nil {
+		log.Fatalf("❌ Критическая ошибка конфигурации: %v", err)
+	}
 
 	// Validate the existence of required resources
 	if err := validateDirs(cfg.ContentDir, cfg.TemplatesDir, cfg.StaticDir); err != nil {
@@ -47,7 +50,7 @@ func main() {
 
 	// Initialize handlers and router
 	h := handler.NewHandler(courseService, integrationsService, pageService, cfg.TemplatesDir, cfg.StaticDir, cfg.AppBaseURL)
-	router := handler.NewRouter(h, cfg.StaticDir)
+	router := handler.NewRouter(h)
 
 	server := &http.Server{
 		Addr:              net.JoinHostPort("", cfg.Port),

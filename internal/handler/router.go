@@ -34,7 +34,7 @@ func (nfs noDirListingFS) Open(path string) (http.File, error) {
 }
 
 // NewRouter initializes the chi router with all middleware, static file protection, and endpoints.
-func NewRouter(h *Handler, staticDir string) *chi.Mux {
+func NewRouter(h *Handler) *chi.Mux {
 	r := chi.NewRouter()
 
 	// Middleware stack
@@ -56,35 +56,57 @@ func NewRouter(h *Handler, staticDir string) *chi.Mux {
 		})
 	})
 
+	// Custom 404 & 405 error handlers (JSON for API, branded HTML for web requests)
+	r.NotFound(h.NotFound)
+	r.MethodNotAllowed(h.MethodNotAllowed)
+
 	// Secure static file serving (CSS, JS, Favicon, Certificates, Resume)
-	fileServer := http.FileServer(noDirListingFS{fs: http.Dir(staticDir)})
-	for _, prefix := range []string{"/css", "/js", "/images", "/pdf"} {
+	fileServer := http.FileServer(noDirListingFS{fs: http.Dir(h.staticDir)})
+
+	// Static assets with caching policies
+	for _, prefix := range []string{"/css", "/js"} {
 		prefixPattern := prefix + "/*"
 		r.Handle(prefixPattern, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			// Additional trailing slash check to prevent access to directories
 			if strings.HasSuffix(r.URL.Path, "/") {
-				http.NotFound(w, r)
+				h.NotFound(w, r)
 				return
 			}
-			w.Header().Set("Cache-Control", "public, max-age=86400")
+			w.Header().Set("Cache-Control", "public, max-age=86400, stale-while-revalidate=3600")
 			fileServer.ServeHTTP(w, r)
 		}))
 	}
 
-	r.Get("/favicon.svg", func(w http.ResponseWriter, r *http.Request) {
+	r.Handle("/images/*", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if strings.HasSuffix(r.URL.Path, "/") {
+			h.NotFound(w, r)
+			return
+		}
+		w.Header().Set("Cache-Control", "public, max-age=604800, immutable")
+		fileServer.ServeHTTP(w, r)
+	}))
+
+	r.Handle("/pdf/*", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if strings.HasSuffix(r.URL.Path, "/") {
+			h.NotFound(w, r)
+			return
+		}
 		w.Header().Set("Cache-Control", "public, max-age=86400")
-		http.ServeFile(w, r, filepath.Join(staticDir, "favicon.svg"))
+		fileServer.ServeHTTP(w, r)
+	}))
+
+	r.Get("/favicon.svg", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Cache-Control", "public, max-age=604800, immutable")
+		http.ServeFile(w, r, filepath.Join(h.staticDir, "favicon.svg"))
 	})
 
-	// Health check for Docker, docker-compose, and Kubernetes/Nginx
+	// Top-level health check (for Docker, K8s, Nginx)
 	r.Get("/health", h.Health)
-	r.Get("/api/health", h.Health)
 
 	// Dynamic SEO endpoints
 	r.Get("/robots.txt", h.RobotsTxt)
 	r.Get("/sitemap.xml", h.SitemapXML)
 
-	// Platform pages
+	// Platform web pages
 	r.Get("/", h.Index)
 	r.Get("/courses", h.CoursesList)
 	r.Get("/courses/{courseSlug}", h.CourseDetail)
@@ -97,16 +119,21 @@ func NewRouter(h *Handler, staticDir string) *chi.Mux {
 	r.Get("/qr", h.QRPage)
 	r.Get("/mustang", h.Mustang)
 
-	// Full-text search across materials and lessons
-	r.Get("/api/search", h.SearchAPI)
+	// Grouped API routes
+	r.Route("/api", func(api chi.Router) {
+		api.Get("/health", h.Health)
+		api.Get("/search", h.SearchAPI)
 
-	// QR code generation API (Go native engine)
-	r.Get("/api/qr", h.GenerateQREndpoint)
-	r.Post("/api/qr", h.GenerateQREndpoint)
+		// QR code generation API
+		api.Get("/qr", h.GenerateQREndpoint)
+		api.Post("/qr", h.GenerateQREndpoint)
 
-	// PDF resume API
-	r.Get("/api/pdf/resume", h.ResumePDF)
-	r.Get("/api/pdf/health", h.PdfHealth)
+		// PDF resume API
+		api.Route("/pdf", func(pdf chi.Router) {
+			pdf.Get("/resume", h.ResumePDF)
+			pdf.Get("/health", h.PdfHealth)
+		})
+	})
 
 	return r
 }

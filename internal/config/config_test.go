@@ -14,29 +14,32 @@ func TestConfig_DefaultValues(t *testing.T) {
 
 	cfg := Load()
 
-	if cfg.Port != "8080" {
-		t.Errorf("Ожидался Port '8080', получен '%s'", cfg.Port)
+	if cfg.Port != DefaultPort {
+		t.Errorf("Ожидался Port '%s', получен '%s'", DefaultPort, cfg.Port)
 	}
-	if cfg.AppBaseURL != "https://vorobevaqa.ru" {
-		t.Errorf("Ожидался AppBaseURL 'https://vorobevaqa.ru', получен '%s'", cfg.AppBaseURL)
+	if cfg.AppBaseURL != DefaultAppBaseURL {
+		t.Errorf("Ожидался AppBaseURL '%s', получен '%s'", DefaultAppBaseURL, cfg.AppBaseURL)
 	}
-	if cfg.GitHubUser != "AndreyJVM" {
-		t.Errorf("Ожидался GitHubUser 'AndreyJVM', получен '%s'", cfg.GitHubUser)
+	if cfg.GitHubUser != DefaultGitHubUser {
+		t.Errorf("Ожидался GitHubUser '%s', получен '%s'", DefaultGitHubUser, cfg.GitHubUser)
 	}
-	if cfg.DockerUser != "andreyvorobevaqa" {
-		t.Errorf("Ожидался DockerUser 'andreyvorobevaqa', получен '%s'", cfg.DockerUser)
+	if cfg.DockerUser != DefaultDockerUser {
+		t.Errorf("Ожидался DockerUser '%s', получен '%s'", DefaultDockerUser, cfg.DockerUser)
 	}
-	if cfg.ContentDir != "content/courses" {
-		t.Errorf("Ожидался ContentDir 'content/courses', получен '%s'", cfg.ContentDir)
+	if cfg.ContentDir != DefaultContentDir {
+		t.Errorf("Ожидался ContentDir '%s', получен '%s'", DefaultContentDir, cfg.ContentDir)
 	}
-	if cfg.PagesFile != "content/pages.json" {
-		t.Errorf("Ожидался PagesFile 'content/pages.json', получен '%s'", cfg.PagesFile)
+	if cfg.PagesFile != DefaultPagesFile {
+		t.Errorf("Ожидался PagesFile '%s', получен '%s'", DefaultPagesFile, cfg.PagesFile)
 	}
-	if cfg.TemplatesDir != "web/templates" {
-		t.Errorf("Ожидался TemplatesDir 'web/templates', получен '%s'", cfg.TemplatesDir)
+	if cfg.TemplatesDir != DefaultTemplatesDir {
+		t.Errorf("Ожидался TemplatesDir '%s', получен '%s'", DefaultTemplatesDir, cfg.TemplatesDir)
 	}
-	if cfg.StaticDir != "web/static" {
-		t.Errorf("Ожидался StaticDir 'web/static', получен '%s'", cfg.StaticDir)
+	if cfg.StaticDir != DefaultStaticDir {
+		t.Errorf("Ожидался StaticDir '%s', получен '%s'", DefaultStaticDir, cfg.StaticDir)
+	}
+	if err := cfg.Validate(); err != nil {
+		t.Errorf("Ожидалась валидная дефолтная конфигурация, получена ошибка: %v", err)
 	}
 }
 
@@ -149,3 +152,102 @@ func TestGetEnvOrDefault_TableDriven(t *testing.T) {
 		})
 	}
 }
+
+func TestConfig_Validate(t *testing.T) {
+	validCfg := func() *Config {
+		return &Config{
+			Port:         DefaultPort,
+			AppBaseURL:   DefaultAppBaseURL,
+			GitHubUser:   DefaultGitHubUser,
+			DockerUser:   DefaultDockerUser,
+			ContentDir:   DefaultContentDir,
+			PagesFile:    DefaultPagesFile,
+			TemplatesDir: DefaultTemplatesDir,
+			StaticDir:    DefaultStaticDir,
+		}
+	}
+
+	tests := []struct {
+		name    string
+		modify  func(c *Config)
+		wantErr bool
+	}{
+		{
+			name:    "valid configuration",
+			modify:  func(c *Config) {},
+			wantErr: false,
+		},
+		{
+			name:    "invalid port non-numeric",
+			modify:  func(c *Config) { c.Port = "abc" },
+			wantErr: true,
+		},
+		{
+			name:    "invalid port zero",
+			modify:  func(c *Config) { c.Port = "0" },
+			wantErr: true,
+		},
+		{
+			name:    "invalid port negative",
+			modify:  func(c *Config) { c.Port = "-1" },
+			wantErr: true,
+		},
+		{
+			name:    "invalid port too high",
+			modify:  func(c *Config) { c.Port = "70000" },
+			wantErr: true,
+		},
+		{
+			name:    "empty app base URL",
+			modify:  func(c *Config) { c.AppBaseURL = "" },
+			wantErr: true,
+		},
+		{
+			name:    "invalid app base URL scheme (ftp)",
+			modify:  func(c *Config) { c.AppBaseURL = "ftp://vorobevaqa.ru" },
+			wantErr: true,
+		},
+		{
+			name:    "invalid app base URL format",
+			modify:  func(c *Config) { c.AppBaseURL = "not-a-valid-url" },
+			wantErr: true,
+		},
+		{
+			name:    "missing host in app base URL",
+			modify:  func(c *Config) { c.AppBaseURL = "https://" },
+			wantErr: true,
+		},
+		{
+			name:    "empty content dir",
+			modify:  func(c *Config) { c.ContentDir = "" },
+			wantErr: true,
+		},
+		{
+			name:    "empty pages file",
+			modify:  func(c *Config) { c.PagesFile = "" },
+			wantErr: true,
+		},
+		{
+			name:    "empty templates dir",
+			modify:  func(c *Config) { c.TemplatesDir = "" },
+			wantErr: true,
+		},
+		{
+			name:    "empty static dir",
+			modify:  func(c *Config) { c.StaticDir = "" },
+			wantErr: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			cfg := validCfg()
+			tt.modify(cfg)
+			err := cfg.Validate()
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Validate() error = %v, wantErr = %v", err, tt.wantErr)
+			}
+		})
+	}
+}
+

@@ -15,17 +15,18 @@ import (
 	"unicode/utf8"
 
 	"github.com/go-chi/chi/v5"
+	"ru.vorobevaqa/devops-platform/internal/config"
 	"ru.vorobevaqa/devops-platform/internal/model"
 	"ru.vorobevaqa/devops-platform/internal/service"
 )
 
 func setupTestRouter() *chi.Mux {
 	cs := service.NewCourseService("../../content/courses")
-	is := service.NewIntegrationsService("AndreyJVM", "andreyvorobevaqa")
+	is := service.NewIntegrationsService(config.DefaultGitHubUser, config.DefaultDockerUser)
 	ps := service.NewPageService("../../content/pages.json")
 	staticDir := "../../web/static"
-	h := NewHandler(cs, is, ps, "../../web/templates", staticDir, "https://vorobevaqa.ru")
-	return NewRouter(h, staticDir)
+	h := NewHandler(cs, is, ps, "../../web/templates", staticDir, config.DefaultAppBaseURL)
+	return NewRouter(h)
 }
 
 func TestHandlers(t *testing.T) {
@@ -1176,3 +1177,75 @@ func TestNoDirListingFS_DirectUnit(t *testing.T) {
 		}
 	})
 }
+
+func TestCustomErrorHandlers(t *testing.T) {
+	r := setupTestRouter()
+
+	t.Run("404 Web HTML", func(t *testing.T) {
+		req := httptest.NewRequest("GET", "/non-existent-page-12345", nil)
+		w := httptest.NewRecorder()
+		r.ServeHTTP(w, req)
+
+		if w.Code != http.StatusNotFound {
+			t.Errorf("expected status 404, got %d", w.Code)
+		}
+		if ct := w.Header().Get("Content-Type"); !strings.Contains(ct, "text/html") {
+			t.Errorf("expected Content-Type text/html, got %s", ct)
+		}
+		body := w.Body.String()
+		if !strings.Contains(body, "404") || !strings.Contains(body, "Страница не найдена") {
+			t.Errorf("expected 404 HTML body with 'Страница не найдена', got: %s", body)
+		}
+	})
+
+	t.Run("404 API JSON", func(t *testing.T) {
+		req := httptest.NewRequest("GET", "/api/unknown-endpoint", nil)
+		w := httptest.NewRecorder()
+		r.ServeHTTP(w, req)
+
+		if w.Code != http.StatusNotFound {
+			t.Errorf("expected status 404, got %d", w.Code)
+		}
+		if ct := w.Header().Get("Content-Type"); !strings.Contains(ct, "application/json") {
+			t.Errorf("expected Content-Type application/json, got %s", ct)
+		}
+		var resp map[string]string
+		if err := json.Unmarshal(w.Body.Bytes(), &resp); err != nil {
+			t.Fatalf("failed to decode JSON: %v", err)
+		}
+		if resp["error"] != "not_found" {
+			t.Errorf("expected error 'not_found', got '%s'", resp["error"])
+		}
+	})
+
+	t.Run("405 API Method Not Allowed", func(t *testing.T) {
+		req := httptest.NewRequest("DELETE", "/api/search", nil)
+		w := httptest.NewRecorder()
+		r.ServeHTTP(w, req)
+
+		if w.Code != http.StatusMethodNotAllowed {
+			t.Errorf("expected status 405, got %d", w.Code)
+		}
+		if ct := w.Header().Get("Content-Type"); !strings.Contains(ct, "application/json") {
+			t.Errorf("expected Content-Type application/json, got %s", ct)
+		}
+		var resp map[string]string
+		if err := json.Unmarshal(w.Body.Bytes(), &resp); err != nil {
+			t.Fatalf("failed to decode JSON: %v", err)
+		}
+		if resp["error"] != "method_not_allowed" {
+			t.Errorf("expected error 'method_not_allowed', got '%s'", resp["error"])
+		}
+	})
+
+	t.Run("405 Web Method Not Allowed", func(t *testing.T) {
+		req := httptest.NewRequest("DELETE", "/", nil)
+		w := httptest.NewRecorder()
+		r.ServeHTTP(w, req)
+
+		if w.Code != http.StatusMethodNotAllowed {
+			t.Errorf("expected status 405, got %d", w.Code)
+		}
+	})
+}
+
