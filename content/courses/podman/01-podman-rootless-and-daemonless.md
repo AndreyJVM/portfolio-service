@@ -1,4 +1,4 @@
-# Урок 1: Архитектура Podman: Daemonless, Conmon, User Namespaces и Rootless Networking
+# Архитектура Podman: Daemonless, Conmon, User Namespaces и Rootless Networking
 
 Исторически Docker строился вокруг централизованного демона `dockerd`, работающего с наивысшими привилегиями `root`. Это создавало критическую проблему безопасности: любой пользователь, добавленный в группу `docker`, де-факто получал полные root-права на физическом сервере через монтирование сокета `/var/run/docker.sock`. Падение демона приводило к сбою всех запущенных контейнеров (Single Point of Failure).
 

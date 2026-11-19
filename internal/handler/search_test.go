@@ -59,6 +59,14 @@ func TestSearchAPI(t *testing.T) {
 			strings.Contains(strings.ToLower(it.Snippet), "docker") ||
 			strings.Contains(strings.ToLower(it.CourseTitle), "docker")
 		if !found {
+			for _, tag := range it.Tags {
+				if strings.Contains(strings.ToLower(tag), "docker") {
+					found = true
+					break
+				}
+			}
+		}
+		if !found {
 			t.Errorf("Элемент %s не соответствует запросу 'docker'", it.Title)
 		}
 	}

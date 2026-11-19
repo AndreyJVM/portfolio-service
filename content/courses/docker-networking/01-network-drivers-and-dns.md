@@ -48,94 +48,50 @@ Docker изолирует сетевой стек контейнеров чер�
 
 ---
 
-### 3. Защита хоста от Out Of Memory (OOM Killer) через Cgroups v2
+### 3. Сетевая сегментация (Zero Trust архитектура в Docker)
 
-В Linux все процессы делят общую оперативную память. Если в контейнере происходит утечка памяти (Memory Leak) и лимиты не заданы:
-1. Контейнер начинает пожирать всю свободную память сервера.
-2. Ядро Linux включает **OOM Killer** (Out-Of-Memory Killer).
-3. Алгоритм ядра выбирает процесс с наибольшим `oom_score` и убивает его. Очень часто под нож попадает сам `dockerd`, `sshd` (вы теряете доступ к серверу) или системная база данных.
+При проектировании микросервисных систем руководствуйтесь принципом сетевой сегментации:
 
-#### Настройка жестких лимитов в Docker Compose:
 ```yaml
 services:
-  app:
-    image: my-app:latest
-    deploy:
-      resources:
-        limits:
-          cpus: "1.00"       # Не более 100% одного ядра CPU (CFS квота)
-          memory: 256M       # Жесткий лимит RAM (OOM сработает только внутри контейнера)
-        reservations:
-          cpus: "0.10"       # Гарантированный минимум CPU
-          memory: 64M        # Гарантированный минимум RAM
-```
-*Что произойдет при утечке?* Ядро убьет **только процесс внутри контейнера** (код завершения 137), хост-система останется полностью стабильной, а Docker перезапустит контейнер согласно политике `restart: always`.
-
----
-
-### 4. Healthcheck и правильный порядок старта (`depends_on`)
-
-Частая проблема: веб-приложение стартует быстрее базы данных, не может подключиться и аварийно завершается.  
-Простой `depends_on: [db]` лишь ожидает **создания контейнера** `db`, но не готовности PostgreSQL принимать подключения!
-
-#### Эталонная конфигурация с `condition: service_healthy`:
-```yaml
-services:
-  postgres:
-    image: postgres:16-alpine
-    environment:
-      POSTGRES_DB: appdb
-      POSTGRES_USER: appuser
-      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U appuser -d appdb"]
-      interval: 5s
-      timeout: 3s
-      retries: 5
-      start_period: 10s
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-    networks:
-      - backend-net
-
-  api:
-    image: my-api:latest
-    depends_on:
-      postgres:
-        condition: service_healthy   # Ждем, пока Postgres реально пройдет healthcheck!
-    networks:
-      - backend-net
-      - frontend-net
-
+  # Обратный прокси (входная точка)
   nginx:
     image: nginx:alpine
     ports:
       - "80:80"
       - "443:443"
-    depends_on:
-      - api
     networks:
-      - frontend-net                 # Nginx физически не имеет доступа к сети базы данных!
+      - frontend-net
+
+  # Бэкенд сервис
+  api:
+    image: my-api:latest
+    networks:
+      - frontend-net
+      - backend-net
+
+  # База данных
+  postgres:
+    image: postgres:16-alpine
+    networks:
+      - backend-net
 
 networks:
-  backend-net:
-    internal: true                   # Изолированная сеть без выхода в публичный интернет
   frontend-net:
     driver: bridge
-
-volumes:
-  pgdata:
-    driver: local
+  backend-net:
+    driver: bridge
+    internal: true   # Изолированная сеть без выхода в публичный интернет!
 ```
 
----
-
-### 5. Сетевая сегментация (Zero Trust в Compose)
-
-Обратите внимание на архитектуру выше:
-- Сеть **`backend-net`** имеет флаг `internal: true`. Контейнеры в ней не могут выходить в глобальный интернет (защита от скачивания зловредов при взломе) и недоступны извне.
+#### Ключевые преимущества этой схемы:
 - **Nginx** подключен только к `frontend-net`. Он физически не может обратиться к `postgres:5432`, даже если будет скомпрометирован злоумышленником через веб-уязвимость!
-- **API** выступает безопасным мостом, имея интерфейсы в обеих сетях.
+- **API** выступает контролируемым мостом, имея интерфейсы в обеих сетях.
+- **`backend-net`** имеет флаг `internal: true`. Контейнеры в ней не могут выходить в глобальный интернет (защита от скачивания эксплойтов при взломе) и недоступны извне.
+
+> [!NOTE]
+> Настройка условий готовности сервисов (`depends_on: condition: service_healthy`) и интерполяция переменных окружения подробно разобраны в уроке **[Модуль 5: Переменные окружения, Healthcheck и depends_on](/courses/docker-compose/02-environments-and-healthchecks)**.
+> Настройка аппаратных лимитов ресурсов (память, квоты CPU) и предотвращение аварий OOM Killer подробно разобраны в уроке **[Модуль 7: Изоляция ядра и ресурсы (Cgroups v2)](/courses/docker-resources/01-cgroups-v2-memory-and-cpu-limits)**.
 
 ---
 
