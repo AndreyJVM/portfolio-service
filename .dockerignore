@@ -10,6 +10,8 @@ devops-platform
 *.out
 *.log
 *.tmp
+**/*_test.go
+*_test.go
 
 # Environment & Secrets
 .env
