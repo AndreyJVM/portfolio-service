@@ -1,4 +1,4 @@
-# Урок 8: Драйверы хранилища (Storage Drivers) и Copy-on-Write: Overlay2, d_type и устройство /var/lib/docker
+# Драйверы хранилища (Storage Drivers) и Copy-on-Write: Overlay2, d_type и устройство /var/lib/docker
 
 Понимание работы файловых систем и механизмов Copy-on-Write (CoW) — критический навык для инженера при траблшутинге переполнения дисков, деградации производительности дискового I/O базы данных и утечек слоев в highload production.
 

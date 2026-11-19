@@ -1,4 +1,4 @@
-# Урок 5: Харденинг и аудит ядра: Seccomp BPF, Capabilities и трассировка через eBPF
+# Харденинг и аудит ядра: Seccomp BPF, Capabilities и трассировка через eBPF
 
 Даже если контейнер запущен в отдельных пространствах имен (Namespaces) и ограничен по ресурсам (Cgroups v2), он продолжает делить единое ядро операционной системы с хостом.
 
@@ -50,7 +50,7 @@ flowchart TD
 
 ```bash
 # Пример запуска Nginx только с правом биндить порт 80:
-podman run -d \
+docker run -d \
   --name web \
   --cap-drop=ALL \
   --cap-add=NET_BIND_SERVICE \
@@ -102,7 +102,7 @@ flowchart LR
 
 Запустим контейнер с этим профилем:
 ```bash
-podman run --rm -it \
+docker run --rm -it \
   --security-opt seccomp=block-mkdir.json \
   alpine:latest sh
 ```

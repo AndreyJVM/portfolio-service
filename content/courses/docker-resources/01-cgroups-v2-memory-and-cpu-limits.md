@@ -1,4 +1,4 @@
-# Урок 1: Анатомия изоляции: Namespaces, Cgroups v2 и procfs под капотом
+# Анатомия изоляции: Namespaces, Cgroups v2 и procfs под капотом
 
 В ядре Linux **не существует** сущности «контейнер». В исходном коде ядра Linux вы не найдете структуры данных `struct container` или системного вызова `sys_create_container()`.
 
