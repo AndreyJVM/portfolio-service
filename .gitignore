@@ -22,10 +22,27 @@ deploy.log
 .vscode/
 .cache/
 skills/
+.gemini/
+
+# === Test Coverage & Profiling ===
+coverage.html
+coverage.txt
+*.prof
+*.pprof
+
+# === SSL Certificates & Secrets ===
+ssl/
+certbot/
+*.pem
+*.key
+*.crt
+*.csr
 
 # === OS & Environment ===
 .DS_Store
 Thumbs.db
+desktop.ini
+ehthumbs.db
 *.swp
 *.swo
 *~
