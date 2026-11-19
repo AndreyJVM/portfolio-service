@@ -6,62 +6,51 @@
 {{define "content"}}
 <div class="container py-4">
   <!-- Хлебные крошки -->
-  <nav aria-label="breadcrumb" class="mb-4">
-    <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="/" class="text-decoration-none">Главная</a></li>
-      <li class="breadcrumb-item"><a href="/courses" class="text-decoration-none">Курсы</a></li>
-      <li class="breadcrumb-item"><a href="/courses/{{.Course.Slug}}" class="text-decoration-none">{{.Course.Title}}</a></li>
-      <li class="breadcrumb-item active" aria-current="page">{{.Lesson.Title}}</li>
+  <nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb small mb-0">
+      <li class="breadcrumb-item"><a href="/" class="text-decoration-none text-body-secondary">Библиотека</a></li>
+      <li class="breadcrumb-item"><a href="/courses/{{.Course.Slug}}" class="text-decoration-none text-body-secondary">{{.Course.Title}}</a></li>
+      <li class="breadcrumb-item active text-primary" aria-current="page">Урок {{.Lesson.Order}}</li>
     </ol>
   </nav>
 
   <div class="row g-4">
     <!-- Основной контент урока -->
     <div class="col-lg-8 col-xl-9">
-      <div class="card border rounded-4 p-3 p-sm-4 p-md-5 shadow-sm bento-card mb-4">
-        <!-- Шапка урока -->
-        <div class="d-flex align-items-center justify-content-between border-bottom pb-3 mb-4 flex-wrap gap-2">
-          <div>
-            <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-1 rounded-pill mb-2">
-              Урок {{.Lesson.Order}} • {{.Course.Title}}
-            </span>
-            <h1 class="fw-bold mb-0">{{.Lesson.Title}}</h1>
-          </div>
-          <div class="d-flex align-items-center gap-2">
-            <span class="badge bg-body-secondary text-body-secondary border px-3 py-2 rounded-pill" id="lessonDurationBadge">
-              <i class="far fa-clock me-1"></i>{{.Lesson.Duration}}
-            </span>
-          </div>
-        </div>
-
-        <!-- Панель инструментов чтения (Reading Toolbar) -->
-        <div class="lesson-reading-toolbar d-flex align-items-center justify-content-between flex-wrap gap-2 mb-4">
-          <div class="d-flex align-items-center gap-2">
-            <span class="small text-muted d-none d-sm-inline">Размер шрифта:</span>
-            <div class="btn-group btn-group-sm" role="group" aria-label="Размер шрифта статьи">
-              <button type="button" class="btn btn-outline-secondary font-size-btn" data-font-size="sm" title="Компактный шрифт">A-</button>
-              <button type="button" class="btn btn-outline-secondary font-size-btn" data-font-size="md" title="Стандартный шрифт">A</button>
-              <button type="button" class="btn btn-outline-secondary font-size-btn" data-font-size="lg" title="Увеличенный шрифт">A+</button>
+      <article class="card border rounded-4 p-3 p-sm-4 p-md-5 shadow-sm bento-card mb-4 lesson-card">
+        <!-- Шапка и панель инструментов урока -->
+        <header class="border-bottom pb-4 mb-4">
+          <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+              <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-1 rounded-pill">
+                Урок {{.Lesson.Order}} из {{.Course.LessonCount}}
+              </span>
+              <span class="badge bg-body-secondary text-body-secondary border px-3 py-1 rounded-pill" id="lessonToolbarStatus">
+                <i class="far fa-circle me-1"></i>К изучению
+              </span>
+              <span class="badge bg-body-secondary text-body-secondary border px-3 py-1 rounded-pill" id="lessonDurationBadge">
+                <i class="far fa-clock me-1"></i>{{.Lesson.Duration}}
+              </span>
             </div>
-            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3" id="zenModeToggle" title="Фокус-режим для чтения (убирает боковые панели)">
-              <i class="fas fa-expand me-1"></i><span class="d-none d-sm-inline">Фокус</span>
-            </button>
-            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3" id="copyLessonLinkBtn" title="Скопировать ссылку на урок">
-              <i class="far fa-copy me-1"></i><span class="d-none d-md-inline">Поделиться</span>
-            </button>
-            <a href="https://github.com/AndreyJVM/portfolio-service/edit/master/content/courses/{{.Course.Slug}}/{{.Lesson.Slug}}.md" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-secondary rounded-pill px-3" title="Предложить исправление на GitHub">
-              <i class="fab fa-github me-1"></i><span class="d-none d-md-inline">Исправить неточность</span>
-            </a>
+
+            <!-- Инструменты чтения -->
+            <div class="d-flex align-items-center gap-2">
+              <div class="btn-group btn-group-sm" role="group" aria-label="Размер шрифта статьи">
+                <button type="button" class="btn btn-outline-secondary font-size-btn" data-font-size="sm" title="Компактный шрифт">A-</button>
+                <button type="button" class="btn btn-outline-secondary font-size-btn" data-font-size="md" title="Стандартный шрифт">A</button>
+                <button type="button" class="btn btn-outline-secondary font-size-btn" data-font-size="lg" title="Увеличенный шрифт">A+</button>
+              </div>
+              <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3" id="zenModeToggle" title="Фокус-режим для чтения (Esc для выхода)">
+                <i class="fas fa-expand me-1"></i><span class="d-none d-sm-inline">Фокус</span>
+              </button>
+              <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3" id="copyLessonLinkBtn" title="Скопировать ссылку на урок">
+                <i class="far fa-copy me-1"></i><span class="d-none d-md-inline">Поделиться</span>
+              </button>
+            </div>
           </div>
-          <div class="d-flex align-items-center gap-2">
-            <span class="badge bg-body-secondary text-body-secondary border px-3 py-2 rounded-pill" id="lessonToolbarStatus">
-              <i class="far fa-circle me-1"></i>К изучению
-            </span>
-            <button type="button" class="btn btn-sm btn-outline-success rounded-pill px-3 d-none d-sm-inline-flex align-items-center" id="toolbarCompleteBtn">
-              <i class="far fa-check-circle me-1"></i>Завершить
-            </button>
-          </div>
-        </div>
+
+          <h1 class="fw-bold mb-0 text-body">{{.Lesson.Title}}</h1>
+        </header>
 
         <!-- Мобильное оглавление (сворачиваемый аккордеон) -->
         <div class="d-lg-none mb-4" id="mobileTocWrapper">
@@ -90,51 +79,58 @@
           {{.LessonContentSafe}}
         </div>
 
-        <!-- Навигация и завершение урока -->
-        <div class="pt-4 mt-5 border-top">
-          <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 gap-sm-3 mb-4">
-            <div class="d-flex align-items-center gap-2 flex-wrap w-100-mobile">
-              <a href="/courses/{{.Course.Slug}}" class="btn btn-outline-secondary rounded-pill px-3 px-sm-4 w-100-mobile text-center">
-                <i class="fas fa-arrow-left me-1"></i> К программе курса
-              </a>
-              <a href="https://github.com/AndreyJVM/portfolio-service/edit/master/content/courses/{{.Course.Slug}}/{{.Lesson.Slug}}.md" target="_blank" rel="noopener noreferrer" class="btn btn-outline-secondary rounded-pill px-3 w-100-mobile text-center" title="Предложить исправление на GitHub">
-                <i class="fab fa-github me-1"></i> Нашли неточность?
-              </a>
-            </div>
-            <button type="button" class="btn btn-outline-success rounded-pill px-4 w-100-mobile text-center mt-2 mt-md-0" id="completeLessonBtn" data-course-slug="{{.Course.Slug}}" data-lesson-slug="{{.Lesson.Slug}}">
+        <!-- Завершение урока и прогресс -->
+        <div class="lesson-completion-card p-4 rounded-4 border bg-body-tertiary text-center my-5 shadow-sm">
+          <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-success-subtle text-success p-3 mb-2">
+            <i class="fas fa-graduation-cap fa-2x"></i>
+          </div>
+          <h5 class="fw-bold mb-1">Материал урока освоен?</h5>
+          <p class="text-body-secondary small mb-3">Отметьте тему, чтобы зафиксировать прогресс модуля</p>
+          <div>
+            <button type="button" class="btn btn-outline-success rounded-pill px-4 py-2 fw-medium shadow-sm" id="completeLessonBtn" data-course-slug="{{.Course.Slug}}" data-lesson-slug="{{.Lesson.Slug}}">
               <i class="far fa-check-circle me-1"></i> Отметить как пройденный
             </button>
           </div>
-
-          <!-- Переход: Предыдущий / Следующий урок -->
-          {{if or .PrevLesson .NextLesson}}
-          <div class="row g-3 pt-3 border-top">
-            <div class="col-sm-6 text-start">
-              {{if .PrevLesson}}
-              <a href="/courses/{{$.Course.Slug}}/{{.PrevLesson.Slug}}" class="btn btn-outline-secondary w-100 p-3 rounded-3 text-start d-flex flex-column gap-1 prev-lesson-btn">
-                <span class="small text-muted d-flex align-items-center justify-content-between">
-                  <span><i class="fas fa-chevron-left me-1"></i> Предыдущий урок</span>
-                  <kbd class="nav-kbd d-none d-sm-inline-block">Alt + ←</kbd>
-                </span>
-                <span class="fw-semibold text-truncate w-100 text-body">{{.PrevLesson.Title}}</span>
-              </a>
-              {{end}}
-            </div>
-            <div class="col-sm-6 text-end">
-              {{if .NextLesson}}
-              <a href="/courses/{{$.Course.Slug}}/{{.NextLesson.Slug}}" class="btn btn-outline-primary w-100 p-3 rounded-3 text-end d-flex flex-column gap-1 next-lesson-btn">
-                <span class="small text-primary d-flex align-items-center justify-content-between">
-                  <kbd class="nav-kbd d-none d-sm-inline-block">Alt + →</kbd>
-                  <span>Следующий урок <i class="fas fa-chevron-right ms-1"></i></span>
-                </span>
-                <span class="fw-semibold text-truncate w-100 text-body">{{.NextLesson.Title}}</span>
-              </a>
-              {{end}}
-            </div>
-          </div>
-          {{end}}
         </div>
-      </div>
+
+        <!-- Переход: Предыдущий / Следующий урок -->
+        {{if or .PrevLesson .NextLesson}}
+        <div class="row g-3 pt-2">
+          <div class="col-sm-6 text-start">
+            {{if .PrevLesson}}
+            <a href="/courses/{{$.Course.Slug}}/{{.PrevLesson.Slug}}" class="btn btn-outline-secondary w-100 p-3 rounded-4 text-start d-flex flex-column gap-1 prev-lesson-btn bento-card">
+              <span class="small text-muted d-flex align-items-center justify-content-between">
+                <span><i class="fas fa-chevron-left me-1"></i> Предыдущий урок</span>
+                <kbd class="nav-kbd d-none d-sm-inline-block">Alt + ←</kbd>
+              </span>
+              <span class="fw-semibold text-truncate w-100 text-body">{{.PrevLesson.Title}}</span>
+            </a>
+            {{end}}
+          </div>
+          <div class="col-sm-6 text-end">
+            {{if .NextLesson}}
+            <a href="/courses/{{$.Course.Slug}}/{{.NextLesson.Slug}}" class="btn btn-outline-primary w-100 p-3 rounded-4 text-end d-flex flex-column gap-1 next-lesson-btn bento-card">
+              <span class="small text-primary d-flex align-items-center justify-content-between">
+                <kbd class="nav-kbd d-none d-sm-inline-block">Alt + →</kbd>
+                <span>Следующий урок <i class="fas fa-chevron-right ms-1"></i></span>
+              </span>
+              <span class="fw-semibold text-truncate w-100 text-body">{{.NextLesson.Title}}</span>
+            </a>
+            {{end}}
+          </div>
+        </div>
+        {{end}}
+
+        <!-- Нижний сервисный футер урока -->
+        <footer class="d-flex justify-content-between align-items-center flex-wrap gap-2 pt-4 mt-4 border-top small text-body-secondary">
+          <a href="https://github.com/AndreyJVM/portfolio-service/edit/master/content/courses/{{.Course.Slug}}/{{.Lesson.Slug}}.md" target="_blank" rel="noopener noreferrer" class="text-body-secondary text-decoration-none lesson-footer-link" title="Предложить исправление на GitHub">
+            <i class="fab fa-github me-1"></i>Нашли неточность? Редактировать на GitHub
+          </a>
+          <a href="/courses/{{.Course.Slug}}" class="text-body-secondary text-decoration-none lesson-footer-link">
+            <i class="fas fa-list-check me-1"></i>Все {{.Course.LessonCount}} тем модуля
+          </a>
+        </footer>
+      </article>
     </div>
 
     <!-- Боковая панель (Desktop): Интерактивное Оглавление + Виджет курса -->
@@ -171,7 +167,7 @@
 
           <div class="mb-2">
             <div class="d-flex justify-content-between align-items-center mb-1 small text-muted" style="font-size: 0.75rem;">
-              <span>Прогресс курса:</span>
+              <span>Прогресс модуля:</span>
               <span class="fw-bold text-primary" id="sidebarCourseProgressPercent">0%</span>
             </div>
             <div class="progress" style="height: 6px; background-color: rgba(var(--bs-primary-rgb), 0.1);">

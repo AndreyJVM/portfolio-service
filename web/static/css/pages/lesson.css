@@ -703,4 +703,28 @@ body.zen-mode .lesson-reading-toolbar {
   color: #f87171;
 }
 
+/* ===== LESSON COMPLETION CARD & FOOTER ===== */
+.lesson-card {
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.lesson-completion-card {
+  background: rgba(var(--bs-primary-rgb), 0.03);
+  border: 1px solid var(--card-border);
+  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.lesson-completion-card:hover {
+  border-color: rgba(var(--bs-primary-rgb), 0.3);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.lesson-footer-link {
+  transition: color 0.18s ease;
+}
+
+.lesson-footer-link:hover {
+  color: var(--accent-color) !important;
+}
+
 
