@@ -13,6 +13,8 @@
   document.addEventListener('DOMContentLoaded', () => {
     initTableOfContents();
     initReadingToolbar();
+    initZenMode();
+    initInteractiveQuizChallenges();
     initKeyboardNavigation();
     initCodeHighlighting();
     initMermaidDiagrams();
@@ -312,6 +314,168 @@
         console.warn('Ошибка вызова Mermaid:', err);
         container.innerHTML = '<pre class="text-danger small">' + graphDefinition + '</pre>';
       }
+    });
+  }
+
+  /**
+   * 6. Фокус-режим чтения (Zen Mode)
+   */
+  function initZenMode() {
+    const zenBtn = document.getElementById('zenModeToggle');
+    const ZEN_KEY = 'pcl_zen_mode_enabled';
+
+    function setZenMode(enable, showNotification = true) {
+      if (enable) {
+        document.body.classList.add('zen-mode');
+        if (zenBtn) {
+          zenBtn.classList.add('active', 'btn-primary');
+          zenBtn.classList.remove('btn-outline-secondary');
+        }
+        createFloatingExitButton();
+        if (showNotification && window.showToast) {
+          window.showToast('Фокус-режим активирован. Нажмите Esc для выхода.', 'info');
+        }
+      } else {
+        document.body.classList.remove('zen-mode');
+        if (zenBtn) {
+          zenBtn.classList.remove('active', 'btn-primary');
+          zenBtn.classList.add('btn-outline-secondary');
+        }
+        removeFloatingExitButton();
+      }
+      try {
+        localStorage.setItem(ZEN_KEY, enable ? '1' : '0');
+      } catch (e) {}
+    }
+
+    function createFloatingExitButton() {
+      if (document.getElementById('zenFloatingExitBtn')) return;
+      const btn = document.createElement('button');
+      btn.id = 'zenFloatingExitBtn';
+      btn.type = 'button';
+      btn.className = 'btn btn-sm btn-outline-secondary rounded-pill zen-floating-exit-btn bg-body';
+      btn.innerHTML = '<i class="fas fa-compress me-1"></i><span>Выйти (Esc)</span>';
+      btn.title = 'Выйти из фокус-режима (Esc)';
+      btn.addEventListener('click', () => setZenMode(false));
+      document.body.appendChild(btn);
+    }
+
+    function removeFloatingExitButton() {
+      const btn = document.getElementById('zenFloatingExitBtn');
+      if (btn) btn.remove();
+    }
+
+    if (zenBtn) {
+      zenBtn.addEventListener('click', () => {
+        const isZen = document.body.classList.contains('zen-mode');
+        setZenMode(!isZen);
+      });
+    }
+
+    // Клавиша Esc для выхода из фокус-режима
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && document.body.classList.contains('zen-mode')) {
+        setZenMode(false);
+      }
+    });
+
+    // Восстановление состояния из localStorage
+    const savedZen = localStorage.getItem(ZEN_KEY);
+    if (savedZen === '1') {
+      setZenMode(true, false);
+    }
+  }
+
+  /**
+   * 7. Интерактивные лабораторные самопроверки / квизы
+   */
+  function initInteractiveQuizChallenges() {
+    const detailsElements = document.querySelectorAll('.markdown-content details');
+    if (!detailsElements.length) return;
+
+    const currentPath = window.location.pathname;
+
+    detailsElements.forEach((details, idx) => {
+      const summary = details.querySelector('summary');
+      if (!summary) return;
+
+      const summaryText = summary.textContent || '';
+      // Проверяем, относится ли блок к контрольным вопросам
+      if (!summaryText.includes('Вопрос') && !summaryText.includes('Самопроверка') && !summaryText.includes('Лабораторный') && !summaryText.includes('Проверь')) {
+        return;
+      }
+
+      details.classList.add('quiz-challenge-card');
+
+      // Добавляем иконку
+      if (!summary.querySelector('.quiz-badge-icon')) {
+        const icon = document.createElement('span');
+        icon.className = 'quiz-badge-icon me-2';
+        icon.innerHTML = '<i class="fas fa-brain"></i>';
+        summary.insertBefore(icon, summary.firstChild);
+      }
+
+      // Ключ для хранения статуса самопроверки
+      const storageKey = 'pcl_quiz_' + currentPath + '_' + idx;
+      let status = 'unsolved';
+      try {
+        status = localStorage.getItem(storageKey) || 'unsolved';
+      } catch (e) {}
+
+      // Панель обратной связи
+      const actionsBar = document.createElement('div');
+      actionsBar.className = 'quiz-actions-bar';
+
+      const statusBadge = document.createElement('span');
+      statusBadge.className = 'small fw-medium me-auto';
+
+      function updateStatusUI(newStatus) {
+        if (newStatus === 'known') {
+          statusBadge.innerHTML = '<span class="badge bg-success-subtle text-success border border-success-subtle"><i class="fas fa-check me-1"></i>Усвоено</span>';
+        } else if (newStatus === 'review') {
+          statusBadge.innerHTML = '<span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle"><i class="fas fa-rotate-left me-1"></i>Повторить</span>';
+        } else {
+          statusBadge.innerHTML = '<span class="text-body-secondary small"><i class="far fa-circle-question me-1"></i>Проверьте свои знания</span>';
+        }
+      }
+
+      updateStatusUI(status);
+
+      const knownBtn = document.createElement('button');
+      knownBtn.type = 'button';
+      knownBtn.className = 'btn btn-sm btn-outline-success rounded-pill px-3';
+      knownBtn.innerHTML = '<i class="fas fa-check me-1"></i>Понятно / Ответил верно';
+      knownBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        try {
+          localStorage.setItem(storageKey, 'known');
+        } catch (err) {}
+        updateStatusUI('known');
+        if (window.showToast) {
+          window.showToast('Отлично! Тема отмечена как усвоенная.', 'success');
+        }
+      });
+
+      const reviewBtn = document.createElement('button');
+      reviewBtn.type = 'button';
+      reviewBtn.className = 'btn btn-sm btn-outline-warning rounded-pill px-3';
+      reviewBtn.innerHTML = '<i class="fas fa-rotate-left me-1"></i>Нужно повторить';
+      reviewBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        try {
+          localStorage.setItem(storageKey, 'review');
+        } catch (err) {}
+        updateStatusUI('review');
+        if (window.showToast) {
+          window.showToast('Вопрос сохранен для повторения.', 'warning');
+        }
+      });
+
+      actionsBar.appendChild(statusBadge);
+      actionsBar.appendChild(knownBtn);
+      actionsBar.appendChild(reviewBtn);
+
+      details.appendChild(actionsBar);
     });
   }
 })();

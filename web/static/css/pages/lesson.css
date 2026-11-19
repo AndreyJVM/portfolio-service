@@ -535,3 +535,95 @@
 .token.variable {
   color: #f87171;
 }
+
+/* ==========================================================================
+   Zen / Focus Reading Mode
+   ========================================================================== */
+body.zen-mode .app-sidebar,
+body.zen-mode .mobile-top-bar,
+body.zen-mode footer,
+body.zen-mode .col-lg-4.col-xl-3 {
+  display: none !important;
+}
+
+body.zen-mode .col-lg-8.col-xl-9 {
+  width: 100% !important;
+  max-width: 860px !important;
+  margin: 0 auto !important;
+  flex: 0 0 100% !important;
+}
+
+body.zen-mode .markdown-content {
+  line-height: 1.85;
+}
+
+body.zen-mode .lesson-reading-toolbar {
+  background: var(--card-bg);
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--card-border);
+}
+
+.zen-floating-exit-btn {
+  position: fixed;
+  top: 18px;
+  right: 24px;
+  z-index: 1050;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+/* ==========================================================================
+   Interactive Self-Check / Quiz Challenge Card
+   ========================================================================== */
+.quiz-challenge-card {
+  border: 1px solid rgba(var(--bs-primary-rgb), 0.25) !important;
+  background: rgba(var(--bs-primary-rgb), 0.03) !important;
+  border-radius: 1rem !important;
+  padding: 1.25rem !important;
+  margin: 2rem 0 !important;
+  transition: all 0.3s ease;
+}
+
+.quiz-challenge-card[open] {
+  border-color: rgba(var(--bs-primary-rgb), 0.45) !important;
+  background: rgba(var(--bs-primary-rgb), 0.05) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.quiz-challenge-card summary {
+  cursor: pointer;
+  user-select: none;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--bs-body-color);
+  list-style: none;
+}
+
+.quiz-challenge-card summary::-webkit-details-marker {
+  display: none;
+}
+
+.quiz-badge-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(var(--bs-primary-rgb), 0.15);
+  color: var(--bs-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.quiz-actions-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  flex-wrap: wrap;
+}
+

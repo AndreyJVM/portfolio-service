@@ -172,6 +172,7 @@ function initCodeCopyButtons() {
     // Определяем язык/подпись из class="language-bash" или подобного
     const codeEl = pre.querySelector('code');
     let lang = 'TERMINAL';
+    let rawLang = '';
     let lineCount = 0;
 
     const rawText = (codeEl || pre).innerText.trim();
@@ -182,7 +183,7 @@ function initCodeCopyButtons() {
     if (codeEl) {
       const match = codeEl.className.match(/language-([a-zA-Z0-9_-]+)/);
       if (match) {
-        const rawLang = match[1].toLowerCase();
+        rawLang = match[1].toLowerCase();
         const langMap = {
           bash: 'BASH / SHELL',
           sh: 'SHELL',
@@ -220,7 +221,16 @@ function initCodeCopyButtons() {
     copyBtn.innerHTML = '<i class="far fa-copy"></i><span>Копировать</span>';
 
     copyBtn.addEventListener('click', async () => {
-      const textToCopy = (codeEl || pre).innerText.trim();
+      let textToCopy = (codeEl || pre).innerText.trim();
+
+      // Очистка от ведущих служебных знаков приглашения ($ и #) для чистого копирования в bash
+      if (rawLang === 'bash' || rawLang === 'sh' || rawLang === 'shell' || lang.includes('SHELL') || lang.includes('BASH')) {
+        textToCopy = textToCopy
+          .split('\n')
+          .map(line => line.replace(/^[\$#]\s+/, ''))
+          .join('\n');
+      }
+
       let success = false;
 
       if (navigator.clipboard && window.isSecureContext) {

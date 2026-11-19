@@ -174,3 +174,27 @@
   70% { transform: scale(1.1); opacity: 1; box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
   100% { transform: scale(0.9); opacity: 0.8; box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
 }
+
+/* Анимация при фильтрации карточек */
+.course-fade-in {
+  animation: courseFadeIn 0.3s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+
+@keyframes courseFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+#courseLevelFilters .filter-btn {
+  transition: all 0.2s ease;
+}
+
+#courseLevelFilters .filter-btn.active {
+  box-shadow: 0 4px 12px rgba(var(--bs-primary-rgb), 0.25);
+}
