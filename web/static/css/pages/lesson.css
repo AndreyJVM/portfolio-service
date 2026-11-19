@@ -627,3 +627,80 @@ body.zen-mode .lesson-reading-toolbar {
   flex-wrap: wrap;
 }
 
+/* ==========================================================================
+   GitHub & Stripe-Style Callout Alerts (.callout-alert)
+   ========================================================================== */
+.callout-alert {
+  position: relative;
+  margin: 1.75rem 0;
+  padding: 1.1rem 1.25rem;
+  border-radius: 12px;
+  border: 1px solid var(--card-border);
+  border-left-width: 4px;
+  background: var(--card-bg);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.callout-title {
+  display: flex;
+  align-items: center;
+  font-size: 0.825rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.5rem;
+}
+
+.callout-body {
+  font-size: 0.96rem;
+  line-height: 1.65;
+  color: var(--text-color);
+}
+
+.callout-body p:last-child {
+  margin-bottom: 0;
+}
+
+/* Callout Variants */
+.callout-note {
+  border-left-color: #38bdf8;
+  background: rgba(56, 189, 248, 0.06);
+}
+.callout-note .callout-title {
+  color: #38bdf8;
+}
+
+.callout-tip {
+  border-left-color: #34d399;
+  background: rgba(52, 211, 153, 0.06);
+}
+.callout-tip .callout-title {
+  color: #34d399;
+}
+
+.callout-important {
+  border-left-color: #818cf8;
+  background: rgba(129, 140, 248, 0.06);
+}
+.callout-important .callout-title {
+  color: #818cf8;
+}
+
+.callout-warning {
+  border-left-color: #fbbf24;
+  background: rgba(251, 191, 36, 0.07);
+}
+.callout-warning .callout-title {
+  color: #fbbf24;
+}
+
+.callout-caution {
+  border-left-color: #f87171;
+  background: rgba(248, 113, 113, 0.07);
+}
+.callout-caution .callout-title {
+  color: #f87171;
+}
+
+

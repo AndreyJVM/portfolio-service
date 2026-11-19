@@ -204,9 +204,27 @@ function initCodeCopyButtons() {
       }
     }
 
+    const langIconMap = {
+      bash: 'fas fa-terminal text-success',
+      sh: 'fas fa-terminal text-success',
+      shell: 'fas fa-terminal text-success',
+      dockerfile: 'fab fa-docker text-primary',
+      docker: 'fab fa-docker text-primary',
+      yaml: 'fas fa-file-code text-warning',
+      yml: 'fas fa-file-code text-warning',
+      go: 'fab fa-golang text-info',
+      golang: 'fab fa-golang text-info',
+      json: 'fas fa-brackets-curly text-warning',
+      c: 'fas fa-microchip text-primary',
+      systemd: 'fas fa-gears text-secondary',
+      ini: 'fas fa-gears text-secondary',
+      mermaid: 'fas fa-diagram-project text-info'
+    };
+    const iconClass = langIconMap[rawLang] || 'fas fa-code';
+
     const titleSpan = document.createElement('span');
-    titleSpan.className = 'small fw-medium text-muted font-monospace code-lang-tag';
-    titleSpan.textContent = lang;
+    titleSpan.className = 'small fw-medium text-muted font-monospace code-lang-tag d-inline-flex align-items-center gap-1';
+    titleSpan.innerHTML = `<i class="${iconClass}"></i><span>${lang}</span>`;
 
     const linesSpan = document.createElement('span');
     linesSpan.className = 'small text-muted font-monospace d-none d-sm-inline code-line-count';

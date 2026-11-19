@@ -15,6 +15,7 @@
     initReadingToolbar();
     initZenMode();
     initInteractiveQuizChallenges();
+    initCalloutAlerts();
     initKeyboardNavigation();
     initCodeHighlighting();
     initMermaidDiagrams();
@@ -216,14 +217,40 @@
       });
     }
 
-    // 2.3 Динамический расчет времени чтения (180 слов/мин)
+    // 2.3 Динамический расчет времени чтения (180 слов/мин) и оставшегося времени при чтении
     const durationBadge = document.getElementById('lessonDurationBadge');
     if (durationBadge) {
       const text = content.innerText || '';
       const words = text.trim().split(/\s+/).length;
       if (words > 150) {
-        const minutes = Math.max(2, Math.round(words / 180));
-        durationBadge.innerHTML = `<i class="far fa-clock me-1"></i>~${minutes} мин чтения`;
+        const totalMinutes = Math.max(2, Math.round(words / 180));
+        durationBadge.innerHTML = `<i class="far fa-clock me-1"></i>~${totalMinutes} мин чтения`;
+
+        let readTicking = false;
+        const updateRemainingTime = () => {
+          const rect = content.getBoundingClientRect();
+          const windowHeight = window.innerHeight;
+          const contentHeight = content.scrollHeight || rect.height;
+          const scrolledPast = Math.max(0, -rect.top);
+          const progress = Math.min(1, Math.max(0, (scrolledPast + windowHeight * 0.3) / contentHeight));
+
+          if (progress >= 0.95) {
+            durationBadge.innerHTML = '<i class="fas fa-check text-success me-1"></i>Прочитано';
+            durationBadge.classList.add('border-success-subtle');
+          } else {
+            const remaining = Math.max(1, Math.round(totalMinutes * (1 - progress)));
+            durationBadge.innerHTML = `<i class="far fa-clock me-1"></i>~${remaining} мин осталось`;
+            durationBadge.classList.remove('border-success-subtle');
+          }
+          readTicking = false;
+        };
+
+        window.addEventListener('scroll', () => {
+          if (!readTicking) {
+            window.requestAnimationFrame(updateRemainingTime);
+            readTicking = true;
+          }
+        }, { passive: true });
       }
     }
   }
@@ -476,6 +503,79 @@
       actionsBar.appendChild(reviewBtn);
 
       details.appendChild(actionsBar);
+    });
+  }
+
+  /**
+   * 7. Интерактивные Callout Alerts (GitHub / Stripe style)
+   * Преобразует цитаты вида > [!NOTE], > [!TIP], > [!WARNING], > [!IMPORTANT], > [!CAUTION] в акцентные блоки
+   */
+  function initCalloutAlerts() {
+    const content = document.querySelector('.markdown-content');
+    if (!content) return;
+
+    const typeConfig = {
+      note: {
+        title: 'Примечание',
+        icon: 'fas fa-info-circle',
+        className: 'callout-note'
+      },
+      tip: {
+        title: 'Совет',
+        icon: 'fas fa-lightbulb',
+        className: 'callout-tip'
+      },
+      important: {
+        title: 'Важно',
+        icon: 'fas fa-circle-exclamation',
+        className: 'callout-important'
+      },
+      warning: {
+        title: 'Внимание',
+        icon: 'fas fa-triangle-exclamation',
+        className: 'callout-warning'
+      },
+      caution: {
+        title: 'Осторожно',
+        icon: 'fas fa-shield-halved',
+        className: 'callout-caution'
+      }
+    };
+
+    const blockquotes = content.querySelectorAll('blockquote');
+    blockquotes.forEach(bq => {
+      const firstP = bq.querySelector('p');
+      if (!firstP) return;
+
+      const rawText = firstP.textContent.trim();
+      const match = rawText.match(/^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]/i);
+      if (!match) return;
+
+      const calloutType = match[1].toLowerCase();
+      const config = typeConfig[calloutType] || typeConfig.note;
+
+      // Удаляем маркер типа из содержимого
+      firstP.innerHTML = firstP.innerHTML.replace(/^\s*\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\](\s*<br\s*\/?>)?\s*/i, '');
+      if (!firstP.textContent.trim() && firstP.children.length === 0) {
+        firstP.remove();
+      }
+
+      const wrapper = document.createElement('div');
+      wrapper.className = `callout-alert ${config.className}`;
+
+      const titleEl = document.createElement('div');
+      titleEl.className = 'callout-title';
+      titleEl.innerHTML = `<i class="${config.icon} me-2"></i><span>${config.title}</span>`;
+
+      const bodyEl = document.createElement('div');
+      bodyEl.className = 'callout-body';
+      while (bq.firstChild) {
+        bodyEl.appendChild(bq.firstChild);
+      }
+
+      wrapper.appendChild(titleEl);
+      wrapper.appendChild(bodyEl);
+      bq.parentNode.replaceChild(wrapper, bq);
     });
   }
 })();

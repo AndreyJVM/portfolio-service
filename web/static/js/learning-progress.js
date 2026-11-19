@@ -119,23 +119,73 @@
         }
       }
 
-      // Обновление бейджей статуса уроков в списке
-      document.querySelectorAll('.lesson-card-item').forEach(card => {
+      // Обновление бейджей статуса уроков в списке и кнопки запуска/продолжения
+      const lessonCards = Array.from(document.querySelectorAll('.lesson-card-item'));
+      let firstUncompletedCard = null;
+
+      lessonCards.forEach(card => {
         const courseSlug = card.getAttribute('data-course-slug');
         const lessonSlug = card.getAttribute('data-lesson-slug');
         const badge = card.querySelector('.lesson-status-badge');
+        const orderBadge = card.querySelector('.lesson-order-badge');
 
-        if (badge && courseSlug && lessonSlug) {
+        if (courseSlug && lessonSlug) {
           const completed = this.isCompleted(courseSlug, lessonSlug);
           if (completed) {
-            badge.className = 'badge lesson-status-badge bg-success-subtle text-success border border-success-subtle';
-            badge.innerHTML = '<i class="fas fa-check-circle me-1"></i>Пройдено';
+            card.classList.add('completed');
+            if (orderBadge) {
+              orderBadge.classList.add('completed');
+              orderBadge.innerHTML = '<i class="fas fa-check"></i>';
+            }
+            if (badge) {
+              badge.className = 'badge lesson-status-badge bg-success-subtle text-success border border-success-subtle';
+              badge.innerHTML = '<i class="fas fa-check-circle me-1"></i>Пройдено';
+            }
           } else {
-            badge.className = 'badge lesson-status-badge bg-body-secondary text-body-secondary border';
-            badge.innerHTML = '<i class="far fa-circle me-1"></i>К изучению';
+            card.classList.remove('completed');
+            if (!firstUncompletedCard) {
+              firstUncompletedCard = card;
+            }
+            if (orderBadge) {
+              orderBadge.classList.remove('completed');
+              const orderNum = card.getAttribute('data-lesson-order');
+              if (orderNum) {
+                orderBadge.textContent = orderNum;
+              }
+            }
+            if (badge) {
+              badge.className = 'badge lesson-status-badge bg-body-secondary text-body-secondary border';
+              badge.innerHTML = '<i class="far fa-circle me-1"></i>К изучению';
+            }
           }
         }
       });
+
+      // Обновляем кнопку "Начать / Продолжить модуль" на странице курса
+      const resumeBtn = document.getElementById('startOrResumeCourseBtn');
+      if (resumeBtn && lessonCards.length > 0) {
+        if (!firstUncompletedCard) {
+          // Все уроки пройдены
+          const firstCard = lessonCards[0];
+          const courseSlug = firstCard.getAttribute('data-course-slug');
+          const lessonSlug = firstCard.getAttribute('data-lesson-slug');
+          resumeBtn.href = `/courses/${courseSlug}/${lessonSlug}`;
+          resumeBtn.innerHTML = '<i class="fas fa-rotate-right me-2"></i>Повторить модуль';
+          resumeBtn.className = 'btn btn-outline-success rounded-pill w-100 py-2 fw-semibold shadow-sm';
+        } else {
+          const courseSlug = firstUncompletedCard.getAttribute('data-course-slug');
+          const lessonSlug = firstUncompletedCard.getAttribute('data-lesson-slug');
+          const lessonOrder = firstUncompletedCard.getAttribute('data-lesson-order') || '1';
+          resumeBtn.href = `/courses/${courseSlug}/${lessonSlug}`;
+          if (firstUncompletedCard === lessonCards[0]) {
+            resumeBtn.innerHTML = '<i class="fas fa-play me-2"></i>Начать изучение модуля';
+            resumeBtn.className = 'btn btn-primary rounded-pill w-100 py-2 fw-semibold shadow-sm';
+          } else {
+            resumeBtn.innerHTML = `<i class="fas fa-forward-step me-2"></i>Продолжить: Урок ${lessonOrder}`;
+            resumeBtn.className = 'btn btn-primary rounded-pill w-100 py-2 fw-semibold shadow-sm';
+          }
+        }
+      }
 
       // 3. Обновление кнопки на странице конкретного урока (/courses/{course}/{lesson})
       const completeBtn = document.getElementById('completeLessonBtn');
