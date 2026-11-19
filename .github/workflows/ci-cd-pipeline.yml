@@ -77,35 +77,49 @@ jobs:
       - name: Run Go tests
         run: go test -v ./...
 
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build and push DevOps Platform Docker image
+      - name: Scan Dockerfile Misconfigurations (Trivy IaC)
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          scan-type: 'config'
+          scan-ref: 'Dockerfile'
+          format: 'table'
+          exit-code: '1'
+          severity: 'CRITICAL,HIGH'
+
+      - name: Build local container image for security scan
         uses: docker/build-push-action@v6
         with:
           context: .
-          push: true
-          tags: |
-            ${{ env.DOCKER_IMAGE_NAME }}:latest
-            ${{ env.DOCKER_IMAGE_NAME }}:${{ github.sha }}
+          load: true
+          tags: ${{ env.DOCKER_IMAGE_NAME }}:local-test
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
       - name: Scan DevOps Platform image with Trivy (Security Gate)
         uses: aquasecurity/trivy-action@v0.36.0
         with:
-          image-ref: '${{ env.DOCKER_IMAGE_NAME }}:${{ github.sha }}'
+          image-ref: '${{ env.DOCKER_IMAGE_NAME }}:local-test'
           format: 'table'
           exit-code: '1'
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Push verified image to Docker Hub
+        run: |
+          docker tag ${{ env.DOCKER_IMAGE_NAME }}:local-test ${{ env.DOCKER_IMAGE_NAME }}:latest
+          docker tag ${{ env.DOCKER_IMAGE_NAME }}:local-test ${{ env.DOCKER_IMAGE_NAME }}:${{ github.sha }}
+          docker push ${{ env.DOCKER_IMAGE_NAME }}:latest
+          docker push ${{ env.DOCKER_IMAGE_NAME }}:${{ github.sha }}
 
   deploy-to-vds:
     name: Zero-Downtime Deploy to VDS
