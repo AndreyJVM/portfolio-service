@@ -97,18 +97,25 @@
   border-radius: 12px;
   overflow: hidden;
   background: #0f172a;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.code-block-wrapper:hover {
+  border-color: rgba(255, 255, 255, 0.18);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
 }
 
 .code-block-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.45rem 1rem;
-  background: #1e293b;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 0.5rem 1rem;
+  background: #161f30;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   font-size: 0.75rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   color: #94a3b8;
   user-select: none;
 }
@@ -116,6 +123,7 @@
 .code-block-dots {
   display: flex;
   gap: 6px;
+  align-items: center;
 }
 
 .code-block-dot {
@@ -123,18 +131,24 @@
   height: 10px;
   border-radius: 50%;
   display: inline-block;
+  opacity: 0.9;
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
-.dot-red { background-color: #ef4444; }
-.dot-yellow { background-color: #f59e0b; }
-.dot-green { background-color: #10b981; }
+.code-block-wrapper:hover .code-block-dot {
+  opacity: 1;
+}
+
+.dot-red { background-color: #ef4444; box-shadow: 0 0 6px rgba(239, 68, 68, 0.4); }
+.dot-yellow { background-color: #f59e0b; box-shadow: 0 0 6px rgba(245, 158, 11, 0.4); }
+.dot-green { background-color: #10b981; box-shadow: 0 0 6px rgba(16, 185, 129, 0.4); }
 
 .code-copy-btn {
-  background: transparent;
+  background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.12);
   color: #94a3b8;
   font-size: 0.75rem;
-  padding: 0.2rem 0.55rem;
+  padding: 0.22rem 0.6rem;
   border-radius: 6px;
   display: inline-flex;
   align-items: center;
@@ -144,13 +158,14 @@
 }
 
 .code-copy-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.12);
   color: #f8fafc;
-  border-color: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
 }
 
 .code-copy-btn.copied {
-  background: rgba(16, 185, 129, 0.2);
+  background: rgba(16, 185, 129, 0.25);
   color: #34d399;
   border-color: #10b981;
 }
@@ -158,7 +173,15 @@
 /* Контейнер интерактивных диаграмм Mermaid */
 .mermaid-chart-container {
   max-width: 100%;
+  background: #0f172a !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35) !important;
   transition: all 0.25s ease;
+}
+
+.mermaid-chart-container:hover {
+  border-color: rgba(255, 255, 255, 0.18) !important;
 }
 
 .mermaid-chart-container svg {
@@ -633,13 +656,18 @@ body.zen-mode .lesson-reading-toolbar {
 .callout-alert {
   position: relative;
   margin: 1.75rem 0;
-  padding: 1.1rem 1.25rem;
+  padding: 1.15rem 1.35rem;
   border-radius: 12px;
   border: 1px solid var(--card-border);
   border-left-width: 4px;
   background: var(--card-bg);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.2);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.callout-alert:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.28);
 }
 
 .callout-title {
@@ -662,10 +690,11 @@ body.zen-mode .lesson-reading-toolbar {
   margin-bottom: 0;
 }
 
-/* Callout Variants */
+/* Callout Variants with Ambient Subtle Glow */
 .callout-note {
   border-left-color: #38bdf8;
-  background: rgba(56, 189, 248, 0.06);
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.08) 0%, rgba(22, 27, 34, 0.95) 100%);
+  border-color: rgba(56, 189, 248, 0.2);
 }
 .callout-note .callout-title {
   color: #38bdf8;
@@ -673,7 +702,8 @@ body.zen-mode .lesson-reading-toolbar {
 
 .callout-tip {
   border-left-color: #34d399;
-  background: rgba(52, 211, 153, 0.06);
+  background: linear-gradient(135deg, rgba(52, 211, 153, 0.08) 0%, rgba(22, 27, 34, 0.95) 100%);
+  border-color: rgba(52, 211, 153, 0.2);
 }
 .callout-tip .callout-title {
   color: #34d399;
@@ -681,7 +711,8 @@ body.zen-mode .lesson-reading-toolbar {
 
 .callout-important {
   border-left-color: #818cf8;
-  background: rgba(129, 140, 248, 0.06);
+  background: linear-gradient(135deg, rgba(129, 140, 248, 0.08) 0%, rgba(22, 27, 34, 0.95) 100%);
+  border-color: rgba(129, 140, 248, 0.2);
 }
 .callout-important .callout-title {
   color: #818cf8;
@@ -689,7 +720,8 @@ body.zen-mode .lesson-reading-toolbar {
 
 .callout-warning {
   border-left-color: #fbbf24;
-  background: rgba(251, 191, 36, 0.07);
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.09) 0%, rgba(22, 27, 34, 0.95) 100%);
+  border-color: rgba(251, 191, 36, 0.2);
 }
 .callout-warning .callout-title {
   color: #fbbf24;
@@ -697,7 +729,8 @@ body.zen-mode .lesson-reading-toolbar {
 
 .callout-caution {
   border-left-color: #f87171;
-  background: rgba(248, 113, 113, 0.07);
+  background: linear-gradient(135deg, rgba(248, 113, 113, 0.09) 0%, rgba(22, 27, 34, 0.95) 100%);
+  border-color: rgba(248, 113, 113, 0.2);
 }
 .callout-caution .callout-title {
   color: #f87171;

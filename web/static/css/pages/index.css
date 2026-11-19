@@ -198,3 +198,94 @@
 #courseLevelFilters .filter-btn.active {
   box-shadow: 0 4px 12px rgba(var(--bs-primary-rgb), 0.25);
 }
+
+/* ==========================================================================
+   Modern Course Card & Catalog UI Enhancements
+   ========================================================================== */
+.course-card {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s ease, border-color 0.28s ease;
+  background-color: var(--card-bg);
+}
+
+.course-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--course-accent, var(--bs-primary));
+  opacity: 0.8;
+  transition: height 0.25s ease, opacity 0.25s ease;
+  z-index: 1;
+}
+
+.course-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 255, 255, 0.18) !important;
+  box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.45), 0 0 24px -6px var(--course-accent, rgba(46, 160, 67, 0.25)) !important;
+}
+
+.course-card:hover::before {
+  height: 4px;
+  opacity: 1;
+}
+
+.course-icon-box {
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
+}
+
+.course-card:hover .course-icon-box {
+  transform: scale(1.08) rotate(3deg);
+  box-shadow: 0 6px 18px var(--course-accent, rgba(46, 160, 67, 0.35)) !important;
+}
+
+.course-tag-pill {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(255, 255, 255, 0.07) !important;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.course-card:hover .course-tag-pill {
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+.course-card-btn {
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  border-color: rgba(var(--bs-primary-rgb), 0.4) !important;
+}
+
+.course-card-btn i {
+  transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.course-card:hover .course-card-btn {
+  background-color: var(--bs-primary) !important;
+  color: #ffffff !important;
+  border-color: var(--bs-primary) !important;
+  box-shadow: 0 4px 14px rgba(var(--bs-primary-rgb), 0.35);
+}
+
+.course-card:hover .course-card-btn i {
+  transform: translateX(4px);
+}
+
+/* Course detail sticky hero card */
+.course-hero-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.course-hero-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--course-accent, var(--bs-primary));
+}
+

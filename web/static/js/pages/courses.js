@@ -141,7 +141,7 @@
       // Обновление счетчика
       if (counterBadge) {
         if (visibleCount === totalCount && !searchQuery) {
-          counterBadge.textContent = '10 модулей • 26 практических уроков';
+          counterBadge.textContent = '10 модулей • 35 практических уроков';
           counterBadge.className = 'badge bg-body-tertiary text-body-secondary border px-3 py-2 rounded-pill';
         } else {
           counterBadge.textContent = `Показано: ${visibleCount} из ${totalCount} модулей`;
