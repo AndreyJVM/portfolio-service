@@ -15,6 +15,28 @@
 4. Выполнить бесшовный reload конфигурации Reverse Proxy (Nginx) с помощью сигнала `SIGHUP`.
 5. Остановить и удалить старый инстанс (`docker compose up -d --scale app=1`).
 
+```mermaid
+sequenceDiagram
+    autonumber
+    participant CD as Deploy Script (CI/CD)
+    participant Docker as Docker Daemon
+    participant Old as Старый контейнер (v1)
+    participant New as Новый контейнер (v2)
+    participant Proxy as Nginx Reverse Proxy
+
+    Proxy->>Old: 1. Клиентский трафик на версию v1
+    CD->>Docker: 2. docker compose up -d --scale app=2
+    Docker->>New: 3. Старт контейнера версии v2
+    loop Проверка готовности (до 30 сек)
+        CD->>New: 4. curl http://localhost:8080/health
+    end
+    Note over New: Здоровье подтверждено (200 OK ✅)
+    CD->>Proxy: 5. docker exec nginx nginx -s reload
+    Proxy->>New: 6. Трафик переключен на v2
+    CD->>Docker: 7. docker compose up -d --scale app=1
+    Docker->>Old: 8. Graceful shutdown (SIGTERM)
+```
+
 ---
 
 ### 2. Реализация production-скрипта `deploy.sh`
