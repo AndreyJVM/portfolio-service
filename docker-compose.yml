@@ -1,7 +1,6 @@
 services:
   # ========== DEVOPS PLATFORM (GOLANG BACKEND) ==========
   app:
-    build: .
     image: andreyvorobevaqa/portfolio-service:latest
     restart: unless-stopped
     security_opt:
