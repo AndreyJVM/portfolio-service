@@ -30,14 +30,16 @@ type Course struct {
 
 // Lesson represents an individual course lesson.
 type Lesson struct {
-	ID          string `json:"id"`
-	CourseSlug  string `json:"courseSlug"`
-	Slug        string `json:"slug"`
-	Title       string `json:"title"`
-	Order       int    `json:"order"`
-	Duration    string `json:"duration"`
-	Description string `json:"description"`
-	ContentHTML string `json:"contentHtml,omitempty"`
+	ID          string   `json:"id"`
+	CourseSlug  string   `json:"courseSlug"`
+	Slug        string   `json:"slug"`
+	Title       string   `json:"title"`
+	Order       int      `json:"order"`
+	Duration    string   `json:"duration"`
+	Description string   `json:"description"`
+	Level       string   `json:"level,omitempty"`
+	Tags        []string `json:"tags,omitempty"`
+	ContentHTML string   `json:"contentHtml,omitempty"`
 }
 
 // SearchItem represents a search index item for fast lookup.

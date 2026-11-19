@@ -1,0 +1,102 @@
+[
+  {
+    "id": "docker",
+    "slug": "docker",
+    "title": "Модуль 1: Архитектура и фундаментальные основы",
+    "icon": "fab fa-docker",
+    "color": "#0284c7",
+    "level": "Уровень 1 • Базовый",
+    "description": "Физика контейнеризации против VM, стек dockerd → containerd → runc, спецификация OCI, 7 пространств имен Linux и запуск первого контейнера.",
+    "tags": ["Docker", "Architecture", "containerd", "runc", "OCI", "Namespaces"]
+  },
+  {
+    "id": "docker-dockerfile",
+    "slug": "docker-dockerfile",
+    "title": "Модуль 2: Сборка образов и искусство Dockerfile",
+    "icon": "fas fa-layer-group",
+    "color": "#0ea5e9",
+    "level": "Уровень 1 • Базовый → Middle",
+    "description": "Анатомия инструкций, оптимизация кэширования слоев, Multi-stage сборка, Google Distroless, Scratch, Alpine и движок BuildKit со скрытыми секретами.",
+    "tags": ["Dockerfile", "Multi-stage", "BuildKit", "Scratch", "Distroless", "Cache"]
+  },
+  {
+    "id": "docker-storage",
+    "slug": "docker-storage",
+    "title": "Модуль 3: Тома, хранилище и постоянство данных",
+    "icon": "fas fa-hard-drive",
+    "color": "#3b82f6",
+    "level": "Уровень 2 • Middle",
+    "description": "Архитектура драйвера Overlay2, Copy-on-Write (lowerdir/upperdir/merged), Named Volumes, Bind Mounts, tmpfs и разбор извечной ошибки Permission Denied (UID/GID).",
+    "tags": ["Storage", "Volumes", "Bind Mounts", "Overlay2", "CoW", "UID/GID"]
+  },
+  {
+    "id": "docker-networking",
+    "slug": "docker-networking",
+    "title": "Модуль 4: Сетевой стек и DNS Discovery",
+    "icon": "fas fa-network-wired",
+    "color": "#6366f1",
+    "level": "Уровень 2 • Middle",
+    "description": "Сетевые драйверы bridge, host, macvlan, ipvlan, встроенный DNS-сервер Docker, межконтейнерная маршрутизация и взаимодействие с iptables/nftables и UFW.",
+    "tags": ["Networking", "Bridge", "DNS", "Service Discovery", "iptables", "Macvlan"]
+  },
+  {
+    "id": "docker-compose",
+    "slug": "docker-compose",
+    "title": "Модуль 5: Мультиконтейнерные стеки (Compose v2)",
+    "icon": "fas fa-cubes",
+    "color": "#8b5cf6",
+    "level": "Уровень 2 • Middle",
+    "description": "Стандарты Compose v2 спецификации, изоляция сетей микросервисов, интерполяция .env переменных, healthchecks и управление зависимостями depends_on.",
+    "tags": ["Compose v2", "Microservices", "Healthcheck", "Environment", "depends_on"]
+  },
+  {
+    "id": "docker-security",
+    "slug": "docker-security",
+    "title": "Модуль 6: Безопасность и Production-харденинг",
+    "icon": "fas fa-shield-halved",
+    "color": "#ef4444",
+    "level": "Уровень 3 • Middle → Senior",
+    "description": "Запуск от непривилегированного пользователя (Non-Root), сброс привилегий ядра cap_drop: [ALL], Read-Only rootfs, профили Seccomp/AppArmor и сканирование уязвимостей Trivy.",
+    "tags": ["Security", "Hardening", "Non-Root", "Capabilities", "Seccomp", "Trivy"]
+  },
+  {
+    "id": "docker-resources",
+    "slug": "docker-resources",
+    "title": "Модуль 7: Изоляция ядра и ресурсы (Cgroups v2)",
+    "icon": "fas fa-microchip",
+    "color": "#f59e0b",
+    "level": "Уровень 3 • Middle → Senior",
+    "description": "Контроллеры Cgroups v2: ограничение памяти, CPU квоты, CPU Pinning (cpuset), предотвращение OOM Killer (Exit Code 137) и троттлинг дискового ввода-вывода (Block I/O).",
+    "tags": ["Cgroups v2", "Memory Limits", "CPU Quotas", "OOM Killer", "Exit 137", "Kernel"]
+  },
+  {
+    "id": "docker-production",
+    "slug": "docker-production",
+    "title": "Модуль 8: Тюнинг демона, логи и траблшутинг",
+    "icon": "fas fa-wrench",
+    "color": "#10b981",
+    "level": "Уровень 3 • Senior",
+    "description": "Конфигурация /etc/docker/daemon.json, live-restore: true, драйверы логирования (json-file, journald, Loki), мониторинг cAdvisor и диагностика аварий (Exit коды 125–143).",
+    "tags": ["Production", "daemon.json", "live-restore", "Logging", "cAdvisor", "Troubleshooting"]
+  },
+  {
+    "id": "docker-cicd",
+    "slug": "docker-cicd",
+    "title": "Модуль 9: Multi-arch сборки и CI/CD",
+    "icon": "fas fa-code-branch",
+    "color": "#06b6d4",
+    "level": "Уровень 3 • Senior",
+    "description": "Кроссплатформенная сборка под amd64/arm64 через Docker Buildx и QEMU, кэширование слоев в GitHub Actions (type=gha, type=registry) и Zero-Downtime Blue-Green деплой.",
+    "tags": ["Buildx", "Multi-arch", "QEMU", "CI/CD", "GitHub Actions", "Blue-Green"]
+  },
+  {
+    "id": "docker-cookbook",
+    "slug": "docker-cookbook",
+    "title": "Модуль 10: Практический справочник и рецепты",
+    "icon": "fas fa-book-bookmark",
+    "color": "#ec4899",
+    "level": "Справочник • Все уровни",
+    "description": "Шпаргалка консольных команд (Cheat Sheet), безопасная чистка диска docker system prune, готовые production-шаблоны Dockerfile для Go, Node.js, Python, Rust.",
+    "tags": ["Cheat Sheet", "Recipes", "Best Practices", "Prune", "Templates"]
+  }
+]

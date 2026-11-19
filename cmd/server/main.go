@@ -43,7 +43,7 @@ func main() {
 	}
 
 	// Initialize service layer
-	courseService := service.NewCourseService(cfg.ContentDir)
+	courseService := service.NewCourseService(cfg.ContentDir, cfg.CoursesFile)
 	integrationsService := service.NewIntegrationsService(cfg.GitHubUser, cfg.DockerUser)
 	integrationsService.PreloadDefaults() // Instant cold start without external API delays
 	pageService := service.NewPageService(cfg.PagesFile)

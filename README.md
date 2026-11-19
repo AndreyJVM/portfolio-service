@@ -25,15 +25,16 @@
 <a name="english"></a>
 ## English
 
-**Primary Cloud Lab** is an open-source interactive education platform focused on **DevOps engineering, Linux system administration, Docker containerization, Ansible automation, and resilient CI/CD pipelines**.
+**Primary Cloud Lab** is an open-source engineering platform and comprehensive **Docker Bible: From Zero to Production** (`Библия по Docker: с нуля до профи`).
 
-The platform is designed around a lightweight micro-service architecture in **Go (Golang 1.26.8)**, featuring non-root container security (UID 10001), instant full-text search, local learning progress persistence, and zero-downtime Blue-Green deployments.
+The platform provides a deep, production-grade knowledge base focused on containerization, Linux kernel isolation, high-performance image builds, networking, orchestration, hardening, and automated CI/CD delivery. Built with **Go (Golang 1.26.8)**, it features non-root container security (UID 10001), instant full-text in-memory search, client-side progress tracking, declarative JSON content architecture with frontmatter parsing, automated integrity test coverage, and zero-downtime Blue-Green deployments.
 
 **Production:** [https://vorobevaqa.ru](https://vorobevaqa.ru) · **Docker Hub:** [`andreyvorobevaqa`](https://hub.docker.com/repositories/andreyvorobevaqa) · **Ansible Galaxy:** [Author Roles](https://galaxy.ansible.com/ui/standalone/namespaces/24255/)
 
 ### Table of Contents
 - [Architecture & Infrastructure](#architecture--infrastructure)
-- [Educational Tracks & Labs](#educational-tracks--labs)
+- [Docker Bible: 10 Comprehensive Modules](#docker-bible-10-comprehensive-modules)
+- [Declarative Content Engine & CLI Scaffolding](#declarative-content-engine--cli-scaffolding)
 - [Interactive Learning & Instant Search](#interactive-learning--instant-search)
 - [CI/CD & Zero-Downtime Blue-Green Deployment](#cicd--zero-downtime-blue-green-deployment)
 - [Local Development & Testing](#local-development--testing)
@@ -57,39 +58,66 @@ flowchart TD
 | **Host & Operating System** | Linux (Ubuntu 24.04 LTS), Bash automation scripts, systemd, cron, logrotate |
 | **Network & Security** | UFW firewall, Fail2ban brute-force protection, SSH authentication via ed25519 keys |
 | **Gateway & Reverse Proxy** | Nginx (SSL termination, Certbot auto-renewal, HTTP/2, Gzip, HA fallback routing, custom error pages) |
-| **Containerization** | Docker, Docker Compose, Docker Hub Registry, Alpine 3.21 runtime, scratch container, cgroups v2 limits, non-root (UID 10001) |
+| **Containerization** | Docker, Docker Compose v2, Docker Hub Registry, Alpine 3.21 runtime, scratch container, cgroups v2 limits, non-root (UID 10001) |
 | **Backend Services** | Go 1.26.8 (`go-chi/chi/v5`, `yuin/goldmark`, `skip2/go-qrcode`), static compilation with stripped symbols (`-w -s`) |
+| **Content Engine** | Declarative JSON manifest (`content/courses.json`), YAML-style Markdown frontmatter, automated content integrity test suite |
 | **IaC & Orchestration** | Ansible (idempotent playbooks and roles in Ansible Galaxy), Blue-Green zero-downtime deployment script |
 | **CI/CD** | GitHub Actions (matrix/paths-filter triggers, BuildKit gha cache, `gofmt` & `go vet` quality gates, automated rollback) |
 | **Dependency Auditing** | Dependabot (weekly security and version monitoring for Go, Docker base images, and GitHub Actions) |
 
 ---
 
-### Educational Tracks & Labs
+### Docker Bible: 10 Comprehensive Modules
 
-The platform hosts 7 comprehensive, production-ready modules (32 practical lessons):
+The curriculum covers a structured engineering pathway from kernel namespaces to advanced production operations (26+ lessons):
 
-1. 🐧 **Linux: System Administration & Kernel** (`/courses/linux`):
-   - DAC permission model (POSIX, SUID, SGID, Sticky bit), systemd services, timers, and unit lifecycle;
-   - Linux networking stack (`iproute2`, `ss`, `iptables`, `ufw`), socket debugging, and routing table analysis.
-2. 🐳 **Docker: From Architecture to Production** (`/courses/docker`):
-   - Multi-stage builds, BuildKit cache, storage drivers (`overlay2`, CoW, `d_type`), cgroups v2 quotas;
-   - Docker Compose v2 architecture, bridge networks, and internal DNS service discovery.
-3. 🦭 **Podman & Quadlet: Daemonless Containers** (`/courses/podman`):
-   - Rootless containerization, user namespaces mapping, and systemd integration via Quadlet;
-   - `podman kube generate` for Kubernetes-ready pods and production security hardening.
-4. 📦 **LXC / Incus: System Containers** (`/courses/lxc`):
-   - Lightweight alternative to KVM VMs, ZFS/Btrfs storage pools, and CoW snapshots;
-   - Macvlan and bridge networking, CPU/RAM limits, and unprivileged system container security.
-5. 🔬 **Container Internals: Kernel & Isolation** (`/courses/internals`):
-   - Low-level container anatomy: 8 Linux namespaces, Cgroups v2 controllers, `clone`, `unshare`, `pivot_root`;
-   - OCI runtime specification, `runc` and `crun`, Seccomp BPF filters, and Linux capabilities.
-6. ⚙️ **Ansible: Infrastructure as Code (IaC)** (`/courses/ansible`):
-   - Agentless architecture, inventory management, and idempotent playbook design;
-   - Modular roles, secret encryption with Ansible Vault, and publishing to Ansible Galaxy.
-7. 🔄 **CI/CD: GitHub Actions & Zero-Downtime Deploy** (`/courses/cicd`):
-   - Production pipeline design, BuildKit layer caching (`type=gha`), artifact handling;
-   - Blue-Green zero-downtime deployment strategy via Docker Compose scaling and automatic rollbacks.
+1. 🐳 **Architecture & Fundamentals** (`/courses/docker`):
+   - Linux process isolation (PID, MNT, NET, IPC, UTS, USER, CGROUP namespaces);
+   - OCI specs, `dockerd` → `containerd` → `runc` runtime stack; container lifecycle and init process.
+2. 🔨 **Image Building & Dockerfile Mastery** (`/courses/docker-dockerfile`):
+   - Layer anatomy, cache optimization, BuildKit execution engine;
+   - Multi-stage builds, Distroless/Scratch minimal images, RUN mount secrets and cache mounts.
+3. 💾 **Volumes & Persistent Storage** (`/courses/docker-storage`):
+   - Storage drivers (`overlay2` CoW mechanics, `d_type` check);
+   - Named Volumes vs Bind Mounts vs tmpfs, solving UID/GID ownership and permission collisions.
+4. 🌐 **Networking Stack & DNS Discovery** (`/courses/docker-networking`):
+   - Network drivers (`bridge`, `host`, `macvlan`, `none`), embedded DNS resolution (`127.0.0.11`);
+   - Port forwarding mechanics, iptables interaction, and preventing UFW firewall bypass.
+5. 📦 **Multi-Container Stacks (Compose v2)** (`/courses/docker-compose`):
+   - Compose v2 specification, variable interpolation hierarchy and `.env` handling;
+   - Healthcheck probes and orchestration order via `depends_on condition: service_healthy`.
+6. 🛡️ **Container Security & Production Hardening** (`/courses/docker-security`):
+   - Non-root UID execution, dropping Linux capabilities (`cap_drop: [ALL]`), read-only rootfs;
+   - Seccomp BPF syscall filters, AppArmor profiles, and automated vulnerability scanning with Trivy.
+7. ⚡ **Kernel Isolation & Resources (Cgroups v2)** (`/courses/docker-resources`):
+   - CPU quotas (`cpus`, `cpu_shares`), CFS scheduler throttles, memory hard and soft limits;
+   - OOM Killer diagnostics, kernel dmesg inspection, Exit Code 137 resolution, swap management.
+8. 🔧 **Daemon Tuning & Production Operations** (`/courses/docker-production`):
+   - Configuration tuning in `/etc/docker/daemon.json` (`live-restore`, `log-driver`, `default-ulimits`);
+   - Container monitoring via cAdvisor/Prometheus, disk cleanup strategies, and exit code reference.
+9. 🚀 **Multi-Arch Builds & CI/CD Pipelines** (`/courses/docker-cicd`):
+   - Multi-architecture images (`linux/amd64`, `linux/arm64`) using Docker Buildx and QEMU;
+   - GitHub Actions pipelines with Registry cache export, automated testing, and Zero-Downtime Blue-Green deployments.
+10. 📚 **Cookbook: Cheatsheet & Production Templates** (`/courses/docker-cookbook`):
+    - Comprehensive CLI cheatsheet (run, exec, logs, inspect, prune);
+    - Battle-tested production Dockerfile templates for Go, Node.js, Python, Rust, and Nginx.
+
+---
+
+### Declarative Content Engine & CLI Scaffolding
+
+- **Declarative JSON Manifest (`content/courses.json`):**
+  Modules, titles, descriptions, icons, colors, tags, and levels are configured in a single declarative file. Adding or updating modules requires zero Go code changes.
+- **YAML-Style Frontmatter in Markdown:**
+  Lessons support metadata headers (`title`, `description`, `duration`, `level`, `order`, `tags`) parsed cleanly before rendering HTML, enabling rich filtering and instant index updates.
+- **Automated Content Integrity Tests (`internal/service/content_integrity_test.go`):**
+  Continuous validation ensures all Markdown lessons exist, have valid non-empty headers, correct frontmatter, and render cleanly through Goldmark without syntax errors.
+- **One-Command Scaffolding Script (`scripts/create-lesson.sh`):**
+  ```bash
+  ./scripts/create-lesson.sh <module-slug> <lesson-slug> "<Title>" [duration] [level] [tags]
+  # Example:
+  ./scripts/create-lesson.sh docker-storage 03-permissions-uid-gid "Права доступа UID и GID в томах" "15 мин" "Middle" "Storage,Permissions"
+  ```
 
 ---
 
@@ -154,19 +182,22 @@ docker compose up -d --build
 ```
 portfolio/
 ├── cmd/server/main.go       # Go web server entrypoint (Chi router, graceful shutdown)
-├── content/courses/         # Knowledge base in Markdown (Linux, Docker, Ansible, CI/CD)
+├── content/
+│   ├── courses.json         # Declarative course catalog and metadata manifest
+│   └── courses/             # Docker Bible modules in Markdown (10 structured tracks)
 ├── internal/
 │   ├── config/              # Environment configuration loader
 │   ├── handler/             # HTTP page handlers, REST API endpoints, search, and unit tests
 │   ├── model/               # Data structures (Courses, Lessons, SearchItem, Integrations)
-│   └── service/             # Catalog service and external integrations (GitHub, Docker Hub)
+│   └── service/             # Catalog service, frontmatter parser, and integrity tests
 ├── web/
-│   ├── static/              # CSS (themes, navbar, animations), JS (search, progress, quizzes), images
+│   ├── static/              # CSS (themes, navbar, animations), JS (search, progress), images
 │   └── templates/           # Go HTML templates (layout, index, courses, course_detail, lesson)
 ├── nginx/
 │   ├── nginx.conf           # Reverse Proxy, SSL Let's Encrypt configuration, and HA routing
 │   └── 50x.html             # Custom error pages
 ├── scripts/
+│   ├── create-lesson.sh     # CLI generator for scaffolded lessons with frontmatter
 │   └── deploy.sh            # Zero-Downtime Blue-Green deployment with automated rollback
 ├── docker-compose.yml       # Production microservice stack configuration
 ├── Dockerfile               # Multi-stage static Go binary build on Alpine 3.21 (non-root UID 10001)
@@ -182,15 +213,16 @@ portfolio/
 <a name="русский"></a>
 ## Русский
 
-**Primary Cloud Lab** — открытая интерактивная образовательная веб-платформа по **DevOps, системному администрированию Linux, контейнеризации в Docker, автоматизации на Ansible и надежным CI/CD пайплайнам**.
+**Primary Cloud Lab** — открытая инженерная база знаний и фундаментальная **Библия по Docker: От нуля до Production** (`Библия по Docker: с нуля до профи`).
 
-Архитектура проекта построена на легковесном микростеке на **Go (Golang 1.26.8)** с запуском всех сервисов от непривилегированного пользователя (non-root UID 10001), встроенным быстрым поиском, интерактивными квизами с сохранением прогресса и бесперебойным Blue-Green развертыванием без даунтайма.
+Платформа представляет собой сквозное прикладное руководство по контейнеризации: от низкоуровневой изоляции процессов ядра Linux и сборки минимальных образов до сетей, Compose v2, безопасности, Cgroups v2, тюнинга демона и автоматизированного CI/CD развертывания. Серверная часть разработана на **Go (Golang 1.26.8)** с запуском сервисов от непривилегированного пользователя (non-root UID 10001), встроенным полнотекстовым поиском в памяти, сохранением прогресса в браузере, декларативным JSON-манифестом курсов с парсингом frontmatter-метаданных и бесперебойным Blue-Green обновлением.
 
 **Боевой сервер:** [https://vorobevaqa.ru](https://vorobevaqa.ru) · **Docker Hub:** [`andreyvorobevaqa`](https://hub.docker.com/repositories/andreyvorobevaqa) · **Ansible Galaxy:** [роли автора](https://galaxy.ansible.com/ui/standalone/namespaces/24255/)
 
 ### Содержание
 - [Инфраструктура и Архитектура](#инфраструктура-и-архитектура-1)
-- [Образовательные треки и Лабораторные](#образовательные-треки-и-лабораторные-1)
+- [Библия Docker: 10 тематических модулей](#библия-docker-10-тематических-модулей)
+- [Декларативное наполнение базы и CLI-генератор](#декларативное-наполнение-базы-и-cli-генератор)
 - [Интерактивная система обучения и поиск](#интерактивная-система-обучения-и-поиск)
 - [CI/CD & Бесперебойный Blue-Green деплой](#cicd--бесперебойный-blue-green-деплой-1)
 - [Тестирование и локальный запуск](#тестирование-и-локальный-запуск-1)
@@ -214,39 +246,66 @@ flowchart TD
 | **Хост и ОС** | Linux (Ubuntu 24.04 LTS), Bash-скрипты автоматизации, systemd, cron, ротация logrotate |
 | **Сетевая безопасность** | UFW firewall, Fail2ban от брутфорса, SSH-аутентификация по ключам ed25519 |
 | **Шлюз и Прокси** | Nginx (Reverse Proxy, API Gateway, SSL Let's Encrypt / Certbot, HTTP/2, Gzip, HA fallback для QR, кастомные 50x) |
-| **Контейнеризация** | Docker, Docker Compose, Docker Hub Registry, Alpine 3.21 runtime, scratch container, cgroups v2 лимиты, non-root (UID 10001) |
+| **Контейнеризация** | Docker, Docker Compose v2, Docker Hub Registry, Alpine 3.21 runtime, scratch container, cgroups v2 лимиты, non-root (UID 10001) |
 | **Бэкенд платформы** | Go 1.26.8 (`go-chi/chi/v5`, `yuin/goldmark`, `skip2/go-qrcode`), статическая сборка со стриппингом символов (`-w -s`) |
+| **Движок контента** | Декларативный JSON-манифест (`content/courses.json`), поддержка frontmatter в Markdown, автоматические тесты целостности |
 | **IaC & Оркестрация** | Ansible (идемпотентные плейбуки и роли в Ansible Galaxy), Blue-Green деплой скриптом `deploy.sh` |
 | **CI/CD** | GitHub Actions (параллельная сборка, BuildKit gha-кэш, проверки `gofmt` и `go vet`, Zero-Downtime деплой с авто-откатом) |
 | **Управление уязвимостями** | Dependabot (еженедельный аудит Go-модулей, Dockerfile и GitHub Actions) |
 
 ---
 
-### Образовательные треки и Лабораторные
+### Библия Docker: 10 тематических модулей
 
-Каталог платформы включает 7 структурированных практических курсов (32 урока):
+Программа охватывает последовательный инженерный путь от фундаментальных пространств имен Linux до боевого продакшна (26+ уроков):
 
-1. 🐧 **Системное администрирование Linux и ядро** (`/courses/linux`):
-   - Модель прав доступа DAC (POSIX, SUID, SGID, Sticky bit), управление юнитами и таймерами systemd;
-   - Сетевой стек Linux (`iproute2`, `ss`, `iptables`, `ufw`), анализ трафика и сокетов.
-2. 🐳 **Docker: От архитектуры до Production** (`/courses/docker`):
-   - Многоэтапные сборки (Multi-stage), драйверы хранилища (`overlay2`, CoW, `d_type`), cgroups v2;
-   - Docker Compose v2, внутренняя DNS-маршрутизация и изоляция bridge-сетей.
-3. 🦭 **Podman & Quadlet: Daemonless-контейнеры** (`/courses/podman`):
-   - Rootless контейнеризация без root-прав, сопоставление user namespaces, systemd Quadlet;
-   - `podman kube generate` для генерации Pod-манифестов и харденинг безопасности.
-4. 📦 **LXC / Incus: Системные контейнеры** (`/courses/lxc`):
-   - Легковесная замена KVM, пулы хранения ZFS/Btrfs и мгновенные CoW-снапшоты;
-   - Macvlan и bridge сети, лимиты CPU/RAM и непривилегированные системные контейнеры.
-5. 🔬 **Container Internals: Ядро и изоляция** (`/courses/internals`):
-   - Анатомия контейнеризации: 8 пространств имен Linux, контроллеры Cgroups v2, вызовы `clone`, `unshare`, `pivot_root`;
-   - Спецификация OCI, рантаймы `runc` и `crun`, фильтры Seccomp BPF и Linux capabilities.
-6. ⚙️ **Ansible: Инфраструктура как код (IaC)** (`/courses/ansible`):
-   - Архитектура Agentless, инвентарь, написание идемпотентных плейбуков;
-   - Модульные роли, шифрование секретов с Ansible Vault и публикация в Ansible Galaxy.
-7. 🔄 **CI/CD: GitHub Actions & Zero-Downtime Деплой** (`/courses/cicd`):
-   - Проектирование production-пайплайнов, кэширование слоев сборки Docker (BuildKit `type=gha`);
-   - Стратегия Zero-Downtime деплоя Blue-Green с Docker Compose scale и мгновенным авто-откатом (Rollback).
+1. 🐳 **Архитектура и фундаментальные основы** (`/courses/docker`):
+   - Процессная изоляция в ядре Linux (7 пространств имен: PID, MNT, NET, IPC, UTS, USER, CGROUP);
+   - Стек OCI: `dockerd` → `containerd` → `runc`, жизненный цикл контейнера и процесс init (PID 1).
+2. 🔨 **Сборка образов и искусство Dockerfile** (`/courses/docker-dockerfile`):
+   - Анатомия инструкций слоев, кэширование BuildKit, ARG vs ENV;
+   - Многоэтапные сборки (Multi-stage), базовые образы Scratch и Distroless, секреты сборки (`--mount=type=secret`).
+3. 💾 **Тома, хранилище и постоянство данных** (`/courses/docker-storage`):
+   - Драйвер хранения `overlay2` (CoW, lowerdir, upperdir, merged), проверка `d_type`;
+   - Named Volumes, Bind Mounts, tmpfs и устранение ошибок прав доступа Permission Denied (UID/GID).
+4. 🌐 **Сетевой стек и DNS Discovery** (`/courses/docker-networking`):
+   - Драйверы сетей (`bridge`, `host`, `macvlan`, `none`), встроенный DNS-резолвер демона (`127.0.0.11`);
+   - Механизм проброса портов, взаимодействие с цепочками `iptables` и защита от обхода фаервола UFW.
+5. 📦 **Мультиконтейнерные стеки (Compose v2)** (`/courses/docker-compose`):
+   - Спецификация Compose v2, приоритет интерполяции переменных `.env` и секреты;
+   - Healthcheck-пробы и запуск сервисов по готовности (`depends_on condition: service_healthy`).
+6. 🛡️ **Безопасность и Production-харденинг** (`/courses/docker-security`):
+   - Запуск от Non-Root пользователя, сброс привилегий ядра (`cap_drop: [ALL]`), `read_only: true`;
+   - Фильтрация сисколлов Seccomp BPF, профили AppArmor и сканирование образов сканером Trivy.
+7. ⚡ **Изоляция ядра и ресурсы (Cgroups v2)** (`/courses/docker-resources`):
+   - Квоты CPU (`cpus`, `cpu_shares`), троттлинг планировщика CFS, жесткие и мягкие лимиты памяти;
+   - Диагностика OOM Killer, чтение системных логов `dmesg`, устранение Exit Code 137, управление свопом.
+8. 🔧 **Тюнинг демона, логи и траблшутинг** (`/courses/docker-production`):
+   - Конфигурация `/etc/docker/daemon.json` (`live-restore`, ротация логов `json-file`/`local`, `default-ulimits`);
+   - Мониторинг контейнеров cAdvisor/Prometheus, чистка диска и полный справочник кодов завершения.
+9. 🚀 **Multi-arch сборки и CI/CD** (`/courses/docker-cicd`):
+   - Сборка образов под платформы `linux/amd64` и `linux/arm64` с Docker Buildx и QEMU;
+   - Пайплайны GitHub Actions с экспортом кэша в Registry, тестирование и бесперебойный Blue-Green деплой.
+10. 📚 **Практический справочник и рецепты** (`/courses/docker-cookbook`):
+    - Шпаргалка консольных команд CLI (run, exec, logs, inspect, prune);
+    - Готовые проверенные шаблоны Dockerfile для Go, Node.js, Python, Rust и Nginx.
+
+---
+
+### Декларативное наполнение базы и CLI-генератор
+
+- **Декларативный манифест (`content/courses.json`):**
+  Каталог модулей, названия, описания, иконки, цвета, теги и уровни сложности описаны в JSON-файле. Добавление новых курсов и модулей не требует правок в Go-коде.
+- **Поддержка YAML-frontmatter в Markdown:**
+  Каждый урок может содержать метаданные (`title`, `description`, `duration`, `level`, `order`, `tags`), которые парсятся бэкендом до рендеринга HTML.
+- **Автоматические тесты целостности (`internal/service/content_integrity_test.go`):**
+  Тесты непрерывно проверяют, что все файлы уроков существуют, имеют непустые заголовки, корректный frontmatter и рендерятся движком Goldmark без ошибок.
+- **Генератор уроков в одну команду (`scripts/create-lesson.sh`):**
+  ```bash
+  ./scripts/create-lesson.sh <module-slug> <lesson-slug> "<Заголовок>" [длительность] [уровень] [теги]
+  # Пример:
+  ./scripts/create-lesson.sh docker-storage 03-permissions-uid-gid "Права доступа UID и GID в томах" "15 мин" "Middle" "Storage,Permissions"
+  ```
 
 ---
 
@@ -311,19 +370,22 @@ docker compose up -d --build
 ```
 portfolio/
 ├── cmd/server/main.go       # Точка входа веб-сервера Go (Chi роутер, Graceful shutdown)
-├── content/courses/         # База знаний в Markdown (Linux, Docker, Ansible, CI/CD)
+├── content/
+│   ├── courses.json         # Декларативный манифест курсов и метаданных модулей
+│   └── courses/             # Модули Библии Docker в Markdown (10 структурированных треков)
 ├── internal/
 │   ├── config/              # Конфигурация окружения
 │   ├── handler/             # HTTP-обработчики страниц, REST API, полнотекстовый поиск и unit-тесты
 │   ├── model/               # Модели данных (Courses, Lessons, SearchItem, Integrations)
-│   └── service/             # Сервисный слой каталога и интеграций (GitHub, Docker Hub)
+│   └── service/             # Сервисный слой каталога, frontmatter-парсер и тесты целостности
 ├── web/
-│   ├── static/              # CSS (темы, сайдбар, анимации), JS (поиск, прогресс, квизы), сертификаты
+│   ├── static/              # CSS (темы, сайдбар, анимации), JS (поиск, прогресс), изображения
 │   └── templates/           # HTML-шаблоны Go (layout, index, courses, course_detail, lesson)
 ├── nginx/
 │   ├── nginx.conf           # Конфигурация Reverse Proxy, SSL Let's Encrypt и HA роутинга
 │   └── 50x.html             # Кастомная страница аварийных ошибок
 ├── scripts/
+│   ├── create-lesson.sh     # CLI-генератор шаблонов уроков с frontmatter
 │   └── deploy.sh            # Blue-Green развертывание с авто-откатом (Rollback)
 ├── docker-compose.yml       # Конфигурация продакшн-стека микросервисов
 ├── Dockerfile               # Multi-stage сборка статического бинарника Go на Alpine 3.21 (non-root UID 10001)

@@ -7,7 +7,7 @@ import (
 
 func TestConfig_DefaultValues(t *testing.T) {
 	// Clear environment variables to check defaults
-	keys := []string{"PORT", "APP_BASE_URL", "GITHUB_USER", "DOCKER_USER", "CONTENT_DIR", "PAGES_FILE", "TEMPLATES_DIR", "STATIC_DIR"}
+	keys := []string{"PORT", "APP_BASE_URL", "GITHUB_USER", "DOCKER_USER", "CONTENT_DIR", "COURSES_FILE", "PAGES_FILE", "TEMPLATES_DIR", "STATIC_DIR"}
 	for _, k := range keys {
 		_ = os.Unsetenv(k)
 	}
@@ -29,6 +29,9 @@ func TestConfig_DefaultValues(t *testing.T) {
 	if cfg.ContentDir != DefaultContentDir {
 		t.Errorf("Ожидался ContentDir '%s', получен '%s'", DefaultContentDir, cfg.ContentDir)
 	}
+	if cfg.CoursesFile != DefaultCoursesFile {
+		t.Errorf("Ожидался CoursesFile '%s', получен '%s'", DefaultCoursesFile, cfg.CoursesFile)
+	}
 	if cfg.PagesFile != DefaultPagesFile {
 		t.Errorf("Ожидался PagesFile '%s', получен '%s'", DefaultPagesFile, cfg.PagesFile)
 	}
@@ -49,12 +52,13 @@ func TestConfig_CustomEnvValues(t *testing.T) {
 	_ = os.Setenv("GITHUB_USER", "CustomUser")
 	_ = os.Setenv("DOCKER_USER", "customdocker")
 	_ = os.Setenv("CONTENT_DIR", "/custom/content")
+	_ = os.Setenv("COURSES_FILE", "/custom/courses.json")
 	_ = os.Setenv("PAGES_FILE", "/custom/pages.json")
 	_ = os.Setenv("TEMPLATES_DIR", "/custom/templates")
 	_ = os.Setenv("STATIC_DIR", "/custom/static")
 
 	defer func() {
-		keys := []string{"PORT", "APP_BASE_URL", "GITHUB_USER", "DOCKER_USER", "CONTENT_DIR", "PAGES_FILE", "TEMPLATES_DIR", "STATIC_DIR"}
+		keys := []string{"PORT", "APP_BASE_URL", "GITHUB_USER", "DOCKER_USER", "CONTENT_DIR", "COURSES_FILE", "PAGES_FILE", "TEMPLATES_DIR", "STATIC_DIR"}
 		for _, k := range keys {
 			_ = os.Unsetenv(k)
 		}
@@ -76,6 +80,9 @@ func TestConfig_CustomEnvValues(t *testing.T) {
 	}
 	if cfg.ContentDir != "/custom/content" {
 		t.Errorf("Ожидался ContentDir '/custom/content', получен '%s'", cfg.ContentDir)
+	}
+	if cfg.CoursesFile != "/custom/courses.json" {
+		t.Errorf("Ожидался CoursesFile '/custom/courses.json', получен '%s'", cfg.CoursesFile)
 	}
 	if cfg.PagesFile != "/custom/pages.json" {
 		t.Errorf("Ожидался PagesFile '/custom/pages.json', получен '%s'", cfg.PagesFile)

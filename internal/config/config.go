@@ -15,6 +15,7 @@ const (
 	DefaultGitHubUser   = "AndreyJVM"
 	DefaultDockerUser   = "andreyvorobevaqa"
 	DefaultContentDir   = "content/courses"
+	DefaultCoursesFile  = "content/courses.json"
 	DefaultPagesFile    = "content/pages.json"
 	DefaultTemplatesDir = "web/templates"
 	DefaultStaticDir    = "web/static"
@@ -26,6 +27,7 @@ type Config struct {
 	GitHubUser   string
 	DockerUser   string
 	ContentDir   string
+	CoursesFile  string
 	PagesFile    string
 	TemplatesDir string
 	StaticDir    string
@@ -45,6 +47,7 @@ func Load() *Config {
 		GitHubUser:   getEnvOrDefault("GITHUB_USER", DefaultGitHubUser),
 		DockerUser:   getEnvOrDefault("DOCKER_USER", DefaultDockerUser),
 		ContentDir:   getEnvOrDefault("CONTENT_DIR", DefaultContentDir),
+		CoursesFile:  getEnvOrDefault("COURSES_FILE", DefaultCoursesFile),
 		PagesFile:    getEnvOrDefault("PAGES_FILE", DefaultPagesFile),
 		TemplatesDir: getEnvOrDefault("TEMPLATES_DIR", DefaultTemplatesDir),
 		StaticDir:    getEnvOrDefault("STATIC_DIR", DefaultStaticDir),

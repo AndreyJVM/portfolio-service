@@ -355,3 +355,101 @@ func TestCourseService_NegativeAndConcurrency(t *testing.T) {
 		wg.Wait()
 	})
 }
+
+func TestParseFrontmatter(t *testing.T) {
+	t.Run("Full frontmatter with tags", func(t *testing.T) {
+		raw := `---
+title: "Сетевые драйверы Docker"
+description: "Разбор veth-пар и DNS"
+duration: "18 мин"
+level: "Middle"
+order: 3
+tags: ["Docker", "Networking", "Bridge"]
+---
+# Заголовок урока
+Тело статьи без frontmatter.`
+
+		meta, body := parseFrontmatter([]byte(raw))
+		if meta.Title != "Сетевые драйверы Docker" {
+			t.Errorf("Ожидался title 'Сетевые драйверы Docker', получено: '%s'", meta.Title)
+		}
+		if meta.Description != "Разбор veth-пар и DNS" {
+			t.Errorf("Ожидался description, получено: '%s'", meta.Description)
+		}
+		if meta.Duration != "18 мин" {
+			t.Errorf("Ожидалась duration '18 мин', получено: '%s'", meta.Duration)
+		}
+		if meta.Level != "Middle" {
+			t.Errorf("Ожидался level 'Middle', получено: '%s'", meta.Level)
+		}
+		if meta.Order != 3 {
+			t.Errorf("Ожидался order 3, получено: %d", meta.Order)
+		}
+		if len(meta.Tags) != 3 || meta.Tags[0] != "Docker" || meta.Tags[1] != "Networking" || meta.Tags[2] != "Bridge" {
+			t.Errorf("Неверные теги: %v", meta.Tags)
+		}
+		if strings.Contains(string(body), "---") {
+			t.Errorf("Тело статьи не должно содержать разделители frontmatter: %s", string(body))
+		}
+		if !strings.HasPrefix(strings.TrimSpace(string(body)), "# Заголовок урока") {
+			t.Errorf("Тело статьи должно начинаться с заголовка: %s", string(body))
+		}
+	})
+
+	t.Run("Without frontmatter", func(t *testing.T) {
+		raw := "# Обычный заголовок\nБез метаданных."
+		meta, body := parseFrontmatter([]byte(raw))
+		if meta.Title != "" {
+			t.Errorf("Ожидался пустой title, получено: '%s'", meta.Title)
+		}
+		if string(body) != raw {
+			t.Errorf("Тело должно совпадать с исходным текстом")
+		}
+	})
+
+	t.Run("With Windows CRLF line endings", func(t *testing.T) {
+		raw := "---\r\ntitle: \"CRLF Заголовок\"\r\norder: 5\r\n---\r\n# Текст с CRLF"
+		meta, body := parseFrontmatter([]byte(raw))
+		if meta.Title != "CRLF Заголовок" {
+			t.Errorf("Ожидался title 'CRLF Заголовок', получено: '%s'", meta.Title)
+		}
+		if meta.Order != 5 {
+			t.Errorf("Ожидался order 5, получено: %d", meta.Order)
+		}
+		if !strings.Contains(string(body), "# Текст с CRLF") {
+			t.Errorf("Тело должно содержать заголовок")
+		}
+	})
+}
+
+func TestCourseService_LoadCoursesFromJSON(t *testing.T) {
+	tempDir := t.TempDir()
+	jsonPath := filepath.Join(tempDir, "custom-courses.json")
+	coursesJSON := `[
+		{
+			"id": "docker-test",
+			"slug": "docker-test",
+			"title": "Модуль тестирования Docker",
+			"icon": "fab fa-docker",
+			"color": "#0284c7",
+			"level": "Middle",
+			"description": "Тестовый модуль из JSON",
+			"tags": ["Docker", "Testing"]
+		}
+	]`
+	if err := os.WriteFile(jsonPath, []byte(coursesJSON), 0644); err != nil {
+		t.Fatalf("Не удалось записать тестовый JSON: %v", err)
+	}
+
+	cs := NewCourseService(tempDir, jsonPath)
+	courses := cs.GetAllCourses()
+	if len(courses) != 1 {
+		t.Fatalf("Ожидался 1 курс из JSON, получено: %d", len(courses))
+	}
+	if courses[0].Slug != "docker-test" {
+		t.Errorf("Ожидался slug 'docker-test', получено: '%s'", courses[0].Slug)
+	}
+	if courses[0].Title != "Модуль тестирования Docker" {
+		t.Errorf("Ожидался title 'Модуль тестирования Docker', получено: '%s'", courses[0].Title)
+	}
+}

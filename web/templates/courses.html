@@ -13,26 +13,26 @@
 
     <div class="col-lg-12 text-center position-relative z-1">
       <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill bg-body-tertiary text-success border mb-3 small fw-semibold">
-        <i class="fas fa-terminal"></i> Инженерная база знаний
+        <i class="fab fa-docker"></i> Инженерная база знаний
       </div>
 
       <h1 class="display-4 fw-bold mb-3">
-        Контейнеризация &amp; Linux
+        Библия Docker: От нуля до Production
       </h1>
-      <p class="lead text-body-secondary mx-auto mb-4" style="max-width: 720px;">
-        Практические материалы и системная инженерия: от изоляции ядра (Namespaces, Cgroups v2) и multi-stage Dockerfile до Podman Quadlet, системных контейнеров LXC и Zero-Downtime деплоя.
+      <p class="lead text-body-secondary mx-auto mb-4" style="max-width: 760px;">
+        Сквозная база знаний и практическая инженерия: от изоляции процессов ядра и multi-stage сборки до Cgroups v2, сетей, Compose v2, безопасности и Zero-Downtime деплоя.
       </p>
 
       <!-- Быстрая навигация между разделами -->
       <div class="d-inline-flex p-1 rounded-pill bg-body-tertiary border shadow-sm flex-wrap justify-content-center gap-1">
         <a href="#catalog" class="btn btn-sm btn-outline-secondary border-0 rounded-pill px-3 py-2 fw-medium">
-          <i class="fas fa-layer-group me-1"></i>Каталог (7 треков)
+          <i class="fas fa-layer-group me-1"></i>Каталог (10 модулей)
         </a>
         <a href="#guide" class="btn btn-sm btn-outline-secondary border-0 rounded-pill px-3 py-2 fw-medium">
           <i class="fas fa-compass me-1"></i>Траектории по ролям
         </a>
         <a href="#roadmap" class="btn btn-sm btn-primary rounded-pill px-4 py-2 fw-semibold shadow-sm">
-          <i class="fas fa-route me-1"></i>Дорожная карта
+          <i class="fas fa-route me-1"></i>Дорожная карта (10 шагов)
         </a>
       </div>
     </div>
@@ -44,11 +44,11 @@
   <div id="catalog" class="mb-5">
     <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
       <div>
-        <h3 class="fw-bold mb-1">Каталог направлений</h3>
+        <h3 class="fw-bold mb-1">Каталог модулей Docker</h3>
         <p class="text-body-secondary small mb-0">Прикладные руководства, production-конфигурации и лабораторные работы.</p>
       </div>
       <span class="badge bg-body-tertiary text-body-secondary border px-3 py-2 rounded-pill">
-        32 практических урока
+        10 модулей • 26 практических уроков
       </span>
     </div>
 
@@ -135,12 +135,12 @@
           <div class="card h-100 border rounded-3 p-3 bg-body shadow-sm">
             <div class="text-primary mb-2"><i class="fas fa-code fa-2x"></i></div>
             <h6 class="fw-bold mb-1">Разработчик / QA</h6>
-            <div class="badge bg-info-subtle text-info-emphasis mb-2 align-self-start" style="font-size: 0.7rem;">Уровень 1 • Базовый</div>
+            <div class="badge bg-info-subtle text-info-emphasis mb-2 align-self-start" style="font-size: 0.7rem;">Модули 1–2 • Старт</div>
             <p class="text-body-secondary small mb-3">
-              Устраните ошибку «на моем компьютере работало». Освойте системные основы Linux, Multi-stage сборки Docker, легковесные образы Scratch и Compose для локальной разработки.
+              Устраните ошибку «на моем компьютере работало». Освойте Multi-stage сборки, легковесные образы Scratch и кэширование BuildKit для быстрой локальной разработки.
             </p>
-            <a href="/courses/linux" class="btn btn-sm btn-outline-secondary rounded-pill mt-auto">
-              Старт: Linux &amp; Docker <i class="fas fa-arrow-right ms-1"></i>
+            <a href="/courses/docker" class="btn btn-sm btn-outline-secondary rounded-pill mt-auto">
+              Старт: Архитектура &amp; Dockerfile <i class="fas fa-arrow-right ms-1"></i>
             </a>
           </div>
         </div>
@@ -148,29 +148,29 @@
         <!-- Роль 2: DevOps-инженер -->
         <div class="col-md-6 col-lg-3">
           <div class="card h-100 border rounded-3 p-3 bg-body shadow-sm">
-            <div class="text-primary mb-2"><i class="fas fa-gears fa-2x"></i></div>
-            <h6 class="fw-bold mb-1">DevOps &amp; Автоматизация</h6>
-            <div class="badge bg-primary-subtle text-primary mb-2 align-self-start" style="font-size: 0.7rem;">Уровень 2 • Middle</div>
+            <div class="text-primary mb-2"><i class="fas fa-cubes fa-2x"></i></div>
+            <h6 class="fw-bold mb-1">DevOps &amp; Оркестрация</h6>
+            <div class="badge bg-primary-subtle text-primary mb-2 align-self-start" style="font-size: 0.7rem;">Модули 3–5 • Middle</div>
             <p class="text-body-secondary small mb-3">
-              Инфраструктура как код (IaC) с Ansible, сквозные пайплайны GitHub Actions, автоматизированное тестирование с <code>-race</code> и Zero-Downtime Blue-Green деплой.
+              Персистентность томов, решение проблем UID/GID, сетевой стек bridge/macvlan и оркестрация микросервисов в Docker Compose v2 с healthcheck-пробами.
             </p>
-            <a href="/courses/ansible" class="btn btn-sm btn-outline-secondary rounded-pill mt-auto">
-              Старт: Ansible &amp; CI/CD <i class="fas fa-arrow-right ms-1"></i>
+            <a href="/courses/docker-compose" class="btn btn-sm btn-outline-secondary rounded-pill mt-auto">
+              Старт: Тома, Сети &amp; Compose <i class="fas fa-arrow-right ms-1"></i>
             </a>
           </div>
         </div>
 
-        <!-- Роль 3: Сисадмины & Enterprise -->
+        <!-- Роль 3: Безопасность & Инженерия -->
         <div class="col-md-6 col-lg-3">
           <div class="card h-100 border rounded-3 p-3 bg-body shadow-sm">
             <div class="text-primary mb-2"><i class="fas fa-shield-halved fa-2x"></i></div>
-            <h6 class="fw-bold mb-1">Сисадмины &amp; Enterprise</h6>
-            <div class="badge bg-success-subtle text-success mb-2 align-self-start" style="font-size: 0.7rem;">Уровень 3 • Middle → Senior</div>
+            <h6 class="fw-bold mb-1">Безопасность &amp; Ядро</h6>
+            <div class="badge bg-danger-subtle text-danger-emphasis mb-2 align-self-start" style="font-size: 0.7rem;">Модули 6–7 • Middle → Pro</div>
             <p class="text-body-secondary small mb-3">
-              Отказ от root-демона с Podman &amp; Quadlet для systemd. Замена тяжелым виртуальным машинам KVM через системные контейнеры LXC/Incus со скоростью ZFS bare-metal.
+              Запуск Non-Root, сброс привилегий cap_drop, изоляция cgroups v2, квоты CPU, лимиты памяти и защита от Out-Of-Memory Killer (Exit Code 137).
             </p>
-            <a href="/courses/podman" class="btn btn-sm btn-outline-secondary rounded-pill mt-auto">
-              Старт: Podman &amp; LXC <i class="fas fa-arrow-right ms-1"></i>
+            <a href="/courses/docker-security" class="btn btn-sm btn-outline-secondary rounded-pill mt-auto">
+              Старт: Харденинг &amp; Ресурсы <i class="fas fa-arrow-right ms-1"></i>
             </a>
           </div>
         </div>
@@ -178,14 +178,14 @@
         <!-- Роль 4: SRE & Архитекторы -->
         <div class="col-md-6 col-lg-3">
           <div class="card h-100 border rounded-3 p-3 bg-body shadow-sm">
-            <div class="text-primary mb-2"><i class="fas fa-microchip fa-2x"></i></div>
-            <h6 class="fw-bold mb-1">SRE &amp; Архитекторы</h6>
-            <div class="badge bg-warning-subtle text-warning-emphasis mb-2 align-self-start" style="font-size: 0.7rem;">Уровень 4 • Senior / Staff</div>
+            <div class="text-primary mb-2"><i class="fas fa-wrench fa-2x"></i></div>
+            <h6 class="fw-bold mb-1">SRE &amp; Production</h6>
+            <div class="badge bg-warning-subtle text-warning-emphasis mb-2 align-self-start" style="font-size: 0.7rem;">Модули 8–10 • Senior</div>
             <p class="text-body-secondary small mb-3">
-              Физика изоляции рантаймов: 7 пространств имен Linux, Cgroups v2 controllers, вызовы clone/unshare/setns, спецификация OCI и написание своего рантайма на Go.
+              Тюнинг /etc/docker/daemon.json, live-restore, мониторинг cAdvisor, Multi-arch сборки Buildx, Zero-Downtime Blue-Green деплой и справочник рецептов.
             </p>
-            <a href="/courses/internals" class="btn btn-sm btn-outline-secondary rounded-pill mt-auto">
-              Старт: Internals <i class="fas fa-arrow-right ms-1"></i>
+            <a href="/courses/docker-production" class="btn btn-sm btn-outline-secondary rounded-pill mt-auto">
+              Старт: Тюнинг &amp; Справочник <i class="fas fa-arrow-right ms-1"></i>
             </a>
           </div>
         </div>
@@ -202,71 +202,43 @@
         <div class="d-inline-flex align-items-center gap-1 text-primary small fw-bold text-uppercase mb-1">
           <i class="fas fa-stairs"></i> Пошаговый образовательный трек
         </div>
-        <h3 class="fw-bold mb-1">Дорожная карта: От Основ к Профессиональной Точности</h3>
+        <h3 class="fw-bold mb-1">Дорожная карта Docker: От Основ к Профессиональной Точности</h3>
         <p class="text-body-secondary small mb-0">
-          Сквозной маршрут изучения контейнеризации в Linux. Проходите шаги последовательно для формирования монолитных знаний.
+          Сквозной маршрут изучения Docker. Проходите модули последовательно от первого запуска до тюнинга ядра и CI/CD.
         </p>
       </div>
     </div>
 
     <div class="roadmap-timeline">
-      <!-- ЭТАП 1: LINUX -->
+      <!-- ЭТАП 1: ОСНОВЫ И АРХИТЕКТУРА -->
       <div class="roadmap-step">
         <div class="roadmap-step-badge">1</div>
         <div class="card border rounded-4 p-3 p-sm-4 bg-body shadow-sm bento-card">
           <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
             <div>
               <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
-                <span class="badge bg-danger-subtle text-danger-emphasis border border-danger-subtle rounded-pill">
-                  Шаг 1 • Базовый фундамент систем (Уровень 1)
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill">
+                  Модуль 1 • Архитектура и фундаментальные основы
                 </span>
-                <span class="badge bg-body-tertiary text-body-secondary border">5 практических уроков</span>
                 <span class="badge bg-body-tertiary text-success border"><i class="fas fa-play me-1"></i>Точка старта</span>
               </div>
-              <h4 class="fw-bold mb-0">Linux: Системное администрирование и ядро</h4>
+              <h4 class="fw-bold mb-0">Docker: От архитектуры до Production-практик</h4>
             </div>
-            <a href="/courses/linux" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 shadow-sm">
-              Изучать трек <i class="fas fa-arrow-right ms-1"></i>
+            <a href="/courses/docker" class="btn btn-sm btn-primary rounded-pill px-3 py-1 shadow-sm">
+              Изучать модуль <i class="fas fa-arrow-right ms-1"></i>
             </a>
           </div>
-
           <p class="text-body-secondary small mb-3">
-            Основа всех облачных технологий. Понимание модели прав DAC, управление службами systemd, настройка сетей и маршрутизации, мониторинг процессов и дисковая подсистема LVM.
+            Фундамент контейнеризации: процессная изоляция, OCI рантаймы, стек dockerd → containerd → runc, 7 пространств имен Linux и запуск первого контейнера.
           </p>
-
-          <div class="row g-3 mb-3">
-            <div class="col-md-6">
-              <h6 class="small fw-bold text-body-secondary text-uppercase mb-2">Что вы освоите:</h6>
-              <ul class="roadmap-checklist">
-                <li>Модель прав доступа DAC: <code>chmod</code>, <code>chown</code>, SUID/SGID и Sticky Bit</li>
-                <li>Анатомия <strong>systemd</strong>: создание unit-файлов сервисов, таймеры и автозапуск</li>
-                <li>Сетевой стек: утилита <code>ip</code>, маршруты, порты и файрволы (iptables, nftables)</li>
-                <li>Диагностика процессов: сигналы POSIX, procfs, лимиты <code>ulimit</code> и память</li>
-              </ul>
-            </div>
-            <div class="col-md-6">
-              <h6 class="small fw-bold text-body-secondary text-uppercase mb-2">Production-стандарты:</h6>
-              <ul class="roadmap-checklist">
-                <li>Автоматизация на Bash: строгий режим <code>set -Eeuo pipefail</code> и обработка ошибок</li>
-                <li>Управление дисками: логические тома <strong>LVM</strong> (PV, VG, LV) и расширение на лету</li>
-                <li>Диагностика узких мест сервера (CPU, Memory, Disk I/O bottlenecks)</li>
-                <li>Основы харденинга Linux: безопасный SSH, отключение рута и файрвол</li>
-              </ul>
-            </div>
-          </div>
-
           <div class="p-2 px-3 rounded-3 bg-body-tertiary border d-flex align-items-center justify-content-between flex-wrap gap-2 small">
-            <span class="text-body-secondary">
-              <i class="fas fa-flag-checkered text-success me-1"></i><strong>Результат:</strong> Полное отсутствие страха перед черным экраном терминала Linux и готовность к контейнерам.
-            </span>
-            <a href="/courses/linux" class="text-primary fw-medium text-decoration-none">
-              Открыть уроки трека (1–5) &rarr;
-            </a>
+            <span class="text-body-secondary"><i class="fas fa-flag-checkered text-success me-1"></i><strong>Результат:</strong> Полное понимание физики контейнеров на уровне ядра.</span>
+            <a href="/courses/docker" class="text-primary fw-medium text-decoration-none">Открыть модуль &rarr;</a>
           </div>
         </div>
       </div>
 
-      <!-- ЭТАП 2: DOCKER -->
+      <!-- ЭТАП 2: DOCKERFILE -->
       <div class="roadmap-step">
         <div class="roadmap-step-badge">2</div>
         <div class="card border rounded-4 p-3 p-sm-4 bg-body shadow-sm bento-card">
@@ -274,111 +246,55 @@
             <div>
               <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
                 <span class="badge bg-info-subtle text-info-emphasis border border-info-subtle rounded-pill">
-                  Шаг 2 • Контейнеризация сервисов (Уровень 1)
+                  Модуль 2 • Сборка образов и искусство Dockerfile
                 </span>
-                <span class="badge bg-body-tertiary text-body-secondary border">8 практических уроков</span>
-                <span class="badge bg-body-tertiary text-body-secondary border">Пререквизит: Шаг 1 (Linux)</span>
+                <span class="badge bg-body-tertiary text-body-secondary border">Пререквизит: Модуль 1</span>
               </div>
-              <h4 class="fw-bold mb-0">Docker: От архитектуры до Production-практик</h4>
+              <h4 class="fw-bold mb-0">Dockerfile: Оптимизация слоев, Multi-stage и BuildKit</h4>
             </div>
-            <a href="/courses/docker" class="btn btn-sm btn-primary rounded-pill px-3 py-1 shadow-sm">
-              Изучать трек <i class="fas fa-arrow-right ms-1"></i>
+            <a href="/courses/docker-dockerfile" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 shadow-sm">
+              Изучать модуль <i class="fas fa-arrow-right ms-1"></i>
             </a>
           </div>
-
           <p class="text-body-secondary small mb-3">
-            Фундамент прикладной контейнеризации. Вы изучите устройство слоев OverlayFS, избавитесь от тяжелых контейнеров и научитесь настраивать безопасное окружение для коммерческих микросервисов.
+            Анатомия инструкций, кэширование слоев, минимизация образов через Multi-stage (минус 90% размера), базовые образы Scratch и Distroless.
           </p>
-
-          <div class="row g-3 mb-3">
-            <div class="col-md-6">
-              <h6 class="small fw-bold text-body-secondary text-uppercase mb-2">Что вы освоите:</h6>
-              <ul class="roadmap-checklist">
-                <li>Стек <code>dockerd</code> → <code>containerd</code> → <code>runc</code> и Copy-on-Write</li>
-                <li>Multi-stage сборка, Google Distroless и Scratch образы (минус 90% размера)</li>
-                <li>Docker Compose v2, сетевые драйверы и изоляция портов СУБД</li>
-                <li>Тома, Bind Mounts и решение ошибки <code>Permission Denied</code> по UID/GID</li>
-              </ul>
-            </div>
-            <div class="col-md-6">
-              <h6 class="small fw-bold text-body-secondary text-uppercase mb-2">Production-стандарты:</h6>
-              <ul class="roadmap-checklist">
-                <li>Харденинг: запуск Non-Root, <code>cap_drop: [ALL]</code>, Read-Only root FS</li>
-                <li>Сканирование уязвимостей через <strong>Trivy</strong> в GitHub Actions пайплайнах</li>
-                <li>Тюнинг демона: <code>live-restore: true</code>, пулы подсетей, расшифровка Exit Code 137 (OOM)</li>
-                <li>Драйверы хранилища (Overlay2, CoW, d_type) и мультиплатформенные сборки Buildx</li>
-              </ul>
-            </div>
-          </div>
-
           <div class="p-2 px-3 rounded-3 bg-body-tertiary border d-flex align-items-center justify-content-between flex-wrap gap-2 small">
-            <span class="text-body-secondary">
-              <i class="fas fa-flag-checkered text-success me-1"></i><strong>Результат:</strong> Уверенное владение контейнерами в реальной командной разработке и CI/CD.
-            </span>
-            <a href="/courses/docker" class="text-primary fw-medium text-decoration-none">
-              Открыть уроки трека (1–8) &rarr;
-            </a>
+            <span class="text-body-secondary"><i class="fas fa-flag-checkered text-success me-1"></i><strong>Результат:</strong> Быстрые легковесные образы без уязвимостей и мусора.</span>
+            <a href="/courses/docker-dockerfile" class="text-primary fw-medium text-decoration-none">Открыть модуль &rarr;</a>
           </div>
         </div>
       </div>
 
-      <!-- ЭТАП 3: ANSIBLE -->
+      <!-- ЭТАП 3: ХРАНИЛИЩЕ -->
       <div class="roadmap-step">
         <div class="roadmap-step-badge">3</div>
         <div class="card border rounded-4 p-3 p-sm-4 bg-body shadow-sm bento-card">
           <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
             <div>
               <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
-                <span class="badge bg-danger-subtle text-danger-emphasis border border-danger-subtle rounded-pill">
-                  Шаг 3 • Инфраструктура как код (IaC) (Уровень 2)
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill">
+                  Модуль 3 • Тома, хранилище и постоянство данных
                 </span>
-                <span class="badge bg-body-tertiary text-body-secondary border">2 практических урока</span>
-                <span class="badge bg-body-tertiary text-body-secondary border">Пререквизиты: Шаги 1–2</span>
+                <span class="badge bg-body-tertiary text-body-secondary border">Пререквизит: Модуль 1</span>
               </div>
-              <h4 class="fw-bold mb-0">Ansible: Автоматизация инфраструктуры и хостов</h4>
+              <h4 class="fw-bold mb-0">Storage: Драйвер Overlay2, Named Volumes и UID/GID</h4>
             </div>
-            <a href="/courses/ansible" class="btn btn-sm btn-outline-danger rounded-pill px-3 py-1 shadow-sm">
-              Изучать трек <i class="fas fa-arrow-right ms-1"></i>
+            <a href="/courses/docker-storage" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 shadow-sm">
+              Изучать модуль <i class="fas fa-arrow-right ms-1"></i>
             </a>
           </div>
-
           <p class="text-body-secondary small mb-3">
-            Переход от ручной настройки к коду инфраструктуры (IaC). Подготовка хостов для Docker и Podman, шаблонизация конфигов демонов и создание переиспользуемых ролей.
+            Устройство OverlayFS Copy-on-Write, тома Named Volumes, Bind Mounts, tmpfs и устранение классической ошибки Permission Denied.
           </p>
-
-          <div class="row g-3 mb-3">
-            <div class="col-md-6">
-              <h6 class="small fw-bold text-body-secondary text-uppercase mb-2">Что вы освоите:</h6>
-              <ul class="roadmap-checklist">
-                <li>Декларативные плейбуки YAML: инвентарь (Inventory), переменные и факты хостов</li>
-                <li>Шаблоны <strong>Jinja2</strong>: генерация <code>daemon.json</code>, конфигов Nginx и systemd</li>
-                <li>Идемпотентность модулей <code>apt</code>, <code>systemd</code>, <code>template</code>, <code>file</code></li>
-                <li>Обработчики событий (Handlers) и директива <code>notify</code></li>
-              </ul>
-            </div>
-            <div class="col-md-6">
-              <h6 class="small fw-bold text-body-secondary text-uppercase mb-2">Production-стандарты:</h6>
-              <ul class="roadmap-checklist">
-                <li>Модульная структура роли: <code>tasks</code>, <code>handlers</code>, <code>defaults</code>, <code>vars</code></li>
-                <li>Инициализация и публикация через <strong>Ansible Galaxy</strong></li>
-                <li>Безопасность секретов с помощью <code>ansible-vault</code></li>
-                <li>Харденинг хостов и автоматический деплой Docker-окружения</li>
-              </ul>
-            </div>
-          </div>
-
           <div class="p-2 px-3 rounded-3 bg-body-tertiary border d-flex align-items-center justify-content-between flex-wrap gap-2 small">
-            <span class="text-body-secondary">
-              <i class="fas fa-flag-checkered text-success me-1"></i><strong>Результат:</strong> Возможность развернуть готовый продакшн-сервер с контейнерами одной командой за 2 минуты.
-            </span>
-            <a href="/courses/ansible" class="text-primary fw-medium text-decoration-none">
-              Открыть уроки трека (1–2) &rarr;
-            </a>
+            <span class="text-body-secondary"><i class="fas fa-flag-checkered text-success me-1"></i><strong>Результат:</strong> Безопасное хранение данных баз данных без потери файлов при рестартах.</span>
+            <a href="/courses/docker-storage" class="text-primary fw-medium text-decoration-none">Открыть модуль &rarr;</a>
           </div>
         </div>
       </div>
 
-      <!-- ЭТАП 4: CI/CD & ZERO-DOWNTIME -->
+      <!-- ЭТАП 4: СЕТИ -->
       <div class="roadmap-step">
         <div class="roadmap-step-badge">4</div>
         <div class="card border rounded-4 p-3 p-sm-4 bg-body shadow-sm bento-card">
@@ -386,55 +302,27 @@
             <div>
               <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
                 <span class="badge bg-info-subtle text-info-emphasis border border-info-subtle rounded-pill">
-                  Шаг 4 • Непрерывная поставка &amp; Zero-Downtime (Уровень 2)
+                  Модуль 4 • Сетевой стек и DNS Discovery
                 </span>
-                <span class="badge bg-body-tertiary text-body-secondary border">2 практических урока</span>
-                <span class="badge bg-body-tertiary text-body-secondary border">Пререквизиты: Шаги 2–3</span>
+                <span class="badge bg-body-tertiary text-body-secondary border">Пререквизиты: Модули 1–2</span>
               </div>
-              <h4 class="fw-bold mb-0">CI/CD: GitHub Actions &amp; Zero-Downtime Деплой</h4>
+              <h4 class="fw-bold mb-0">Networking: Bridge, встроенный DNS и обход UFW в iptables</h4>
             </div>
-            <a href="/courses/cicd" class="btn btn-sm btn-outline-info rounded-pill px-3 py-1 shadow-sm">
-              Изучать трек <i class="fas fa-arrow-right ms-1"></i>
+            <a href="/courses/docker-networking" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 shadow-sm">
+              Изучать модуль <i class="fas fa-arrow-right ms-1"></i>
             </a>
           </div>
-
           <p class="text-body-secondary small mb-3">
-            Полный цикл автоматизации поставки ПО: от коммита разработчика до продакшн-сервера без единой миллисекунды простоя для пользователей.
+            Драйверы bridge, host, macvlan, автоматическое обнаружение сервисов по DNS и защита портов от публикации в публичный интернет через iptables.
           </p>
-
-          <div class="row g-3 mb-3">
-            <div class="col-md-6">
-              <h6 class="small fw-bold text-body-secondary text-uppercase mb-2">Что вы освоите:</h6>
-              <ul class="roadmap-checklist">
-                <li>Пайплайны <strong>GitHub Actions</strong>: триггеры, переменные, секреты и матрицы</li>
-                <li>Сборка образов и кэширование слоев в Registry через BuildKit <code>type=gha</code></li>
-                <li>Автоматический запуск тестов с проверкой состояния гонки (<code>-race</code>)</li>
-                <li>Безопасная доставка образов в Docker Hub / GitHub Container Registry</li>
-              </ul>
-            </div>
-            <div class="col-md-6">
-              <h6 class="small fw-bold text-body-secondary text-uppercase mb-2">Production-стандарты:</h6>
-              <ul class="roadmap-checklist">
-                <li>Стратегия <strong>Blue-Green</strong> деплоя с помощью Docker Compose и масштабирования</li>
-                <li>Проверка готовности (Healthcheck-пробы) перед переключением клиентского трафика</li>
-                <li>Плавный reload Nginx через <code>SIGHUP</code> без разрыва активных соединений</li>
-                <li>Автоматический откат (Rollback) к предыдущей версии при сбое проверки здоровья</li>
-              </ul>
-            </div>
-          </div>
-
           <div class="p-2 px-3 rounded-3 bg-body-tertiary border d-flex align-items-center justify-content-between flex-wrap gap-2 small">
-            <span class="text-body-secondary">
-              <i class="fas fa-flag-checkered text-success me-1"></i><strong>Результат:</strong> Завершенный сквозной цикл разработки и эксплуатации современных веб-сервисов.
-            </span>
-            <a href="/courses/cicd" class="text-primary fw-medium text-decoration-none">
-              Открыть уроки трека (1–2) &rarr;
-            </a>
+            <span class="text-body-secondary"><i class="fas fa-flag-checkered text-success me-1"></i><strong>Результат:</strong> Изолированная защищенная межконтейнерная сеть.</span>
+            <a href="/courses/docker-networking" class="text-primary fw-medium text-decoration-none">Открыть модуль &rarr;</a>
           </div>
         </div>
       </div>
 
-      <!-- ЭТАП 5: PODMAN & QUADLET -->
+      <!-- ЭТАП 5: COMPOSE V2 -->
       <div class="roadmap-step">
         <div class="roadmap-step-badge">5</div>
         <div class="card border rounded-4 p-3 p-sm-4 bg-body shadow-sm bento-card">
@@ -442,111 +330,55 @@
             <div>
               <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
                 <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill">
-                  Шаг 5 • Enterprise &amp; Rootless безопасность (Уровень 3)
+                  Модуль 5 • Мультиконтейнерные стеки (Compose v2)
                 </span>
-                <span class="badge bg-body-tertiary text-body-secondary border">5 практических уроков</span>
-                <span class="badge bg-body-tertiary text-body-secondary border">Пререквизиты: Шаги 1–2</span>
+                <span class="badge bg-body-tertiary text-body-secondary border">Пререквизиты: Модули 2–4</span>
               </div>
-              <h4 class="fw-bold mb-0">Podman &amp; Quadlet: Daemonless-контейнеры</h4>
+              <h4 class="fw-bold mb-0">Docker Compose v2: Спецификация, переменные и Healthcheck</h4>
             </div>
-            <a href="/courses/podman" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1">
-              Изучать трек <i class="fas fa-arrow-right ms-1"></i>
+            <a href="/courses/docker-compose" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 shadow-sm">
+              Изучать модуль <i class="fas fa-arrow-right ms-1"></i>
             </a>
           </div>
-
           <p class="text-body-secondary small mb-3">
-            Переход на стандарты Red Hat / Enterprise Linux. Устранение уязвимого root-демона, запуск контейнеров от непривилегированного пользователя и прямая интеграция в systemd.
+            Оркестрация микросервисов: приоритет переменных .env, healthcheck-пробы и запуск приложений через depends_on condition: service_healthy без гонок.
           </p>
-
-          <div class="row g-3 mb-3">
-            <div class="col-md-6">
-              <h6 class="small fw-bold text-body-secondary text-uppercase mb-2">Что вы освоите:</h6>
-              <ul class="roadmap-checklist">
-                <li>Архитектура без демона: устранение Single Point of Failure (SPOF)</li>
-                <li>Rootless User Namespaces: root внутри контейнера — обычный UID на хосте</li>
-                <li>Настройка диапазонов субидентификаторов в <code>/etc/subuid</code> и <code>/etc/subgid</code></li>
-                <li>Сетевой стек <code>pasta</code> / <code>slirp4netns</code> для запуска портов без root</li>
-              </ul>
-            </div>
-            <div class="col-md-6">
-              <h6 class="small fw-bold text-body-secondary text-uppercase mb-2">Production-стандарты:</h6>
-              <ul class="roadmap-checklist">
-                <li>Генератор <strong>Quadlet</strong>: декларативные <code>.container</code> файлы для systemd</li>
-                <li>Автозапуск, зависимости и управление контейнерами через <code>systemctl --user</code></li>
-                <li>Поды в Podman (Kubernetes-подобная модель на одном сервере)</li>
-                <li>Полный отказ от Docker Compose в пользу нативных юнитов операционной системы</li>
-              </ul>
-            </div>
-          </div>
-
           <div class="p-2 px-3 rounded-3 bg-body-tertiary border d-flex align-items-center justify-content-between flex-wrap gap-2 small">
-            <span class="text-body-secondary">
-              <i class="fas fa-flag-checkered text-success me-1"></i><strong>Результат:</strong> Защищенная инфраструктура без единого root-процесса, готовая к строгим аудитам ИБ.
-            </span>
-            <a href="/courses/podman" class="text-primary fw-medium text-decoration-none">
-              Открыть уроки трека (1–5) &rarr;
-            </a>
+            <span class="text-body-secondary"><i class="fas fa-flag-checkered text-success me-1"></i><strong>Результат:</strong> Стабильный запуск сложных микросервисных сред одной командой.</span>
+            <a href="/courses/docker-compose" class="text-primary fw-medium text-decoration-none">Открыть модуль &rarr;</a>
           </div>
         </div>
       </div>
 
-      <!-- ЭТАП 6: LXC / INCUS -->
+      <!-- ЭТАП 6: БЕЗОПАСНОСТЬ -->
       <div class="roadmap-step">
         <div class="roadmap-step-badge">6</div>
         <div class="card border rounded-4 p-3 p-sm-4 bg-body shadow-sm bento-card">
           <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
             <div>
               <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
-                <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill">
-                  Шаг 6 • Системная виртуализация (Уровень 3)
+                <span class="badge bg-danger-subtle text-danger-emphasis border border-danger-subtle rounded-pill">
+                  Модуль 6 • Безопасность и Production-харденинг
                 </span>
-                <span class="badge bg-body-tertiary text-body-secondary border">5 практических уроков</span>
-                <span class="badge bg-body-tertiary text-body-secondary border">Пререквизиты: Шаги 1, 5</span>
+                <span class="badge bg-body-tertiary text-body-secondary border">Пререквизиты: Модули 1–5</span>
               </div>
-              <h4 class="fw-bold mb-0">LXC / Incus: Легковесные системные контейнеры</h4>
+              <h4 class="fw-bold mb-0">Security: Запуск Non-Root, Cap drop, Seccomp и Trivy</h4>
             </div>
-            <a href="/courses/lxc" class="btn btn-sm btn-primary rounded-pill px-3 py-1 shadow-sm">
-              Изучать трек <i class="fas fa-arrow-right ms-1"></i>
+            <a href="/courses/docker-security" class="btn btn-sm btn-outline-danger rounded-pill px-3 py-1 shadow-sm">
+              Изучать модуль <i class="fas fa-arrow-right ms-1"></i>
             </a>
           </div>
-
           <p class="text-body-secondary small mb-3">
-            Замена тяжелым виртуальным машинам (KVM, QEMU, Proxmox). Вы получаете преимущества полноценной ОС с `systemd` и собственным IP, но со скоростью железа (bare-metal) и потреблением 20 МБ памяти.
+            Отказ от root внутри контейнера, срез привилегий ядра cap_drop: [ALL], Read-only rootfs, фильтрация сисколлов Seccomp и аудит уязвимостей.
           </p>
-
-          <div class="row g-3 mb-3">
-            <div class="col-md-6">
-              <h6 class="small fw-bold text-body-secondary text-uppercase mb-2">Что вы освоите:</h6>
-              <ul class="roadmap-checklist">
-                <li>Архитектура системных контейнеров против Docker и KVM: полноценный PID 1 <code>systemd</code></li>
-                <li>Хранилища <strong>ZFS Storage Pools</strong>: мгновенные CoW-клоны за 0.1 секунды, сжатие ZSTD</li>
-                <li>Моментальные снимки (Snapshots), автоматическое расписание и откат</li>
-                <li>Сетевой драйвер <code>macvlan</code>: свой физический MAC и IP в LAN без NAT</li>
-              </ul>
-            </div>
-            <div class="col-md-6">
-              <h6 class="small fw-bold text-body-secondary text-uppercase mb-2">Production-стандарты:</h6>
-              <ul class="roadmap-checklist">
-                <li>Профили (Profiles) и Cgroups v2: <strong>CPU Pinning</strong> для баз данных без сброса кэша L3</li>
-                <li>Автозапуск контейнеров и защита от дискового «I/O шторма» (<code>boot.autostart.delay</code>)</li>
-                <li>Unprivileged режим: изоляция от хоста при взломе root в контейнере</li>
-                <li><strong>Docker-in-LXC (Nesting)</strong> и прямой проброс GPU (NVIDIA CUDA)</li>
-              </ul>
-            </div>
-          </div>
-
           <div class="p-2 px-3 rounded-3 bg-body-tertiary border d-flex align-items-center justify-content-between flex-wrap gap-2 small">
-            <span class="text-body-secondary">
-              <i class="fas fa-flag-checkered text-success me-1"></i><strong>Результат:</strong> Замена виртуалкам для PostgreSQL, ClickHouse и тестовых сред с экономией 80% RAM хоста.
-            </span>
-            <a href="/courses/lxc" class="text-primary fw-medium text-decoration-none">
-              Открыть уроки трека (1–5) &rarr;
-            </a>
+            <span class="text-body-secondary"><i class="fas fa-flag-checkered text-success me-1"></i><strong>Результат:</strong> Контейнерная инфраструктура, готовая к строгим аудитам ИБ.</span>
+            <a href="/courses/docker-security" class="text-primary fw-medium text-decoration-none">Открыть модуль &rarr;</a>
           </div>
         </div>
       </div>
 
-      <!-- ЭТАП 7: CONTAINER INTERNALS -->
+      <!-- ЭТАП 7: РЕСУРСЫ -->
       <div class="roadmap-step">
         <div class="roadmap-step-badge">7</div>
         <div class="card border rounded-4 p-3 p-sm-4 bg-body shadow-sm bento-card">
@@ -554,50 +386,106 @@
             <div>
               <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
                 <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle rounded-pill">
-                  Шаг 7 • Архитектура ядра и низкоуровневая изоляция (Уровень 4)
+                  Модуль 7 • Изоляция ядра и ресурсы (Cgroups v2)
                 </span>
-                <span class="badge bg-body-tertiary text-body-secondary border">5 практических уроков</span>
-                <span class="badge bg-body-tertiary text-body-secondary border">Пререквизиты: Шаги 1–6</span>
+                <span class="badge bg-body-tertiary text-body-secondary border">Пререквизиты: Модули 1, 6</span>
               </div>
-              <h4 class="fw-bold mb-0">Container Internals: Ядро Linux и изоляция</h4>
+              <h4 class="fw-bold mb-0">Resources: Cgroups v2, квоты CPU и диагностика Exit Code 137</h4>
             </div>
-            <a href="/courses/internals" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1">
-              Изучать трек <i class="fas fa-arrow-right ms-1"></i>
+            <a href="/courses/docker-resources" class="btn btn-sm btn-outline-warning rounded-pill px-3 py-1 shadow-sm">
+              Изучать модуль <i class="fas fa-arrow-right ms-1"></i>
             </a>
           </div>
-
           <p class="text-body-secondary small mb-3">
-            Демонтаж магии контейнеров. В Linux нет сущности «контейнер» — есть обычные процессы, ограниченные возможностями ядра. Изучите физику этой изоляции до последнего системного вызова.
+            Ограничение памяти и квот процессора в cgroups v2, поведение OOM Killer, логи dmesg ядра и настройка свопа для контейнеров.
           </p>
-
-          <div class="row g-3 mb-3">
-            <div class="col-md-6">
-              <h6 class="small fw-bold text-body-secondary text-uppercase mb-2">Что вы освоите:</h6>
-              <ul class="roadmap-checklist">
-                <li>Анатомия всех 7 Linux Namespaces: PID, Mount, Net, User, UTS, IPC, Cgroup</li>
-                <li>Иерархия <strong>Cgroups v2</strong>: контроллеры <code>memory.max</code>, <code>cpu.weight</code>, <code>io.max</code></li>
-                <li>Системные вызовы ядра: <code>clone(2)</code>, <code>unshare(2)</code>, <code>setns(2)</code></li>
-                <li>Изоляция файловой системы: почему <code>pivot_root</code> безопаснее <code>chroot</code></li>
-              </ul>
-            </div>
-            <div class="col-md-6">
-              <h6 class="small fw-bold text-body-secondary text-uppercase mb-2">Production-стандарты:</h6>
-              <ul class="roadmap-checklist">
-                <li>Спецификация OCI Runtime Spec: как устроен <code>runc</code> и легковесный C-рантайм <code>crun</code></li>
-                <li>Написание собственного минималистичного контейнерного рантайма на Go</li>
-                <li>Аудит безопасности: фильтрация системных вызовов через Seccomp и eBPF трейсинг</li>
-                <li>Диагностика контейнеров через procfs (<code>/proc/$PID/ns/</code>) и <code>nsenter</code></li>
-              </ul>
-            </div>
-          </div>
-
           <div class="p-2 px-3 rounded-3 bg-body-tertiary border d-flex align-items-center justify-content-between flex-wrap gap-2 small">
-            <span class="text-body-secondary">
-              <i class="fas fa-flag-checkered text-success me-1"></i><strong>Результат:</strong> Уровень экспертного понимания инфраструктуры. Вы сможете решать любые нетривиальные аварии и писать свой тулинг.
-            </span>
-            <a href="/courses/internals" class="text-primary fw-medium text-decoration-none">
-              Открыть уроки трека (1–5) &rarr;
+            <span class="text-body-secondary"><i class="fas fa-flag-checkered text-success me-1"></i><strong>Результат:</strong> Защита хоста от зависания и "соседского шума" микросервисов.</span>
+            <a href="/courses/docker-resources" class="text-primary fw-medium text-decoration-none">Открыть модуль &rarr;</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ЭТАП 8: PRODUCTION И ТЮНИНГ -->
+      <div class="roadmap-step">
+        <div class="roadmap-step-badge">8</div>
+        <div class="card border rounded-4 p-3 p-sm-4 bg-body shadow-sm bento-card">
+          <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+            <div>
+              <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill">
+                  Модуль 8 • Тюнинг демона, логи и траблшутинг
+                </span>
+                <span class="badge bg-body-tertiary text-body-secondary border">Пререквизиты: Модули 5–7</span>
+              </div>
+              <h4 class="fw-bold mb-0">Production: /etc/docker/daemon.json, live-restore и Exit коды</h4>
+            </div>
+            <a href="/courses/docker-production" class="btn btn-sm btn-outline-success rounded-pill px-3 py-1 shadow-sm">
+              Изучать модуль <i class="fas fa-arrow-right ms-1"></i>
             </a>
+          </div>
+          <p class="text-body-secondary small mb-3">
+            Тюнинг демона Docker (live-restore, ротация логов, ulimits), мониторинг cAdvisor, чистка диска и полный справочник кодов завершения.
+          </p>
+          <div class="p-2 px-3 rounded-3 bg-body-tertiary border d-flex align-items-center justify-content-between flex-wrap gap-2 small">
+            <span class="text-body-secondary"><i class="fas fa-flag-checkered text-success me-1"></i><strong>Результат:</strong> Надежный продакшн-сервер без внезапных падений и переполнения диска.</span>
+            <a href="/courses/docker-production" class="text-primary fw-medium text-decoration-none">Открыть модуль &rarr;</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ЭТАП 9: BUILDX И CI/CD -->
+      <div class="roadmap-step">
+        <div class="roadmap-step-badge">9</div>
+        <div class="card border rounded-4 p-3 p-sm-4 bg-body shadow-sm bento-card">
+          <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+            <div>
+              <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                <span class="badge bg-info-subtle text-info-emphasis border border-info-subtle rounded-pill">
+                  Модуль 9 • Multi-arch сборки и CI/CD
+                </span>
+                <span class="badge bg-body-tertiary text-body-secondary border">Пререквизиты: Модули 2, 8</span>
+              </div>
+              <h4 class="fw-bold mb-0">CI/CD: Docker Buildx, кэширование и Zero-Downtime Blue-Green</h4>
+            </div>
+            <a href="/courses/docker-cicd" class="btn btn-sm btn-outline-info rounded-pill px-3 py-1 shadow-sm">
+              Изучать модуль <i class="fas fa-arrow-right ms-1"></i>
+            </a>
+          </div>
+          <p class="text-body-secondary small mb-3">
+            Сборка под amd64/arm64 через Buildx и QEMU, конвейеры GitHub Actions, кэширование Registry и Blue-Green деплой без простоя.
+          </p>
+          <div class="p-2 px-3 rounded-3 bg-body-tertiary border d-flex align-items-center justify-content-between flex-wrap gap-2 small">
+            <span class="text-body-secondary"><i class="fas fa-flag-checkered text-success me-1"></i><strong>Результат:</strong> Автоматизированная доставка ПО на продакшн-сервер.</span>
+            <a href="/courses/docker-cicd" class="text-primary fw-medium text-decoration-none">Открыть модуль &rarr;</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ЭТАП 10: СПРАВОЧНИК И РЕЦЕПТЫ -->
+      <div class="roadmap-step">
+        <div class="roadmap-step-badge">10</div>
+        <div class="card border rounded-4 p-3 p-sm-4 bg-body shadow-sm bento-card">
+          <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+            <div>
+              <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                <span class="badge bg-secondary-subtle text-body border rounded-pill">
+                  Модуль 10 • Практический справочник и рецепты
+                </span>
+                <span class="badge bg-body-tertiary text-success border"><i class="fas fa-star me-1"></i>Финал трека</span>
+              </div>
+              <h4 class="fw-bold mb-0">Cookbook: Шпаргалка команд и эталонные Dockerfile</h4>
+            </div>
+            <a href="/courses/docker-cookbook" class="btn btn-sm btn-outline-secondary rounded-pill px-3 py-1 shadow-sm">
+              Изучать модуль <i class="fas fa-arrow-right ms-1"></i>
+            </a>
+          </div>
+          <p class="text-body-secondary small mb-3">
+            Шпаргалка консольных команд CLI, команды инспекции и проверенные production-шаблоны Dockerfile для Go, Node.js, Python, Rust и Nginx.
+          </p>
+          <div class="p-2 px-3 rounded-3 bg-body-tertiary border d-flex align-items-center justify-content-between flex-wrap gap-2 small">
+            <span class="text-body-secondary"><i class="fas fa-flag-checkered text-success me-1"></i><strong>Результат:</strong> Набор готовых инструментов для решения любых задач по Docker.</span>
+            <a href="/courses/docker-cookbook" class="text-primary fw-medium text-decoration-none">Открыть модуль &rarr;</a>
           </div>
         </div>
       </div>

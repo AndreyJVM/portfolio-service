@@ -196,44 +196,33 @@ func TestSEOEndpoints(t *testing.T) {
 
 	sitemapBody := wSitemap.Body.String()
 
-	// Check presence of all 4 courses and main pages
+	// Check presence of Docker Bible modules and main pages
 	expectedLinks := []string{
 		"https://vorobevaqa.ru/",
 		"https://vorobevaqa.ru/courses",
 		"https://vorobevaqa.ru/education",
 		"https://vorobevaqa.ru/mustang",
-		"https://vorobevaqa.ru/courses/linux",
 		"https://vorobevaqa.ru/courses/docker",
-		"https://vorobevaqa.ru/courses/podman",
-		"https://vorobevaqa.ru/courses/lxc",
-		"https://vorobevaqa.ru/courses/internals",
-		"https://vorobevaqa.ru/courses/ansible",
-		"https://vorobevaqa.ru/courses/cicd",
-		"https://vorobevaqa.ru/courses/linux/01-permissions-and-systemd",
+		"https://vorobevaqa.ru/courses/docker-dockerfile",
+		"https://vorobevaqa.ru/courses/docker-storage",
+		"https://vorobevaqa.ru/courses/docker-networking",
+		"https://vorobevaqa.ru/courses/docker-compose",
+		"https://vorobevaqa.ru/courses/docker-security",
+		"https://vorobevaqa.ru/courses/docker-resources",
+		"https://vorobevaqa.ru/courses/docker-production",
+		"https://vorobevaqa.ru/courses/docker-cicd",
+		"https://vorobevaqa.ru/courses/docker-cookbook",
 		"https://vorobevaqa.ru/courses/docker/01-architecture-and-first-dockerfile",
 		"https://vorobevaqa.ru/courses/docker/02-multistage-and-cgroups",
-		"https://vorobevaqa.ru/courses/docker/03-docker-compose-and-networking",
-		"https://vorobevaqa.ru/courses/docker/04-volumes-and-data-persistence",
-		"https://vorobevaqa.ru/courses/docker/05-container-security-and-hardening",
-		"https://vorobevaqa.ru/courses/docker/06-logging-diagnostics-and-daemon-tuning",
-		"https://vorobevaqa.ru/courses/docker/07-multiarch-buildx-and-cicd",
-		"https://vorobevaqa.ru/courses/podman/01-podman-rootless-and-daemonless",
-		"https://vorobevaqa.ru/courses/podman/02-podman-quadlet-and-systemd",
-		"https://vorobevaqa.ru/courses/podman/03-podman-pods-and-kube-generate",
-		"https://vorobevaqa.ru/courses/podman/04-podman-storage-volumes-and-userns",
-		"https://vorobevaqa.ru/courses/podman/05-podman-compose-and-production-security",
-		"https://vorobevaqa.ru/courses/lxc/01-lxc-and-system-containers",
-		"https://vorobevaqa.ru/courses/lxc/02-storage-pools-zfs-and-snapshots",
-		"https://vorobevaqa.ru/courses/lxc/03-networking-bridge-macvlan-and-proxy",
-		"https://vorobevaqa.ru/courses/lxc/04-profiles-cgroups-and-autostart",
-		"https://vorobevaqa.ru/courses/lxc/05-security-unprivileged-and-docker-nesting",
-		"https://vorobevaqa.ru/courses/internals/01-namespaces-and-cgroups-v2",
-		"https://vorobevaqa.ru/courses/internals/02-syscalls-clone-unshare-and-pivot-root",
-		"https://vorobevaqa.ru/courses/internals/03-building-mini-container-runtime-in-go",
-		"https://vorobevaqa.ru/courses/internals/04-oci-spec-runc-and-crun",
-		"https://vorobevaqa.ru/courses/internals/05-seccomp-capabilities-and-ebpf-tracing",
-		"https://vorobevaqa.ru/courses/ansible/01-ansible-basics-and-playbooks",
-		"https://vorobevaqa.ru/courses/cicd/01-github-actions-pipeline",
+		"https://vorobevaqa.ru/courses/docker-dockerfile/01-dockerfile-instructions-and-layers",
+		"https://vorobevaqa.ru/courses/docker-storage/01-volumes-and-data-persistence",
+		"https://vorobevaqa.ru/courses/docker-networking/01-network-drivers-and-dns",
+		"https://vorobevaqa.ru/courses/docker-compose/01-compose-v2-specification",
+		"https://vorobevaqa.ru/courses/docker-security/01-container-security-and-hardening",
+		"https://vorobevaqa.ru/courses/docker-resources/01-cgroups-v2-memory-and-cpu-limits",
+		"https://vorobevaqa.ru/courses/docker-production/01-logging-diagnostics-and-daemon-tuning",
+		"https://vorobevaqa.ru/courses/docker-cicd/01-multiarch-buildx-and-cicd",
+		"https://vorobevaqa.ru/courses/docker-cookbook/01-docker-cli-cheatsheet",
 	}
 
 	for _, link := range expectedLinks {
@@ -326,31 +315,34 @@ func TestLayoutIncludes(t *testing.T) {
 	body := w.Body.String()
 
 	requiredSnippets := []string{
-		"data-bs-theme=\"dark\"",   // Permanent dark theme attribute
-		"data-theme=\"dark\"",      // Custom dark theme attribute
-		"/js/learning-progress.js", // Learning progress tracking script
-		"/js/search.js",            // Search script
-		"searchModal",              // Search modal
-		"searchTriggerSidebar",     // Sidebar search button
-		"/css/navbar.css",          // Sidebar and top navbar styles
-		"/css/themes.css",          // Permanent focused dark theme styles
-		"/css/main.css",            // Main styles
-		"liveToast",                // Toast notifications container
-		"navbar-brand",             // Platform brand
-		"Primary Cloud Lab",        // Brand name
-		"app-sidebar",              // Left navigation sidebar
-		"sidebar-nav",              // Navigation links list
-		">Курсы<",                  // Courses link without icons (main page)
-		"sidebar-subnav",           // Courses and topics submenu
-		"/courses/linux",           // Quick link: Linux & Kernel
-		"/courses/docker",          // Quick link: Docker
-		"/courses/podman",          // Quick link: Podman & Quadlet
-		"/courses/lxc",             // Quick link: LXC / Incus
-		"/courses/internals",       // Quick link: Container Internals
-		"/courses/ansible",         // Quick link: Ansible
-		"/courses/cicd",            // Quick link: CI/CD
-		">Об авторе<",              // About link without icons
-		">На мечту<",               // "На мечту" link without icons
+		"data-bs-theme=\"dark\"",     // Permanent dark theme attribute
+		"data-theme=\"dark\"",        // Custom dark theme attribute
+		"/js/learning-progress.js",   // Learning progress tracking script
+		"/js/search.js",              // Search script
+		"searchModal",                // Search modal
+		"searchTriggerSidebar",       // Sidebar search button
+		"/css/navbar.css",            // Sidebar and top navbar styles
+		"/css/themes.css",            // Permanent focused dark theme styles
+		"/css/main.css",              // Main styles
+		"liveToast",                  // Toast notifications container
+		"navbar-brand",               // Platform brand
+		"Primary Cloud Lab",          // Brand name
+		"app-sidebar",                // Left navigation sidebar
+		"sidebar-nav",                // Navigation links list
+		">Docker: Библия<",           // Docker Bible link without icons (main page)
+		"sidebar-subnav",             // Docker Bible modules submenu
+		"/courses/docker",            // Quick link: Architecture & Fundamentals
+		"/courses/docker-dockerfile", // Quick link: Dockerfile & BuildKit
+		"/courses/docker-storage",    // Quick link: Storage & Volumes
+		"/courses/docker-networking", // Quick link: Networking & DNS
+		"/courses/docker-compose",    // Quick link: Compose v2
+		"/courses/docker-security",   // Quick link: Security
+		"/courses/docker-resources",  // Quick link: Cgroups & Resources
+		"/courses/docker-production", // Quick link: Production & Troubleshooting
+		"/courses/docker-cicd",       // Quick link: CI/CD & Buildx
+		"/courses/docker-cookbook",   // Quick link: Cookbook
+		">Об авторе<",                // About link without icons
+		">На мечту<",                 // "На мечту" link without icons
 	}
 
 	for _, snippet := range requiredSnippets {
@@ -572,11 +564,11 @@ func TestIndexPage_ContainsCoursesAndProjects(t *testing.T) {
 		"id=\"catalog\"",
 		"id=\"guide\"",
 		"id=\"roadmap\"",
-		"Каталог направлений",
+		"Каталог модулей Docker",
 		"Дорожная карта",
 		"data-course-progress",
-		"Linux: Системное администрирование и ядро",
 		"Docker: От архитектуры до Production-практик",
+		"Dockerfile: Оптимизация слоев, Multi-stage и BuildKit",
 	}
 
 	for _, sub := range expectedCoursesSubstrings {
