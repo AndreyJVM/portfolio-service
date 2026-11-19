@@ -34,10 +34,10 @@ RUN addgroup -S -g 10001 appgroup && \
 
 WORKDIR /app
 
-# Копируем скомпилированный бинарник и статические ресурсы с правами только для чтения
-COPY --from=builder --chown=root:root --chmod=0555 /app/devops-platform ./devops-platform
-COPY --chown=root:root --chmod=0444 content ./content
-COPY --chown=root:root --chmod=0444 web ./web
+# Копируем скомпилированный бинарник и статические ресурсы с правами пользователя
+COPY --from=builder --chown=10001:10001 /app/devops-platform ./devops-platform
+COPY --chown=10001:10001 content ./content
+COPY --chown=10001:10001 web ./web
 
 USER 10001:10001
 
