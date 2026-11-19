@@ -5,6 +5,7 @@
 (function() {
   let searchData = null;
   let isLoading = false;
+  let selectedIndex = -1;
 
   const searchTriggerMobile = document.getElementById('searchTriggerMobile');
   const searchTriggerSidebar = document.getElementById('searchTriggerSidebar');
@@ -38,6 +39,10 @@
     loadSearchIndex();
   });
 
+  searchModalEl.addEventListener('hidden.bs.modal', function() {
+    selectedIndex = -1;
+  });
+
   async function loadSearchIndex() {
     if (searchData || isLoading) return;
     isLoading = true;
@@ -61,7 +66,43 @@
     performSearch(this.value.trim());
   });
 
+  searchInput.addEventListener('keydown', function(e) {
+    const items = searchResults.querySelectorAll('.search-result-item');
+    if (!items.length) return;
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      selectedIndex = (selectedIndex + 1) % items.length;
+      updateActiveItem(items);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      selectedIndex = (selectedIndex - 1 + items.length) % items.length;
+      updateActiveItem(items);
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (selectedIndex >= 0 && selectedIndex < items.length) {
+        items[selectedIndex].click();
+      } else if (items.length > 0) {
+        items[0].click();
+      }
+    }
+  });
+
+  function updateActiveItem(items) {
+    items.forEach((item, idx) => {
+      if (idx === selectedIndex) {
+        item.classList.add('active');
+        item.setAttribute('aria-selected', 'true');
+        item.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      } else {
+        item.classList.remove('active');
+        item.removeAttribute('aria-selected');
+      }
+    });
+  }
+
   function performSearch(query) {
+    selectedIndex = -1;
     if (!searchData) return;
 
     if (!query) {
@@ -85,7 +126,7 @@
   function highlight(text, query) {
     if (!text || !query) return text || '';
     const regex = new RegExp(`(${escapeRegex(query)})`, 'gi');
-    return text.replace(regex, '<mark class="p-0 bg-warning-subtle text-warning-emphasis fw-bold">$1</mark>');
+    return text.replace(regex, '<mark class="p-0 bg-warning-subtle text-warning-emphasis fw-bold rounded px-1">$1</mark>');
   }
 
   function escapeRegex(string) {
@@ -101,34 +142,49 @@
 
     if (searchEmpty) searchEmpty.classList.add('d-none');
 
-    let html = '<div class="list-group list-group-flush">';
-    items.forEach(item => {
+    let html = '<div class="list-group list-group-flush" role="listbox">';
+    items.forEach((item, index) => {
       const isCourse = item.type === 'course';
+      const icon = isCourse
+        ? '<i class="fab fa-docker text-primary me-2"></i>'
+        : '<i class="fas fa-file-code text-info me-2"></i>';
       const typeBadge = isCourse
-        ? '<span class="badge bg-primary-subtle text-primary border border-primary-subtle me-2">Курс</span>'
-        : '<span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle me-2">Урок</span>';
+        ? '<span class="badge bg-primary-subtle text-primary border border-primary-subtle me-2">Модуль</span>'
+        : '<span class="badge bg-info-subtle text-info-emphasis border border-info-subtle me-2">Урок</span>';
 
       const subtitle = isCourse
-        ? (item.tags ? item.tags.join(' • ') : '')
+        ? (item.tags ? item.tags.slice(0, 4).join(' • ') : '')
         : `${item.courseTitle || ''}`;
 
       const textSnippet = item.snippet ? highlight(item.snippet, query) : '';
 
       html += `
-        <a href="${item.url}" class="list-group-item list-group-item-action p-3 rounded-3 mb-2 border shadow-sm">
+        <a href="${item.url}" class="list-group-item list-group-item-action p-3 rounded-3 mb-2 border shadow-sm search-result-item" data-index="${index}" role="option">
           <div class="d-flex w-100 justify-content-between align-items-center mb-1">
-            <div class="d-flex align-items-center">
+            <div class="d-flex align-items-center flex-grow-1 text-truncate pe-2">
+              ${icon}
               ${typeBadge}
-              <h6 class="mb-0 fw-bold">${highlight(item.title, query)}</h6>
+              <h6 class="mb-0 fw-bold text-truncate">${highlight(item.title, query)}</h6>
             </div>
-            <small class="text-body-secondary">${subtitle}</small>
+            <div class="d-flex align-items-center gap-2 flex-shrink-0">
+              <small class="text-body-secondary">${subtitle}</small>
+              <i class="fas fa-arrow-right text-body-tertiary ms-1 search-arrow-indicator small"></i>
+            </div>
           </div>
-          <p class="mb-0 small text-body-secondary lh-sm">${textSnippet}</p>
+          ${textSnippet ? `<p class="mb-0 small text-body-secondary lh-sm text-truncate">${textSnippet}</p>` : ''}
         </a>
       `;
     });
     html += '</div>';
 
     searchResults.innerHTML = html;
+
+    const resultElements = searchResults.querySelectorAll('.search-result-item');
+    resultElements.forEach((el, idx) => {
+      el.addEventListener('mouseenter', () => {
+        selectedIndex = idx;
+        updateActiveItem(resultElements);
+      });
+    });
   }
 })();

@@ -24,7 +24,7 @@
       </p>
 
       <!-- Быстрая навигация между разделами -->
-      <div class="d-inline-flex p-1 rounded-pill bg-body-tertiary border shadow-sm flex-wrap justify-content-center gap-1">
+      <div class="d-inline-flex p-1 rounded-pill bg-body-tertiary border shadow-sm flex-wrap justify-content-center gap-1 mb-4">
         <a href="#catalog" class="btn btn-sm btn-outline-secondary border-0 rounded-pill px-3 py-2 fw-medium">
           <i class="fas fa-layer-group me-1"></i>Каталог (10 модулей)
         </a>
@@ -34,6 +34,50 @@
         <a href="#roadmap" class="btn btn-sm btn-primary rounded-pill px-4 py-2 fw-semibold shadow-sm">
           <i class="fas fa-route me-1"></i>Дорожная карта (10 шагов)
         </a>
+      </div>
+
+      <!-- Bento Stats Grid -->
+      <div class="row g-3 justify-content-center pt-2 text-start">
+        <div class="col-6 col-lg-3">
+          <div class="p-3 rounded-4 bg-body border shadow-sm bento-card h-100">
+            <div class="d-flex align-items-center justify-content-between mb-1">
+              <span class="fs-4 fw-bold text-primary">10</span>
+              <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill small">Модули</span>
+            </div>
+            <div class="fw-semibold small text-body">Полная база Docker</div>
+            <div class="text-body-secondary small" style="font-size: 0.75rem;">От ядра Linux до CI/CD</div>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="p-3 rounded-4 bg-body border shadow-sm bento-card h-100">
+            <div class="d-flex align-items-center justify-content-between mb-1">
+              <span class="fs-4 fw-bold text-info">26</span>
+              <span class="badge bg-info-subtle text-info-emphasis border border-info-subtle rounded-pill small">Практика</span>
+            </div>
+            <div class="fw-semibold small text-body">Прикладных уроков</div>
+            <div class="text-body-secondary small" style="font-size: 0.75rem;">Конфигурации &amp; лабы</div>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="p-3 rounded-4 bg-body border shadow-sm bento-card h-100">
+            <div class="d-flex align-items-center justify-content-between mb-1">
+              <span class="fs-4 fw-bold text-success">0 ₽</span>
+              <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill small">Open</span>
+            </div>
+            <div class="fw-semibold small text-body">100% бесплатно</div>
+            <div class="text-body-secondary small" style="font-size: 0.75rem;">Без смс и регистрации</div>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="p-3 rounded-4 bg-body border shadow-sm bento-card h-100">
+            <div class="d-flex align-items-center justify-content-between mb-1">
+              <span class="fs-4 fw-bold text-warning"><i class="fas fa-brain fa-sm"></i></span>
+              <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle rounded-pill small">Трекинг</span>
+            </div>
+            <div class="fw-semibold small text-body">Самопроверка &amp; Quiz</div>
+            <div class="text-body-secondary small" style="font-size: 0.75rem;">Прогресс в LocalStorage</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -91,15 +135,15 @@
     <div class="row g-3 g-md-4" id="coursesGrid">
       {{range .Courses}}
       <div class="col-md-6 course-card-wrapper" data-course-card data-slug="{{.Slug}}" data-level="{{.Level}}" data-title="{{.Title}}" data-description="{{.Description}}" data-tags="{{range .Tags}}{{.}} {{end}}">
-        <div class="card h-100 border rounded-4 p-3 p-sm-4 shadow-sm bento-card d-flex flex-column bg-body">
+        <div class="card h-100 border rounded-4 p-3 p-sm-4 shadow-sm bento-card d-flex flex-column bg-body position-relative">
           <div class="d-flex align-items-center justify-content-between mb-3">
             <div class="d-flex align-items-center gap-3">
-              <div class="d-flex align-items-center justify-content-center rounded-3 text-white shadow-sm" style="width: 48px; height: 48px; background-color: {{.Color}};">
+              <div class="d-flex align-items-center justify-content-center rounded-3 text-white shadow-sm flex-shrink-0" style="width: 48px; height: 48px; background-color: {{.Color}};">
                 <i class="{{.Icon}} fa-lg"></i>
               </div>
               <div>
                 <h5 class="fw-bold mb-0">
-                  <a href="/courses/{{.Slug}}" class="text-decoration-none text-body">
+                  <a href="/courses/{{.Slug}}" class="text-decoration-none text-body stretched-link">
                     {{.Title}}
                   </a>
                 </h5>
@@ -108,7 +152,7 @@
                 </span>
               </div>
             </div>
-            <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1 rounded-pill" style="font-size: 0.75rem;">
+            <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1 rounded-pill flex-shrink-0" style="font-size: 0.75rem;">
               {{.LessonCount}} ур.
             </span>
           </div>
@@ -139,9 +183,9 @@
             </div>
           </div>
 
-          <div class="pt-1">
+          <div class="pt-1 position-relative z-2">
             <a href="/courses/{{.Slug}}" class="btn btn-sm btn-outline-primary rounded-pill w-100 py-2 fw-medium">
-              Открыть программу курса <i class="fas fa-arrow-right ms-1"></i>
+              Открыть модуль <i class="fas fa-arrow-right ms-1"></i>
             </a>
           </div>
         </div>
@@ -182,61 +226,77 @@
       <div class="row g-3">
         <!-- Роль 1: Разработчик / QA -->
         <div class="col-md-6 col-lg-3">
-          <div class="card h-100 border rounded-3 p-3 bg-body shadow-sm">
+          <div class="card h-100 border rounded-4 p-3 bg-body shadow-sm bento-card position-relative">
             <div class="text-primary mb-2"><i class="fas fa-code fa-2x"></i></div>
-            <h6 class="fw-bold mb-1">Разработчик / QA</h6>
+            <h6 class="fw-bold mb-1">
+              <a href="/courses/docker" class="text-decoration-none text-body stretched-link">Разработчик / QA</a>
+            </h6>
             <div class="badge bg-info-subtle text-info-emphasis mb-2 align-self-start" style="font-size: 0.7rem;">Модули 1–2 • Старт</div>
             <p class="text-body-secondary small mb-3">
               Устраните ошибку «на моем компьютере работало». Освойте Multi-stage сборки, легковесные образы Scratch и кэширование BuildKit для быстрой локальной разработки.
             </p>
-            <a href="/courses/docker" class="btn btn-sm btn-outline-secondary rounded-pill mt-auto">
-              Старт: Архитектура &amp; Dockerfile <i class="fas fa-arrow-right ms-1"></i>
-            </a>
+            <div class="mt-auto position-relative z-2">
+              <span class="btn btn-sm btn-outline-secondary rounded-pill w-100">
+                Старт: Архитектура <i class="fas fa-arrow-right ms-1"></i>
+              </span>
+            </div>
           </div>
         </div>
 
         <!-- Роль 2: DevOps-инженер -->
         <div class="col-md-6 col-lg-3">
-          <div class="card h-100 border rounded-3 p-3 bg-body shadow-sm">
+          <div class="card h-100 border rounded-4 p-3 bg-body shadow-sm bento-card position-relative">
             <div class="text-primary mb-2"><i class="fas fa-cubes fa-2x"></i></div>
-            <h6 class="fw-bold mb-1">DevOps &amp; Оркестрация</h6>
+            <h6 class="fw-bold mb-1">
+              <a href="/courses/docker-compose" class="text-decoration-none text-body stretched-link">DevOps &amp; Оркестрация</a>
+            </h6>
             <div class="badge bg-primary-subtle text-primary mb-2 align-self-start" style="font-size: 0.7rem;">Модули 3–5 • Middle</div>
             <p class="text-body-secondary small mb-3">
               Персистентность томов, решение проблем UID/GID, сетевой стек bridge/macvlan и оркестрация микросервисов в Docker Compose v2 с healthcheck-пробами.
             </p>
-            <a href="/courses/docker-compose" class="btn btn-sm btn-outline-secondary rounded-pill mt-auto">
-              Старт: Тома, Сети &amp; Compose <i class="fas fa-arrow-right ms-1"></i>
-            </a>
+            <div class="mt-auto position-relative z-2">
+              <span class="btn btn-sm btn-outline-secondary rounded-pill w-100">
+                Старт: Compose <i class="fas fa-arrow-right ms-1"></i>
+              </span>
+            </div>
           </div>
         </div>
 
         <!-- Роль 3: Безопасность & Инженерия -->
         <div class="col-md-6 col-lg-3">
-          <div class="card h-100 border rounded-3 p-3 bg-body shadow-sm">
+          <div class="card h-100 border rounded-4 p-3 bg-body shadow-sm bento-card position-relative">
             <div class="text-primary mb-2"><i class="fas fa-shield-halved fa-2x"></i></div>
-            <h6 class="fw-bold mb-1">Безопасность &amp; Ядро</h6>
+            <h6 class="fw-bold mb-1">
+              <a href="/courses/docker-security" class="text-decoration-none text-body stretched-link">Безопасность &amp; Ядро</a>
+            </h6>
             <div class="badge bg-danger-subtle text-danger-emphasis mb-2 align-self-start" style="font-size: 0.7rem;">Модули 6–7 • Middle → Pro</div>
             <p class="text-body-secondary small mb-3">
               Запуск Non-Root, сброс привилегий cap_drop, изоляция cgroups v2, квоты CPU, лимиты памяти и защита от Out-Of-Memory Killer (Exit Code 137).
             </p>
-            <a href="/courses/docker-security" class="btn btn-sm btn-outline-secondary rounded-pill mt-auto">
-              Старт: Харденинг &amp; Ресурсы <i class="fas fa-arrow-right ms-1"></i>
-            </a>
+            <div class="mt-auto position-relative z-2">
+              <span class="btn btn-sm btn-outline-secondary rounded-pill w-100">
+                Старт: Харденинг <i class="fas fa-arrow-right ms-1"></i>
+              </span>
+            </div>
           </div>
         </div>
 
         <!-- Роль 4: SRE & Архитекторы -->
         <div class="col-md-6 col-lg-3">
-          <div class="card h-100 border rounded-3 p-3 bg-body shadow-sm">
+          <div class="card h-100 border rounded-4 p-3 bg-body shadow-sm bento-card position-relative">
             <div class="text-primary mb-2"><i class="fas fa-wrench fa-2x"></i></div>
-            <h6 class="fw-bold mb-1">SRE &amp; Production</h6>
+            <h6 class="fw-bold mb-1">
+              <a href="/courses/docker-production" class="text-decoration-none text-body stretched-link">SRE &amp; Production</a>
+            </h6>
             <div class="badge bg-warning-subtle text-warning-emphasis mb-2 align-self-start" style="font-size: 0.7rem;">Модули 8–10 • Senior</div>
             <p class="text-body-secondary small mb-3">
               Тюнинг /etc/docker/daemon.json, live-restore, мониторинг cAdvisor, Multi-arch сборки Buildx, Zero-Downtime Blue-Green деплой и справочник рецептов.
             </p>
-            <a href="/courses/docker-production" class="btn btn-sm btn-outline-secondary rounded-pill mt-auto">
-              Старт: Тюнинг &amp; Справочник <i class="fas fa-arrow-right ms-1"></i>
-            </a>
+            <div class="mt-auto position-relative z-2">
+              <span class="btn btn-sm btn-outline-secondary rounded-pill w-100">
+                Старт: Тюнинг <i class="fas fa-arrow-right ms-1"></i>
+              </span>
+            </div>
           </div>
         </div>
       </div>
