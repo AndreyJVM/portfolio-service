@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # ==============================================================================
 # Script: create-lesson.sh
-# Purpose: Scaffold a new production-ready lesson for Docker Bible with frontmatter
+# Purpose: Scaffold a new production-ready lesson for Docker Library with frontmatter
 # Usage: ./scripts/create-lesson.sh <module-slug> <lesson-slug> "<Title>" [duration] [level] [tags]
 # Example: ./scripts/create-lesson.sh docker-storage 03-permissions-uid-gid "Права доступа UID и GID в томах" "15 мин" "Middle" "Storage,Permissions"
 # ==============================================================================

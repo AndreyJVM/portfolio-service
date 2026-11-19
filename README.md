@@ -25,7 +25,7 @@
 <a name="english"></a>
 ## English
 
-**Primary Cloud Lab** is an open-source engineering platform and comprehensive **Docker Bible: From Zero to Production** (`Библия по Docker: с нуля до профи`).
+**Primary Cloud Lab** is an open-source engineering platform and comprehensive **Docker Library: From Zero to Production** (`Библиотека Docker: от нуля до профи`).
 
 The platform provides a deep, production-grade knowledge base focused on containerization, Linux kernel isolation, high-performance image builds, networking, orchestration, hardening, and automated CI/CD delivery. Built with **Go (Golang 1.26.8)**, it features non-root container security (UID 10001), instant full-text in-memory search, client-side progress tracking, declarative JSON content architecture with frontmatter parsing, automated integrity test coverage, and zero-downtime Blue-Green deployments.
 
@@ -33,7 +33,7 @@ The platform provides a deep, production-grade knowledge base focused on contain
 
 ### Table of Contents
 - [Architecture & Infrastructure](#architecture--infrastructure)
-- [Docker Bible: 10 Comprehensive Modules](#docker-bible-10-comprehensive-modules)
+- [Docker Library: 10 Comprehensive Modules](#docker-library-10-comprehensive-modules)
 - [Declarative Content Engine & CLI Scaffolding](#declarative-content-engine--cli-scaffolding)
 - [Interactive Learning & Instant Search](#interactive-learning--instant-search)
 - [CI/CD & Zero-Downtime Blue-Green Deployment](#cicd--zero-downtime-blue-green-deployment)
@@ -67,7 +67,7 @@ flowchart TD
 
 ---
 
-### Docker Bible: 10 Comprehensive Modules
+### Docker Library: 10 Comprehensive Modules
 
 The curriculum covers a structured engineering pathway from kernel namespaces to advanced production operations (26+ lessons):
 
@@ -184,7 +184,7 @@ portfolio/
 ├── cmd/server/main.go       # Go web server entrypoint (Chi router, graceful shutdown)
 ├── content/
 │   ├── courses.json         # Declarative course catalog and metadata manifest
-│   └── courses/             # Docker Bible modules in Markdown (10 structured tracks)
+│   └── courses/             # Docker Library modules in Markdown (10 structured tracks)
 ├── internal/
 │   ├── config/              # Environment configuration loader
 │   ├── handler/             # HTTP page handlers, REST API endpoints, search, and unit tests
@@ -213,7 +213,7 @@ portfolio/
 <a name="русский"></a>
 ## Русский
 
-**Primary Cloud Lab** — открытая инженерная база знаний и фундаментальная **Библия по Docker: От нуля до Production** (`Библия по Docker: с нуля до профи`).
+**Primary Cloud Lab** — открытая инженерная база знаний и фундаментальная **Библиотека Docker: От нуля до Production** (`Библиотека Docker: от нуля до профи`).
 
 Платформа представляет собой сквозное прикладное руководство по контейнеризации: от низкоуровневой изоляции процессов ядра Linux и сборки минимальных образов до сетей, Compose v2, безопасности, Cgroups v2, тюнинга демона и автоматизированного CI/CD развертывания. Серверная часть разработана на **Go (Golang 1.26.8)** с запуском сервисов от непривилегированного пользователя (non-root UID 10001), встроенным полнотекстовым поиском в памяти, сохранением прогресса в браузере, декларативным JSON-манифестом курсов с парсингом frontmatter-метаданных и бесперебойным Blue-Green обновлением.
 
@@ -221,7 +221,7 @@ portfolio/
 
 ### Содержание
 - [Инфраструктура и Архитектура](#инфраструктура-и-архитектура-1)
-- [Библия Docker: 10 тематических модулей](#библия-docker-10-тематических-модулей)
+- [Библиотека Docker: 10 тематических модулей](#библиотека-docker-10-тематических-модулей)
 - [Декларативное наполнение базы и CLI-генератор](#декларативное-наполнение-базы-и-cli-генератор)
 - [Интерактивная система обучения и поиск](#интерактивная-система-обучения-и-поиск)
 - [CI/CD & Бесперебойный Blue-Green деплой](#cicd--бесперебойный-blue-green-деплой-1)
@@ -255,7 +255,7 @@ flowchart TD
 
 ---
 
-### Библия Docker: 10 тематических модулей
+### Библиотека Docker: 10 тематических модулей
 
 Программа охватывает последовательный инженерный путь от фундаментальных пространств имен Linux до боевого продакшна (26+ уроков):
 
@@ -372,7 +372,7 @@ portfolio/
 ├── cmd/server/main.go       # Точка входа веб-сервера Go (Chi роутер, Graceful shutdown)
 ├── content/
 │   ├── courses.json         # Декларативный манифест курсов и метаданных модулей
-│   └── courses/             # Модули Библии Docker в Markdown (10 структурированных треков)
+│   └── courses/             # Модули Библиотеки Docker в Markdown (10 структурированных треков)
 ├── internal/
 │   ├── config/              # Конфигурация окружения
 │   ├── handler/             # HTTP-обработчики страниц, REST API, полнотекстовый поиск и unit-тесты

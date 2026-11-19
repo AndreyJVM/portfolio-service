@@ -196,7 +196,7 @@ func TestSEOEndpoints(t *testing.T) {
 
 	sitemapBody := wSitemap.Body.String()
 
-	// Check presence of Docker Bible modules and main pages
+	// Check presence of Docker Library modules and main pages
 	expectedLinks := []string{
 		"https://vorobevaqa.ru/",
 		"https://vorobevaqa.ru/courses",
@@ -329,8 +329,8 @@ func TestLayoutIncludes(t *testing.T) {
 		"Primary Cloud Lab",          // Brand name
 		"app-sidebar",                // Left navigation sidebar
 		"sidebar-nav",                // Navigation links list
-		">Docker: Библия<",           // Docker Bible link without icons (main page)
-		"sidebar-subnav",             // Docker Bible modules submenu
+		">Docker: Библиотека<",       // Docker Library link without icons (main page)
+		"sidebar-subnav",             // Docker Library modules submenu
 		"/courses/docker",            // Quick link: Architecture & Fundamentals
 		"/courses/docker-dockerfile", // Quick link: Dockerfile & BuildKit
 		"/courses/docker-storage",    // Quick link: Storage & Volumes
@@ -567,7 +567,7 @@ func TestIndexPage_ContainsCoursesAndProjects(t *testing.T) {
 		"Каталог модулей Docker",
 		"Дорожная карта",
 		"data-course-progress",
-		"Docker: От архитектуры до Production-практик",
+		"Архитектура: Ядро Linux, пространства имен и стек OCI",
 		"Dockerfile: Оптимизация слоев, Multi-stage и BuildKit",
 	}
 
