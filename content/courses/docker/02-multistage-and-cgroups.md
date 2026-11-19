@@ -97,3 +97,4 @@ services:
 > Механика ядра Linux Cgroups v2 (`memory.max`, `memory.high`, `cpu.max`), диагностика падений по коду `Exit Code 137` и инспекция `/sys/fs/cgroup/` представлены в профильных уроках:
 > - [Модуль 7: Изоляция ядра и ресурсы (Cgroups v2)](/courses/docker-resources/01-cgroups-v2-memory-and-cpu-limits)
 > - [Модуль 7.2: OOM Killer и Exit Code 137](/courses/docker-resources/02-oom-killer-diagnostics-and-exit-137)
+> - [Модуль 7.3: CPU Pinning (cpuset), Block I/O и лимиты PIDs](/courses/docker-resources/03-cpuset-pinning-and-block-io)

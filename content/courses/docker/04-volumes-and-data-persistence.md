@@ -53,5 +53,6 @@ flowchart TD
 
 > [!TIP]
 > **Глубокое изучение хранилища в специализированном Модуле 3:**
-> - [Модуль 3.1: Тома, хранилище и постоянство данных](/courses/docker-storage/01-volumes-and-data-persistence) — пошаговое руководство по атомарному резервному копированию через sidecar-контейнеры, восстановлению из `.tar.gz` и очистке dangling-томов.
+> - [Модуль 3.1: Тома, хранилище и постоянство данных](/courses/docker-storage/01-volumes-and-data-persistence) — анатомия Named Volumes, Bind Mounts, права Linux и UID/GID.
 > - [Модуль 3.2: Драйверы хранилища и механизмы Copy-on-Write](/courses/docker-storage/02-storage-drivers-and-cow) — глубокое погружение в драйвер Overlay2, работу слоев `lowerdir`, `upperdir`, `merged` и whiteout-файлов.
+> - [Модуль 3.3: Резервное копирование и миграция томов](/courses/docker-storage/03-backup-restore-and-volume-migration) — атомарные дампы БД, шифрование в S3 с Restic, миграция томов между серверами по SSH и tmpfs.

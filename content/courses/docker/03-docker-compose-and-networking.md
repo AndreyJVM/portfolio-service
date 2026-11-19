@@ -34,7 +34,7 @@ flowchart LR
 
 > [!TIP]
 > **Углубленное изучение сетевого стека Docker:**
-> Драйверы `bridge`, `host`, `macvlan`, `ipvlan`, а также взаимодействие с `iptables`, `nftables` и фаерволом `ufw` разобраны в профильном [Модуле 4: Сетевой стек и DNS Discovery](/courses/docker-networking/01-network-drivers-and-dns) и [Модуле 4.2: Порты и безопасность iptables](/courses/docker-networking/02-ports-and-iptables-security).
+> Драйверы `bridge`, `host`, `macvlan`, `ipvlan`, а также взаимодействие с `iptables`, `nftables` и фаерволом `ufw` разобраны в профильном [Модуле 4: Сетевой стек и DNS Discovery](/courses/docker-networking/01-network-drivers-and-dns), [Модуле 4.2: Порты и безопасность iptables](/courses/docker-networking/02-ports-and-iptables-security) и [Модуле 4.3: Macvlan/IPvlan и траблшутинг сетей](/courses/docker-networking/03-macvlan-ipvlan-and-network-troubleshooting).
 
 ---
 

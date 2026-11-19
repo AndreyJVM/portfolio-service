@@ -26,8 +26,8 @@
     "icon": "fas fa-hard-drive",
     "color": "#3b82f6",
     "level": "Уровень 2 • Middle",
-    "description": "Архитектура драйвера Overlay2, Copy-on-Write (lowerdir/upperdir/merged), Named Volumes, Bind Mounts, tmpfs и разбор извечной ошибки Permission Denied (UID/GID).",
-    "tags": ["Storage", "Volumes", "Bind Mounts", "Overlay2", "CoW", "UID/GID"]
+    "description": "Архитектура драйвера Overlay2, Copy-on-Write (lowerdir/upperdir/merged), Named Volumes, Bind Mounts, tmpfs, бэкапы, восстановление и миграция томов между серверами.",
+    "tags": ["Storage", "Volumes", "Bind Mounts", "Overlay2", "CoW", "Backup", "Migration"]
   },
   {
     "id": "docker-networking",
@@ -36,8 +36,8 @@
     "icon": "fas fa-network-wired",
     "color": "#6366f1",
     "level": "Уровень 2 • Middle",
-    "description": "Сетевые драйверы bridge, host, macvlan, ipvlan, встроенный DNS-сервер Docker, межконтейнерная маршрутизация и взаимодействие с iptables/nftables и UFW.",
-    "tags": ["Networking", "Bridge", "DNS", "Service Discovery", "iptables", "Macvlan"]
+    "description": "Сетевые драйверы bridge, host, macvlan, ipvlan, встроенный DNS Docker, маршрутизация iptables, veth-пары и глубокий траблшутинг трафика через tcpdump.",
+    "tags": ["Networking", "Bridge", "DNS", "Service Discovery", "iptables", "Macvlan", "IPvlan"]
   },
   {
     "id": "docker-compose",
@@ -66,8 +66,8 @@
     "icon": "fas fa-microchip",
     "color": "#f59e0b",
     "level": "Уровень 3 • Middle → Senior",
-    "description": "Контроллеры Cgroups v2: ограничение памяти, CPU квоты, CPU Pinning (cpuset), предотвращение OOM Killer (Exit Code 137) и троттлинг дискового ввода-вывода (Block I/O).",
-    "tags": ["Cgroups v2", "Memory Limits", "CPU Quotas", "OOM Killer", "Exit 137", "Kernel"]
+    "description": "Контроллеры Cgroups v2: ограничение памяти, CPU квоты, CPU Pinning (cpuset), предотвращение OOM Killer (Exit Code 137), лимиты PIDs и троттлинг Block I/O.",
+    "tags": ["Cgroups v2", "Memory Limits", "CPU Quotas", "OOM Killer", "Exit 137", "cpuset", "Block IO"]
   },
   {
     "id": "docker-production",
@@ -86,8 +86,8 @@
     "icon": "fas fa-code-branch",
     "color": "#06b6d4",
     "level": "Уровень 3 • Senior",
-    "description": "Кроссплатформенная сборка под amd64/arm64 через Docker Buildx и QEMU, кэширование слоев в GitHub Actions (type=gha, type=registry) и Zero-Downtime Blue-Green деплой.",
-    "tags": ["Buildx", "Multi-arch", "QEMU", "CI/CD", "GitHub Actions", "Blue-Green"]
+    "description": "Кроссплатформенная сборка под amd64/arm64 через Docker Buildx, удаленный деплой по SSH через Docker Contexts, кэширование слоев в GitHub Actions и Blue-Green деплой.",
+    "tags": ["Buildx", "Multi-arch", "CI/CD", "Docker Context", "GitHub Actions", "Blue-Green"]
   },
   {
     "id": "docker-cookbook",
@@ -96,7 +96,7 @@
     "icon": "fas fa-book-bookmark",
     "color": "#ec4899",
     "level": "Справочник • Все уровни",
-    "description": "Шпаргалка консольных команд (Cheat Sheet), безопасная чистка диска docker system prune, готовые production-шаблоны Dockerfile для Go, Node.js, Python, Rust.",
-    "tags": ["Cheat Sheet", "Recipes", "Best Practices", "Prune", "Templates"]
+    "description": "Шпаргалка консольных команд CLI, безопасная чистка диска, готовые production-шаблоны Dockerfile и проверенные стеки Compose (Web+SSL, Prometheus+Grafana, Loki).",
+    "tags": ["Cheat Sheet", "Recipes", "Best Practices", "Templates", "Compose Stacks"]
   }
 ]

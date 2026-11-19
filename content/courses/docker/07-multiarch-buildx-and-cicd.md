@@ -42,3 +42,4 @@ flowchart TD
 > **Специализированные руководства в Модуле 9:**
 > - [Модуль 9.1: Multi-arch сборки и CI/CD](/courses/docker-cicd/01-multiarch-buildx-and-cicd) — пошаговая настройка Docker Buildx, кэширование в GitHub Actions через `cache-from=type=gha`, создание builder-инстансов и публикация в GHCR/Docker Hub.
 > - [Модуль 9.2: Zero-Downtime деплой и авто-откат](/courses/docker-cicd/02-zero-downtime-and-blue-green) — готовый production bash-скрипт `deploy.sh` с проверкой healthcheck и автоматическим откатом (rollback) при аварии.
+> - [Модуль 9.3: Удаленный деплой по SSH и GitOps](/courses/docker-cicd/03-remote-deployment-and-gitops) — управление VDS через Docker Contexts по SSH, Docker Secrets и безопасная автоматизация.
