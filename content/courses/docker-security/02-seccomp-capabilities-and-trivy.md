@@ -1,181 +1,227 @@
-# Харденинг и аудит ядра: Seccomp BPF, Capabilities и трассировка через eBPF
+---
+title: "Харденинг Docker: Seccomp-профили, Capabilities и сканирование уязвимостей Trivy"
+description: "Сброс Capabilities, кастомные Seccomp JSON-фильтры системных вызовов и автоматическое сканирование образов через Trivy"
+duration: "25 мин"
+level: "Middle → Senior"
+order: 2
+tags: ["Security", "Hardening", "Seccomp", "Capabilities", "Trivy", "Vulnerability Scanning"]
+---
+# Харденинг Docker: Seccomp-профили, Capabilities и сканирование уязвимостей Trivy
 
-Даже если контейнер запущен в отдельных пространствах имен (Namespaces) и ограничен по ресурсам (Cgroups v2), он продолжает делить единое ядро операционной системы с хостом.
+Даже если контейнер запущен от непривилегированного пользователя (Non-Root) и изолирован пространствами имен (Namespaces), он продолжает делить общее ядро операционной системы с хостом. В ядре Linux доступно свыше **450 системных вызовов (syscalls)**. Если в коде ядра (например, в подсистемах `io_uring`, `bpf` или устаревших драйверах) обнаружится уязвимость нулевого дня (0-day), злоумышленник сможет совершить побег из контейнера (Container Escape) и получить полный контроль над хост-системой.
 
-В ядре Linux существует более **450 системных вызовов**. Если злоумышленник сможет эксплуатировать уязвимость в малоиспользуемом системном вызове ядра (например, в подсистеме io_uring, bpf или старых драйверах), он сможет совершить побег на хост.
-
-Чтобы сделать контейнер по-настоящему неуязвимым и уметь расследовать подозрительное поведение в продакшене, применяются три передовые технологии ядра:
-1. **Linux Capabilities**: декомпозиция суперпользователя `root` на узкие привилегии.
-2. **Seccomp (Secure Computing Mode) с BPF-фильтрами**: жесткий белый список разрешенных системных вызовов.
-3. **eBPF (Extended Berkeley Packet Filter)**: трассировка и мониторинг активности процессов в ядре без накладных расходов.
+Для построения глубоко эшелонированной обороны (Defense in Depth) в Docker применяются три взаимодополняющих инструмента:
+1. **Linux Capabilities:** декомпозиция суперпользователя `root` на узкие гранулированные полномочия.
+2. **Seccomp (Secure Computing Mode):** фильтрация и белый список системных вызовов ядра на базе BPF-программ.
+3. **Trivy Vulnerability Scanner:** статический и динамический аудит базовых образов, пакетов ОС и файлов конфигураций на наличие известных CVE.
 
 ---
 
-## 1. Linux Capabilities: Конец эпохи монолитного Root
-
-Исторически модель безопасности Unix была бинарной:
-* **UID > 0**: обычный непривилегированный пользователь (не может ничего системного).
-* **UID 0 (`root`)**: всемогущий суперпользователь, способный менять память ядра, настраивать маршруты и стирать диски.
-
-Для устранения этого риска ядро Linux разделило привилегии `root` примерно на **40 атомарных привилегий (Capabilities)**:
+## 1. Эшелонированная архитектура безопасности контейнеров
 
 ```mermaid
 flowchart TD
-    Root["Монолитный root (UID 0)"]
-    
-    subgraph Caps["Linux Capabilities (Независимые битовые флаги)"]
-        CAP_NET["CAP_NET_BIND_SERVICE\n(Слушать порты < 1024)"]
-        CAP_CHOWN["CAP_CHOWN\n(Менять владельца файлов)"]
-        CAP_PTRACE["CAP_SYS_PTRACE\n(Отладка чужих процессов)"]
-        CAP_ADMIN["CAP_SYS_ADMIN\n(Самый опасный: монтирование, BPF, namespaces)"]
-        CAP_RAW["CAP_NET_RAW\n(Формирование сырых пакетов ICMP/ARP)"]
+    subgraph BuildTime["1. Этап сборки и CI/CD (Trivy)"]
+        ScanCode["Анализ Dockerfile (Misconfiguration)"]
+        ScanCVE["Сканирование базового образа (CVE Analysis)"]
+        ScanCode --> ScanCVE
     end
-    
-    Root -->|Декомпозиция| Caps
+
+    subgraph Runtime["2. Этап исполнения в Docker (Ядро Linux)"]
+        direction TB
+        Caps["Linux Capabilities (--cap-drop=ALL)"]
+        Seccomp["Seccomp BPF Profile (Фильтрация Syscalls)"]
+        User["Non-Root User (UID 10001)"]
+        Caps --> Seccomp
+        Seccomp --> User
+    end
+
+    BuildTime -->|"Образ проверен и допущен"| Runtime
+    Runtime -->|"Попытка побега / вызова sys_reboot"| Blocked["Ядро возвращает EPERM (Доступ заблокирован 🛡️)"]
 ```
 
-### Ключевые Capabilities и их угрозы:
+---
 
-| Capability | Что разрешает | Риск при компрометации |
+## 2. Linux Capabilities: Принцип наименьших привилегий
+
+В классической модели Unix права суперпользователя монолитны: если процесс имеет `UID 0`, ему разрешено всё. Начиная с ядра 2.2, Linux разделил права суперпользователя примерно на **40 независимых битовых привилегий (Capabilities)**.
+
+### Опасные Capabilities, которые нельзя давать контейнерам:
+
+| Capability | Что позволяет делать | Риск при компрометации сервиса |
 |---|---|---|
-| **`CAP_SYS_ADMIN`** | Монтирование FS, управление cgroups, настройка пространств имен | **Критический**: эквивалентен полному контролю над хостом (почти 30% всех проверок ядра) |
-| **`CAP_SYS_PTRACE`** | Вызов `ptrace(2)` к другим процессам | Чтение оперативной памяти и инъекция shell-кода в соседние процессы |
-| **`CAP_NET_ADMIN`** | Настройка IP-адресов, таблиц маршрутизации, iptables/nftables | Перехват и подмена трафика других контейнеров |
-| **`CAP_NET_RAW`** | Создание сырых сетевых сокетов (Raw Sockets), утилита `ping` | ARP-спуфинг, сканирование сети |
-| **`CAP_NET_BIND_SERVICE`** | Привязка сокетов к привилегированным портам (например, 80, 443) | Безопасная привилегия для веб-серверов |
+| **`CAP_SYS_ADMIN`** | Монтирование FS, управление Cgroups, пространствами имен, загрузка BPF | **Критический**: эквивалентен полному контролю над сервером хоста |
+| **`CAP_SYS_PTRACE`** | Вызов отладки `ptrace(2)` чужих процессов | Чтение оперативной памяти и инъекция shell-кода в соседние контейнеры |
+| **`CAP_NET_ADMIN`** | Настройка IP-адресов, таблиц маршрутизации, правил `iptables` | Подмена и перехват трафика соседних сервисов (Man-In-The-Middle) |
+| **`CAP_NET_RAW`** | Создание сырых сокетов (Raw Sockets), отправка произвольных пакетов | ARP-спуфинг, сканирование внутренней сети |
 
-### Production-стандарт: Принцип наименьших привилегий
+### Production-стандарт: сброс всех прав с точечным добавлением
 
-В продакшене всегда сбрасывайте все привилегии и добавляйте только те, без которых сервис не может работать:
+В продакшене рекомендуется всегда использовать связку `--cap-drop=ALL` и добавлять только те привилегии, которые действительно необходимы для работы приложения:
 
 ```bash
-# Пример запуска Nginx только с правом биндить порт 80:
-docker run -d \
-  --name web \
+# Пример: Запуск веб-сервера с правом слушать привилегированный порт 80 (CAP_NET_BIND_SERVICE)
+docker run -d --name secure-nginx \
   --cap-drop=ALL \
   --cap-add=NET_BIND_SERVICE \
   -p 80:80 \
   nginx:alpine
 ```
-Даже если злоумышленник получит RCE (выполнение удаленного кода) внутри Nginx с правами UID 0, он не сможет выполнить `mount`, изменить владельца файлов или прослушать чужие процессы, так как ядро вернет ошибку `EPERM` на уровне проверки Capabilities!
+
+### Настройка в `docker-compose.yml`:
+
+```yaml
+services:
+  web-api:
+    image: my-company/api:v1.0
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
+    read_only: true
+    user: "10001:10001"
+```
+
+> [!NOTE]
+> Если сервис слушает порт выше 1024 (например, 8080 или 3000), ему **вообще не требуется** привилегия `NET_BIND_SERVICE` — контейнер может успешно работать с полностью пустым набором `cap_drop: [ALL]`.
 
 ---
 
-## 2. Seccomp (Secure Computing Mode) BPF: Фильтрация системных вызовов
+## 3. Seccomp: Фильтрация системных вызовов ядра
 
-Если Capabilities проверяют права на уровне высокоуровневых операций ядра, то **Seccomp** работает на самом глубоком рубеже: он перехватывает **каждый системный вызов** процесса на входе в ядро.
+**Seccomp (Secure Computing Mode)** — механизм ядра Linux, позволяющий перехватывать системные вызовы процесса с помощью BPF-фильтра еще до того, как ядро начнет их обрабатывать.
 
-```mermaid
-flowchart LR
-    Process["Процесс контейнера (PID 1)"] -->|"Системный вызов (Syscall)"| Seccomp["Seccomp BPF Filter в ядре"]
-    
-    Seccomp -->|"Вызов в белом списке (write, epoll)"| KernelExec["Ядро Linux: Выполнить вызов"]
-    Seccomp -->|"Вызов в черном списке (ptrace, reboot)"| BlockAction{"Действие Seccomp"}
-    
-    BlockAction -->|"SCMP_ACT_ERRNO"| Errno["Вернуть ошибку EPERM приложению"]
-    BlockAction -->|"SCMP_ACT_KILL"| Kill["Мгновенно уничтожить процесс (SIGSYS)"]
+По умолчанию Docker применяет встроенный профиль безопасности (`default.json`), который блокирует примерно **44 системных вызова из 450+** (например, `reboot`, `swapon`, `sysfs`, `clone3`, `bpf`).
+
+### Применение кастомного профиля Seccomp:
+
+Вы можете создать строгий профиль `strict-profile.json`, разрешающий только базовый ввод-вывод (`read`, `write`, `exit`, `futex`, `epoll_wait`):
+
+```bash
+docker run -d --name ultra-secure-app \
+  --security-opt seccomp=/etc/docker/seccomp-profiles/strict.json \
+  app:v1
 ```
 
-### Дефолтный профиль Seccomp
-И Docker, и Podman по умолчанию применяют встроенный JSON-профиль Seccomp. Из 450+ системных вызовов ядра они блокируют около 45 потенциально опасных:
-* `sys_ptrace` — запрет отладки соседних процессов.
-* `sys_reboot` — запрет перезагрузки сервера.
-* `sys_kexec_load` — запрет загрузки нового ядра хоста.
-* `sys_init_module` / `finit_module` — запрет загрузки kernel modules на хост.
-
-### Практикум: Создание кастомного Seccomp профиля
-
-Создадим профиль `block-mkdir.json`, запрещающий контейнеру создавать директории:
+### Структура Seccomp JSON-профиля:
 
 ```json
 {
-  "defaultAction": "SCMP_ACT_ALLOW",
+  "defaultAction": "SCMP_ACT_ERRNO",
+  "architectures": [
+    "SCMP_ARCH_X86_64",
+    "SCMP_ARCH_AARCH64"
+  ],
   "syscalls": [
     {
-      "names": [ "mkdir", "mkdirat" ],
-      "action": "SCMP_ACT_ERRNO",
-      "errnoRet": 1
+      "names": [
+        "read",
+        "write",
+        "openat",
+        "close",
+        "fstat",
+        "epoll_pwait",
+        "nanosleep",
+        "exit_group"
+      ],
+      "action": "SCMP_ACT_ALLOW"
     }
   ]
 }
 ```
 
-Запустим контейнер с этим профилем:
-```bash
-docker run --rm -it \
-  --security-opt seccomp=block-mkdir.json \
-  alpine:latest sh
-```
-
-Внутри контейнера пробуем создать папку:
-```text
-/ # mkdir test_dir
-mkdir: can't create directory 'test_dir': Operation not permitted
-```
-Ядро заблокировало системный вызов `mkdirat` мгновенно, вернув код ошибки `1` (EPERM), хотя мы находились под пользователем `root`!
+* Поле `defaultAction: SCMP_ACT_ERRNO` указывает ядру отклонять любые системные вызовы, не входящие в белый список, возвращая ошибку `EPERM`.
 
 ---
 
-## 3. Наблюдаемость и трассировка: `strace` против eBPF
+## 4. Trivy: Сканирование образов и Dockerfile на уязвимости
 
-Когда контейнер неожиданно завершается с ошибкой или ведет себя подозрительно, инженеру требуется увидеть, что именно он запрашивает у ядра.
-
-### Исторический инструмент: `strace`
-```bash
-sudo strace -p <CONTAINER_PID> -f -e trace=openat,connect,clone
-```
-Проблема `strace`: он использует вызов `ptrace(2)`. На каждый системный вызов ядро вынуждено останавливать выполнение потока контейнера, переключать контекст в процесс `strace` и ждать подтверждения. Производительность приложения **падает на 80–95%**, что делает `strace` категорически неприменимым на высоконагруженном проде!
-
----
-
-### Современный стандарт: eBPF (Extended Berkeley Packet Filter)
-
-**eBPF** позволяет запускать пользовательские программы безопасности и трассировки прямо внутри ядра Linux без модификации исходного кода ядра и без остановки процессов.
-
-Нагрузка на CPU составляет **менее 1%**, что позволяет мониторить миллионы вызовов в секунду.
+**Trivy** (разработка Aqua Security) — промышленный стандарт сканирования контейнеров, образов, файлов зависимостей и манипуляций инфраструктуры как кода (IaC).
 
 ```mermaid
-flowchart TD
-    App["Процесс контейнера"] -->|"Syscall: openat('/etc/shadow')"| Tracepoint["Ядро Linux: tracepoint:syscalls:sys_enter_openat"]
-    Tracepoint -->|"Перехват на лету (< 1 мкс)"| BPF["eBPF программа в ядре (JIT-скомпилированная)"]
-    BPF -->|"Запись события в Ring Buffer"| UserSpace["Пользовательский агент (Tetragon, Falco, bpftrace)"]
-    UserSpace -->|"Алерт ИБ: Попытка побега!"| SIEM["Security SIEM / Slack Alert"]
+flowchart LR
+    Target["Docker образ / Dockerfile"] --> Trivy["Trivy Scanner Engine"]
+    DB[("База CVE: NVD, RedHat, Alpine, Debian Advisory")] --> Trivy
+    Trivy --> Report["Отчет уязвимостей (CVE-ID, Severity, Fixed Version)"]
 ```
 
-### Практикум: Трассировка вызовов контейнера с помощью `bpftrace`
-
-Если на сервере установлена утилита `bpftrace`, мы можем перехватывать системные вызовы конкретного контейнера по его PID:
-
+### Быстрая установка Trivy:
 ```bash
-# Отслеживаем все новые процессы (execve), запускаемые контейнером с PID 12345
-sudo bpftrace -e 'tracepoint:syscalls:sys_enter_execve /pid == 12345/ { printf("EXEC: %s\n", str(args->filename)); }'
+# Для Ubuntu / Debian:
+sudo apt-get install wget apt-transport-https gnupg lsb-release
+wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list.d/trivy.list
+sudo apt-get update && sudo apt-get install trivy
 ```
 
-### Защита уровня Enterprise: Cilium Tetragon и Falco
-Современные инструменты Runtime Security (Tetragon от Isovalent, Falco от CNCF) используют eBPF для:
-1. Мгновенного обнаружения чтения файлов авторизации (`/etc/shadow`, Kubernetes ServiceAccount tokens).
-2. Обнаружения реверс-шеллов (`bash -i >& /dev/tcp/...`).
-3. Пресечения побега из контейнера путем принудительного завершения процесса на уровне ядра в наносекунды (In-Kernel Enforcement).
+### Команды сканирования в повседневной практике:
+
+#### 1. Сканирование Docker-образа на уязвимости ОС и библиотек:
+```bash
+trivy image --severity HIGH,CRITICAL nginx:1.25
+```
+
+#### 2. Фильтрация только тех CVE, для которых уже выпущен патч (`--ignore-unfixed`):
+```bash
+trivy image --severity HIGH,CRITICAL --ignore-unfixed python:3.11-slim
+```
+
+#### 3. Аудит конфигурации Dockerfile на соответствие лучшим практикам (Misconfiguration):
+```bash
+trivy config ./Dockerfile
+```
+Trivy укажет на такие ошибки, как отсутствие директивы `USER`, использование флага `:latest`, небезопасное хранение секретов и использование привилегированных портов.
 
 ---
 
-## 4. Итоговая матрица безопасности ядра
+## 5. Встраивание Trivy в CI/CD (GitHub Actions / GitLab CI)
 
-| Уровень защиты | Технология ядра | За что отвечает | Инструмент настройки |
-|---|---|---|---|
-| **Видимость** | **Namespaces** | Изоляция дерева процессов, сети, корня | `clone`, `unshare`, `nsenter` |
-| **Ресурсы** | **Cgroups v2** | Защита от OOM, CPU Starvation, Fork-bomb | `/sys/fs/cgroup/` (`memory.max`, `pids.max`) |
-| **Привилегии** | **Capabilities** | Дробление root на 40 флагов | `--cap-drop=ALL --cap-add=...` |
-| **Системные вызовы** | **Seccomp BPF** | Белый список допустимых syscalls | `--security-opt seccomp=...` |
-| **Обязательный контроль** | **SELinux / AppArmor** | Политики доступа к файлам и сокетам | `:Z`, `:z`, `--security-opt apparmor=...` |
-| **Аудит и детекция** | **eBPF** | Мониторинг ядра в реальном времени | `bpftrace`, Falco, Tetragon |
+Для того чтобы уязвимый образ не попал в Docker Hub или на продакшн-сервер, проверку включают в Quality Gate пайплайна с параметром `--exit-code 1`:
+
+```yaml
+# Пример шага в .github/workflows/security.yml
+- name: Аудит безопасности образа через Trivy
+  uses: aquasecurity/trivy-action@master
+  with:
+    image-ref: 'ghcr.io/my-org/my-app:${{ github.sha }}'
+    format: 'table'
+    exit-code: '1' # Прерывать сборку при наличии критических CVE
+    ignore-unfixed: true
+    severity: 'CRITICAL,HIGH'
+```
+
+Если в образе обнаружен критический эксплойт с готовым исправлением, сборка немедленно завершится с ошибкой, а релиз будет заблокирован.
 
 ---
 
-## Резюме трека Container Internals
+## 6. Вопросы для самопроверки
 
-1. Контейнер — это не отдельный виртуальный компьютер, а обычный процесс Linux, огражденный со всех сторон механизмами ядра.
-2. **Namespaces** создают изолированный кругозор, а **Cgroups v2** не позволяют процессу исчерпать ресурсы хоста.
-3. Системный вызов **`pivot_root(2)`** обеспечивает герметичную файловую изоляцию, исключая уязвимости побега из `chroot`.
-4. Спецификация **OCI** объединяет индустрию, разделяя высокоуровневую оркестрацию и сверхбыстрые низкоуровневые движки вроде **`crun`**.
-5. Комбинация **Capabilities Drop**, **Seccomp BPF** и **eBPF трассировки** формирует эталонную эшелонированную безопасность (Defense in Depth) для любого критического продакшена.
+<details>
+<summary>Вопрос 1: Зачем указывать --cap-drop=ALL, если контейнер уже запущен не от root (UID 10001)?</summary>
+<div class="mt-2 text-body">
+Принцип эшелонированной обороны (Defense in Depth). Если злоумышленник сможет повысить локальные привилегии внутри контейнера (например, через SUID-бинарник или баг ядра), сброшенные Capabilities гарантируют, что даже при получении UID 0 процесс останется без системных прав: он не сможет смонтировать файловую систему (CAP_SYS_ADMIN), модифицировать сетевой стек или отладить чужие процессы.
+</div>
+</details>
+
+<details>
+<summary>Вопрос 2: В чем разница между Seccomp и Linux Capabilities?</summary>
+<div class="mt-2 text-body">
+<b>Capabilities</b> проверяются ядром при попытке выполнения привилегированных действий в рамках разрешений пользователя (например, биндинг порта 80, сброс квот).<br>
+<b>Seccomp</b> работает на более низком уровне: он перехватывает <b>любые системные вызовы (syscalls)</b> на входе в ядро. Seccomp может запретить даже непривилегированные вызовы (например, <code>sys_ptrace</code>, <code>clone3</code> или <code>io_uring_setup</code>), блокируя эксплуатацию уязвимостей нулевого дня ядра.
+</div>
+</details>
+
+<details>
+<summary>Вопрос 3: Зачем в Trivy передавать флаг --ignore-unfixed при проверке в CI/CD?</summary>
+<div class="mt-2 text-body">
+Без этого флага сборка в CI/CD будет падать из-за уязвимостей, для которых мейнтенеры дистрибутива еще не выпустили обновленный пакет с исправлением (No Fix Available). Флаг <code>--ignore-unfixed</code> оставляет в отчете только те проблемы, которые разработчик реально может и обязан устранить обновлением базового образа или библиотеки.
+</div>
+</details>
+
+---
+
+## 7. Дополнительные материалы и следующие шаги
+
+* [Модуль 6.1: Non-Root пользователи, Read-Only rootfs и tmpfs](/courses/docker-security/01-container-security-and-hardening)
+* [Модуль 6.3: Безопасность цепочки поставок: Trivy SBOM и подпись Cosign](/courses/docker-security/03-trivy-sbom-and-cosign-signing)
+* [Низкоуровневая изоляция ядра: Seccomp BPF и eBPF трассировка](/courses/internals/05-seccomp-capabilities-and-ebpf-tracing)
