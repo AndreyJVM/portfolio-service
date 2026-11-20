@@ -26,7 +26,7 @@
         Андрей Воробьев
       </h1>
       <p class="lead text-body-secondary mb-4" style="max-width: 680px;">
-        Инженер по инфраструктуре Linux и OCI-контейнеризации. Автор открытой образовательной платформы <strong>Primary Cloud Lab</strong>: изоляция в ядре (Namespaces, Cgroups v2), Podman Quadlet, системные контейнеры LXC/Incus, Ansible и Zero-Downtime деплой.
+        Инженер по инфраструктуре Linux, автоматизации и OCI-контейнеризации. Создатель инженерной платформы <strong>Primary Cloud Lab</strong>: изоляция в ядре (Namespaces, Cgroups v2), Podman Quadlet, системные контейнеры LXC/Incus, Ansible и Zero-Downtime деплой.
       </p>
 
       <div class="d-flex flex-wrap gap-2 justify-content-center justify-content-lg-start">
@@ -38,6 +38,9 @@
         </a>
         <a href="https://github.com/AndreyJVM" target="_blank" rel="noopener noreferrer" class="btn btn-outline-secondary px-3 py-2 rounded-pill">
           <i class="fab fa-github me-1"></i>GitHub
+        </a>
+        <a href="mailto:andrey.vorobev.qa@yandex.ru" class="btn btn-outline-secondary px-3 py-2 rounded-pill">
+          <i class="fas fa-envelope me-1"></i>Email
         </a>
         <a href="#projects" class="btn btn-outline-secondary px-3 py-2 rounded-pill">
           <i class="fas fa-boxes-stacked me-1"></i>Проекты
@@ -143,47 +146,43 @@
   <!-- 3. OPEN-SOURCE ПРОЕКТЫ И РЕПОЗИТОРИИ       -->
   <!-- ========================================== -->
   <section class="mb-5 reveal pt-2" id="projects">
-    <!-- Docker Hub Repositories -->
-    <div class="mb-5" id="docker-activity">
+    <!-- GitHub Repositories -->
+    <div class="mb-5" id="github-activity">
       <div class="d-flex align-items-center mb-4">
-        <div class="p-2 rounded-3 bg-primary-subtle text-primary me-3">
-          <i class="fab fa-docker fa-xl"></i>
+        <div class="p-2 rounded-3 bg-dark text-white me-3">
+          <i class="fab fa-github fa-xl"></i>
         </div>
         <div>
-          <h4 class="fw-bold mb-0">Публичные образы на Docker Hub</h4>
-          <small class="text-body-secondary">Контейнеры микросервисов и инфраструктурных утилит платформы</small>
+          <h4 class="fw-bold mb-0">Репозитории и проекты на GitHub</h4>
+          <small class="text-body-secondary">Открытый исходный код сервисов, инфраструктурные скрипты и CI/CD автоматизация</small>
         </div>
       </div>
 
       <div class="row g-4">
-        {{range .Data.DockerRepos}}
+        {{range .Data.GitHubRepos}}
         <div class="col-md-6 col-lg-4 reveal">
           <div class="card h-100 shadow-sm border-0 rounded-4 p-4 project-card">
             <div class="card-body p-0 d-flex flex-column h-100">
               <div class="d-flex justify-content-between align-items-start mb-3">
                 <div class="project-icon-box">
-                  <i class="fab fa-docker fa-2x text-primary"></i>
+                  <i class="fab fa-github fa-2x text-body"></i>
                 </div>
-                <span class="badge bg-primary-subtle text-primary border">Docker Image</span>
+                <span class="badge bg-dark-subtle text-body border">{{if .Language}}{{.Language}}{{else}}Code{{end}}</span>
               </div>
 
               <h5 class="card-title fw-bold mb-2">
-                <a href="https://hub.docker.com/r/{{.Namespace}}/{{.Name}}" target="_blank" rel="noopener noreferrer" class="text-decoration-none text-reset stretched-link">
+                <a href="{{.HTMLURL}}" target="_blank" rel="noopener noreferrer" class="text-decoration-none text-reset stretched-link">
                   {{.Name}}
                 </a>
               </h5>
 
               <p class="card-text text-body-secondary small flex-grow-1">
-                {{if .Description}}{{.Description}}{{else}}Docker контейнер для развертывания инфраструктуры и микросервисов.{{end}}
+                {{if .Description}}{{.Description}}{{else}}Репозиторий с открытым исходным кодом.{{end}}
               </p>
 
               <div class="d-flex justify-content-between align-items-center pt-3 border-top small text-body-secondary">
-                <span class="badge bg-body-secondary text-body-secondary border">
-                  <i class="fas fa-download text-success me-1"></i>{{.PullCount}} pulls
-                </span>
-                {{if gt .StarCount 0}}
-                <span><i class="fas fa-star text-warning me-1"></i>{{.StarCount}}</span>
-                {{end}}
+                <span><i class="fas fa-star text-warning me-1"></i>{{.Stargazers}}</span>
+                <span><i class="fas fa-code-fork text-secondary me-1"></i>{{.Forks}}</span>
               </div>
             </div>
           </div>
@@ -193,7 +192,7 @@
     </div>
 
     <!-- Ansible Galaxy Roles -->
-    <div class="mb-5" id="ansible-activity">
+    <div class="mb-4" id="ansible-activity">
       <div class="d-flex align-items-center mb-4">
         <div class="p-2 rounded-3 bg-secondary-subtle text-secondary me-3">
           <i class="fas fa-network-wired fa-xl"></i>
@@ -230,51 +229,6 @@
                 <span class="badge bg-body-secondary text-body-secondary border">
                   <i class="fas fa-download text-secondary me-1"></i>{{.DownloadCount}} downloads
                 </span>
-              </div>
-            </div>
-          </div>
-        </div>
-        {{end}}
-      </div>
-    </div>
-
-    <!-- GitHub Repositories -->
-    <div class="mb-4" id="github-activity">
-      <div class="d-flex align-items-center mb-4">
-        <div class="p-2 rounded-3 bg-dark text-white me-3">
-          <i class="fab fa-github fa-xl"></i>
-        </div>
-        <div>
-          <h4 class="fw-bold mb-0">Репозитории на GitHub</h4>
-          <small class="text-body-secondary">Открытый исходный код сервисов, платформы и инфраструктурных скриптов</small>
-        </div>
-      </div>
-
-      <div class="row g-4">
-        {{range .Data.GitHubRepos}}
-        <div class="col-md-6 col-lg-4 reveal">
-          <div class="card h-100 shadow-sm border-0 rounded-4 p-4 project-card">
-            <div class="card-body p-0 d-flex flex-column h-100">
-              <div class="d-flex justify-content-between align-items-start mb-3">
-                <div class="project-icon-box">
-                  <i class="fab fa-github fa-2x text-body"></i>
-                </div>
-                <span class="badge bg-dark-subtle text-body border">{{if .Language}}{{.Language}}{{else}}Code{{end}}</span>
-              </div>
-
-              <h5 class="card-title fw-bold mb-2">
-                <a href="{{.HTMLURL}}" target="_blank" rel="noopener noreferrer" class="text-decoration-none text-reset stretched-link">
-                  {{.Name}}
-                </a>
-              </h5>
-
-              <p class="card-text text-body-secondary small flex-grow-1">
-                {{if .Description}}{{.Description}}{{else}}Репозиторий с открытым исходным кодом.{{end}}
-              </p>
-
-              <div class="d-flex justify-content-between align-items-center pt-3 border-top small text-body-secondary">
-                <span><i class="fas fa-star text-warning me-1"></i>{{.Stargazers}}</span>
-                <span><i class="fas fa-code-fork text-secondary me-1"></i>{{.Forks}}</span>
               </div>
             </div>
           </div>

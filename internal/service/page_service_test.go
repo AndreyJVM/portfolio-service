@@ -19,7 +19,7 @@ func TestPageService_DefaultsWhenFileNotFound(t *testing.T) {
 	if meta.CanonicalURL != "https://test.local/" {
 		t.Errorf("Ожидался CanonicalURL 'https://test.local/', получен '%s'", meta.CanonicalURL)
 	}
-	if meta.OGImage != "https://test.local/images/og-main.png" {
+	if meta.OGImage != "https://test.local/images/og-about.png" {
 		t.Errorf("Ожидался OGImage с префиксом baseURL, получен '%s'", meta.OGImage)
 	}
 }

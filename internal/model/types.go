@@ -23,15 +23,6 @@ type GitHubRepoDto struct {
 	Forks       int    `json:"forks_count"`
 }
 
-// DockerHubRepoDto represents a Docker Hub image.
-type DockerHubRepoDto struct {
-	Name        string `json:"name"`
-	Namespace   string `json:"namespace"`
-	Description string `json:"description"`
-	PullCount   int    `json:"pull_count"`
-	StarCount   int    `json:"star_count"`
-}
-
 // AnsibleRoleDto represents an Ansible Galaxy role.
 type AnsibleRoleDto struct {
 	Name          string `json:"name"`
@@ -44,6 +35,5 @@ type AnsibleRoleDto struct {
 // ProjectsPageData aggregates all external integrations.
 type ProjectsPageData struct {
 	GitHubRepos  []GitHubRepoDto
-	DockerRepos  []DockerHubRepoDto
 	AnsibleRoles []AnsibleRoleDto
 }

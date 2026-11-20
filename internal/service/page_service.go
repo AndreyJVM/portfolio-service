@@ -31,22 +31,13 @@ type PageService struct {
 // defaultPages provides built-in fallback metadata in case the external configuration is unavailable.
 var defaultPages = map[string]PageMeta{
 	"index": {
-		Title:         "Курсы • Обучение Контейнеризации и Linux",
-		Description:   "Специализированная программа обучения: Docker, Podman, LXC, Cgroups, Namespaces и Zero-Downtime деплой на платформе Primary Cloud Lab.",
-		Keywords:      "контейнеризация, Docker, Podman, LXC, Incus, Cgroups, Namespaces, уроки, курсы, Linux, DevOps",
-		OGTitle:       "Курсы по Контейнеризации и Linux • Primary Cloud Lab",
-		OGDescription: "Глубокая практическая программа: от первого контейнера до изоляции на уровне ядра Linux.",
-		OGImage:       "/images/og-main.png",
-		ActiveTab:     "courses",
-	},
-	"education": {
 		Title:         "Об авторе • Андрей Воробьев | Primary Cloud Lab",
 		Description:   "Об авторе платформы Primary Cloud Lab Андрее Воробьеве: инженерный опыт, системное администрирование Linux (Слёрм), Docker, Podman, LXC, CI/CD, репозитории и квалификация.",
 		Keywords:      "Андрей Воробьев, об авторе, DevOps, Linux, Слёрм, Docker, Podman, LXC, Ansible, сертификаты, квалификация, инфраструктура",
 		OGTitle:       "Об авторе • Андрей Воробьев | Primary Cloud Lab",
 		OGDescription: "Создатель Primary Cloud Lab. Архитектура инфраструктуры, open-source репозитории, профессиональные сертификации Слёрм и дипломы.",
 		OGImage:       "/images/og-about.png",
-		ActiveTab:     "education",
+		ActiveTab:     "about",
 	},
 	"mustang": {
 		Title:         "На мечту • Ford Mustang Shelby GT500",
@@ -56,6 +47,15 @@ var defaultPages = map[string]PageMeta{
 		OGDescription: "Осталось закрыть единственный критический баг — отсутствие 760 л.с. в гараже.",
 		OGImage:       "/images/avatar.jpg",
 		ActiveTab:     "mustang",
+	},
+	"404": {
+		Title:         "404 • Страница не найдена",
+		Description:   "Запрошенная страница не найдена на платформе Primary Cloud Lab.",
+		Keywords:      "404, страница не найдена, devops, linux",
+		OGTitle:       "404 • Страница не найдена",
+		OGDescription: "Запрошенная страница не найдена на платформе Primary Cloud Lab.",
+		OGImage:       "/images/og-main.png",
+		ActiveTab:     "",
 	},
 }
 

@@ -17,15 +17,6 @@ func TestProjectsPageDataJSONSerialization(t *testing.T) {
 				Forks:       2,
 			},
 		},
-		DockerRepos: []DockerHubRepoDto{
-			{
-				Name:        "portfolio-service",
-				Namespace:   "andreyvorobevaqa",
-				Description: "Production image",
-				PullCount:   100,
-				StarCount:   5,
-			},
-		},
 		AnsibleRoles: []AnsibleRoleDto{
 			{
 				Name:          "docker_host",
@@ -49,9 +40,6 @@ func TestProjectsPageDataJSONSerialization(t *testing.T) {
 
 	if len(parsed.GitHubRepos) != 1 || parsed.GitHubRepos[0].Name != "portfolio-service" {
 		t.Errorf("Некорректная десериализация GitHubRepos: %+v", parsed.GitHubRepos)
-	}
-	if len(parsed.DockerRepos) != 1 || parsed.DockerRepos[0].PullCount != 100 {
-		t.Errorf("Некорректная десериализация DockerRepos: %+v", parsed.DockerRepos)
 	}
 	if len(parsed.AnsibleRoles) != 1 || parsed.AnsibleRoles[0].Name != "docker_host" {
 		t.Errorf("Некорректная десериализация AnsibleRoles: %+v", parsed.AnsibleRoles)

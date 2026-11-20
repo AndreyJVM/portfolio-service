@@ -38,7 +38,7 @@ func TestNotFoundHandlers(t *testing.T) {
 }
 
 func TestTemplateErrors(t *testing.T) {
-	is := service.NewIntegrationsService("AndreyJVM", "andreyvorobevaqa")
+	is := service.NewIntegrationsService("AndreyJVM")
 	// Pass invalid templates directory to check template compilation error branch
 	h := NewHandler(is, nil, "/tmp/non-existent-templates-dir-12345", "../../web/static", "https://vorobevaqa.ru")
 
@@ -64,7 +64,7 @@ func TestRenderTemplate_BufferSafety(t *testing.T) {
 		t.Fatalf("Не удалось создать broken.html: %v", err)
 	}
 
-	is := service.NewIntegrationsService("AndreyJVM", "andreyvorobevaqa")
+	is := service.NewIntegrationsService("AndreyJVM")
 	h := NewHandler(is, nil, tempDir, "../../web/static", "https://vorobevaqa.ru")
 
 	w := httptest.NewRecorder()

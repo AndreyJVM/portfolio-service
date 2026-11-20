@@ -7,7 +7,7 @@ import (
 
 func TestConfig_DefaultValues(t *testing.T) {
 	// Clear environment variables to check defaults
-	keys := []string{"PORT", "APP_BASE_URL", "GITHUB_USER", "DOCKER_USER", "PAGES_FILE", "TEMPLATES_DIR", "STATIC_DIR"}
+	keys := []string{"PORT", "APP_BASE_URL", "GITHUB_USER", "PAGES_FILE", "TEMPLATES_DIR", "STATIC_DIR"}
 	for _, k := range keys {
 		_ = os.Unsetenv(k)
 	}
@@ -22,9 +22,6 @@ func TestConfig_DefaultValues(t *testing.T) {
 	}
 	if cfg.GitHubUser != DefaultGitHubUser {
 		t.Errorf("Ожидался GitHubUser '%s', получен '%s'", DefaultGitHubUser, cfg.GitHubUser)
-	}
-	if cfg.DockerUser != DefaultDockerUser {
-		t.Errorf("Ожидался DockerUser '%s', получен '%s'", DefaultDockerUser, cfg.DockerUser)
 	}
 	if cfg.PagesFile != DefaultPagesFile {
 		t.Errorf("Ожидался PagesFile '%s', получен '%s'", DefaultPagesFile, cfg.PagesFile)
@@ -44,13 +41,12 @@ func TestConfig_CustomEnvValues(t *testing.T) {
 	_ = os.Setenv("PORT", "9090")
 	_ = os.Setenv("APP_BASE_URL", "http://localhost:9090")
 	_ = os.Setenv("GITHUB_USER", "CustomUser")
-	_ = os.Setenv("DOCKER_USER", "customdocker")
 	_ = os.Setenv("PAGES_FILE", "/custom/pages.json")
 	_ = os.Setenv("TEMPLATES_DIR", "/custom/templates")
 	_ = os.Setenv("STATIC_DIR", "/custom/static")
 
 	defer func() {
-		keys := []string{"PORT", "APP_BASE_URL", "GITHUB_USER", "DOCKER_USER", "PAGES_FILE", "TEMPLATES_DIR", "STATIC_DIR"}
+		keys := []string{"PORT", "APP_BASE_URL", "GITHUB_USER", "PAGES_FILE", "TEMPLATES_DIR", "STATIC_DIR"}
 		for _, k := range keys {
 			_ = os.Unsetenv(k)
 		}
@@ -66,9 +62,6 @@ func TestConfig_CustomEnvValues(t *testing.T) {
 	}
 	if cfg.GitHubUser != "CustomUser" {
 		t.Errorf("Ожидался GitHubUser 'CustomUser', получен '%s'", cfg.GitHubUser)
-	}
-	if cfg.DockerUser != "customdocker" {
-		t.Errorf("Ожидался DockerUser 'customdocker', получен '%s'", cfg.DockerUser)
 	}
 	if cfg.PagesFile != "/custom/pages.json" {
 		t.Errorf("Ожидался PagesFile '/custom/pages.json', получен '%s'", cfg.PagesFile)
@@ -107,7 +100,6 @@ func TestConfig_Validate(t *testing.T) {
 			Port:         "8080",
 			AppBaseURL:   "https://vorobevaqa.ru",
 			GitHubUser:   "AndreyJVM",
-			DockerUser:   "andreyvorobevaqa",
 			PagesFile:    "content/pages.json",
 			TemplatesDir: "web/templates",
 			StaticDir:    "web/static",

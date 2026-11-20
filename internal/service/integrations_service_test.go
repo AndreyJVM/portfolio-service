@@ -19,14 +19,11 @@ func (m mockRoundTripper) RoundTrip(req *http.Request) (*http.Response, error) {
 }
 
 func TestIntegrationsService_Cache(t *testing.T) {
-	svc := NewIntegrationsService("test-user", "test-user")
+	svc := NewIntegrationsService("test-user")
 
 	mockData := model.ProjectsPageData{
 		GitHubRepos: []model.GitHubRepoDto{
 			{Name: "test-repo", Description: "Test Description"},
-		},
-		DockerRepos: []model.DockerHubRepoDto{
-			{Name: "test-image", PullCount: 42},
 		},
 		AnsibleRoles: []model.AnsibleRoleDto{
 			{Name: "test-role", Description: "Role Description"},
@@ -40,16 +37,13 @@ func TestIntegrationsService_Cache(t *testing.T) {
 	if len(data.GitHubRepos) != 1 || data.GitHubRepos[0].Name != "test-repo" {
 		t.Errorf("Ожидались кэшированные данные GitHub, получено: %+v", data.GitHubRepos)
 	}
-	if len(data.DockerRepos) != 1 || data.DockerRepos[0].PullCount != 42 {
-		t.Errorf("Ожидались кэшированные данные Docker, получено: %+v", data.DockerRepos)
-	}
 	if len(data.AnsibleRoles) != 1 || data.AnsibleRoles[0].Name != "test-role" {
 		t.Errorf("Ожидались кэшированные данные Ansible, получено: %+v", data.AnsibleRoles)
 	}
 }
 
 func TestIntegrationsService_PreloadDefaults(t *testing.T) {
-	svc := NewIntegrationsService("test-user", "test-user")
+	svc := NewIntegrationsService("test-user")
 	// Intercept client calls so the background refresh does not fail
 	svc.client.Transport = mockRoundTripper(func(req *http.Request) (*http.Response, error) {
 		return nil, errors.New("prevent external network call")
@@ -61,16 +55,13 @@ func TestIntegrationsService_PreloadDefaults(t *testing.T) {
 	if len(data.GitHubRepos) == 0 {
 		t.Errorf("PreloadDefaults должен заполнять fallback список репозиториев GitHub")
 	}
-	if len(data.DockerRepos) == 0 {
-		t.Errorf("PreloadDefaults должен заполнять fallback список репозиториев Docker")
-	}
 	if len(data.AnsibleRoles) == 0 {
 		t.Errorf("PreloadDefaults должен заполнять роли Ansible")
 	}
 }
 
 func TestIntegrationsService_StaleWhileRevalidate(t *testing.T) {
-	svc := NewIntegrationsService("test-user", "test-user")
+	svc := NewIntegrationsService("test-user")
 
 	refreshed := make(chan bool, 1)
 	svc.client.Transport = mockRoundTripper(func(req *http.Request) (*http.Response, error) {
@@ -106,7 +97,7 @@ func TestIntegrationsService_StaleWhileRevalidate(t *testing.T) {
 }
 
 func TestIntegrationsService_MockAPIs_Success(t *testing.T) {
-	svc := NewIntegrationsService("test-gh", "test-dh")
+	svc := NewIntegrationsService("test-gh")
 
 	svc.client.Transport = mockRoundTripper(func(req *http.Request) (*http.Response, error) {
 		if strings.Contains(req.URL.Host, "api.github.com") {
@@ -127,25 +118,6 @@ func TestIntegrationsService_MockAPIs_Success(t *testing.T) {
 			}, nil
 		}
 
-		if strings.Contains(req.URL.Host, "hub.docker.com") {
-			body := `{
-				"results": [
-					{
-						"name": "custom-docker-image",
-						"description": "Mocked Docker Image",
-						"pull_count": 500,
-						"star_count": 10,
-						"last_updated": "2026-11-12T10:00:00Z"
-					}
-				]
-			}`
-			return &http.Response{
-				StatusCode: http.StatusOK,
-				Body:       io.NopCloser(bytes.NewBufferString(body)),
-				Header:     make(http.Header),
-			}, nil
-		}
-
 		return &http.Response{
 			StatusCode: http.StatusNotFound,
 			Body:       io.NopCloser(bytes.NewBufferString("not found")),
@@ -158,16 +130,13 @@ func TestIntegrationsService_MockAPIs_Success(t *testing.T) {
 	if len(data.GitHubRepos) != 1 || data.GitHubRepos[0].Name != "custom-gh-repo" {
 		t.Errorf("Ожидался замоканный репозиторий GitHub, получено: %+v", data.GitHubRepos)
 	}
-	if len(data.DockerRepos) != 1 || data.DockerRepos[0].Name != "custom-docker-image" {
-		t.Errorf("Ожидался замоканный репозиторий Docker, получено: %+v", data.DockerRepos)
-	}
 	if len(data.AnsibleRoles) == 0 {
 		t.Errorf("Ожидались статические роли Ansible, получено 0")
 	}
 }
 
 func TestIntegrationsService_APIErrors_Fallback(t *testing.T) {
-	svc := NewIntegrationsService("test-gh", "test-dh")
+	svc := NewIntegrationsService("test-gh")
 
 	// Mock 500 Internal Server Error response
 	svc.client.Transport = mockRoundTripper(func(req *http.Request) (*http.Response, error) {
@@ -184,13 +153,10 @@ func TestIntegrationsService_APIErrors_Fallback(t *testing.T) {
 	if len(data.GitHubRepos) == 0 {
 		t.Errorf("Ожидался fallback список репозиториев GitHub")
 	}
-	if len(data.DockerRepos) == 0 {
-		t.Errorf("Ожидался fallback список репозиториев Docker")
-	}
 }
 
 func TestIntegrationsService_NetworkError_Fallback(t *testing.T) {
-	svc := NewIntegrationsService("test-gh", "test-dh")
+	svc := NewIntegrationsService("test-gh")
 
 	// Mock client network failure
 	svc.client.Transport = mockRoundTripper(func(req *http.Request) (*http.Response, error) {
@@ -202,13 +168,10 @@ func TestIntegrationsService_NetworkError_Fallback(t *testing.T) {
 	if len(data.GitHubRepos) == 0 {
 		t.Errorf("Ожидался fallback список GitHub при ошибке сети")
 	}
-	if len(data.DockerRepos) == 0 {
-		t.Errorf("Ожидался fallback список Docker при ошибке сети")
-	}
 }
 
 func TestIntegrationsService_MalformedJSON_And_Empty(t *testing.T) {
-	svc := NewIntegrationsService("test-gh", "test-dh")
+	svc := NewIntegrationsService("test-gh")
 
 	// Mock 200 OK responses, but with malformed JSON
 	svc.client.Transport = mockRoundTripper(func(req *http.Request) (*http.Response, error) {
@@ -219,13 +182,6 @@ func TestIntegrationsService_MalformedJSON_And_Empty(t *testing.T) {
 				Header:     make(http.Header),
 			}, nil
 		}
-		if strings.Contains(req.URL.Host, "hub.docker.com") {
-			return &http.Response{
-				StatusCode: http.StatusOK,
-				Body:       io.NopCloser(bytes.NewBufferString(`{"results": []}`)),
-				Header:     make(http.Header),
-			}, nil
-		}
 		return &http.Response{StatusCode: http.StatusOK}, nil
 	})
 
@@ -233,8 +189,5 @@ func TestIntegrationsService_MalformedJSON_And_Empty(t *testing.T) {
 
 	if len(data.GitHubRepos) == 0 {
 		t.Errorf("Ожидался fallback список GitHub при битом JSON")
-	}
-	if len(data.DockerRepos) == 0 {
-		t.Errorf("Ожидался fallback список Docker при пустом списке результатов")
 	}
 }

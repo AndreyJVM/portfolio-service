@@ -66,7 +66,7 @@ flowchart TD
 
 1. 👤 **About the Author (`/`):**
    - Professional profile, skills matrix, Slurm Linux administration certifications, academic degrees;
-   - Open-source projects dynamically integrated from GitHub, Docker Hub, and Ansible Galaxy;
+   - Open-source projects dynamically integrated from GitHub and Ansible Galaxy;
    - PDF Resume generation and download (`/api/pdf/resume`).
 2. 🏎️ **Dream Goal (`/mustang`):**
    - Crowdfunding campaign for Ford Mustang Shelby GT500 with interactive Web Audio V8 synthesizer and telemetry panel.
@@ -120,7 +120,7 @@ go run ./cmd/server/
 ├── internal/
 │   ├── config/              # Central configuration package
 │   ├── handler/             # HTTP handlers, router, security headers, and PDF endpoints
-│   ├── model/               # Core data transfer objects (GitHub, Docker Hub, Ansible)
+│   ├── model/               # Core data transfer objects (GitHub, Ansible Galaxy)
 │   └── service/             # IntegrationsService, PageService
 ├── nginx/                   # Nginx reverse proxy configurations
 ├── scripts/
@@ -180,7 +180,7 @@ flowchart TD
 
 1. 👤 **Об авторе (`/`):**
    - Инженерный опыт, матрица компетенций, профессиональные сертификаты Слёрм (Linux администрирование), дипломы;
-   - Open-source проекты и репозитории из GitHub, Docker Hub и Ansible Galaxy;
+   - Open-source проекты и репозитории из GitHub и Ansible Galaxy;
    - Скачивание резюме в формате PDF (`/api/pdf/resume`).
 2. 🏎️ **На мечту (`/mustang`):**
    - Краудфандинг на мечту — Ford Mustang Shelby GT500 с интерактивным синтезатором звука V8 на Web Audio API и телеметрией.
@@ -234,7 +234,7 @@ go run ./cmd/server/
 ├── internal/
 │   ├── config/              # Конфигурация сервиса и переменные окружения
 │   ├── handler/             # HTTP-обработчики, роутер, заголовки безопасности, отдача PDF
-│   ├── model/               # Модели данных (GitHub, Docker Hub, Ansible)
+│   ├── model/               # Модели данных (GitHub, Ansible Galaxy)
 │   └── service/             # Сервисы IntegrationsService, PageService
 ├── nginx/                   # Конфигурации reverse proxy Nginx
 ├── scripts/

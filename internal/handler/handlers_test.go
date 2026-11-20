@@ -12,7 +12,7 @@ import (
 )
 
 func setupTestRouter() *chi.Mux {
-	is := service.NewIntegrationsService(config.DefaultGitHubUser, config.DefaultDockerUser)
+	is := service.NewIntegrationsService(config.DefaultGitHubUser)
 	ps := service.NewPageService("../../content/pages.json")
 	staticDir := "../../web/static"
 	h := NewHandler(is, ps, "../../web/templates", staticDir, config.DefaultAppBaseURL)
@@ -229,7 +229,7 @@ func TestLayoutIncludes(t *testing.T) {
 }
 
 func TestResumePDF_MissingFile(t *testing.T) {
-	is := service.NewIntegrationsService("AndreyJVM", "andreyvorobevaqa")
+	is := service.NewIntegrationsService("AndreyJVM")
 	// Pass non-existent static directory to trigger os.Stat error branch
 	h := NewHandler(is, nil, "../../web/templates", "/tmp/non-existent-static-dir-12345", "https://vorobevaqa.ru")
 

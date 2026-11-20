@@ -13,20 +13,18 @@ import (
 type IntegrationsService struct {
 	client     *http.Client
 	githubUser string
-	dockerUser string
 
 	cacheMutex sync.RWMutex
 	cachedData *model.ProjectsPageData
 	cacheUntil time.Time
 }
 
-func NewIntegrationsService(githubUser, dockerUser string) *IntegrationsService {
+func NewIntegrationsService(githubUser string) *IntegrationsService {
 	return &IntegrationsService{
 		client: &http.Client{
 			Timeout: 4 * time.Second,
 		},
 		githubUser: githubUser,
-		dockerUser: dockerUser,
 	}
 }
 
@@ -37,7 +35,6 @@ func (s *IntegrationsService) PreloadDefaults() {
 	s.cacheMutex.Lock()
 	data := model.ProjectsPageData{
 		GitHubRepos:  s.fallbackGitHubRepos(),
-		DockerRepos:  s.fallbackDockerHubRepos(),
 		AnsibleRoles: s.getStaticAnsibleRoles(),
 	}
 	s.cachedData = &data
@@ -69,23 +66,17 @@ func (s *IntegrationsService) GetProjectsData() model.ProjectsPageData {
 	return s.Refresh()
 }
 
-// Refresh queries GitHub and DockerHub in parallel and updates the in-memory cache.
+// Refresh queries GitHub in parallel with static roles and updates the in-memory cache.
 func (s *IntegrationsService) Refresh() model.ProjectsPageData {
 	var wg sync.WaitGroup
 	var ghRepos []model.GitHubRepoDto
-	var dhRepos []model.DockerHubRepoDto
 	var ansibleRoles []model.AnsibleRoleDto
 
-	wg.Add(3)
+	wg.Add(2)
 
 	go func() {
 		defer wg.Done()
 		ghRepos = s.fetchGitHubRepos()
-	}()
-
-	go func() {
-		defer wg.Done()
-		dhRepos = s.fetchDockerHubRepos()
 	}()
 
 	go func() {
@@ -97,7 +88,6 @@ func (s *IntegrationsService) Refresh() model.ProjectsPageData {
 
 	data := model.ProjectsPageData{
 		GitHubRepos:  ghRepos,
-		DockerRepos:  dhRepos,
 		AnsibleRoles: ansibleRoles,
 	}
 
@@ -141,7 +131,7 @@ func (s *IntegrationsService) fallbackGitHubRepos() []model.GitHubRepoDto {
 	return []model.GitHubRepoDto{
 		{
 			Name:        "portfolio-service",
-			Description: "Primary Cloud Lab • Открытая образовательная платформа по DevOps, Docker и CI/CD на Go.",
+			Description: "Primary Cloud Lab • Персональная инженерная платформа по Linux, Docker и CI/CD на Go.",
 			HTMLURL:     "https://github.com/AndreyJVM/portfolio-service",
 			Language:    "Go",
 			Stargazers:  12,
@@ -170,58 +160,6 @@ func (s *IntegrationsService) fallbackGitHubRepos() []model.GitHubRepoDto {
 			Language:    "Shell",
 			Stargazers:  4,
 			Forks:       0,
-		},
-	}
-}
-
-func (s *IntegrationsService) fetchDockerHubRepos() []model.DockerHubRepoDto {
-	url := fmt.Sprintf("https://hub.docker.com/v2/repositories/%s/?page_size=6", s.dockerUser)
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		return s.fallbackDockerHubRepos()
-	}
-
-	req.Header.Set("User-Agent", "DevOpsPlatform-Go")
-	resp, err := s.client.Do(req)
-	if err != nil {
-		return s.fallbackDockerHubRepos()
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return s.fallbackDockerHubRepos()
-	}
-
-	var result struct {
-		Results []model.DockerHubRepoDto `json:"results"`
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&result); err == nil && len(result.Results) > 0 {
-		for i := range result.Results {
-			if result.Results[i].Namespace == "" {
-				result.Results[i].Namespace = s.dockerUser
-			}
-		}
-		return result.Results
-	}
-
-	return s.fallbackDockerHubRepos()
-}
-
-func (s *IntegrationsService) fallbackDockerHubRepos() []model.DockerHubRepoDto {
-	return []model.DockerHubRepoDto{
-		{
-			Name:        "portfolio-service",
-			Namespace:   s.dockerUser,
-			Description: "DevOps Learning Platform • Легковесный multi-stage образ на Alpine Linux (~33MB).",
-			PullCount:   180,
-			StarCount:   3,
-		},
-		{
-			Name:        "linux-lab-box",
-			Namespace:   s.dockerUser,
-			Description: "Инструментальный контейнер для лабораторных работ по Linux ядрам, сети и трассировке.",
-			PullCount:   75,
-			StarCount:   2,
 		},
 	}
 }

@@ -43,7 +43,7 @@ func main() {
 	}
 
 	// Initialize service layer
-	integrationsService := service.NewIntegrationsService(cfg.GitHubUser, cfg.DockerUser)
+	integrationsService := service.NewIntegrationsService(cfg.GitHubUser)
 	integrationsService.PreloadDefaults() // Instant cold start without external API delays
 	pageService := service.NewPageService(cfg.PagesFile)
 
