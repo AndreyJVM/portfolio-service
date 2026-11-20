@@ -20,7 +20,7 @@ RUN --mount=type=cache,target=/go/pkg/mod \
     go build -mod=vendor -ldflags="-w -s" -o /app/devops-platform ./cmd/server
 
 # --- Этап 2: Минимальный production runtime ---
-FROM alpine:3.21
+FROM alpine:3.24
 
 # OCI Metadata Labels
 LABEL org.opencontainers.image.title="Primary Cloud Lab" \
