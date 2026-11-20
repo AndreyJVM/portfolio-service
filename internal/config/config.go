@@ -14,8 +14,6 @@ const (
 	DefaultAppBaseURL   = "https://vorobevaqa.ru"
 	DefaultGitHubUser   = "AndreyJVM"
 	DefaultDockerUser   = "andreyvorobevaqa"
-	DefaultContentDir   = "content/courses"
-	DefaultCoursesFile  = "content/courses.json"
 	DefaultPagesFile    = "content/pages.json"
 	DefaultTemplatesDir = "web/templates"
 	DefaultStaticDir    = "web/static"
@@ -26,8 +24,6 @@ type Config struct {
 	AppBaseURL   string
 	GitHubUser   string
 	DockerUser   string
-	ContentDir   string
-	CoursesFile  string
 	PagesFile    string
 	TemplatesDir string
 	StaticDir    string
@@ -46,8 +42,6 @@ func Load() *Config {
 		AppBaseURL:   strings.TrimRight(getEnvOrDefault("APP_BASE_URL", DefaultAppBaseURL), "/"),
 		GitHubUser:   getEnvOrDefault("GITHUB_USER", DefaultGitHubUser),
 		DockerUser:   getEnvOrDefault("DOCKER_USER", DefaultDockerUser),
-		ContentDir:   getEnvOrDefault("CONTENT_DIR", DefaultContentDir),
-		CoursesFile:  getEnvOrDefault("COURSES_FILE", DefaultCoursesFile),
 		PagesFile:    getEnvOrDefault("PAGES_FILE", DefaultPagesFile),
 		TemplatesDir: getEnvOrDefault("TEMPLATES_DIR", DefaultTemplatesDir),
 		StaticDir:    getEnvOrDefault("STATIC_DIR", DefaultStaticDir),
@@ -78,9 +72,6 @@ func (c *Config) Validate() error {
 	}
 
 	// Validate required paths
-	if c.ContentDir == "" {
-		return fmt.Errorf("content dir cannot be empty")
-	}
 	if c.PagesFile == "" {
 		return fmt.Errorf("pages file cannot be empty")
 	}

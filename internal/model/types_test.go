@@ -5,83 +5,69 @@ import (
 	"testing"
 )
 
-func TestCourseAndLessonJSONSerialization(t *testing.T) {
-	lesson := Lesson{
-		ID:          "lesson-1",
-		CourseSlug:  "docker",
-		Slug:        "01-intro",
-		Title:       "Введение",
-		Order:       1,
-		Duration:    "10 мин",
-		Description: "Описание урока",
-		ContentHTML: "<p>Контент</p>",
+func TestProjectsPageDataJSONSerialization(t *testing.T) {
+	data := ProjectsPageData{
+		GitHubRepos: []GitHubRepoDto{
+			{
+				Name:        "portfolio-service",
+				Description: "High-performance Go service",
+				HTMLURL:     "https://github.com/AndreyJVM/portfolio-service",
+				Language:    "Go",
+				Stargazers:  10,
+				Forks:       2,
+			},
+		},
+		DockerRepos: []DockerHubRepoDto{
+			{
+				Name:        "portfolio-service",
+				Namespace:   "andreyvorobevaqa",
+				Description: "Production image",
+				PullCount:   100,
+				StarCount:   5,
+			},
+		},
+		AnsibleRoles: []AnsibleRoleDto{
+			{
+				Name:          "docker_host",
+				Description:   "Ansible role for Docker host",
+				GithubUser:    "AndreyJVM",
+				DownloadCount: 50,
+				URL:           "https://galaxy.ansible.com",
+			},
+		},
 	}
 
-	course := Course{
-		ID:          "docker",
-		Title:       "Docker",
-		Slug:        "docker",
-		Icon:        "fab fa-docker",
-		Color:       "#0284c7",
-		Description: "Курс по Docker",
-		Level:       "Базовый",
-		LessonCount: 1,
-		Tags:        []string{"Docker", "OCI"},
-		Lessons:     []Lesson{lesson},
-	}
-
-	data, err := json.Marshal(course)
+	raw, err := json.Marshal(data)
 	if err != nil {
-		t.Fatalf("Ошибка сериализации Course в JSON: %v", err)
+		t.Fatalf("Ошибка сериализации ProjectsPageData в JSON: %v", err)
 	}
 
-	var parsed Course
-	if err := json.Unmarshal(data, &parsed); err != nil {
-		t.Fatalf("Ошибка десериализации Course из JSON: %v", err)
+	var parsed ProjectsPageData
+	if err := json.Unmarshal(raw, &parsed); err != nil {
+		t.Fatalf("Ошибка десериализации ProjectsPageData из JSON: %v", err)
 	}
 
-	if parsed.Slug != "docker" || len(parsed.Lessons) != 1 {
-		t.Errorf("Некорректная десериализация курса: %+v", parsed)
+	if len(parsed.GitHubRepos) != 1 || parsed.GitHubRepos[0].Name != "portfolio-service" {
+		t.Errorf("Некорректная десериализация GitHubRepos: %+v", parsed.GitHubRepos)
 	}
-	if parsed.Lessons[0].Title != "Введение" {
-		t.Errorf("Некорректный заголовок урока: %s", parsed.Lessons[0].Title)
+	if len(parsed.DockerRepos) != 1 || parsed.DockerRepos[0].PullCount != 100 {
+		t.Errorf("Некорректная десериализация DockerRepos: %+v", parsed.DockerRepos)
+	}
+	if len(parsed.AnsibleRoles) != 1 || parsed.AnsibleRoles[0].Name != "docker_host" {
+		t.Errorf("Некорректная десериализация AnsibleRoles: %+v", parsed.AnsibleRoles)
 	}
 }
 
-func TestSearchItemAndMetaData(t *testing.T) {
-	item := SearchItem{
-		Type:        "lesson",
-		Title:       "Namespaces",
-		CourseTitle: "Internals",
-		CourseSlug:  "internals",
-		LessonSlug:  "01-namespaces",
-		URL:         "/courses/internals/01-namespaces",
-		Description: "Анатомия пространств имен",
-		Tags:        []string{"Linux", "Kernel"},
-		Snippet:     "Фрагмент текста",
-	}
-
-	data, err := json.Marshal(item)
-	if err != nil {
-		t.Fatalf("Ошибка сериализации SearchItem: %v", err)
-	}
-
-	var parsed SearchItem
-	if err := json.Unmarshal(data, &parsed); err != nil {
-		t.Fatalf("Ошибка десериализации SearchItem: %v", err)
-	}
-
-	if parsed.Title != "Namespaces" || parsed.CourseSlug != "internals" {
-		t.Errorf("Некорректная десериализация SearchItem: %+v", parsed)
-	}
-
+func TestMetaData(t *testing.T) {
 	meta := MetaData{
-		Title:        "Title",
-		ActiveTab:    "courses",
-		ActiveCourse: "docker",
+		Title:        "Об авторе • Андрей Воробьев",
+		ActiveTab:    "about",
 		CanonicalURL: "https://vorobevaqa.ru/",
 	}
-	if meta.ActiveCourse != "docker" || meta.ActiveTab != "courses" {
-		t.Errorf("Некорректная MetaData: %+v", meta)
+	if meta.ActiveTab != "about" {
+		t.Errorf("Ожидался ActiveTab 'about', получено '%s'", meta.ActiveTab)
+	}
+	if meta.CanonicalURL != "https://vorobevaqa.ru/" {
+		t.Errorf("Ожидался CanonicalURL 'https://vorobevaqa.ru/', получено '%s'", meta.CanonicalURL)
 	}
 }

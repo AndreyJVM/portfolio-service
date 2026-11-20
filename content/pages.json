@@ -1,21 +1,12 @@
 {
   "index": {
-    "title": "Курсы • Обучение Контейнеризации и Linux",
-    "description": "Специализированная программа обучения: Docker, Podman, LXC, Cgroups, Namespaces и Zero-Downtime деплой на платформе Primary Cloud Lab.",
-    "keywords": "контейнеризация, Docker, Podman, LXC, Incus, Cgroups, Namespaces, уроки, курсы, Linux, DevOps",
-    "ogTitle": "Курсы по Контейнеризации и Linux • Primary Cloud Lab",
-    "ogDescription": "Глубокая практическая программа: от первого контейнера до изоляции на уровне ядра Linux.",
-    "ogImage": "/images/og-main.png",
-    "activeTab": "courses"
-  },
-  "education": {
     "title": "Об авторе • Андрей Воробьев | Primary Cloud Lab",
     "description": "Об авторе платформы Primary Cloud Lab Андрее Воробьеве: инженерный опыт, системное администрирование Linux (Слёрм), Docker, Podman, LXC, CI/CD, репозитории и квалификация.",
     "keywords": "Андрей Воробьев, об авторе, DevOps, Linux, Слёрм, Docker, Podman, LXC, Ansible, сертификаты, квалификация, инфраструктура",
     "ogTitle": "Об авторе • Андрей Воробьев | Primary Cloud Lab",
     "ogDescription": "Создатель Primary Cloud Lab. Архитектура инфраструктуры, open-source репозитории, профессиональные сертификации Слёрм и дипломы.",
     "ogImage": "/images/og-about.png",
-    "activeTab": "education"
+    "activeTab": "about"
   },
   "mustang": {
     "title": "На мечту • Ford Mustang Shelby GT500",

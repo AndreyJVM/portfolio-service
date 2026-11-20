@@ -20,9 +20,8 @@ func TestNotFoundHandlers(t *testing.T) {
 		name string
 		url  string
 	}{
-		{"Non-existent course", "/courses/non-existent-course-slug-12345"},
-		{"Non-existent lesson", "/courses/docker/non-existent-lesson-slug-12345"},
-		{"Non-existent course in lesson path", "/courses/non-existent-course/01-permissions"},
+		{"Non-existent page", "/non-existent-page-slug-12345"},
+		{"Non-existent nested path", "/random/deep/path"},
 	}
 
 	for _, tt := range notFoundTests {
@@ -39,10 +38,9 @@ func TestNotFoundHandlers(t *testing.T) {
 }
 
 func TestTemplateErrors(t *testing.T) {
-	cs := service.NewCourseService("../../content/courses")
 	is := service.NewIntegrationsService("AndreyJVM", "andreyvorobevaqa")
 	// Pass invalid templates directory to check template compilation error branch
-	h := NewHandler(cs, is, nil, "/tmp/non-existent-templates-dir-12345", "../../web/static", "https://vorobevaqa.ru")
+	h := NewHandler(is, nil, "/tmp/non-existent-templates-dir-12345", "../../web/static", "https://vorobevaqa.ru")
 
 	req := httptest.NewRequest("GET", "/", nil)
 	w := httptest.NewRecorder()
@@ -66,9 +64,8 @@ func TestRenderTemplate_BufferSafety(t *testing.T) {
 		t.Fatalf("Не удалось создать broken.html: %v", err)
 	}
 
-	cs := service.NewCourseService("../../content/courses")
 	is := service.NewIntegrationsService("AndreyJVM", "andreyvorobevaqa")
-	h := NewHandler(cs, is, nil, tempDir, "../../web/static", "https://vorobevaqa.ru")
+	h := NewHandler(is, nil, tempDir, "../../web/static", "https://vorobevaqa.ru")
 
 	w := httptest.NewRecorder()
 	// Pass struct without InvalidField to trigger ExecuteTemplate execution error
@@ -87,41 +84,15 @@ func TestConcurrency_HighLoad(t *testing.T) {
 	r := setupTestRouter()
 	const workers = 50
 
-	t.Run("Concurrent Search API requests", func(t *testing.T) {
-		var wg sync.WaitGroup
-		wg.Add(workers)
-
-		for i := 0; i < workers; i++ {
-			go func(idx int) {
-				defer wg.Done()
-				query := "docker"
-				if idx%2 == 0 {
-					query = "linux"
-				}
-				req := httptest.NewRequest("GET", "/api/search?q="+query, nil)
-				w := httptest.NewRecorder()
-
-				r.ServeHTTP(w, req)
-
-				if w.Code != http.StatusOK {
-					t.Errorf("Ошибка конкурентного запроса к /api/search: статус %d", w.Code)
-				}
-			}(i)
-		}
-
-		wg.Wait()
-	})
-
-	t.Run("Concurrent lesson and page renders", func(t *testing.T) {
+	t.Run("Concurrent page renders", func(t *testing.T) {
 		urls := []string{
 			"/",
-			"/courses",
-			"/courses/docker",
-			"/courses/docker/01-architecture-and-first-dockerfile",
-			"/courses/podman",
 			"/projects",
 			"/education",
+			"/about",
 			"/mustang",
+			"/api/health",
+			"/api/pdf/health",
 		}
 
 		var wg sync.WaitGroup
@@ -198,7 +169,7 @@ func TestCustomErrorHandlers(t *testing.T) {
 	})
 
 	t.Run("405 API Method Not Allowed", func(t *testing.T) {
-		req := httptest.NewRequest("DELETE", "/api/search", nil)
+		req := httptest.NewRequest("DELETE", "/api/health", nil)
 		w := httptest.NewRecorder()
 		r.ServeHTTP(w, req)
 

@@ -2,7 +2,6 @@ package handler
 
 import (
 	"encoding/xml"
-	"fmt"
 	"net/http"
 	"time"
 )
@@ -21,8 +20,7 @@ type sitemapURLSet struct {
 	URLs    []sitemapURL `xml:"url"`
 }
 
-// SitemapXML generates a dynamic sitemap.xml containing all static
-// sections, courses, and knowledge base lessons.
+// SitemapXML generates a dynamic sitemap.xml containing the home page (About the author) and Mustang page.
 func (h *Handler) SitemapXML(w http.ResponseWriter, r *http.Request) {
 	today := time.Now().Format("2006-01-02")
 
@@ -30,51 +28,24 @@ func (h *Handler) SitemapXML(w http.ResponseWriter, r *http.Request) {
 		XMLNS: "http://www.sitemaps.org/schemas/sitemap/0.9",
 		URLs: []sitemapURL{
 			{Loc: h.baseURL + "/", LastMod: today, ChangeFreq: "weekly", Priority: "1.0"},
-			{Loc: h.baseURL + "/courses", LastMod: today, ChangeFreq: "weekly", Priority: "0.9"},
-			{Loc: h.baseURL + "/education", LastMod: today, ChangeFreq: "monthly", Priority: "0.8"},
-			{Loc: h.baseURL + "/mustang", LastMod: today, ChangeFreq: "monthly", Priority: "0.7"},
+			{Loc: h.baseURL + "/mustang", LastMod: today, ChangeFreq: "monthly", Priority: "0.8"},
 		},
 	}
 
-	// Dynamically traverse courses and their lessons
-	courses := h.courseService.GetAllCourses()
-	for _, c := range courses {
-		// Add course page
-		urlSet.URLs = append(urlSet.URLs, sitemapURL{
-			Loc:        fmt.Sprintf("%s/courses/%s", h.baseURL, c.Slug),
-			LastMod:    today,
-			ChangeFreq: "weekly",
-			Priority:   "0.8",
-		})
-
-		// Load course lessons
-		courseWithLessons, err := h.courseService.GetCourseBySlug(c.Slug)
-		if err == nil && courseWithLessons != nil {
-			for _, lesson := range courseWithLessons.Lessons {
-				urlSet.URLs = append(urlSet.URLs, sitemapURL{
-					Loc:        fmt.Sprintf("%s/courses/%s/%s", h.baseURL, c.Slug, lesson.Slug),
-					LastMod:    today,
-					ChangeFreq: "monthly",
-					Priority:   "0.7",
-				})
-			}
-		}
-	}
-
 	w.Header().Set("Content-Type", "application/xml; charset=utf-8")
-	w.Header().Set("Cache-Control", "public, max-age=86400")
 	w.WriteHeader(http.StatusOK)
 
 	_, _ = w.Write([]byte(xml.Header))
-	_ = xml.NewEncoder(w).Encode(urlSet)
+	enc := xml.NewEncoder(w)
+	enc.Indent("", "  ")
+	_ = enc.Encode(urlSet)
 }
 
-// RobotsTxt serves dynamic robots.txt file with an absolute URL to sitemap.xml.
+// RobotsTxt serves dynamic robots.txt pointing to the canonical sitemap.
 func (h *Handler) RobotsTxt(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
-	w.Header().Set("Cache-Control", "public, max-age=86400")
 	w.WriteHeader(http.StatusOK)
 
-	content := fmt.Sprintf("User-agent: *\nAllow: /\nDisallow: /api/\n\nSitemap: %s/sitemap.xml\n", h.baseURL)
+	content := "User-agent: *\nAllow: /\n\nSitemap: " + h.baseURL + "/sitemap.xml\n"
 	_, _ = w.Write([]byte(content))
 }

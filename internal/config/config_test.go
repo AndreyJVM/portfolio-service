@@ -7,7 +7,7 @@ import (
 
 func TestConfig_DefaultValues(t *testing.T) {
 	// Clear environment variables to check defaults
-	keys := []string{"PORT", "APP_BASE_URL", "GITHUB_USER", "DOCKER_USER", "CONTENT_DIR", "COURSES_FILE", "PAGES_FILE", "TEMPLATES_DIR", "STATIC_DIR"}
+	keys := []string{"PORT", "APP_BASE_URL", "GITHUB_USER", "DOCKER_USER", "PAGES_FILE", "TEMPLATES_DIR", "STATIC_DIR"}
 	for _, k := range keys {
 		_ = os.Unsetenv(k)
 	}
@@ -25,12 +25,6 @@ func TestConfig_DefaultValues(t *testing.T) {
 	}
 	if cfg.DockerUser != DefaultDockerUser {
 		t.Errorf("Ожидался DockerUser '%s', получен '%s'", DefaultDockerUser, cfg.DockerUser)
-	}
-	if cfg.ContentDir != DefaultContentDir {
-		t.Errorf("Ожидался ContentDir '%s', получен '%s'", DefaultContentDir, cfg.ContentDir)
-	}
-	if cfg.CoursesFile != DefaultCoursesFile {
-		t.Errorf("Ожидался CoursesFile '%s', получен '%s'", DefaultCoursesFile, cfg.CoursesFile)
 	}
 	if cfg.PagesFile != DefaultPagesFile {
 		t.Errorf("Ожидался PagesFile '%s', получен '%s'", DefaultPagesFile, cfg.PagesFile)
@@ -51,14 +45,12 @@ func TestConfig_CustomEnvValues(t *testing.T) {
 	_ = os.Setenv("APP_BASE_URL", "http://localhost:9090")
 	_ = os.Setenv("GITHUB_USER", "CustomUser")
 	_ = os.Setenv("DOCKER_USER", "customdocker")
-	_ = os.Setenv("CONTENT_DIR", "/custom/content")
-	_ = os.Setenv("COURSES_FILE", "/custom/courses.json")
 	_ = os.Setenv("PAGES_FILE", "/custom/pages.json")
 	_ = os.Setenv("TEMPLATES_DIR", "/custom/templates")
 	_ = os.Setenv("STATIC_DIR", "/custom/static")
 
 	defer func() {
-		keys := []string{"PORT", "APP_BASE_URL", "GITHUB_USER", "DOCKER_USER", "CONTENT_DIR", "COURSES_FILE", "PAGES_FILE", "TEMPLATES_DIR", "STATIC_DIR"}
+		keys := []string{"PORT", "APP_BASE_URL", "GITHUB_USER", "DOCKER_USER", "PAGES_FILE", "TEMPLATES_DIR", "STATIC_DIR"}
 		for _, k := range keys {
 			_ = os.Unsetenv(k)
 		}
@@ -78,12 +70,6 @@ func TestConfig_CustomEnvValues(t *testing.T) {
 	if cfg.DockerUser != "customdocker" {
 		t.Errorf("Ожидался DockerUser 'customdocker', получен '%s'", cfg.DockerUser)
 	}
-	if cfg.ContentDir != "/custom/content" {
-		t.Errorf("Ожидался ContentDir '/custom/content', получен '%s'", cfg.ContentDir)
-	}
-	if cfg.CoursesFile != "/custom/courses.json" {
-		t.Errorf("Ожидался CoursesFile '/custom/courses.json', получен '%s'", cfg.CoursesFile)
-	}
 	if cfg.PagesFile != "/custom/pages.json" {
 		t.Errorf("Ожидался PagesFile '/custom/pages.json', получен '%s'", cfg.PagesFile)
 	}
@@ -99,78 +85,32 @@ func TestGetEnvOrDefaults(t *testing.T) {
 	t.Run("fallback when unset", func(t *testing.T) {
 		result := getEnvOrDefault("NON_EXISTING_KEY_12345", "my-default-value")
 		if result != "my-default-value" {
-			t.Errorf("expected 'my-default-value', but got '%s'", result)
+			t.Errorf("Ожидалось 'my-default-value', получено '%s'", result)
 		}
 	})
 
 	t.Run("value when set", func(t *testing.T) {
-		t.Setenv("TEST_EXISTING_VAR", "actual_value")
-		result := getEnvOrDefault("TEST_EXISTING_VAR", "default_val")
-		if result != "actual_value" {
-			t.Errorf("expected 'actual_value', got '%s'", result)
+		key := "TEST_ENV_VAR_SET_123"
+		_ = os.Setenv(key, "actual-value")
+		defer func() { _ = os.Unsetenv(key) }()
+
+		result := getEnvOrDefault(key, "fallback")
+		if result != "actual-value" {
+			t.Errorf("Ожидалось 'actual-value', получено '%s'", result)
 		}
 	})
-}
-
-func TestGetEnvOrDefault_TableDriven(t *testing.T) {
-	// 1. Define columns and rows for our test table
-	tests := []struct {
-		name        string // Test case description
-		envKey      string // Environment variable key
-		envVal      string // Value (do not set if empty)
-		fallbackVal string // Default value
-		expected    string // Expected return value of the function
-	}{
-		{
-			name:        "returns fallback when env var does not exist",
-			envKey:      "TEST_NOT_SET_KEY",
-			envVal:      "",
-			fallbackVal: "default_1",
-			expected:    "default_1",
-		},
-		{
-			name:        "returns env value when set",
-			envKey:      "TEST_SET_KEY",
-			envVal:      "custom_value_42",
-			fallbackVal: "default_1",
-			expected:    "custom_value_42",
-		},
-		{
-			name:        "returns fallback when env var is explicitly empty string",
-			envKey:      "TEST_EMPTY_KEY",
-			envVal:      "",
-			fallbackVal: "fallback_for_empty",
-			expected:    "fallback_for_empty",
-		},
-	}
-
-	// 2. Iterate through the table and run each case as a subtest
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if tt.envVal != "" {
-				t.Setenv(tt.envKey, tt.envVal)
-			}
-
-			actual := getEnvOrDefault(tt.envKey, tt.fallbackVal)
-
-			if actual != tt.expected {
-				t.Errorf("case '%s': expected '%s', got '%s'", tt.name, tt.expected, actual)
-			}
-		})
-	}
 }
 
 func TestConfig_Validate(t *testing.T) {
 	validCfg := func() *Config {
 		return &Config{
-			Port:         DefaultPort,
-			AppBaseURL:   DefaultAppBaseURL,
-			GitHubUser:   DefaultGitHubUser,
-			DockerUser:   DefaultDockerUser,
-			ContentDir:   DefaultContentDir,
-			PagesFile:    DefaultPagesFile,
-			TemplatesDir: DefaultTemplatesDir,
-			StaticDir:    DefaultStaticDir,
+			Port:         "8080",
+			AppBaseURL:   "https://vorobevaqa.ru",
+			GitHubUser:   "AndreyJVM",
+			DockerUser:   "andreyvorobevaqa",
+			PagesFile:    "content/pages.json",
+			TemplatesDir: "web/templates",
+			StaticDir:    "web/static",
 		}
 	}
 
@@ -222,11 +162,6 @@ func TestConfig_Validate(t *testing.T) {
 		{
 			name:    "missing host in app base URL",
 			modify:  func(c *Config) { c.AppBaseURL = "https://" },
-			wantErr: true,
-		},
-		{
-			name:    "empty content dir",
-			modify:  func(c *Config) { c.ContentDir = "" },
 			wantErr: true,
 		},
 		{

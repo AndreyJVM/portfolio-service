@@ -108,20 +108,17 @@ func NewRouter(h *Handler) *chi.Mux {
 
 	// Platform web pages
 	r.Get("/", h.Index)
-	r.Get("/courses", h.CoursesList)
-	r.Get("/courses/{courseSlug}", h.CourseDetail)
-	r.Get("/courses/{courseSlug}/{lessonSlug}", h.Lesson)
-
+	r.Get("/about", h.RedirectHome)
+	r.Get("/education", h.RedirectHome)
 	r.Get("/projects", h.Projects)
-	r.Get("/education", h.Education)
-	r.Get("/about", h.RedirectAbout)
-	r.Get("/roadmap", h.RoadmapRedirect)
+	r.Get("/courses", h.RedirectHome)
+	r.Get("/courses/*", h.RedirectHome)
+	r.Get("/roadmap", h.RedirectHome)
 	r.Get("/mustang", h.Mustang)
 
 	// Grouped API routes
 	r.Route("/api", func(api chi.Router) {
 		api.Get("/health", h.Health)
-		api.Get("/search", h.SearchAPI)
 
 		// PDF resume API
 		api.Route("/pdf", func(pdf chi.Router) {

@@ -14,7 +14,6 @@ import (
 )
 
 type Handler struct {
-	courseService       *service.CourseService
 	integrationsService *service.IntegrationsService
 	pageService         *service.PageService
 	templatesDir        string
@@ -26,7 +25,6 @@ type Handler struct {
 }
 
 func NewHandler(
-	cs *service.CourseService,
 	is *service.IntegrationsService,
 	ps *service.PageService,
 	templatesDir string,
@@ -37,7 +35,6 @@ func NewHandler(
 		ps = service.NewPageService("")
 	}
 	return &Handler{
-		courseService:       cs,
 		integrationsService: is,
 		pageService:         ps,
 		templatesDir:        templatesDir,
@@ -101,64 +98,39 @@ func (h *Handler) renderTemplate(w http.ResponseWriter, templateName string, dat
 	}
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	w.WriteHeader(http.StatusOK)
 	_, _ = buf.WriteTo(w)
 }
 
-// Health returns the service health status for health checks (Docker, Nginx, K8s).
+// Health checks the service status.
 func (h *Handler) Health(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(http.StatusOK)
 	_, _ = w.Write([]byte(`{"status":"UP","service":"portfolio-service"}`))
 }
 
-// NotFound serves a clean 404 response (JSON for API, HTML for web browsers).
+// NotFound handles 404 errors, returning branded HTML for browsers and JSON for APIs.
 func (h *Handler) NotFound(w http.ResponseWriter, r *http.Request) {
-	if strings.HasPrefix(r.URL.Path, "/api/") || strings.Contains(r.Header.Get("Accept"), "application/json") {
+	if strings.HasPrefix(r.URL.Path, "/api/") {
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(http.StatusNotFound)
-		_, _ = w.Write([]byte(`{"error":"not_found","message":"Requested resource not found"}`))
+		_, _ = w.Write([]byte(`{"error":"not_found","message":"Requested API endpoint does not exist"}`))
 		return
 	}
 
-	meta := h.getMeta("404", r.URL.Path)
-	if meta.Title == "" {
-		meta = model.MetaData{
-			Title:        "404 • Страница не найдена",
-			Description:  "Запрошенная страница не найдена на платформе Primary Cloud Lab.",
-			CanonicalURL: h.baseURL + r.URL.Path,
-		}
-	}
-
-	tmpl, err := h.getTemplate("404.html")
-	if err != nil {
-		http.NotFound(w, r)
-		return
-	}
-
-	var buf bytes.Buffer
-	data := struct {
+	w.WriteHeader(http.StatusNotFound)
+	h.renderTemplate(w, "404.html", struct {
 		Meta model.MetaData
 	}{
-		Meta: meta,
-	}
-
-	if err := tmpl.ExecuteTemplate(&buf, "layout", data); err != nil {
-		http.NotFound(w, r)
-		return
-	}
-
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	w.WriteHeader(http.StatusNotFound)
-	_, _ = buf.WriteTo(w)
+		Meta: h.getMeta("404", r.URL.Path),
+	})
 }
 
-// MethodNotAllowed serves a 405 response (JSON for API, plain text for web browsers).
+// MethodNotAllowed handles 405 errors, returning JSON for API requests and standard text for web.
 func (h *Handler) MethodNotAllowed(w http.ResponseWriter, r *http.Request) {
-	if strings.HasPrefix(r.URL.Path, "/api/") || strings.Contains(r.Header.Get("Accept"), "application/json") {
+	if strings.HasPrefix(r.URL.Path, "/api/") {
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(http.StatusMethodNotAllowed)
-		_, _ = w.Write([]byte(`{"error":"method_not_allowed","message":"HTTP method not allowed"}`))
+		_, _ = w.Write([]byte(`{"error":"method_not_allowed","message":"HTTP method is not supported for this endpoint"}`))
 		return
 	}
 

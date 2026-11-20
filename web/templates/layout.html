@@ -55,10 +55,10 @@
         <span class="ms-2 fw-bold text-gradient">Primary Cloud Lab</span>
       </a>
     </div>
-    <div class="d-flex align-items-center">
-      <button class="btn btn-outline-secondary btn-sm rounded-circle" id="searchTriggerMobile" aria-label="Поиск" title="Поиск (Ctrl+K)">
-        <i class="fas fa-search"></i>
-      </button>
+    <div class="d-flex align-items-center gap-2">
+      <a href="/api/pdf/resume?download=true" class="btn btn-outline-secondary btn-sm rounded-pill" title="Скачать резюме">
+        <i class="fas fa-file-pdf"></i>
+      </a>
     </div>
   </header>
 
@@ -72,36 +72,17 @@
       <button type="button" class="btn-close d-lg-none" data-bs-dismiss="offcanvas" data-bs-target="#sidebarNav" aria-label="Закрыть"></button>
     </div>
 
-    <!-- Быстрый поиск в сайдбаре -->
-    <div class="px-3 pt-3 pb-1">
-      <button class="btn btn-outline-secondary w-100 rounded-3 d-flex align-items-center justify-content-between py-2 px-3 small" id="searchTriggerSidebar" type="button">
-        <span class="text-body-secondary"><i class="fas fa-search me-2"></i>Поиск...</span>
-        <kbd class="bg-body-tertiary text-body-secondary border px-1 py-0 rounded" style="font-size: 0.7rem;">Ctrl+K</kbd>
-      </button>
-    </div>
-
     <div class="sidebar-body flex-grow-1 p-3 overflow-y-auto">
-      <ul class="nav nav-pills flex-column gap-1 sidebar-nav w-100">
+      <ul class="nav nav-pills flex-column gap-2 sidebar-nav w-100">
         <li class="nav-item">
-          <a class="nav-link {{if and (or (eq .Meta.ActiveTab "courses") (eq .Meta.ActiveTab "home")) (eq .Meta.ActiveCourse "")}}active{{end}}" href="/">Docker: Библиотека</a>
-          <div class="sidebar-subnav">
-            <a class="nav-link {{if eq .Meta.ActiveCourse "docker"}}active{{end}}" href="/courses/docker">1. Архитектура</a>
-            <a class="nav-link {{if eq .Meta.ActiveCourse "docker-dockerfile"}}active{{end}}" href="/courses/docker-dockerfile">2. Сборка &amp; Dockerfile</a>
-            <a class="nav-link {{if eq .Meta.ActiveCourse "docker-storage"}}active{{end}}" href="/courses/docker-storage">3. Тома &amp; Хранение</a>
-            <a class="nav-link {{if eq .Meta.ActiveCourse "docker-networking"}}active{{end}}" href="/courses/docker-networking">4. Сети &amp; DNS</a>
-            <a class="nav-link {{if eq .Meta.ActiveCourse "docker-compose"}}active{{end}}" href="/courses/docker-compose">5. Compose v2</a>
-            <a class="nav-link {{if eq .Meta.ActiveCourse "docker-security"}}active{{end}}" href="/courses/docker-security">6. Безопасность</a>
-            <a class="nav-link {{if eq .Meta.ActiveCourse "docker-resources"}}active{{end}}" href="/courses/docker-resources">7. Ресурсы &amp; Cgroups</a>
-            <a class="nav-link {{if eq .Meta.ActiveCourse "docker-production"}}active{{end}}" href="/courses/docker-production">8. Тюнинг &amp; Логи</a>
-            <a class="nav-link {{if eq .Meta.ActiveCourse "docker-cicd"}}active{{end}}" href="/courses/docker-cicd">9. Buildx &amp; CI/CD</a>
-            <a class="nav-link {{if eq .Meta.ActiveCourse "docker-cookbook"}}active{{end}}" href="/courses/docker-cookbook">10. Справочник</a>
-          </div>
+          <a class="nav-link {{if or (eq .Meta.ActiveTab "index") (eq .Meta.ActiveTab "about") (eq .Meta.ActiveTab "education")}}active{{end}}" href="/">
+            <i class="fas fa-user-tie me-2"></i>Об авторе
+          </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link {{if eq .Meta.ActiveTab "education"}}active{{end}}" href="/education">Об авторе</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link {{if eq .Meta.ActiveTab "mustang"}}active{{end}}" href="/mustang">На мечту</a>
+          <a class="nav-link {{if eq .Meta.ActiveTab "mustang"}}active{{end}}" href="/mustang">
+            <i class="fas fa-fire me-2 text-danger"></i>На мечту
+          </a>
         </li>
       </ul>
     </div>
@@ -129,46 +110,10 @@
           </a>
         </div>
         <p class="mb-0 text-muted small">
-          &copy; 2026 Андрей Воробьев • Бесплатная открытая платформа по изучению DevOps &amp; Linux.
+          &copy; 2026 Андрей Воробьев • Primary Cloud Lab
         </p>
       </div>
     </footer>
-  </div>
-
-  <!-- Search Modal -->
-  <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
-      <div class="modal-content rounded-4 border-0 shadow-lg">
-        <div class="modal-header border-bottom p-3">
-          <div class="input-group input-group-lg border-0">
-            <span class="input-group-text bg-transparent border-0 pe-2 text-primary">
-              <i class="fas fa-search"></i>
-            </span>
-            <input type="text" class="form-control bg-transparent border-0 shadow-none ps-1" id="searchInput" placeholder="Поиск по урокам, Dockerfile, Compose, Cgroups, сетям..." aria-label="Поиск">
-          </div>
-          <button type="button" class="btn-close ms-2" data-bs-dismiss="modal" aria-label="Закрыть"></button>
-        </div>
-        <div class="modal-body p-3">
-          <div id="searchLoading" class="text-center py-4 d-none">
-            <div class="spinner-border text-primary spinner-border-sm me-2" role="status"></div>
-            <span class="text-body-secondary small">Загрузка базы знаний...</span>
-          </div>
-          <div id="searchResults"></div>
-          <div id="searchEmpty" class="text-center py-5 d-none">
-            <i class="fas fa-magnifying-glass fa-2x text-body-secondary mb-2 opacity-50"></i>
-            <p class="text-body-secondary mb-0">Ничего не найдено по вашему запросу</p>
-          </div>
-        </div>
-        <div class="modal-footer border-top py-2 px-3 justify-content-between small text-body-secondary">
-          <div class="d-flex align-items-center gap-2 flex-wrap">
-            <span><kbd class="bg-body-secondary border px-1">↑↓</kbd> Переход</span>
-            <span><kbd class="bg-body-secondary border px-1">Enter</kbd> Выбрать</span>
-            <span><kbd class="bg-body-secondary border px-1">Esc</kbd> Закрыть</span>
-          </div>
-          <span class="d-none d-sm-inline">Primary Cloud Lab</span>
-        </div>
-      </div>
-    </div>
   </div>
 
   <!-- Toast Notification Container -->
@@ -190,8 +135,6 @@
   </button>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script src="/js/main.js" defer></script>
-  <script src="/js/learning-progress.js" defer></script>
-  <script src="/js/search.js" defer></script>
   {{block "scripts_extra" .}}{{end}}
 </body>
 </html>

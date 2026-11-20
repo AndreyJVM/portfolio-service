@@ -38,18 +38,17 @@ func main() {
 	}
 
 	// Validate the existence of required resources
-	if err := validateDirs(cfg.ContentDir, cfg.TemplatesDir, cfg.StaticDir); err != nil {
+	if err := validateDirs(cfg.TemplatesDir, cfg.StaticDir); err != nil {
 		log.Printf("⚠️ Предупреждение о путях конфигурации: %v", err)
 	}
 
 	// Initialize service layer
-	courseService := service.NewCourseService(cfg.ContentDir, cfg.CoursesFile)
 	integrationsService := service.NewIntegrationsService(cfg.GitHubUser, cfg.DockerUser)
 	integrationsService.PreloadDefaults() // Instant cold start without external API delays
 	pageService := service.NewPageService(cfg.PagesFile)
 
 	// Initialize handlers and router
-	h := handler.NewHandler(courseService, integrationsService, pageService, cfg.TemplatesDir, cfg.StaticDir, cfg.AppBaseURL)
+	h := handler.NewHandler(integrationsService, pageService, cfg.TemplatesDir, cfg.StaticDir, cfg.AppBaseURL)
 	router := handler.NewRouter(h)
 
 	server := &http.Server{

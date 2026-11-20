@@ -6,49 +6,29 @@ import (
 	"ru.vorobevaqa/devops-platform/internal/model"
 )
 
-// Index: Main page of the learning platform — course catalog and learning roadmap
+// Index: Main page of Primary Cloud Lab — About the author, experience, projects, and certifications.
 func (h *Handler) Index(w http.ResponseWriter, r *http.Request) {
-	courses := h.courseService.GetAllCourses()
-
-	data := struct {
-		Meta    model.MetaData
-		Courses []model.Course
-	}{
-		Meta:    h.getMeta("index", "/"),
-		Courses: courses,
-	}
-
-	h.renderTemplate(w, "courses.html", data)
-}
-
-// Projects: permanent redirect (HTTP 301) to the projects and infrastructure section on the "About" page
-func (h *Handler) Projects(w http.ResponseWriter, r *http.Request) {
-	http.Redirect(w, r, "/education#projects", http.StatusMovedPermanently)
-}
-
-// Education: Page about the author, experience, projects, and qualifications
-func (h *Handler) Education(w http.ResponseWriter, r *http.Request) {
 	projectsData := h.integrationsService.GetProjectsData()
 
 	data := struct {
 		Meta model.MetaData
 		Data model.ProjectsPageData
 	}{
-		Meta: h.getMeta("education", "/education"),
+		Meta: h.getMeta("index", "/"),
 		Data: projectsData,
 	}
 
-	h.renderTemplate(w, "education.html", data)
+	h.renderTemplate(w, "about.html", data)
 }
 
-// RedirectAbout: HTTP 301 Permanent Redirect
-func (h *Handler) RedirectAbout(w http.ResponseWriter, r *http.Request) {
-	http.Redirect(w, r, "/education", http.StatusMovedPermanently)
+// RedirectHome: HTTP 301 Permanent Redirect to the home page (About the author)
+func (h *Handler) RedirectHome(w http.ResponseWriter, r *http.Request) {
+	http.Redirect(w, r, "/", http.StatusMovedPermanently)
 }
 
-// RoadmapRedirect: HTTP 301 Permanent Redirect to the roadmap section
-func (h *Handler) RoadmapRedirect(w http.ResponseWriter, r *http.Request) {
-	http.Redirect(w, r, "/#roadmap", http.StatusMovedPermanently)
+// Projects: HTTP 301 Permanent Redirect to the projects section on the home page
+func (h *Handler) Projects(w http.ResponseWriter, r *http.Request) {
+	http.Redirect(w, r, "/#projects", http.StatusMovedPermanently)
 }
 
 // Mustang: Crowdfunding page for Shelby GT500
