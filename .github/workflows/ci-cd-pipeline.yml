@@ -8,13 +8,15 @@ on:
 
 permissions:
   contents: read
+  packages: write
 
 concurrency:
   group: production-deploy
   cancel-in-progress: false
 
 env:
-  DOCKER_IMAGE_NAME: andreyvorobevaqa/portfolio-service
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ghcr.io/andreyjvm/portfolio-service
 
 jobs:
   detect-changes:
@@ -49,7 +51,7 @@ jobs:
               - 'scripts/**'
 
   build-and-push-app:
-    name: Build & Push Go DevOps Platform
+    name: Build & Push to GHCR
     needs: detect-changes
     if: needs.detect-changes.outputs.app == 'true' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
@@ -75,7 +77,7 @@ jobs:
           go vet ./...
 
       - name: Run Go tests
-        run: go test -v ./...
+        run: go test -v -race ./...
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -94,32 +96,33 @@ jobs:
         with:
           context: .
           load: true
-          tags: ${{ env.DOCKER_IMAGE_NAME }}:local-test
+          tags: ${{ env.IMAGE_NAME }}:local-test
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
       - name: Scan DevOps Platform image with Trivy (Security Gate)
         uses: aquasecurity/trivy-action@v0.36.0
         with:
-          image-ref: '${{ env.DOCKER_IMAGE_NAME }}:local-test'
+          image-ref: '${{ env.IMAGE_NAME }}:local-test'
           format: 'table'
           exit-code: '1'
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
 
-      - name: Log in to Docker Hub
+      - name: Log in to GitHub Container Registry (GHCR)
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Push verified image to Docker Hub
+      - name: Push verified image to GHCR
         run: |
-          docker tag ${{ env.DOCKER_IMAGE_NAME }}:local-test ${{ env.DOCKER_IMAGE_NAME }}:latest
-          docker tag ${{ env.DOCKER_IMAGE_NAME }}:local-test ${{ env.DOCKER_IMAGE_NAME }}:${{ github.sha }}
-          docker push ${{ env.DOCKER_IMAGE_NAME }}:latest
-          docker push ${{ env.DOCKER_IMAGE_NAME }}:${{ github.sha }}
+          docker tag ${{ env.IMAGE_NAME }}:local-test ${{ env.IMAGE_NAME }}:latest
+          docker tag ${{ env.IMAGE_NAME }}:local-test ${{ env.IMAGE_NAME }}:${{ github.sha }}
+          docker push ${{ env.IMAGE_NAME }}:latest
+          docker push ${{ env.IMAGE_NAME }}:${{ github.sha }}
 
   deploy-to-vds:
     name: Zero-Downtime Deploy to VDS

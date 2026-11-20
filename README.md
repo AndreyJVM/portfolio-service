@@ -6,7 +6,7 @@
 
 <p>
   <a href="https://ubuntu.com/"><img src="https://img.shields.io/badge/Linux-Ubuntu_24.04_LTS-E95420?logo=ubuntu&logoColor=white" alt="Linux"></a>
-  <a href="https://hub.docker.com/r/andreyvorobevaqa/portfolio-service"><img src="https://img.shields.io/badge/Docker-Compose_%26_Swarm-2496ED?logo=docker&logoColor=white" alt="Docker"></a>
+  <a href="https://github.com/AndreyJVM/portfolio-service/pkgs/container/portfolio-service"><img src="https://img.shields.io/badge/GHCR-ghcr.io-2088FF?logo=github&logoColor=white" alt="GHCR"></a>
   <a href="https://galaxy.ansible.com/ui/standalone/namespaces/24255/"><img src="https://img.shields.io/badge/Ansible-Galaxy_Roles-EE0000?logo=ansible&logoColor=white" alt="Ansible"></a>
   <a href="https://github.com/AndreyJVM/portfolio-service/actions"><img src="https://img.shields.io/badge/CI%2FCD-GitHub_Actions_Passed-2088FF?logo=githubactions&logoColor=white" alt="CI/CD"></a>
   <a href="https://github.com/AndreyJVM/portfolio-service/security/dependabot"><img src="https://img.shields.io/badge/Dependabot-Active-02569B?logo=dependabot&logoColor=white" alt="Dependabot"></a>
@@ -54,7 +54,7 @@ flowchart TD
 | **Host & Operating System** | Linux (Ubuntu 24.04 LTS), Bash automation scripts, systemd, cron, logrotate |
 | **Network & Security** | UFW firewall, Fail2ban brute-force protection, SSH authentication via ed25519 keys |
 | **Gateway & Reverse Proxy** | Nginx (SSL termination, Certbot auto-renewal, HTTP/2, Gzip, custom error pages) |
-| **Containerization** | Docker, Docker Compose v2, Alpine 3.21 runtime, cgroups v2 limits, non-root (UID 10001) |
+| **Containerization** | Docker, Docker Compose v2, GitHub Container Registry (ghcr.io), Alpine 3.21 runtime, cgroups v2 limits, non-root (UID 10001) |
 | **Backend Service** | Go 1.26.8 (`go-chi/chi/v5`), static compilation with stripped symbols (`-w -s`) |
 | **IaC & Orchestration** | Ansible (idempotent playbooks and roles in Ansible Galaxy), Blue-Green zero-downtime deployment |
 | **CI/CD** | GitHub Actions (`gofmt` & `go vet` quality gates, automated testing, Trivy security gate) |
@@ -169,7 +169,7 @@ flowchart TD
 | **Хост и ОС** | Linux (Ubuntu 24.04 LTS), Bash-скрипты автоматизации, systemd, cron, ротация logrotate |
 | **Сетевая безопасность** | UFW firewall, Fail2ban от брутфорса, SSH-аутентификация по ключам ed25519 |
 | **Шлюз и Прокси** | Nginx (Reverse Proxy, API Gateway, SSL Let's Encrypt / Certbot, HTTP/2, Gzip, кастомные 50x) |
-| **Контейнеризация** | Docker, Docker Compose v2, Alpine 3.21 runtime, cgroups v2 лимиты, non-root (UID 10001) |
+| **Контейнеризация** | Docker, Docker Compose v2, GitHub Container Registry (ghcr.io), Alpine 3.21 runtime, cgroups v2 лимиты, non-root (UID 10001) |
 | **Бэкенд платформы** | Go 1.26.8 (`go-chi/chi/v5`), статическая сборка со стриппингом символов (`-w -s`) |
 | **IaC & Оркестрация** | Ansible (идемпотентные плейбуки и роли в Ansible Galaxy), Blue-Green деплой скриптом `deploy.sh` |
 | **CI/CD** | GitHub Actions (проверки `gofmt` и `go vet`, тесты, сканирование безопасности Trivy) |

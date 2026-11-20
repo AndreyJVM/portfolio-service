@@ -1,7 +1,7 @@
 services:
   # ========== DEVOPS PLATFORM (GOLANG BACKEND) ==========
   app:
-    image: andreyvorobevaqa/portfolio-service:latest
+    image: ghcr.io/andreyjvm/portfolio-service:latest
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true

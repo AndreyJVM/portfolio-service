@@ -24,7 +24,7 @@ FROM alpine:3.21
 
 # OCI Metadata Labels
 LABEL org.opencontainers.image.title="Primary Cloud Lab" \
-      org.opencontainers.image.description="Docker & Cloud Engineering Knowledge Base" \
+      org.opencontainers.image.description="DevOps & Linux Engineering Platform" \
       org.opencontainers.image.source="https://github.com/AndreyJVM/portfolio-service" \
       org.opencontainers.image.licenses="MIT"
 
