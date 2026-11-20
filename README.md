@@ -80,7 +80,7 @@ flowchart LR
     A[Git Push master] --> B[detect-changes<br/>Paths Filter]
     B --> C[Build & Test Go Platform<br/>gofmt • go vet • 100% Tests]
     C --> D[Trivy Vulnerability Scan<br/>Security Gate]
-    D --> E[Docker Build & Push]
+    D --> E[Docker Build & Push to GHCR]
     E --> F[Zero-Downtime Deploy VDS<br/>scripts/deploy.sh]
 ```
 
@@ -88,7 +88,7 @@ flowchart LR
    - Runs `gofmt -l` and `go vet ./...` style and static analysis checks;
    - Runs unit and integration test suite with `-race` detection;
    - Performs Trivy vulnerability scan on container layers;
-   - Builds and tags production container images.
+   - Builds and tags production container image and pushes to GitHub Container Registry (`ghcr.io`).
 2. **Zero-Downtime Deploy (`scripts/deploy.sh`):**
    - Deploys new container instance alongside the existing one (`--scale app=2`);
    - Verifies HTTP `/health` probe before traffic cutover;
@@ -116,7 +116,6 @@ go run ./cmd/server/
 
 ```text
 ├── cmd/server/main.go       # Application entry point with graceful shutdown
-├── config/                  # Configuration defaults and validation
 ├── content/pages.json       # Page metadata and SEO declarations
 ├── internal/
 │   ├── config/              # Central configuration package
@@ -190,11 +189,20 @@ flowchart TD
 
 ### CI/CD & Бесперебойный Blue-Green деплой
 
+```mermaid
+flowchart LR
+    A[Git Push master] --> B[detect-changes<br/>Фильтр путей]
+    B --> C[Сборка и тесты Go<br/>gofmt • go vet • 100% Тесты]
+    C --> D[Сканирование уязвимостей Trivy<br/>Security Gate]
+    D --> E[Сборка и Push в GHCR]
+    E --> F[Zero-Downtime деплой VDS<br/>scripts/deploy.sh]
+```
+
 1. **GitHub Actions Pipeline:**
    - Автоматическая проверка форматирования `gofmt` и статический анализ `go vet`;
    - Запуск полного набора юнит- и интеграционных тестов с флагом `-race`;
    - Сканирование уязвимостей базового образа и библиотек сканером Trivy;
-   - Сборка и отправка проверенного контейнерного образа.
+   - Сборка и отправка проверенного контейнерного образа в GitHub Container Registry (`ghcr.io`).
 2. **Zero-Downtime Deploy (`scripts/deploy.sh`):**
    - Запуск нового контейнера рядом со старым (`--scale app=2`);
    - Проверка успешности HTTP-пробы готовности (`/health`);
@@ -214,6 +222,30 @@ go test -count=1 -race ./...
 
 # Локальный запуск сервера
 go run ./cmd/server/
+```
+
+---
+
+### Структура репозитория
+
+```text
+├── cmd/server/main.go       # Точка входа приложения с graceful shutdown
+├── content/pages.json       # Метаданные страниц и SEO-параметры
+├── internal/
+│   ├── config/              # Конфигурация сервиса и переменные окружения
+│   ├── handler/             # HTTP-обработчики, роутер, заголовки безопасности, отдача PDF
+│   ├── model/               # Модели данных (GitHub, Docker Hub, Ansible)
+│   └── service/             # Сервисы IntegrationsService, PageService
+├── nginx/                   # Конфигурации reverse proxy Nginx
+├── scripts/
+│   ├── deploy.sh            # Скрипт бесперебойного Blue-Green деплоя
+│   ├── init-ssl.sh          # Инициализация SSL-сертификатов Let's Encrypt / Certbot
+│   └── scan-container.sh    # Локальное сканирование безопасности Trivy
+├── web/
+│   ├── static/              # CSS, JS, изображения, сертификаты, PDF резюме
+│   └── templates/           # HTML-шаблоны: layout, about, mustang, 404
+├── docker-compose.yml       # Стек сервисов Docker Compose
+└── Dockerfile               # Многоэтапная сборка Go на базе Alpine (non-root UID 10001)
 ```
 
 ---
