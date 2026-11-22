@@ -32,10 +32,10 @@ type PageService struct {
 var defaultPages = map[string]PageMeta{
 	"index": {
 		Title:         "Об авторе • Андрей Воробьев | Primary Cloud Lab",
-		Description:   "Об авторе платформы Primary Cloud Lab Андрее Воробьеве: инженерный опыт, системное администрирование Linux (Слёрм), Docker, Podman, LXC, CI/CD, репозитории и квалификация.",
-		Keywords:      "Андрей Воробьев, об авторе, DevOps, Linux, Слёрм, Docker, Podman, LXC, Ansible, сертификаты, квалификация, инфраструктура",
-		OGTitle:       "Об авторе • Андрей Воробьев | Primary Cloud Lab",
-		OGDescription: "Создатель Primary Cloud Lab. Архитектура инфраструктуры, open-source репозитории, профессиональные сертификации Слёрм и дипломы.",
+		Description:   "Сайт-визитка и портфолио Андрея Воробьева — DevOps & Linux Engineer: администрирование Linux (Слёрм), Docker, Nginx, CI/CD, Ansible, репозитории и квалификация.",
+		Keywords:      "Андрей Воробьев, DevOps, Linux, Слёрм, Docker, Nginx, Ansible, CI/CD, GitHub Actions, сертификаты, квалификация, инфраструктура",
+		OGTitle:       "Андрей Воробьев • DevOps & Linux Engineer | Портфолио",
+		OGDescription: "Инженер по инфраструктуре Linux, автоматизации и контейнеризации. Профессиональные сертификации Слёрм, проекты на GitHub, роли Ansible Galaxy и дипломы.",
 		OGImage:       "/images/og-about.png",
 		ActiveTab:     "about",
 	},

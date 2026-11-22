@@ -1,10 +1,10 @@
 {
   "index": {
     "title": "Об авторе • Андрей Воробьев | Primary Cloud Lab",
-    "description": "Об авторе платформы Primary Cloud Lab Андрее Воробьеве: инженерный опыт, системное администрирование Linux (Слёрм), Docker, Podman, LXC, CI/CD, репозитории и квалификация.",
-    "keywords": "Андрей Воробьев, об авторе, DevOps, Linux, Слёрм, Docker, Podman, LXC, Ansible, сертификаты, квалификация, инфраструктура",
-    "ogTitle": "Об авторе • Андрей Воробьев | Primary Cloud Lab",
-    "ogDescription": "Создатель Primary Cloud Lab. Архитектура инфраструктуры, open-source репозитории, профессиональные сертификации Слёрм и дипломы.",
+    "description": "Сайт-визитка и портфолио Андрея Воробьева — DevOps & Linux Engineer: администрирование Linux (Слёрм), Docker, Nginx, CI/CD, Ansible, репозитории и квалификация.",
+    "keywords": "Андрей Воробьев, DevOps, Linux, Слёрм, Docker, Nginx, Ansible, CI/CD, GitHub Actions, сертификаты, квалификация, инфраструктура",
+    "ogTitle": "Андрей Воробьев • DevOps & Linux Engineer | Портфолио",
+    "ogDescription": "Инженер по инфраструктуре Linux, автоматизации и контейнеризации. Профессиональные сертификации Слёрм, проекты на GitHub, роли Ansible Galaxy и дипломы.",
     "ogImage": "/images/og-about.png",
     "activeTab": "about"
   },

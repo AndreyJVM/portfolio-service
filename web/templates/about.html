@@ -18,7 +18,7 @@
           <i class="fas fa-terminal me-1"></i> DevOps &amp; Linux Engineer
         </div>
         <div class="badge bg-body-tertiary text-body-secondary border px-3 py-2 rounded-pill small">
-          <i class="fas fa-server me-1"></i> Primary Cloud Lab
+          <i class="fas fa-server me-1"></i> vorobevaqa.ru
         </div>
       </div>
 
@@ -26,7 +26,7 @@
         Андрей Воробьев
       </h1>
       <p class="lead text-body-secondary mb-4" style="max-width: 680px;">
-        Инженер по инфраструктуре Linux, автоматизации и OCI-контейнеризации. Создатель инженерной платформы <strong>Primary Cloud Lab</strong>: изоляция в ядре (Namespaces, Cgroups v2), Podman Quadlet, системные контейнеры LXC/Incus, Ansible и Zero-Downtime деплой.
+        DevOps &amp; Linux инженер с подтвержденными сертификациями в системном администрировании Linux (Слёрм), контейнеризации Docker и автоматизации CI/CD. Практический опыт настройки серверов Ubuntu/Debian, оркестрации в Docker Compose, создания ролей Ansible и обеспечения Zero-Downtime деплоя.
       </p>
 
       <div class="d-flex flex-wrap gap-2 justify-content-center justify-content-lg-start">
@@ -44,6 +44,9 @@
         </a>
         <a href="#projects" class="btn btn-outline-secondary px-3 py-2 rounded-pill">
           <i class="fas fa-boxes-stacked me-1"></i>Проекты
+        </a>
+        <a href="#certificates" class="btn btn-outline-secondary px-3 py-2 rounded-pill">
+          <i class="fas fa-certificate me-1"></i>Сертификаты
         </a>
       </div>
     </div>
@@ -66,76 +69,80 @@
         <i class="fas fa-layer-group fa-lg"></i>
       </div>
       <div>
-        <h3 class="fw-bold mb-0">Инженерный профиль и компетенции</h3>
-        <small class="text-body-secondary">Ключевые подтвержденные навыки в системной инженерии и контейнеризации</small>
+        <h3 class="fw-bold mb-0">Инженерный стек и компетенции</h3>
+        <small class="text-body-secondary">Ключевые подтвержденные навыки в системном администрировании, DevOps и автоматизации</small>
       </div>
     </div>
 
     <div class="row g-3">
-      <!-- Навык 1: Контейнеризация и рантаймы -->
+      <!-- Навык 1: Linux & Системное администрирование -->
+      <div class="col-md-6 col-lg-3">
+        <div class="card h-100 border rounded-3 p-3 bg-body shadow-sm">
+          <div class="text-primary mb-2"><i class="fab fa-linux fa-2x"></i></div>
+          <h6 class="fw-bold mb-1">Linux &amp; Администрирование</h6>
+          <p class="text-body-secondary small mb-3">
+            Администрирование Ubuntu / Debian, управление службами systemd и cron, автоматизация на Bash, безопасность хоста (SSH ed25519, UFW Firewall, Fail2ban, logrotate).
+          </p>
+          <div class="d-flex flex-wrap gap-1 mt-auto">
+            <span class="badge tech-pill">Linux (Ubuntu)</span>
+            <span class="badge tech-pill">Bash / Shell</span>
+            <span class="badge tech-pill">systemd &amp; cron</span>
+            <span class="badge tech-pill">SSH ed25519</span>
+            <span class="badge tech-pill">UFW / Fail2ban</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Навык 2: Контейнеризация и Nginx -->
       <div class="col-md-6 col-lg-3">
         <div class="card h-100 border rounded-3 p-3 bg-body shadow-sm">
           <div class="text-primary mb-2"><i class="fab fa-docker fa-2x"></i></div>
-          <h6 class="fw-bold mb-1">Контейнеры & OCI</h6>
+          <h6 class="fw-bold mb-1">Контейнеризация &amp; Nginx</h6>
           <p class="text-body-secondary small mb-3">
-            Docker, Multi-stage, Podman (Rootless, Quadlet), системные контейнеры LXC/Incus, спецификация OCI, runc и crun.
+            Multi-stage сборка Dockerfile, легковесные образы Alpine, оркестрация в Docker Compose, GitHub Container Registry (ghcr.io), шлюз Nginx (SSL Let's Encrypt, HTTP/2, Gzip).
           </p>
           <div class="d-flex flex-wrap gap-1 mt-auto">
             <span class="badge tech-pill">Docker</span>
-            <span class="badge tech-pill">Podman</span>
-            <span class="badge tech-pill">LXC / Incus</span>
-            <span class="badge tech-pill">Quadlet</span>
+            <span class="badge tech-pill">Docker Compose</span>
+            <span class="badge tech-pill">ghcr.io</span>
+            <span class="badge tech-pill">Nginx Proxy</span>
+            <span class="badge tech-pill">Certbot (SSL)</span>
           </div>
         </div>
       </div>
 
-      <!-- Навык 2: Ядро Linux и Изоляция -->
-      <div class="col-md-6 col-lg-3">
-        <div class="card h-100 border rounded-3 p-3 bg-body shadow-sm">
-          <div class="text-primary mb-2"><i class="fas fa-microchip fa-2x"></i></div>
-          <h6 class="fw-bold mb-1">Ядро Linux & Изоляция</h6>
-          <p class="text-body-secondary small mb-3">
-            Иерархия Cgroups v2, 8 пространств имен (Namespaces), системные вызовы clone, setns, pivot_root, диагностика procfs.
-          </p>
-          <div class="d-flex flex-wrap gap-1 mt-auto">
-            <span class="badge tech-pill">Cgroups v2</span>
-            <span class="badge tech-pill">Namespaces</span>
-            <span class="badge tech-pill">pivot_root</span>
-            <span class="badge tech-pill">procfs</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Навык 3: Безопасность и Харденинг -->
-      <div class="col-md-6 col-lg-3">
-        <div class="card h-100 border rounded-3 p-3 bg-body shadow-sm">
-          <div class="text-primary mb-2"><i class="fas fa-shield-halved fa-2x"></i></div>
-          <h6 class="fw-bold mb-1">Безопасность & Hardening</h6>
-          <p class="text-body-secondary small mb-3">
-            Linux Capabilities, Seccomp BPF фильтрация, сканирование Trivy в CI/CD, SELinux (:Z/:z), Non-Root контейнеры.
-          </p>
-          <div class="d-flex flex-wrap gap-1 mt-auto">
-            <span class="badge tech-pill">Seccomp BPF</span>
-            <span class="badge tech-pill">Capabilities</span>
-            <span class="badge tech-pill">Trivy</span>
-            <span class="badge tech-pill">Rootless</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Навык 4: Автоматизация и CI/CD -->
+      <!-- Навык 3: CI/CD & Бесперебойный деплой -->
       <div class="col-md-6 col-lg-3">
         <div class="card h-100 border rounded-3 p-3 bg-body shadow-sm">
           <div class="text-primary mb-2"><i class="fas fa-infinity fa-2x"></i></div>
-          <h6 class="fw-bold mb-1">CI/CD & Автоматизация</h6>
+          <h6 class="fw-bold mb-1">CI/CD &amp; Blue-Green деплой</h6>
           <p class="text-body-secondary small mb-3">
-            Пайплайны GitHub Actions, GitLab CI, роли Ansible Galaxy, Bash-скриптинг, Zero-Downtime Blue-Green деплой.
+            Пайплайны в GitHub Actions и GitLab CI с проверкой стилей (gofmt, go vet), тестами с проверкой гонок (-race), сканированием Trivy и Zero-Downtime деплоем на VDS.
           </p>
           <div class="d-flex flex-wrap gap-1 mt-auto">
             <span class="badge tech-pill">GitHub Actions</span>
             <span class="badge tech-pill">GitLab CI</span>
-            <span class="badge tech-pill">Ansible</span>
             <span class="badge tech-pill">Blue-Green</span>
+            <span class="badge tech-pill">Trivy Security</span>
+            <span class="badge tech-pill">Zero-Downtime</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Навык 4: IaC, Backend & QA Automation -->
+      <div class="col-md-6 col-lg-3">
+        <div class="card h-100 border rounded-3 p-3 bg-body shadow-sm">
+          <div class="text-primary mb-2"><i class="fas fa-network-wired fa-2x"></i></div>
+          <h6 class="fw-bold mb-1">IaC, Backend &amp; QA</h6>
+          <p class="text-body-secondary small mb-3">
+            Декларативное управление инфраструктурой с Ansible (плейбуки и роли в Galaxy), микросервисы на Go и Java, REST API, автотесты (REST Assured, TestNG, Selenide, Allure).
+          </p>
+          <div class="d-flex flex-wrap gap-1 mt-auto">
+            <span class="badge tech-pill">Ansible Galaxy</span>
+            <span class="badge tech-pill">Go (Golang)</span>
+            <span class="badge tech-pill">Java</span>
+            <span class="badge tech-pill">REST API</span>
+            <span class="badge tech-pill">QA Automation</span>
           </div>
         </div>
       </div>
